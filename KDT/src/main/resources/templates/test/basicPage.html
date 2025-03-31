@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Excel SHOW TEST</title>
+    <link rel="stylesheet" href="/css/showExcel.css" />
+</head>
+
+<body>
+<form enctype="multipart/form-data" method="post" th:action="@{/test/addProductPlan}">
+    <input name="where" type="hidden" value="Plan">
+    <div class="row">
+        <div class="input-style-1 col-lg-6" style="width: auto">
+            <input name="file" type="file">
+        </div>
+        <div class="col-lg-1" style="min-width: 142px">
+            <button class="main-btn secondary-btn btn-hover" style="padding: 18px"
+                    type="submit">데이터 업로드
+            </button>
+        </div>
+        <div class="col-lg-1" style="min-width: 155px">
+            <button class="main-btn primary-btn btn-hover"
+                    onclick="location.href='/excel/downloadProductPlan/true'"
+                    style="padding: 18px"
+                    type="button">템플릿 다운로드
+            </button>
+        </div>
+        <div class="col-lg-1" style="min-width: 155px">
+            <button class="main-btn primary-btn btn-hover"
+                    onclick="location.href='/excel/downloadProductPlan/false'"
+                    style="padding: 18px"
+                    type="button">데이터 다운로드
+            </button>
+        </div>
+    </div>
+</form>
+</body>
+
+</html>
