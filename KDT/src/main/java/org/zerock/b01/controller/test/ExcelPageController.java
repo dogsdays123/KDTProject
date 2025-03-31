@@ -61,6 +61,7 @@ public class ExcelPageController {
 
             if (row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
                 String productionPlanCode = formatter.formatCellValue(row.getCell(0));
+                log.info("^^^^" + productionPlanCode);
                 entity.setProductionPlanCode(productionPlanCode);
             }
 
