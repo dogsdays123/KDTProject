@@ -1,4 +1,4 @@
-package org.zerock.b01.service;
+package org.zerock.b01.service.test;
 
 import org.zerock.b01.dto.test.ProductionPlanDTO;
 

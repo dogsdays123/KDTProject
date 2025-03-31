@@ -1,4 +1,4 @@
-package org.zerock.b01.repository;
+package org.zerock.b01.repository.test;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
