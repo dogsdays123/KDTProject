@@ -51,6 +51,7 @@ public class All_Member extends BaseEntity {
         this.aPsw = aPsw;
         this.aPhone = aPhone;
         this.memberType = memberType;
+        //test
     }
 
     public void addRole(MemberRole memberRole){
