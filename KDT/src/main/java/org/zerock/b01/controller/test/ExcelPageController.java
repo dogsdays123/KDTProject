@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.dto.test.ProductionPerDayDTO;
 import org.zerock.b01.dto.test.ProductionPlanDTO;
 import org.zerock.b01.service.test.ProductionPerDayService;
@@ -38,16 +39,18 @@ public class ExcelPageController {
 
     //생산계획 등록
     @PostMapping("/addProductPlan")
-    public String uploadProductPlan(@RequestParam("file") MultipartFile file, String where) throws IOException {
+    public String uploadProductPlan(@RequestParam("file") MultipartFile file, String where, RedirectAttributes redirectAttributes) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
         XSSFSheet worksheet = workbook.getSheetAt(0);
         registerProductPlan(worksheet);
         log.info("%%%%" + worksheet.getSheetName());
 
         if (where.equals("dataUpload")) {
+            redirectAttributes.addFlashAttribute("successMessage", "(특정)데이터 업로드가 성공적으로 완료되었습니다.");
             return "redirect:/test/basicPage";
         } else {
             log.info("데이터넘겨주기");
+            redirectAttributes.addFlashAttribute("successMessage", "데이터 업로드가 성공적으로 완료되었습니다.");
             return "redirect:/test/basicPage";
         }
     }

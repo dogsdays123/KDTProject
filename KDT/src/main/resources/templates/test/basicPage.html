@@ -34,6 +34,13 @@
         </div>
     </div>
 </form>
+
+<div th:if="${successMessage}" class="alert alert-success">
+    <script>
+        alert('[[${successMessage}]]');
+    </script>
+</div>
+
 </body>
 
 </html>
