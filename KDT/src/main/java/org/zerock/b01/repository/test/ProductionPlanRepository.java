@@ -9,6 +9,6 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
     @Query("SELECT COUNT(p) FROM ProductionPlan p WHERE p.productionPlanCode LIKE CONCAT(:prefix, '%')")
     Long countByPrefix(String prefix);
 
-    @Query("select pp from ProductionPlan pp where pp.productionPlanCode=:productionPlanCode")
+    @Query("select ppc from ProductionPlan ppc where ppc.productionPlanCode=:productionPlanCode")
     ProductionPlan findByProductionPlanCode(String productionPlanCode);
 }
