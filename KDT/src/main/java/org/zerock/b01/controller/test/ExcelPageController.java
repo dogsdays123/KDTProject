@@ -7,12 +7,15 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.dto.test.ProductionPerDayDTO;
 import org.zerock.b01.dto.test.ProductionPlanDTO;
 import org.zerock.b01.service.test.ProductionPerDayService;
@@ -27,6 +30,8 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @RequestMapping("/test")
 public class ExcelPageController {
+    @Value("${org.zerock.upload.readyPath}")
+    private String readyPath;
 
     private final ProductionPlanService productionPlanService;
     private final ProductionPerDayService productionPerDayService;
@@ -36,18 +41,44 @@ public class ExcelPageController {
         log.info("basic");
     }
 
+    @GetMapping("/downloadProductPlan/{isTemplate}")
+    public ResponseEntity<Resource> downloadProductPlan(@PathVariable("isTemplate") boolean isTemplate) {
+        // 요청에 따라 파일을 결정
+        String filePath = isTemplate ? (readyPath + "/template.xlsx") : (readyPath + "/data.xlsx");
+
+        // 파일 시스템에서 파일을 찾음
+        Resource resource = new FileSystemResource(filePath);
+
+        // 파일이 없으면 404 반환
+        if (!resource.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 응답 헤더 설정 (파일 다운로드를 위해 Content-Disposition 설정)
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename());
+
+        // 파일 반환
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(resource);
+    }
+
+
     //생산계획 등록
     @PostMapping("/addProductPlan")
-    public String uploadProductPlan(@RequestParam("file") MultipartFile file, String where) throws IOException {
+    public String uploadProductPlan(@RequestParam("file") MultipartFile file, String where, RedirectAttributes redirectAttributes) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
         XSSFSheet worksheet = workbook.getSheetAt(0);
         registerProductPlan(worksheet);
         log.info("%%%%" + worksheet.getSheetName());
 
         if (where.equals("dataUpload")) {
+            redirectAttributes.addFlashAttribute("successMessage", "(특정)데이터 업로드가 성공적으로 완료되었습니다.");
             return "redirect:/test/basicPage";
         } else {
             log.info("데이터넘겨주기");
+            redirectAttributes.addFlashAttribute("successMessage", "데이터 업로드가 성공적으로 완료되었습니다.");
             return "redirect:/test/basicPage";
         }
     }
