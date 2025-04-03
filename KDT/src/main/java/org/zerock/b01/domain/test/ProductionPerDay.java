@@ -15,10 +15,13 @@ import java.time.LocalDate;
 public class ProductionPerDay extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private int productionQuantity; //일당 생산량
+    private Long ppdId;
+
+    private int ppdNum; //일당 생산량
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "planId", nullable = false)
+    @JoinColumn(name = "ppId", nullable = false)
     private ProductionPlan productionPlan;
+
     private LocalDate productionDate;
 }

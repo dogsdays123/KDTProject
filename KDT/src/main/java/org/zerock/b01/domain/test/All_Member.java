@@ -1,8 +1,9 @@
-package org.zerock.b01.domain.member;
+package org.zerock.b01.domain.test;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.zerock.b01.domain.BaseEntity;
+import org.zerock.b01.domain.MemberRole;
 
 import java.util.HashSet;
 import java.util.Set;
