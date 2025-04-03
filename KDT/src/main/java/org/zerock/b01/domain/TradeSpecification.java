@@ -20,8 +20,10 @@ public class TradeSpecification extends BaseEntity {
     private String tsUnitPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sId", nullable = false)
     private Supplier supplier; // 공급업체 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mId", nullable = false)
     private Material material; // 자재 외래키
 }

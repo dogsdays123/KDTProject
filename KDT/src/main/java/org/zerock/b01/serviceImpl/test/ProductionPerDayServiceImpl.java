@@ -2,8 +2,7 @@ package org.zerock.b01.serviceImpl.test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.zerock.b01.domain.test.ProductionPerDay;
-import org.zerock.b01.domain.test.ProductionPlan;
+import org.zerock.b01.domain.ProductionPerDay;
 import org.zerock.b01.dto.test.ProductionPerDayDTO;
 import org.zerock.b01.repository.test.ProductionPerDayRepository;
 import org.zerock.b01.repository.test.ProductionPlanRepository;

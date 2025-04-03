@@ -38,5 +38,6 @@ public class Material extends BaseEntity {
     private String mComponentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sId", nullable = false)
     private Supplier supplier;
 }

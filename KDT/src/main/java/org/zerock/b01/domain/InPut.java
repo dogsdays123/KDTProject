@@ -21,11 +21,14 @@ public class InPut extends BaseEntity {
 
     private String ipFalseNum;
 
-    private String ipState;
+    @Enumerated(EnumType.STRING)
+    private CurrentStatus ipState;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "drId", nullable = false)
     private DeliveryRequest deliveryRequest; // 납품 지시 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "oId", nullable = false)
     private Order order; // 발주서 외래키
 }

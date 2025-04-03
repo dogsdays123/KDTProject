@@ -19,14 +19,18 @@ public class DeliveryRequest extends BaseEntity {
 
     private String drDate;
 
-    private String drState;
+    @Enumerated(EnumType.STRING)
+    private CurrentStatus drState;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "oId", nullable = false)
     private Order order; // 발주서 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sId", nullable = false)
     private Supplier supplier; // 공급업체 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mId", nullable = false)
     private Material material; // 자재 외래키
 }

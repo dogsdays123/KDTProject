@@ -23,16 +23,20 @@ public class Order extends BaseEntity {
 
     private String oExpectDate;
 
-    private String oState;
+    @Enumerated(EnumType.STRING)
+    private CurrentStatus oState;
 
     private String oRemarks;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mId", nullable = false)
     private Material material; // 자재 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sId", nullable = false)
     private Supplier supplier; // 공급업체 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dppId", nullable = false)
     private DeliveryProcurementPlan deliveryProcurementPlan; // 조달 계획 외래키
 }

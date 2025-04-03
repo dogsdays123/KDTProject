@@ -3,7 +3,6 @@ package org.zerock.b01.serviceImpl.test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.CurrentStatus;
-import org.zerock.b01.domain.test.ProductionPlan;
 import org.zerock.b01.dto.test.ProductionPlanDTO;
 import org.zerock.b01.repository.test.ProductionPlanRepository;
 import org.zerock.b01.service.test.ProductionPlanService;

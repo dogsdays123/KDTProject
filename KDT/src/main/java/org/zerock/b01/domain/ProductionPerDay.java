@@ -1,8 +1,7 @@
-package org.zerock.b01.domain.test;
+package org.zerock.b01.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.zerock.b01.domain.BaseEntity;
 
 import java.time.LocalDate;
 

@@ -18,8 +18,10 @@ public class Return extends BaseEntity {
 
     private String rNum;
 
-    private String rState;
+    @Enumerated(EnumType.STRING)
+    private CurrentStatus rState;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ipId", nullable = false)
     private InPut inPut; // 입고 외래키
 }

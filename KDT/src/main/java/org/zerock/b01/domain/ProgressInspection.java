@@ -19,14 +19,18 @@ public class ProgressInspection extends BaseEntity {
 
     private String psDate;
 
-    private String psState;
+    @Enumerated(EnumType.STRING)
+    private CurrentStatus psState;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "oId", nullable = false)
     private Order order; // 발주서 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mId", nullable = false)
     private Material material; // 자재 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sId", nullable = false)
     private Supplier supplier; // 협력업체 외래키
 }

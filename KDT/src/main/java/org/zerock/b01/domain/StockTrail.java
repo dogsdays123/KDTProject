@@ -22,5 +22,6 @@ public class StockTrail extends BaseEntity {
     private String stDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mId", nullable = false)
     private Material material; // 자재 외래키
 }

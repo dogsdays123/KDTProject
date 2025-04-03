@@ -32,5 +32,6 @@ public class Supplier extends BaseEntity {
     private String sAgree;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uId", nullable = false)
     private User user;
 }
