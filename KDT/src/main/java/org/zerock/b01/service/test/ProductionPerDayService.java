@@ -1,6 +1,6 @@
 package org.zerock.b01.service.test;
 
-import org.zerock.b01.dto.test.ProductionPerDayDTO;
+import org.zerock.b01.dto.ProductionPerDayDTO;
 
 public interface ProductionPerDayService {
     void register(ProductionPerDayDTO dto);
