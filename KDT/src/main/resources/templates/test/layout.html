@@ -17,8 +17,10 @@
     <!-- sidebar 시작 -->
     <div class="sidebar">
         <ul class="nav flex-column">
-          <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
+            <img src="/image/PNS-logo.PNG">
+            <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
             <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무 활용가이드</a></li>
+            <hr>
             <li class="nav-item">
                 <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-user')"><i class="bi bi-people"></i>&nbsp;&nbsp;계정 관리&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-user" class="submenu">
@@ -107,27 +109,29 @@
             <hr>
             <!-- 협력업체 메뉴 -->
             <li class="nav-item">
-                <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-supplier')">협력사 전용 ▾</a>
+                <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-supplier')">거래 관리 ▾</a>
                 <ul id="submenu-supplier" class="submenu">
-                    <li><a href="#" class="nav-link">발주서 확인</a></li>
-                    <li><a href="#" class="nav-link">납품 처리</a></li>
-                    <li><a href="#" class="nav-link">단가 제안</a></li>
-                    <li><a href="#" class="nav-link">계약 확인</a></li>
-                    <li><a href="#" class="nav-link">납품 가능 품목 관리</a></li>
+                    <li><a href="#" class="nav-link">거래 내역 목록</a></li>
+                    <li><a href="#" class="nav-link">납품 검수 관리</a></li>
+                    <li><a href="#" class="nav-link">납품 지시 요청</a></li>
+                    <li><a href="#" class="nav-link">발주 내역 조회</a></li>
+                    <li><a href="#" class="nav-link">거래 명세서 관리</a></li>
+                    <li><a href="#" class="nav-link">반품 부품 목록</a></li>
                 </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-price')">단가 및 계약 ▾</a>
+                <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-price')">자재 관리 ▾</a>
                 <ul id="submenu-price" class="submenu">
-                    <li><a href="#" class="nav-link">단가 제안</a></li>
-                    <li><a href="#" class="nav-link">계약서 확인</a></li>
+                    <li><a href="#" class="nav-link">자재 품목 조회</a></li>
+                    <li><a href="#" class="nav-link">자재 품목 등록</a></li>
+                    <li><a href="#" class="nav-link">자재 품목 목록</a></li>
                 </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-shipping')">납품 처리 ▾</a>
-                <ul id="submenu-shipping" class="submenu">
-                    <li><a href="#" class="nav-link">납품 요청서 작성</a></li>
-                    <li><a href="#" class="nav-link">납품 내역 조회</a></li>
+                <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-estimate')">견적 관리 ▾</a>
+                <ul id="submenu-estimate" class="submenu">
+                    <li><a href="#" class="nav-link">견적서 등록</a></li>
+                    <li><a href="#" class="nav-link">견적서 목록</a></li>
                 </ul>
             </li>
         </ul>
@@ -135,13 +139,21 @@
     <!-- sidebar end -->
     <!-- header start -->
     <div class="header">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">홈</a></li>
-            <li class="breadcrumb-item"><a href="#">상품</a></li>
-            <li class="breadcrumb-item active" aria-current="page">현재 페이지</li>
-        </ol>
-      </nav>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="#">홈</a></li>
+                <li class="breadcrumb-item"><a href="#">상품</a></li>
+                <li class="breadcrumb-item active" aria-current="page" style="color: black">현재 페이지</li>
+            </ol>
+        </nav>
+        <div class="user-info">
+            <span>홍길동님 | 생산팀</span>
+            <i class="bi bi-person-circle" onclick="toggleUserDropdown()"></i>
+            <div class="user-dropdown">
+                <a href="#">마이페이지</a>
+                <a href="#">로그아웃</a>
+            </div>
+        </div>
     </div>
     <!-- header end -->
     <!-- main start  -->
