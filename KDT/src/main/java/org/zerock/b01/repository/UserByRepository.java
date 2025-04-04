@@ -9,9 +9,10 @@ import org.zerock.b01.domain.UserBy;
 import java.util.Optional;
 
 public interface UserByRepository extends JpaRepository<UserBy, String> {
+
     @EntityGraph(attributePaths = "roleSet")
     @Query("select u from UserBy u where u.uId = :uId")
-    Optional<UserBy> getWithRoles(@Param("allId") String allId);
+    Optional<UserBy> getWithRoles(@Param("uId") String uId);
 
     @EntityGraph(attributePaths = "roleSet")
     Optional<UserBy> findByuEmail(String uEmail);

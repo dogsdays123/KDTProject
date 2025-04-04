@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.service.UserByService;
@@ -35,19 +36,21 @@ public class firstViewController {
         log.info("login");
     }
 
-
-    @GetMapping("/loginpagechange")
-    public void loginchangepage() {
-        log.info("login");
-    }
-
     @PostMapping("/join")
-    public void join(UserByDTO userByDTO, Model model, HttpServletRequest request) {
+    public String join(UserByDTO userByDTO, Model model, RedirectAttributes redirectAttributes) {
         log.info("join");
         log.info("%%%%" + userByDTO);
 
-        userByService.registerUser(userByDTO);
+        try {
+            userByService.join(userByDTO);
+        } catch (UserByService.MidExistException e) {
+            redirectAttributes.addFlashAttribute("error", "uId");
+            return "redirect:/firstView/join";
+        }
+        redirectAttributes.addFlashAttribute("result", "success");
         model.addAttribute("userDTO", userByDTO);
+
+        return "redirect:/firstView/login";
     }
 
     @PostMapping("/checkId")
@@ -84,6 +87,24 @@ public class firstViewController {
         }
 
         log.info("email체크" + uEmail);
+
+        return response; // JSON 형식으로 반환
+    }
+
+    @PostMapping("/checkType")
+    @ResponseBody
+    public Map<String, Object> checkType(@RequestParam("userType") String userType, Model model) {
+        Map<String, Object> response = new HashMap<>();
+
+        model.addAttribute("userType", userType);
+
+        if(userType.equals("our")) {
+            log.info("userType체크" + userType);
+            response.put("isAvailable", true);
+        } else {
+            log.info("userType체크" + userType);
+            response.put("isAvailable", false);
+        }
 
         return response; // JSON 형식으로 반환
     }

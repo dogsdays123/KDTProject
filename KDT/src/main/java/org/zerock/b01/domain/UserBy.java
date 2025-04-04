@@ -35,4 +35,14 @@ public class UserBy extends BaseEntity {
     @Builder.Default
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<MemberRole> roleSet = new HashSet<>();
+
+    public void changeUPassword(String uPassword) {
+        this.uPassword = uPassword;
+    }
+    public void addRole(MemberRole role) {
+       this.roleSet.add(role);
+    }
+    public void clearRoles() {
+        this.roleSet.clear();
+    }
 }

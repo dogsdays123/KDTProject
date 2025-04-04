@@ -125,16 +125,6 @@ $(document).ready(function() {
     });
 });
 
-// 버튼의 상태를 업데이트하는 함수
-function toggleSignupButton() {
-    // idCheck와 emailCheck가 모두 true일 때만 버튼을 활성화
-    if (checkAll.idCheck && checkAll.emailCheck) {
-        signupButton.disabled = false;  // 아이디와 이메일이 모두 유효하면 버튼 활성화
-    } else {
-        signupButton.disabled = true;   // 하나라도 비어 있으면 버튼 비활성화
-    }
-}
-
 //비밀번호 확인
 $(document).ready(function() {
     $('#uPassword, #aPswCheck').on('input', function() {
@@ -158,3 +148,49 @@ $(document).ready(function() {
         }
     });
 });
+
+
+//레디오 클릭 유저타입
+$(document).ready(function() {
+    // 처음 페이지 로드 시, 선택된 radio에 따라 div를 표시
+    $('input[name="userType"]').on('change', function() {
+        var userType = $('input[name="userType"]:checked').val();
+
+        if (userType === 'other') {
+            // '협력회사' 선택 시
+            $('#uAddressDiv').show(); // 주소 입력 필드 보이기
+            $('#uBirthDayDiv').hide(); // 생년월일 필드 숨기기
+        } else if (userType === 'our') {
+            // 'PNS' 선택 시
+            $('#uAddressDiv').hide(); // 주소 입력 필드 숨기기
+            $('#uBirthDayDiv').show(); // 생년월일 필드 보이기
+        }
+
+        // AJAX 요청 보내기
+        $.ajax({
+            url: '/firstView/checkType', // Controller의 URL로 수정 (예: '/user/checkId')
+            type: 'POST',
+            data: { userType: userType }, // 전송할 데이터
+            success: function(response) {
+                // 서버에서 응답이 성공적으로 왔을 때 처리
+                if (response.isAvailable) {
+                } else {
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("서버 오류" + error);
+            }
+        });
+    });
+});
+
+
+// 버튼의 상태를 업데이트하는 함수
+function toggleSignupButton() {
+    // idCheck와 emailCheck가 모두 true일 때만 버튼을 활성화
+    if (checkAll.idCheck && checkAll.emailCheck) {
+        signupButton.disabled = false;  // 아이디와 이메일이 모두 유효하면 버튼 활성화
+    } else {
+        signupButton.disabled = true;   // 하나라도 비어 있으면 버튼 비활성화
+    }
+}
