@@ -1,4 +1,4 @@
-package org.zerock.b01.controller.test;
+package org.zerock.b01.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
