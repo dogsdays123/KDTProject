@@ -81,4 +81,10 @@ public class firstViewController {
 
         return response; // JSON 형식으로 반환
     }
+
+//    @PostMapping("/checkType")
+//    @ResponseBody
+//    public Map<String, Object> checkType(@RequestParam("userType") String userType, Model model) {
+//
+//    }
 }

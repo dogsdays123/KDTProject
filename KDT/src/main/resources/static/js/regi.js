@@ -158,3 +158,83 @@ $(document).ready(function() {
         }
     });
 });
+
+//유저타입 라디오함수
+$(document).ready(function() {
+    $('#userType').on('click', function (e){
+        var userType = $('#userType').val();
+        var uAddress = $('#uAddress');
+        var uBirthDay = $('#uBirthDay');
+
+        if(userType === 'our'){
+            uAddress.show();
+            uBirthDay.hide();
+        } else {
+            uBirthDay.show();
+            uAddress.hide();
+        }
+    });
+});
+
+// $(document).ready(function() {
+//     $('#uEmail').on('input', function(e) {
+//
+//         var textarea = document.getElementById('email-feedback'); //제한 텍스트
+//         var uEmail = $(this).val(); // 입력된 아이디 값을 가져옵니다.
+//
+//         const eventCheck = new Event('input', {bubbles: true});
+//
+//         // 이메일 값이 비어 있지 않은지 확인
+//         if (uEmail.trim() === "") {
+//             textarea.classList.remove('text-success');
+//             textarea.classList.add('text-danger');
+//             textarea.value = '이메일을 입력해 주세요.';
+//             checkAll.emailCheck = false;
+//             toggleSignupButton();
+//             signupButton.dispatchEvent(eventCheck);
+//             return;
+//         } else{
+//             // 정규식 체크: @와 .을 포함한 이메일 형식
+//             var regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+//             if (!regex.test(uEmail)) {
+//                 textarea.classList.remove('text-success');
+//                 textarea.classList.add('text-danger');
+//                 textarea.value = '유효하지 않은 이메일 형식입니다.';
+//                 checkAll.emailCheck = false;
+//                 toggleSignupButton();
+//                 signupButton.dispatchEvent(eventCheck);
+//                 return;
+//             }
+//         }
+//
+//         // AJAX 요청 보내기
+//         $.ajax({
+//             url: '/firstView/checkEmail', // Controller의 URL로 수정 (예: '/user/checkId')
+//             type: 'POST',
+//             data: { uEmail: uEmail }, // 전송할 데이터
+//             success: function(response) {
+//                 // 서버에서 응답이 성공적으로 왔을 때 처리
+//                 if (response.isAvailable) {
+//                     textarea.value = "사용 가능한 이메일입니다.";
+//                     textarea.classList.add('text-success'); // 새 클래스를 추가
+//                     textarea.classList.remove('text-danger'); // 기존 클래스를 제거
+//                     checkAll.emailCheck = true;
+//                 } else {
+//                     textarea.value = "이미 존재하는 이메일입니다.";
+//                     textarea.classList.remove('text-success'); // 새 클래스를 추가
+//                     textarea.classList.add('text-danger'); // 기존 클래스를 제거
+//                     checkAll.emailCheck = false;
+//                 }
+//                 var event = new Event('input', {bubbles: true});
+//                 textarea.dispatchEvent(event);
+//
+//                 toggleSignupButton();
+//                 signupButton.dispatchEvent(eventCheck);
+//
+//             },
+//             error: function(xhr, status, error) {
+//                 alert("서버 오류" + error);
+//             }
+//         });
+//     });
+// });
