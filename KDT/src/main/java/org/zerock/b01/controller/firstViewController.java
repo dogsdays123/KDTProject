@@ -35,6 +35,12 @@ public class firstViewController {
         log.info("login");
     }
 
+
+    @GetMapping("/loginpagechange")
+    public void loginchangepage() {
+        log.info("login");
+    }
+
     @PostMapping("/join")
     public void join(UserByDTO userByDTO, Model model, HttpServletRequest request) {
         log.info("join");

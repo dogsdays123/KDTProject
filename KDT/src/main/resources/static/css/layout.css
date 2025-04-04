@@ -1,0 +1,86 @@
+@font-face {
+  font-family: 'S-CoreDream-3Light';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'BMDOHYEON';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMDOHYEON.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'S-CoreDream-3Light';
+}
+.sidebar {
+  width: 250px;
+  position: fixed;
+  height: 100%;
+  background: #ffffff;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+.header {
+  height: 60px;
+  margin-left: 260px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+.main-content {
+  margin-left: 30px;
+  margin-top: 50px;
+}
+.download-card {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.breadcrumb {
+  background: none;
+  margin-bottom: 0;
+}
+.submenu {
+  display: none;
+  list-style-type: none;
+  padding-left: 20px;
+}
+.submenu li {
+  padding: 5px 0;
+}
+.submenu .nav-link {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+.submenu .nav-link:hover,
+.submenu .nav-link:focus,
+.submenu .nav-link.active {
+  color: #0d6efd;
+}
+.nav-link {
+  color: #000000;
+}
+.nav-link.active,
+.nav-link:focus,
+.nav-link:hover {
+  color: #0d6efd;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+  }
+  .header, .main-content {
+      margin-left: 0;
+  }
+}
