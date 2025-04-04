@@ -3,6 +3,7 @@ package org.zerock.b01.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,10 +12,12 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity {
+public class UserBy extends BaseEntity {
 
     @Id
     private String uId;
+
+    private String uPassword;
 
     private String uName;
 
@@ -26,7 +29,7 @@ public class User extends BaseEntity {
 
     private String uPhone;
 
-    private String uBirthDay;
+    private LocalDate uBirthDay;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default

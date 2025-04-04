@@ -33,5 +33,5 @@ public class Supplier extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uId", nullable = false)
-    private User user;
+    private UserBy userBy;
 }
