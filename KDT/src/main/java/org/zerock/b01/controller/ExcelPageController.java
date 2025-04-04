@@ -36,6 +36,10 @@ public class ExcelPageController {
     private final ProductionPlanService productionPlanService;
     private final ProductionPerDayService productionPerDayService;
 
+    @GetMapping("/layout")
+    public void layout() {
+        log.info("layout page test...");
+    }
     @GetMapping("/basicPage")
     public void basicPage() {
         log.info("basic");
