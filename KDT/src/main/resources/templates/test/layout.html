@@ -17,8 +17,10 @@
     <!-- sidebar 시작 -->
     <div class="sidebar">
         <ul class="nav flex-column">
-          <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
+            <img src="/image/PNS-logo.PNG">
+            <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
             <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무 활용가이드</a></li>
+            <hr>
             <li class="nav-item">
                 <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-user')"><i class="bi bi-people"></i>&nbsp;&nbsp;계정 관리&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-user" class="submenu">
@@ -135,13 +137,21 @@
     <!-- sidebar end -->
     <!-- header start -->
     <div class="header">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">홈</a></li>
-            <li class="breadcrumb-item"><a href="#">상품</a></li>
-            <li class="breadcrumb-item active" aria-current="page">현재 페이지</li>
-        </ol>
-      </nav>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="#">홈</a></li>
+                <li class="breadcrumb-item"><a href="#">상품</a></li>
+                <li class="breadcrumb-item active" aria-current="page" style="color: black">현재 페이지</li>
+            </ol>
+        </nav>
+        <div class="user-info">
+            <span>홍길동님 | 생산팀</span>
+            <i class="bi bi-person-circle" onclick="toggleUserDropdown()"></i>
+            <div class="user-dropdown">
+                <a href="#">마이페이지</a>
+                <a href="#">로그아웃</a>
+            </div>
+        </div>
     </div>
     <!-- header end -->
     <!-- main start  -->

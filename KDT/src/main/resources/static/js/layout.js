@@ -22,3 +22,16 @@ function toggleSubmenu(id) {
     submenu.style.display = isOpen ? 'none' : 'block';
     link.innerHTML = link.innerHTML.replace(isOpen ? '▴' : '▾', isOpen ? '▾' : '▴');
 }
+
+function toggleUserDropdown() {
+    const dropdown = document.querySelector('.user-dropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+
+window.addEventListener('click', function(e) {
+    const dropdown = document.querySelector('.user-dropdown');
+    const icon = document.querySelector('.bi-person-circle');
+    if (!dropdown.contains(e.target) && !icon.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});

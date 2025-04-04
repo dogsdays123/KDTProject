@@ -15,6 +15,13 @@
 body {
   font-family: 'S-CoreDream-3Light';
 }
+
+.sidebar img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
 .sidebar {
   width: 250px;
   position: fixed;
@@ -31,10 +38,12 @@ body {
   background-color: #ffffff;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 .main-content {
-  margin-left: 30px;
-  margin-top: 50px;
+  margin-left: 260px;
+  padding: 20px 20px 20px 10px;
+  border-left: 1px solid #ddd;
 }
 .download-card {
   padding: 15px;
@@ -45,6 +54,12 @@ body {
 .breadcrumb {
   background: none;
   margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.breadcrumb a{
+  text-decoration: none;
+  color: #888;
 }
 .submenu {
   display: none;
@@ -52,11 +67,11 @@ body {
   padding-left: 15px;
 }
 .submenu li {
-  padding: 2px 0;
+  padding: 1px 0;
 }
 .submenu .nav-link {
-  font-size: 0.9rem;
-  color: #6c757d;
+  font-size: 0.82rem;
+  color: #888;
 }
 .submenu .nav-link:hover,
 .submenu .nav-link:focus,
@@ -71,16 +86,56 @@ body {
 .nav-link:hover {
   color: #0d6efd;
 }
+.user-info {
+  font-size: 1.0rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-right: 20px;
+}
+.user-info a {
+  text-decoration: none;
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+.bi-person-circle {
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+.user-dropdown {
+  position: absolute;
+  top: 50px; /* 헤더 높이만큼 아래에 위치 */
+  right: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  min-width: 150px;
+  z-index: 1000;
+}
+.user-dropdown a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+}
+.user-dropdown a:hover {
+  background-color: #f8f9fa;
+}
 
 @media (max-width: 768px) {
   .sidebar {
-      width: 100%;
-      height: auto;
-      position: relative;
-      border-right: none;
-      border-bottom: 1px solid #ddd;
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
   }
   .header, .main-content {
-      margin-left: 0;
+    margin-left: 0;
+    padding: 20px;
   }
 }
