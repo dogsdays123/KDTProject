@@ -38,7 +38,7 @@ public class UserByServiceImpl implements UserByService {
 
     @Override
     public UserByDTO readOneForEmail(String uEmail){
-        Optional<UserBy> result = userByRepository.findByEmail(uEmail);
+        Optional<UserBy> result = userByRepository.findByuEmail(uEmail);
         log.info("ServiceEmail@@@@" + result.toString());
 
         if(result.isPresent()){

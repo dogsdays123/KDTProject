@@ -14,5 +14,5 @@ public interface UserByRepository extends JpaRepository<UserBy, String> {
     Optional<UserBy> getWithRoles(@Param("allId") String allId);
 
     @EntityGraph(attributePaths = "roleSet")
-    Optional<UserBy> findByEmail(String email);
+    Optional<UserBy> findByuEmail(String uEmail);
 }

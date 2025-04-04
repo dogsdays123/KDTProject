@@ -55,11 +55,11 @@ public class firstViewController {
 
     @PostMapping("/checkEmail")
     @ResponseBody
-    public Map<String, Object> checkEmail(@RequestParam("email") String email, Model model) {
+    public Map<String, Object> checkEmail(@RequestParam("uEmail") String uEmail, Model model) {
         Map<String, Object> response = new HashMap<>();
 
         // 아이디 중복 여부 체크
-        if (userByService.readOneForEmail(email) != null) {
+        if (userByService.readOneForEmail(uEmail) != null) {
             response.put("isAvailable", false); // 아이디가 이미 존재하는 경우
             model.addAttribute("checkEmail", false);
         } else {
@@ -67,7 +67,7 @@ public class firstViewController {
             model.addAttribute("checkEmail", true);
         }
 
-        log.info("email체크" + email);
+        log.info("email체크" + uEmail);
 
         return response; // JSON 형식으로 반환
     }
