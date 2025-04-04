@@ -22,6 +22,13 @@ public class UserByServiceImpl implements UserByService {
     private final UserByRepository userByRepository;
 
     @Override
+    public String registerUser(UserByDTO userByDTO){
+        UserBy userBy = modelMapper.map(userByDTO, UserBy.class);
+        String uId = userByRepository.save(userBy).getUId();
+        return uId;
+    }
+
+    @Override
     public UserByDTO readOne(String uId){
         Optional<UserBy> result = userByRepository.findById(uId);
         log.info("ServiceAllId@@@@" + result.toString());
