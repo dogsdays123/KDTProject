@@ -1,4 +1,4 @@
-package org.zerock.b01.domain.test;
+package org.zerock.b01.domain;
 
 public enum CurrentStatus {
     ON_HOLD, //대기

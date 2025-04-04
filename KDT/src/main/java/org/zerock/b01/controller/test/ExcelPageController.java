@@ -16,10 +16,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.b01.dto.test.ProductionPerDayDTO;
-import org.zerock.b01.dto.test.ProductionPlanDTO;
-import org.zerock.b01.service.test.ProductionPerDayService;
-import org.zerock.b01.service.test.ProductionPlanService;
+import org.zerock.b01.dto.ProductionPerDayDTO;
+import org.zerock.b01.dto.ProductionPlanDTO;
+import org.zerock.b01.service.ProductionPerDayService;
+import org.zerock.b01.service.ProductionPlanService;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -93,7 +93,7 @@ public class ExcelPageController {
             if (row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
                 String productionPlanCode = formatter.formatCellValue(row.getCell(0));
                 log.info("^^^^" + productionPlanCode);
-                entity.setProductionPlanCode(productionPlanCode);
+                entity.setPpCode(productionPlanCode);
             }
 
             String productCode = formatter.formatCellValue(row.getCell(1));
@@ -106,11 +106,11 @@ public class ExcelPageController {
 
             Integer productionQuantity = Integer.parseInt(formatter.formatCellValue(row.getCell(5)));
 
-            entity.setProductCode(productCode);
-            entity.setProductName(productName);
-            entity.setProductionStartDate(productionStartDate);
-            entity.setProductionEndDate(productionEndDate);
-            entity.setProductionQuantity(productionQuantity);
+            entity.setPppCode(productCode);
+            entity.setPpName(productName);
+            entity.setPpStart(productionStartDate);
+            entity.setPpEnd(productionEndDate);
+            entity.setPpNum(productionQuantity);
 
             String productionPlanCode = productionPlanService.registerProductionPlan(entity);
             log.info("데이터 넘겨주기 2 = " + productionPlanCode);
@@ -122,9 +122,9 @@ public class ExcelPageController {
 
                     int quantity = Integer.parseInt(formatter.formatCellValue(row.getCell(6 + j)));
                     ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
-                    productionPerDayDTO.setProductionQuantity(quantity);
-                    productionPerDayDTO.setProductionDate(productionStartDate.plusDays(j));
-                    productionPerDayDTO.setProductionPlanCode(productionPlanCode);
+                    productionPerDayDTO.setPpdNum(quantity);
+                    productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
+                    productionPerDayDTO.setPpCode(productionPlanCode);
                     productionPerDayService.register(productionPerDayDTO);
                 }
             }
