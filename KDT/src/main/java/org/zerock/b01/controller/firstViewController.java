@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.b01.domain.UserBy;
+import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.service.UserByService;
 
 import java.util.HashMap;
@@ -32,6 +33,15 @@ public class firstViewController {
     @GetMapping("/login")
     public void login() {
         log.info("login");
+    }
+
+    @PostMapping("/join")
+    public void join(UserByDTO userByDTO, Model model, HttpServletRequest request) {
+        log.info("join");
+        log.info("%%%%" + userByDTO);
+
+        userByService.registerUser(userByDTO);
+        model.addAttribute("userDTO", userByDTO);
     }
 
     @PostMapping("/checkId")
