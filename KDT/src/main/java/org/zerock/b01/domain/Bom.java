@@ -11,7 +11,7 @@ import lombok.*;
 public class Bom extends BaseEntity {
 
     @Id
-    private String bId;
+    private Long bId;
 
     private String bRequireNum;
 

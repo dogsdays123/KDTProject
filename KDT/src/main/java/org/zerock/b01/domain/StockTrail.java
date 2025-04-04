@@ -11,7 +11,7 @@ import lombok.*;
 public class StockTrail extends BaseEntity {
 
     @Id
-    private String stId;
+    private Long stId;
 
     private String stStock;
 

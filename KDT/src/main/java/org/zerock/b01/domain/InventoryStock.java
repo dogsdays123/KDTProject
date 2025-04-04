@@ -11,7 +11,7 @@ import lombok.*;
 public class InventoryStock extends BaseEntity {
 
     @Id
-    private String isId;
+    private Long isId;
 
     private String isNum;
 

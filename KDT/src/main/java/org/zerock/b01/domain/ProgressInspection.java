@@ -11,11 +11,11 @@ import lombok.*;
 public class ProgressInspection extends BaseEntity {
 
     @Id
-    private String psId;
+    private Long psId;
 
     private String psNum;
 
-    private String psDgree;
+    private String psDegree;
 
     private String psDate;
 

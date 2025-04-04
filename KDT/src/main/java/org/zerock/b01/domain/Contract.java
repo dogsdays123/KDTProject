@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Contract extends BaseEntity {
 
     @Id
-    private String cId;
+    private Long cId;
 
     private String cCode;
 
