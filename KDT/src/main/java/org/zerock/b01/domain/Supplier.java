@@ -11,7 +11,7 @@ import lombok.*;
 public class Supplier extends BaseEntity {
 
     @Id
-    private String sId;
+    private Long sId;
 
     private String sName;
 

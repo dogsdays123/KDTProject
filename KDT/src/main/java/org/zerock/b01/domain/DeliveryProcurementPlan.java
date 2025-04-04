@@ -11,7 +11,7 @@ import lombok.*;
 public class DeliveryProcurementPlan extends BaseEntity {
 
     @Id
-    private String dppId;
+    private Long dppId;
 
     private String dppCode;
 

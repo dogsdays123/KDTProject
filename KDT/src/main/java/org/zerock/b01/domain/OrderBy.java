@@ -11,7 +11,7 @@ import lombok.*;
 public class OrderBy extends BaseEntity {
 
     @Id
-    private String oId;
+    private Long oId;
 
     private String oCode;
 

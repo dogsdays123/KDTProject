@@ -11,7 +11,7 @@ import lombok.*;
 public class OutPut extends BaseEntity {
 
     @Id
-    private String opId;
+    private Long opId;
 
     private String opCode;
 

@@ -11,7 +11,7 @@ import lombok.*;
 public class TradeSpecification extends BaseEntity {
 
     @Id
-    private String tsId;
+    private Long tsId;
 
     private String tsNum;
 

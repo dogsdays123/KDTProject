@@ -11,7 +11,7 @@ import lombok.*;
 public class Assy extends BaseEntity {
 
     @Id
-    private String aId;
+    private Long aId;
 
     private String aNum;
 

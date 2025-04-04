@@ -11,7 +11,7 @@ import lombok.*;
 public class Material extends BaseEntity {
 
     @Id
-    private String mId;
+    private Long mId;
 
     private String mCode;
 

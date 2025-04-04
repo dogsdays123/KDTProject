@@ -11,7 +11,7 @@ import lombok.*;
 public class InPut extends BaseEntity {
 
     @Id
-    private String ipId;
+    private Long ipId;
 
     private String ipCode;
 

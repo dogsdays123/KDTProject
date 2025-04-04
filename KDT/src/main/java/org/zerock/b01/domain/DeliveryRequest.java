@@ -11,7 +11,7 @@ import lombok.*;
 public class DeliveryRequest extends BaseEntity {
 
     @Id
-    private String drId;
+    private Long drId;
 
     private String drCode;
 

@@ -11,7 +11,7 @@ import lombok.*;
 public class SupplierStock extends BaseEntity {
 
     @Id
-    private String ssId;
+    private Long ssId;
 
     private String ssNum;
 

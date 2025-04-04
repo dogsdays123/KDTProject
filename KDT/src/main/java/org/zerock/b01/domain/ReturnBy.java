@@ -12,7 +12,7 @@ import lombok.*;
 public class ReturnBy extends BaseEntity {
 
     @Id
-    private String rId;
+    private Long rId;
 
     private String rCode;
 
