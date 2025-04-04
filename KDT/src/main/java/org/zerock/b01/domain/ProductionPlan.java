@@ -3,6 +3,8 @@ package org.zerock.b01.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Setter
 @Getter
@@ -14,17 +16,17 @@ public class ProductionPlan extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 20, nullable = false)
-    private String ppId;
+    private Long ppId;
 
     private String ppName;
 
     private String ppCode;
 
-    private String ppNum;
+    private Integer ppNum;
 
-    private String ppStart;
+    private LocalDate ppStart;
 
-    private String ppEnd;
+    private LocalDate ppEnd;
 
     @Enumerated(EnumType.STRING)
     private CurrentStatus ppState;

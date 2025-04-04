@@ -24,7 +24,7 @@ public class DeliveryRequest extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "oId", nullable = false)
-    private Order order; // 발주서 외래키
+    private OrderBy orderBy; // 발주서 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sId", nullable = false)

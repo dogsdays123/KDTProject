@@ -22,5 +22,5 @@ public class ProductionPerDay extends BaseEntity {
     @JoinColumn(name = "ppId", nullable = false)
     private ProductionPlan productionPlan;
 
-    private LocalDate productionDate;
+    private LocalDate pDate;
 }

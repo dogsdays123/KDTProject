@@ -12,6 +12,6 @@ import java.time.LocalDate;
 public class ProductionPerDayDTO {
     private Long ppdId;
     private int ppdNum; //일당 생산량
-    private String ppdCode; //생산계획 코드
+    private String ppCode; //생산계획 코드
     private LocalDate ppdDate;
 }

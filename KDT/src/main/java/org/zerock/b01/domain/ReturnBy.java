@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Return extends BaseEntity {
+public class ReturnBy extends BaseEntity {
 
     @Id
     private String rId;

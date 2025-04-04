@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order extends BaseEntity {
+public class OrderBy extends BaseEntity {
 
     @Id
     private String oId;

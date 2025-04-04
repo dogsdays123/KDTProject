@@ -1,4 +1,4 @@
-package org.zerock.b01.repository.test;
+package org.zerock.b01.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ProductionPerDayRepository extends JpaRepository<ProductionPerDay, Long> {
 
-    @Query("select p from ProductionPerDay p where p.productionPlan.planId=:id")
+    @Query("select p from ProductionPerDay p where p.productionPlan.ppId=:id")
     List<ProductionPerDay> findByProductionId(Long id);
 }

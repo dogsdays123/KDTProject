@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.dto.ProductionPerDayDTO;
 import org.zerock.b01.dto.ProductionPlanDTO;
-import org.zerock.b01.service.test.ProductionPerDayService;
-import org.zerock.b01.service.test.ProductionPlanService;
+import org.zerock.b01.service.ProductionPerDayService;
+import org.zerock.b01.service.ProductionPlanService;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -124,7 +124,7 @@ public class ExcelPageController {
                     ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
                     productionPerDayDTO.setPpdNum(quantity);
                     productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
-                    productionPerDayDTO.setPpdCode(productionPlanCode);
+                    productionPerDayDTO.setPpCode(productionPlanCode);
                     productionPerDayService.register(productionPerDayDTO);
                 }
             }

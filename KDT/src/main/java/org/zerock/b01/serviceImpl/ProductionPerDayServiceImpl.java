@@ -1,13 +1,13 @@
-package org.zerock.b01.serviceImpl.test;
+package org.zerock.b01.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.ProductionPerDay;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.dto.ProductionPerDayDTO;
-import org.zerock.b01.repository.test.ProductionPerDayRepository;
-import org.zerock.b01.repository.test.ProductionPlanRepository;
-import org.zerock.b01.service.test.ProductionPerDayService;
+import org.zerock.b01.repository.ProductionPerDayRepository;
+import org.zerock.b01.repository.ProductionPlanRepository;
+import org.zerock.b01.service.ProductionPerDayService;
 
 @Service
 public class ProductionPerDayServiceImpl implements ProductionPerDayService {
@@ -26,11 +26,11 @@ public class ProductionPerDayServiceImpl implements ProductionPerDayService {
 
     private ProductionPerDay dtoToEntity(ProductionPerDayDTO dto) {
 
-        ProductionPlan plan = productionPlanRepository.findByProductionPlanCode(dto.getPpdCode());
+        ProductionPlan plan = productionPlanRepository.findByProductionPlanCode(dto.getPpCode());
 
         return ProductionPerDay.builder()
                 .ppdId(dto.getPpdId())
-                .productionDate(dto.getPpdDate())
+                .pDate(dto.getPpdDate())
                 .ppdNum(dto.getPpdNum())
                 .productionPlan(plan)
                 .build();
