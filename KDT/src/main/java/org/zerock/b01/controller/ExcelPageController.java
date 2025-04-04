@@ -12,6 +12,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,7 @@ public class ExcelPageController {
     private final ProductionPlanService productionPlanService;
     private final ProductionPerDayService productionPerDayService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/layout")
     public void layout() {
         log.info("layout page test...");
