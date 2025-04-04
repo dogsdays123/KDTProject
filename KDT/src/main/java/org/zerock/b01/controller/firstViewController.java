@@ -28,6 +28,9 @@ public class firstViewController {
         if(auth == null) {
             log.info("aaaaaa 인증정보 없음");
             model.addAttribute("userBy", null);
+        } else {
+            UserByDTO userByDTO = userByService.readOne(auth.getName());
+            log.info("^^^^" + userByDTO);
         }
     }
 
