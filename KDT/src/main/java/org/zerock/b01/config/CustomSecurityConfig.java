@@ -47,7 +47,7 @@ public class CustomSecurityConfig {
                     .loginPage("/firstView/login")
                     .successHandler((request, response, authentication) -> {
                         SavedRequest savedRequest = (SavedRequest) request.getSession().getAttribute("SPRING_SECURITY_SAVED_REQUEST");
-                        String redirectUrl = (savedRequest != null) ? savedRequest.getRedirectUrl() : "/layout/layout"; // 이전 URL이 있으면 그곳으로, 없으면 /main
+                        String redirectUrl = (savedRequest != null) ? savedRequest.getRedirectUrl() : "/mainPage/main"; // 이전 URL이 있으면 그곳으로, 없으면 /main
                         response.sendRedirect(redirectUrl);
                     });
         });
