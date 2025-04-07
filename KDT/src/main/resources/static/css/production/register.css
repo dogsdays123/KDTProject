@@ -1,0 +1,71 @@
+.container-fluid{
+    padding: 20px;
+}
+.custom-medium-blue {
+    background-color: #66b2ff;
+    color: white;
+    border: none;
+}
+
+.custom-medium-blue:hover {
+    background-color: #3399ff;
+}
+
+.custom-medium-red {
+    background-color: #ff6666;
+    color: white;
+    border: none;
+}
+
+.custom-medium-red:hover {
+    background-color: #ff4d4d;
+}
+#planTable th,
+#planTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+/* 공통 버튼 스타일 */
+.custom-btn {
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.custom-btn:hover {
+    opacity: 0.9;
+}
+
+.btn-green-custom {
+    background-color: #198754; /* Bootstrap btn-success 기본 초록색 */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-green-custom:hover {
+    background-color: #157347; /* 진한 초록 */
+}
+
+.btn-purple {
+    background-color: #7e57c2; /* 연보라색 계열 */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-purple:hover {
+    background-color: #6741b2; /* 더 진한 보라색 */
+}
+
+.icon-purple {
+    color: #7e57c2;
+}
