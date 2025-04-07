@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/productionPlan")
+@RequestMapping("/production")
 public class ProductionController {
-    
-    @GetMapping("/ppList")
-    public void list() {
-        log.info("##LIST PAGE GET....##");
-    }
 
-    @GetMapping("/ppRegister")
+    @GetMapping("/register")
     public void register() {
         log.info("##REGISTER PAGE GET....##");
+    }
+
+    @GetMapping("/list")
+    public void list() {
+        log.info("##LIST PAGE GET....##");
     }
 }
