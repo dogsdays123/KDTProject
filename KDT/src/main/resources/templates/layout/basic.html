@@ -47,8 +47,8 @@
             <li class="nav-item">
               <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-production-plan')">생산 계획&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-production-plan" class="submenu">
-                  <li><a href="/production/list" class="nav-link">생산 계획 목록</a></li>
-                  <li><a href="/production/register" class="nav-link">생산 계획 등록</a></li>
+                  <li><a href="/productionPlan/ppList" class="nav-link">생산 계획 목록</a></li>
+                  <li><a href="/productionPlan/ppRegister" class="nav-link">생산 계획 등록</a></li>
                   <li><a href="#" class="nav-link">생산 계획 조회</a></li>
                   <li><a href="#" class="nav-link">발주 계획 관리</a></li>
               </ul>
@@ -143,11 +143,11 @@
             breadcrumbCurrent=${breadcrumbCurrent})">
         </div>
         <div class="user-info">
-            <span>홍길동님 | 생산팀</span>
+            <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>
             <i class="bi bi-person-circle" onclick="toggleUserDropdown()"></i>
             <div class="user-dropdown">
-                <a href="/layout/mypage">마이페이지</a>
-                <a href="#">로그아웃</a>
+                <a href="/mainPage/myPage">마이페이지</a>
+                <a href="/logout">로그아웃</a>
             </div>
         </div>
     </div>
