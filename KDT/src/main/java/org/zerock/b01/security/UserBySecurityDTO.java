@@ -21,6 +21,7 @@ public class UserBySecurityDTO extends User implements OAuth2User {
     private String uName;
     private String uAddress;
     private String userType;
+    private String userJob;
     private String uEmail;
     private String uPhone;
     private LocalDate uBirthDay;
@@ -28,8 +29,8 @@ public class UserBySecurityDTO extends User implements OAuth2User {
     private Map<String, Object> props;
 
     public UserBySecurityDTO(String uId, String uPassword, String uName, String uAddress,
-                             String userType, String uEmail, String uPhone, LocalDate uBirthDay,
-                             Collection<? extends GrantedAuthority> authorities) {
+                             String userType, String userJob, String uEmail, String uPhone,
+                             LocalDate uBirthDay, Collection<? extends GrantedAuthority> authorities) {
 
         super(uId, uPassword, authorities);
 
@@ -38,6 +39,7 @@ public class UserBySecurityDTO extends User implements OAuth2User {
         this.uName = uName;
         this.uAddress = uAddress;
         this.userType = userType;
+        this.userJob = userJob;
         this.uEmail = uEmail;
         this.uPhone = uPhone;
         this.uBirthDay = uBirthDay;

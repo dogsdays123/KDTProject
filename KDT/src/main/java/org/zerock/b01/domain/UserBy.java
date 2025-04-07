@@ -25,6 +25,8 @@ public class UserBy extends BaseEntity {
 
     private String userType;
 
+    private String userJob;
+
     private String uEmail;
 
     private String uPhone;

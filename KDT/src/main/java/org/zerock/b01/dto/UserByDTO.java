@@ -17,6 +17,7 @@ public class UserByDTO {
     private String uName;
     private String uAddress;
     private String userType;
+    private String userJob;
     private String uEmail;
     private String uPhone;
     private LocalDate uBirthDay;
