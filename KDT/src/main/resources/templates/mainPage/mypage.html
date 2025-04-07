@@ -15,28 +15,28 @@
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label">이름</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" value="홍길동" readonly>
+                    <input type="text" class="form-control" th:value="${userBy.uName}" readonly>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label">부서</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" value="생산팀" readonly>
+                    <input type="text" class="form-control" th:value="${userBy.userJob}" readonly>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label">이메일</label>
                 <div class="col-sm-6">
-                    <input type="email" class="form-control" value="hong@company.com" readonly>
+                    <input type="email" class="form-control" th:value="${userBy.uEmail}" readonly>
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label">연락처</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" value="010-1234-5678" readonly>
+                    <input type="text" class="form-control" th:value="${formattedPhone}" readonly>
                 </div>
             </div>
 

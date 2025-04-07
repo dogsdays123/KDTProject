@@ -71,6 +71,12 @@ public class CustomSecurityConfig {
                     .accessDeniedHandler(accessDeniedHandler());
         });
 
+        //로그아웃
+        http.logout(httpSecurityLogoutConfigurer -> {
+            httpSecurityLogoutConfigurer
+                    .logoutUrl("/logout");
+        });
+
         return http.build();
     }
 
