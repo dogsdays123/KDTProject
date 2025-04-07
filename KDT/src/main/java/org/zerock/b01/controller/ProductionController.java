@@ -12,16 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/production")
 public class ProductionController {
 
-    @GetMapping("/quickRegister")
-    public void quickRegister() {
-        log.info("##QUICK REGISTER PAGE GET....##");
-    }
-
     @GetMapping("/register")
     public void register() {
         log.info("##REGISTER PAGE GET....##");
     }
-    
+
     @GetMapping("/list")
     public void list() {
         log.info("##LIST PAGE GET....##");
