@@ -11,8 +11,8 @@
     <link href="/css/layout.css" rel="stylesheet">
     <style>
     </style>
-
 </head>
+
 <body>
     <!-- sidebar 시작 -->
     <div class="sidebar">
@@ -47,8 +47,8 @@
             <li class="nav-item">
               <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-production-plan')">생산 계획&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-production-plan" class="submenu">
-                  <li><a href="#" class="nav-link">생산 계획 목록</a></li>
-                  <li><a href="#" class="nav-link">생산 계획 등록</a></li>
+                  <li><a href="/productionPlan/ppList" class="nav-link">생산 계획 목록</a></li>
+                  <li><a href="/productionPlan/ppRegister" class="nav-link">생산 계획 등록</a></li>
                   <li><a href="#" class="nav-link">생산 계획 간편 등록</a></li>
                   <li><a href="#" class="nav-link">생산 계획 조회</a></li>
                   <li><a href="#" class="nav-link">발주 계획 관리</a></li>
@@ -139,10 +139,10 @@
     <!-- sidebar end -->
     <!-- header start -->
     <div class="header">
-        <div th:replace="fragments/breadcrumb :: breadcrumb(
-            breadcrumbLevel1=${breadcrumbLevel1},
-            breadcrumbCurrent=${breadcrumbCurrent})">
-        </div>
+<!--        <div th:replace="fragments/breadcrumb :: breadcrumb(-->
+<!--            breadcrumbLevel=${breadcrumbLevel},-->
+<!--            breadcrumbCurrent=${breadcrumbCurrent})">-->
+<!--        </div>-->
         <div class="user-info">
             <span>홍길동님 | 생산팀</span>
             <i class="bi bi-person-circle" onclick="toggleUserDropdown()"></i>
@@ -152,87 +152,17 @@
             </div>
         </div>
     </div>
-    <!-- header end -->
-    <!-- main start  -->
+
+    <!-- body start  -->
     <main class="main-content">
+        <div layout:fragment="main"></div>
         <div layout:fragment="mypage"></div>
         <div layout:fragment="guide"></div>
 
         <!-- 생산 계획 페이지 -->
-        <div layout:fragment="productionList"></div>
-        <div layout:fragment="productionRegister"></div>
-        <div layout:fragment="productionQuickRegister"></div>
-
+        <div layout:fragment="ppList"></div>
+        <div layout:fragment="ppRegi"></div>
     </main>
-    <!-- main end -->
-
-
-<!--        <div class="container">-->
-<!--            <div class="row g-4">-->
-
-<!--                &lt;!&ndash; 자재 재고 현황 &ndash;&gt;-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-body">-->
-<!--                            <h5 class="card-title">자재 재고 현황</h5>-->
-
-<!--                            <div class="mb-3">-->
-<!--                                <div class="progress-label">-->
-<!--                                    <span>철판</span><span>45개</span>-->
-<!--                                </div>-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar" style="width: 90%;"></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="mb-3">-->
-<!--                                <div class="progress-label">-->
-<!--                                    <span>볼트</span><span>12개</span>-->
-<!--                                </div>-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar bg-warning" style="width: 24%;"></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="mb-3">-->
-<!--                                <div class="progress-label">-->
-<!--                                    <span>모터</span><span>5개</span>-->
-<!--                                </div>-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar bg-danger" style="width: 10%;"></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; 납기 일정 알림 &ndash;&gt;-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-body">-->
-<!--                            <h5 class="card-title text-danger">🚨 납기 지연 알림</h5>-->
-<!--                            <ul class="text-danger small ps-3">-->
-<!--                                <li>모터 입고 지연 - 4/5 생산 차질 예상</li>-->
-<!--                                <li>볼트 재고 부족 - 긴급 발주 필요</li>-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; 생산 계획 대비 실적 &ndash;&gt;-->
-<!--                <div class="col-12">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-body">-->
-<!--                            <h5 class="card-title">생산 계획 대비 실적</h5>-->
-<!--                            <canvas id="productionChart" height="200"></canvas>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--            </div>-->
-<!--        </div>-->
-
 </body>
 <script src="/js/layout.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
