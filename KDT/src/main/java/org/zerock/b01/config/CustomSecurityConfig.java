@@ -74,7 +74,10 @@ public class CustomSecurityConfig {
         //로그아웃
         http.logout(httpSecurityLogoutConfigurer -> {
             httpSecurityLogoutConfigurer
-                    .logoutUrl("/logout");
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/firstView/login") // 로그아웃 후 리다이렉트할 URL
+                    .invalidateHttpSession(true) // 세션 무효화
+                    .deleteCookies("JSESSIONID"); // 쿠키 삭제
         });
 
         return http.build();

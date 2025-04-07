@@ -58,8 +58,10 @@ public class ProductionPlanController {
 
             // 일반 로그인 사용자 정보 가져오기
             userByDTO = userByService.readOne(username);
-            log.info("##### 일반 로그인 사용자 정보: " + userByDTO);
-        }
+            log.info("#### 일반 로그인 사용자 정보: " + userByDTO);
+
+            model.addAttribute("userBy", userByDTO);
+            }
     }
 
     @GetMapping("/ppRegister")

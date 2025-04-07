@@ -17,7 +17,7 @@
     <!-- sidebar 시작 -->
     <div class="sidebar">
         <ul class="nav flex-column">
-            <img src="/image/PNS-logo.PNG">
+            <a href="/mainPage/main"><img src="/image/PNS-logo.PNG"></a>
             <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
             <li class="nav-item"><a href="/mainPage/guide" class="nav-link"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무 활용가이드</a></li>
             <hr>
@@ -138,9 +138,9 @@
     <!-- sidebar end -->
     <!-- header start -->
     <div class="header">
-        <div th:replace="~{fragments/breadcrumb :: breadcrumb(
+        <div th:replace="fragments/breadcrumb :: breadcrumb(
             breadcrumbLevel1=${breadcrumbLevel1},
-            breadcrumbCurrent=${breadcrumbCurrent})}">
+            breadcrumbCurrent=${breadcrumbCurrent})">
         </div>
         <div class="user-info">
             <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>
