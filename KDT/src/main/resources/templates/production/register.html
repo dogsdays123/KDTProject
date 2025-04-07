@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout.html}"
+      th:with="breadcrumbLevel1='생산 계획', breadcrumbCurrent='생산 계획 등록'">>
+<head>
+    <meta charset="UTF-8">
+    <title>PNS - 생산 계획 > 생산 계획등록</title>
+</head>
+<body>
+<!--/production/register-->
+    <div layout:fragment="productionRegister">
+        <div class="container-fluid">
+            <div class="container" style="max-width: 800px; margin-left: 0;">
+                <h3>📋 생산 계획 등록</h3>
+                <form method="post" action="">
+                    <!-- 날짜 입력 -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">생산 시작 날짜</label>
+                            <input type="date" id="startDate" name="생산 시작 날짜" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label">생산 종료 날짜</label>
+                            <input type="date" id="endDate" name="생산 종료 날짜" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- 제품명/코드 입력 -->
+                    <div class="row g-3 mt-3 align-items-end">
+                        <div class="col-md-3">
+                            <label for="productName" class="form-label">생산 제품명</label>
+                            <input type="text" id="productName" name="생산 제품명" class="form-control" placeholder="">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="productCode" class="form-label">생산 제품 코드</label>
+                            <input type="text" id="productCode" name="생산 제품 코드" class="form-control" placeholder="">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="productCode" class="form-label">수량</label>
+                            <input type="number" id="productQuantity" name="생산 수량" class="form-control" placeholder="">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-primary w-100" onclick="addPlan()">+ 추가</button>
+                        </div>
+                    </div>
+
+                    <!-- 추가된 항목 목록 -->
+                    <ul class="list-group mt-4" id="planList"></ul>
+
+                    <!-- 전송 -->
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success">📨 등록</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card shadow-sm p-4">
+                <h5 class="mb-3">
+                    <i class="bi bi-file-earmark-excel-fill text-success"></i> 엑셀 파일 간편 등록
+                </h5>
+
+                <form method="post" enctype="multipart/form-data" action="">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <input class="form-control" type="file" name="file" accept=".xlsx,.xls" required>
+                        </div>
+                        <div class="col-md-3 mt-2 mt-md-0">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-upload me-2"></i> 업로드
+                            </button>
+                        </div>
+                    </div>
+                    <small class="text-muted mt-2 d-block">※ .xlsx 또는 .xls 형식의 파일만 업로드 가능합니다.</small>
+                </form>
+            </div>
+        </div>
+        <script th:src="@{/js/production/register.js}"></script>
+    </div>
+</body>
+</html>
