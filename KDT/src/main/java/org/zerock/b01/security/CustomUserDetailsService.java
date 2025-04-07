@@ -39,6 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                         userBy.getUName(),
                         userBy.getUAddress(),
                         userBy.getUserType(),
+                        userBy.getUserJob(),
                         userBy.getUEmail(),
                         userBy.getUPhone(),
                         userBy.getUBirthDay(),
