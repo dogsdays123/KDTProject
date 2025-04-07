@@ -9,19 +9,8 @@
     <div class="container-fluid">
         <div class="container" style="max-width: 800px; margin-left: 0;">
             <h3>📋 생산 계획 등록</h3>
-            <form method="post" action="">
-                <!-- 날짜 입력 -->
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="startDate" class="form-label">생산 시작 날짜</label>
-                        <input type="date" id="startDate" name="생산 시작 날짜" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="endDate" class="form-label">생산 종료 날짜</label>
-                        <input type="date" id="endDate" name="생산 종료 날짜" class="form-control">
-                    </div>
-                </div>
 
+            <form method="post" action="">
                 <!-- 제품명/코드 입력 -->
                 <div class="row g-3 mt-3 align-items-end">
                     <div class="col-md-3">
@@ -40,6 +29,18 @@
                         <button type="button" class="btn btn-primary w-100" onclick="addPlan()">+ 추가</button>
                     </div>
                 </div>
+                <hr>
+                <!-- 날짜 입력 -->
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="startDate" class="form-label">생산 시작 날짜</label>
+                        <input type="date" id="startDate" name="생산 시작 날짜" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate" class="form-label">생산 종료 날짜</label>
+                        <input type="date" id="endDate" name="생산 종료 날짜" class="form-control">
+                    </div>
+                </div>
 
                 <!-- 추가된 항목 목록 -->
                 <ul class="list-group mt-4" id="planList"></ul>
@@ -49,13 +50,15 @@
                     <button type="submit" class="btn btn-success">📨 등록</button>
                 </div>
             </form>
+
         </div>
         <div class="card shadow-sm p-4">
             <h5 class="mb-3">
                 <i class="bi bi-file-earmark-excel-fill text-success"></i> 엑셀 파일 간편 등록
             </h5>
 
-            <form method="post" enctype="multipart/form-data" action="">
+            <form method="post" enctype="multipart/form-data" th:action="@{/productionPlan/addProductPlan}">
+                <input name="where" type="hidden" value="Plan">
                 <div class="row align-items-center">
                     <div class="col-md-7">
                         <input class="form-control" type="file" name="file" accept=".xlsx,.xls" required>
@@ -68,7 +71,12 @@
                 </div>
                 <small class="text-muted mt-2 d-block">※ .xlsx 또는 .xls 형식의 파일만 업로드 가능합니다.</small>
             </form>
+            <div th:if="${successMessage}" class="alert alert-success">
+                <script>
+                    alert('[[${successMessage}]]');
+                </script>
+            </div>
         </div>
     </div>
-    <script th:src="@{/js/production/register.js}"></script>
+    <script th:src="@{/js/productionPlan/register.js}"></script>
 </div>
