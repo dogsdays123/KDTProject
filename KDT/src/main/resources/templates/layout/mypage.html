@@ -1,0 +1,49 @@
+<!-- mypage.html -->
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout.html}"
+      th:with="breadcrumbLevel1='마이페이지'">
+<head>
+    <title>PNS - 마이페이지</title>
+</head>
+<div layout:fragment="mypage">
+    <div class="container-fluid mt-4">
+        <h3 class="mb-3">내 정보 보기</h3>
+
+        <form>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">이름</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" value="홍길동" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">부서</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" value="생산팀" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">이메일</label>
+                <div class="col-sm-6">
+                    <input type="email" class="form-control" value="hong@company.com" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">연락처</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" value="010-1234-5678" readonly>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a href="#" class="btn btn-primary">정보 수정</a>
+                <a href="#" class="btn btn-danger">회원 탈퇴</a>
+            </div>
+        </form>
+    </div>
+</div>

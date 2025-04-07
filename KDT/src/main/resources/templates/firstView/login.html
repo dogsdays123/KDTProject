@@ -23,7 +23,7 @@
     <div class="login-box">
         <div class="login-image"></div>
         <div class="login-form">
-            <img src="/image/PNS-logo.PNG" alt="회사 로고" class="mb-4" style="max-width: 200px;">
+            <img src="/image/loginLogoImg.png" alt="회사 로고" class="mb-4" style="max-width: 300px;">
 
             <!-- 탭 버튼 -->
             <ul class="nav nav-tabs mb-3" id="loginTab" role="tablist">
@@ -75,7 +75,7 @@
 
                     <form id="registerForm" name="registerForm" action="/firstView/join" method="post">
                         <!--아이디중복확인-->
-                        <div class="mb-3">
+                        <div class="mb-3" style="height: 100px">
                             <label for="uId" class="form-label"><span style="color: red;">*</span>&nbsp 아이디</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" name="uId" id="uId"
@@ -85,12 +85,12 @@
                             </div>
                             <!-- 중복 확인 메시지 출력 공간 -->
                             <textarea id="username-feedback" class="mt-1 input-feedback text-success"
-                                      style="all: unset; width: 20vw; border: none; outline: none;" readonly>
+                                      style="all: unset; width: 25vw; border: none; outline: none;" readonly>
                             </textarea>
                         </div>
 
                         <!--이메일중복확인-->
-                        <div class="mb-3">
+                        <div class="mb-3" style="height: 100px">
                             <label for="uEmail" class="form-label"><span style="color: red;">*</span>&nbsp 이메일</label>
                             <div class="input-group">
                                 <input type="email" class="form-control" name="uEmail" id="uEmail"
@@ -130,16 +130,36 @@
                                    title="전화번호는 '-'없이 01012345678 형식의 11자리이어야 합니다.">
                         </div>
                         <div class="mb-3">
+                            <label class="form-label" style="width: 170px;"><span style="color: red;">*</span>&nbsp 가입유형</label>
                             <label class="form-label" style="width: 170px;"><span style="color: red;">*</span>&nbsp 사용자 확인</label>
                             <br>
-                            <input type="radio" name="userType" value="our">&nbsp&nbsp PNS
-                            <br>
-                            <input type="radio" name="userType" value="other">&nbsp&nbsp 협력회사
 
+                            <div class="radio-group">
+                                <input type="radio" id="pns" class="form-control" name="userType" value="our">
+                                <label for="pns">DG전동</label>
+
+                                <input type="radio" id="partner" class="form-control" name="userType" value="other">
+                                <label for="partner">협력회사</label>
+                            </div>
+                            <br>
                             <!-- 'PNS'를 선택했을 때 보이는 div -->
                             <div id="types">
                                 <div id="uBirthDayDiv" style="display: none">
                                     <label for="uBirthDay" class="form-label"></label>
+                                    <label class="form-label" style="width: 170px;"><span style="color: red;">*</span>&nbsp 부서</label>
+                                    <br>
+                                    <div class="radio-group">
+                                        <input type="radio" class="form-control" id="productDept" name="deptName" value="생산">
+                                        <label for="productDept">생산부서</label>
+
+                                        <input type="radio" class="form-control" id="purchaseDept" name="deptName" value="구매">
+                                        <label for="purchaseDept">구매부서</label>
+
+                                        <input type="radio" class="form-control" id="materialsDept" name="deptName" value="자재">
+                                        <label for="materialsDept">자재부서</label>
+                                    </div>
+                                    <br>
+                                    <label class="form-label" style="width: 170px;"><span style="color: red;">*</span>&nbsp 생년월일</label>
                                     <input type="date" class="form-control" name="uBirthDay" id="uBirthDay" placeholder="생년월일">
                                     <br>
                                     <label class="form-label" style="width: 170px;"><span style="color: red;">*</span>&nbsp 업무형태</label>
