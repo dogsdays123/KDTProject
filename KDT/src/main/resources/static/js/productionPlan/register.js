@@ -173,3 +173,56 @@ $(document).ready(function () {
         });
     });
 });
+
+// 파일 선택 이벤트 처리
+document.getElementById('excelFile').addEventListener('change', function () {
+    const fileList = this.files;  // 선택된 파일들
+    const fileCount = fileList.length;  // 파일 갯수
+    const fileListElement = document.getElementById('fileList');
+    const fileCountElement = document.getElementById('fileCount');
+
+    // 파일 목록을 초기화
+    fileListElement.innerHTML = '';
+
+    // 파일 목록 추가
+    Array.from(fileList).forEach(file => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.textContent = file.name;
+
+        // 삭제 버튼 생성
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-sm btn-danger';
+        deleteBtn.textContent = 'x';
+        deleteBtn.onclick = () => {
+            li.remove(); // 항목 제거
+            updateFileCount(); // 파일 갯수 업데이트
+        };
+
+        li.appendChild(deleteBtn);
+        fileListElement.appendChild(li);
+    });
+
+    // 파일 갯수 표시
+    fileCountElement.textContent = fileCount;
+
+    // 파일 갯수가 0보다 크면 파일 목록을 표시, 그렇지 않으면 숨김 처리
+    if (fileCount > 0) {
+        document.getElementById('uploadedFileCount').style.display = 'block';
+    } else {
+        document.getElementById('uploadedFileCount').style.display = 'none';
+    }
+});
+
+// 파일 갯수 업데이트 함수
+function updateFileCount() {
+    const fileListElement = document.getElementById('fileList');
+    const fileCountElement = document.getElementById('fileCount');
+    const fileCount = fileListElement.children.length; // 현재 남아있는 파일의 갯수
+    fileCountElement.textContent = fileCount; // 갯수 업데이트
+
+    // 파일 리스트가 비었으면 갯수와 리스트 숨기기
+    if (fileCount === 0) {
+        document.getElementById('uploadedFileCount').style.display = 'none';
+    }
+}
