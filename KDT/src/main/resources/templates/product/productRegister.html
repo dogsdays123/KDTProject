@@ -20,60 +20,73 @@
                 <form th:action="@{/product/productRegister}" method="post" >
                     <div class="row g-2 mb-2">
                         <!-- 상품 코드 -->
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="productCode" class="form-label small">상품 코드</label>
                             <input type="text" class="form-control form-control-sm" id="productCode" name="productCode" placeholder="예: PRD001" required>
                         </div>
 
                         <!-- 상품명 -->
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="productName" class="form-label small">상품명</label>
                             <input type="text" class="form-control form-control-sm" id="productName" name="productName" placeholder="예: 전기자전거A" required>
                         </div>
 
                         <!-- 등록 버튼 -->
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-secondary btn-sm w-100">등록</button>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm w-100">등록</button>
                         </div>
                     </div>
                 </form>
             </div>
+            <br>
             <!-- 엑셀 업로드 카드 -->
-            <div class="card shadow-sm p-3">
+            <div class="card p-3">
                 <h6 class="mb-2">
                     <i class="bi bi-file-earmark-excel-fill text-success"></i> 엑셀 파일 간편 등록
                 </h6>
 
-                <form id="excelUploadForm" enctype="multipart/form-data">
-                    <input type="file" id="excelFile" name="file" accept=".xlsx,.xls" style="display: none;" required>
-                    <button type="button" class="btn btn-outline-success btn-sm" onclick="triggerExcelUpload()">
-                        <i class="bi bi-upload me-1"></i> 엑셀 업로드
-                    </button>
+                <!-- 엑셀 업로드 -->
+                <form id="excelUploadForm" method="post" enctype="multipart/form-data">
+                    <input name="where" type="hidden" value="Plan">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <label for="excelFile" class="custom-file-upload">
+                            <i class="bi bi-paperclip me-1"></i> 파일 선택
+                        </label>
+                        <button type="button" id="excelUpload" class="btn btn-dark btn-sm">
+                            <i class="bi bi-upload me-1"></i> 엑셀 업로드
+                        </button>
+                    </div>
+                    <input type="file" id="excelFile" name="file" accept=".xlsx,.xls" multiple>
                 </form>
                 <small class="text-muted mt-2 d-block">※ .xlsx 또는 .xls 형식의 파일만 업로드 가능합니다.</small>
 
+                <!-- 업로드된 파일명 출력 -->
                 <div id="uploadedFileList" class="mt-3" style="display: none;">
-                    <h6 class="small">📂 업로드된 파일</h6>
-                    <ul class="list-group list-group-sm" id="fileList"></ul>
+                    <h6 class="mb-2">📂 업로드된 파일</h6>
+                    <ul class="list-group list-group-sm" id="fileList" style="font-size: 0.9rem;"></ul>
                 </div>
             </div>
 
             <br>
 
-            <!-- 엑셀 다운로드 카드 -->
-            <div class="card shadow-sm p-3">
+            <div class="card p-3">
                 <h6 class="mb-2">
-                    <i class="bi bi-file-earmark-excel-fill icon-purple"></i> 엑셀 파일 다운로드
+                    <i class="bi bi-file-earmark-excel-fill icon-purple"></i>
+                    엑셀 파일 다운로드
                 </h6>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-secondary btn-sm">
+                    <button type="button" id="tempDownload" class="btn btn-outline-dark btn-sm"
+                            onclick="location.href='/test/downloadProductPlan/true'">
                         <i class="bi bi-download me-1"></i> 템플릿 다운로드
                     </button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm">
+                    <button type="button" id="dataDownload" class="btn btn-outline-dark btn-sm"
+                            onclick="location.href='/test/downloadProductPlan/false'">
                         <i class="bi bi-database-down me-1"></i> 데이터 다운로드
                     </button>
                 </div>
-                <small class="text-muted mt-2 d-block">※ 간편 등록 엑셀 템플릿 다운로드가 가능합니다.</small>
+                <small class="text-muted mt-2 d-block">
+                    ※ 간편 등록 엑셀 템플릿 다운로드가 가능합니다.
+                </small>
             </div>
         </div>
     </div>

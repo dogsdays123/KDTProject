@@ -16,16 +16,16 @@
       </div>
 
       <form>
-        <div class="row g-2 mb-2">
-          <div class="col-md-3">
+        <div class="row g-2 align-items-end">
+          <div class="col-md-2">
             <label for="startDate" class="form-label small">발주 시작일</label>
             <input type="date" class="form-control form-control-sm" id="startDate">
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label for="endDate" class="form-label small">발주 종료일</label>
             <input type="date" class="form-control form-control-sm" id="endDate">
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label for="productName" class="form-label small">제품명</label>
             <select id="productName" name="제품명" class="form-select form-select-sm">
               <option value="">전체</option>
@@ -34,7 +34,7 @@
               <option value="전동킥보드">전동킥보드</option>
             </select>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label for="status" class="form-label small">발주 상태</label>
             <select class="form-select form-select-sm" id="status">
               <option>전체</option>
@@ -43,7 +43,12 @@
               <option>납품 완료</option>
             </select>
           </div>
+          <div class="col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+          </div>
         </div>
+      </form>
+      <form>
 
         <!-- 🔍 검색어 입력 -->
         <div class="row g-2 mt-2 align-items-center">

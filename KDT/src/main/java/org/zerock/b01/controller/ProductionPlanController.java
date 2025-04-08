@@ -87,11 +87,6 @@ public class ProductionPlanController {
         log.info("##LIST PAGE GET....##");
     }
 
-    @GetMapping("/ppOrderPlan")
-    public void orderPlan() {
-        log.info("##ORDER PLAN PAGE GET....##");
-    }
-
     //생산계획 직접등록
     @PostMapping("/addProductPlanSelf")
     public String uploadProductPlanSelf(ProductionPlanDTO productionPlanDTO, ProductionPerDayDTO[] productionPerDayDTOs, Model model, RedirectAttributes redirectAttributes) throws IOException {
