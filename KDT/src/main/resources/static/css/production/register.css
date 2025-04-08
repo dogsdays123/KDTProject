@@ -69,3 +69,43 @@
 .icon-purple {
     color: #7e57c2;
 }
+
+.custom-file-upload, #excelUpload {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #212529;
+    background-color: white;
+    border: 1px solid #212529;
+    border-radius: 0.2rem;
+    cursor: pointer;
+}
+
+.custom-file-upload:hover, #excelUpload:hover {
+    background-color: #157347;
+    border: 1px solid #157347;
+    color: white;
+}
+
+#excelFile {
+    display: none;
+}
+
+#tempDownload, #dataDownload{
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #212529;
+    background-color: white;
+    border: 1px solid #212529;
+    border-radius: 0.2rem;
+    cursor: pointer;
+}
+
+#tempDownload:hover, #dataDownload:hover{
+    background-color: #7e57c2;
+    border: 1px solid #7e57c2;
+    color: white;
+}

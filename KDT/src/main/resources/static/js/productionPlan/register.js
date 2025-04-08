@@ -4,8 +4,22 @@ function addPlan() {
     const productName = document.getElementById('productName').value;
     const productCode = document.getElementById('productCode').value;
     const productQuantity = document.getElementById('productQuantity').value;
+    const product1Qty = document.getElementById('product1Qty').value;
+    const product2Qty = document.getElementById('product2Qty').value;
+    const product3Qty = document.getElementById('product3Qty').value;
+    const product4Qty = document.getElementById('product4Qty').value;
+    const product5Qty = document.getElementById('product5Qty').value;
 
-    if (!startDate || !endDate || !productName || !productCode || !productQuantity) {
+    const totalByDays = Number(product1Qty) + Number(product2Qty) + Number(product3Qty) +
+        Number(product4Qty) + Number(product5Qty);
+
+    if (Number(productQuantity) !== totalByDays) {
+        alert('전체 수량과 일별 수량의 합이 일치하지 않습니다!');
+        return;
+    }
+
+    if (!startDate || !endDate || !productName || !productCode || !productQuantity || !product1Qty || !product2Qty
+    || !product3Qty || !product4Qty || !product5Qty) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -20,20 +34,68 @@ function addPlan() {
         <td><input type="hidden" name="productNames[]" value="${productName}">${productName}</td>
         <td><input type="hidden" name="productCodes[]" value="${productCode}">${productCode}</td>
         <td><input type="hidden" name="productQuantities[]" value="${productQuantity}">${productQuantity}</td>
-        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">삭제</button></td>
+        <td><input type="hidden" name="product1Qties[]" value="${product1Qty}">${product1Qty}</td>
+        <td><input type="hidden" name="product2Qties[]" value="${product2Qty}">${product2Qty}</td>
+        <td><input type="hidden" name="product3Qties[]" value="${product3Qty}">${product3Qty}</td>
+        <td><input type="hidden" name="product4Qties[]" value="${product4Qty}">${product4Qty}</td>
+        <td><input type="hidden" name="product5Qties[]" value="${product5Qty}">${product5Qty}</td>
+        <td>
+          <button type="button" class="btn btn-outline-dark btn-sm" onclick="removeRow(this)" aria-label="삭제">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </td>
     `;
 
     tableBody.appendChild(newRow);
 
+    const planRows = tableBody.querySelectorAll('tr:not(#registerRow)');
+    if (planRows.length === 0) {
+        const existingRegisterRow = document.getElementById('registerRow');
+        if (existingRegisterRow) {
+            existingRegisterRow.remove();
+        }
+        return; // 항목 없으면 함수 종료
+    }
+
+// 등록/삭제 버튼 추가 또는 위치 재정렬
+    if (!document.getElementById('registerRow')) {
+        const registerRow = document.createElement('tr');
+        registerRow.id = 'registerRow';
+        registerRow.innerHTML = `
+        <td colspan="11" class="text-center" style="padding: 10px">
+            <div class="d-flex justify-content-center gap-2">
+                <button type="submit" class="btn btn-dark btn-sm">전체 등록</button>
+                <button type="button" class="btn btn-outline-dark btn-sm" onclick="clearPlanTable()">전체 삭제</button>
+            </div>
+        </td>
+    `;
+        tableBody.appendChild(registerRow);
+    } else {
+        // 항상 버튼을 마지막으로 이동
+        const registerRow = document.getElementById('registerRow');
+        tableBody.appendChild(registerRow);
+    }
     // 입력값 초기화
-    document.getElementById('productName').value = '';
+    document.getElementById('productName').selectedIndex = 0;
     document.getElementById('productCode').value = '';
     document.getElementById('productQuantity').value = '';
+    document.getElementById('product1Qty').value = '';
+    document.getElementById('product2Qty').value = '';
+    document.getElementById('product3Qty').value = '';
+    document.getElementById('product4Qty').value = '';
+    document.getElementById('product5Qty').value = '';
+
+
 }
 
 // 삭제 버튼 클릭 시 해당 행 삭제
 function removeRow(btn) {
     btn.closest('tr').remove();
+}
+
+function clearPlanTable() {
+    const tableBody = document.querySelector("#planTable tbody");
+    tableBody.innerHTML = ""; // 모든 row 삭제
 }
 
 function triggerExcelUpload() {
