@@ -81,14 +81,12 @@ public class ProductionPlanController {
         log.info("##LIST PAGE GET....##");
     }
 
-<<<<<<< HEAD
     @GetMapping("/ppOrderPlan")
     public void orderPlan() {
         log.info("##ORDER PLAN PAGE GET....##");
     }
 
     //생산계획 등록
-=======
     //생산계획 직접등록
     @PostMapping("/addProductPlanSelf")
     public String uploadProductPlanSelf(ProductionPlanDTO productionPlanDTO, ProductionPerDayDTO[] productionPerDayDTOs, Model model, RedirectAttributes redirectAttributes) throws IOException {
@@ -102,7 +100,6 @@ public class ProductionPlanController {
     }
 
     //생산계획 자동등록
->>>>>>> 772d2059e2023863b592cf1573b39d6f6baa0549
     @PostMapping("/addProductPlan")
     public String uploadProductPlan(@RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
 
