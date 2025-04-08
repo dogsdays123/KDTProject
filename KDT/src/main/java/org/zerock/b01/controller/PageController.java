@@ -8,10 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -61,7 +58,6 @@ public class PageController {
     @GetMapping("/myPage")
     public void myPage() {
         log.info ("layout myPage test...");
-
     }
 
     // 전화번호 포맷팅 메서드

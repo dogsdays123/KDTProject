@@ -4,4 +4,5 @@ import org.zerock.b01.dto.ProductionPerDayDTO;
 
 public interface ProductionPerDayService {
     void register(ProductionPerDayDTO dto);
+    void registers(ProductionPerDayDTO[] productionPerDayDTOs);
 }

@@ -1,5 +1,6 @@
 package org.zerock.b01.serviceImpl;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.ProductionPerDay;
@@ -18,10 +19,27 @@ public class ProductionPerDayServiceImpl implements ProductionPerDayService {
     @Autowired
     private ProductionPlanRepository productionPlanRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public void register(ProductionPerDayDTO dto) {
         ProductionPerDay entity = dtoToEntity(dto);
         productionPerDayRepository.save(entity);
+    }
+
+    @Override
+    public void registers(ProductionPerDayDTO[] productionPerDayDTOs) {
+
+        for (ProductionPerDayDTO productionPerDayDTO : productionPerDayDTOs) {
+            ProductionPerDay productionPerDay = modelMapper.map(productionPerDayDTO, ProductionPerDay.class);
+            if(productionPerDayRepository.findByProductionId(productionPerDayDTO.getPpCode()) == null){
+                productionPerDayRepository.save(productionPerDay);
+            } else {
+
+            }
+        }
+
     }
 
     private ProductionPerDay dtoToEntity(ProductionPerDayDTO dto) {
