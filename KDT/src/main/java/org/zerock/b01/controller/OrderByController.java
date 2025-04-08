@@ -39,8 +39,4 @@ import java.time.LocalDate;
 @RequestMapping("/orderBy")
 public class OrderByController {
 
-    @GetMapping("/ppOrderPlan")
-    public void orderPlan() {
-        log.info("##ORDER PLAN PAGE GET....##");
-    }
 }

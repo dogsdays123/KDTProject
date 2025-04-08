@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.ProductionPerDayDTO;
@@ -79,6 +80,11 @@ public class ProductionPlanController {
     @GetMapping("/ppList")
     public void list() {
         log.info("##LIST PAGE GET....##");
+    }
+
+    @GetMapping("/ppOrderPlan")
+    public void orderPlan() {
+        log.info("##ORDER PLAN PAGE GET....##");
     }
 
     //생산계획 직접등록
