@@ -18,17 +18,16 @@
 
                 <!-- 검색 필터 -->
                 <form>
-                    <div class="row g-2">
-                        <!-- 1줄 필터 -->
-                        <div class="col-md-3">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-2">
                             <label for="startDate" class="form-label small">생산 시작일</label>
                             <input type="date" class="form-control form-control-sm" id="startDate">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="endDate" class="form-label small">생산 종료일</label>
                             <input type="date" class="form-control form-control-sm" id="endDate">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="status" class="form-label small">진행 상태</label>
                             <select class="form-select form-select-sm" id="status">
                                 <option selected>전체</option>
@@ -37,7 +36,7 @@
                                 <option value="보류">보류</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="productName" class="form-label small">제품명</label>
                             <select id="productName" name="제품명" class="form-select form-select-sm">
                                 <option value="">전체</option>
@@ -46,9 +45,13 @@
                                 <option value="전동킥보드">전동킥보드</option>
                             </select>
                         </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                        </div>
                     </div>
-
+                </form>
                     <!-- 2줄: 검색어 입력 -->
+                <form>
                     <div class="row g-2 mt-2">
                         <div class="col-md-6">
                             <div class="input-group input-group-sm">
