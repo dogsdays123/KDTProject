@@ -184,25 +184,6 @@ document.getElementById('excelFile').addEventListener('change', function () {
     // 파일 목록을 초기화
     fileListElement.innerHTML = '';
 
-    // 파일 목록 추가
-    Array.from(fileList).forEach(file => {
-        const li = document.createElement('li');
-        li.className = 'list-group-item d-flex justify-content-between align-items-center';
-        li.textContent = file.name;
-
-        // 삭제 버튼 생성
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn btn-sm btn-danger';
-        deleteBtn.textContent = 'x';
-        deleteBtn.onclick = () => {
-            li.remove(); // 항목 제거
-            updateFileCount(); // 파일 갯수 업데이트
-        };
-
-        li.appendChild(deleteBtn);
-        fileListElement.appendChild(li);
-    });
-
     // 파일 갯수 표시
     fileCountElement.textContent = fileCount;
 
