@@ -10,9 +10,6 @@ function addPlan() {
         return;
     }
 
-    // 📌 테이블 헤더 보이기
-    document.getElementById('tableHeader').style.display = 'table-header-group';
-
     const tableBody = document.querySelector("#planTable tbody");
 
     const newRow = document.createElement('tr');
@@ -23,11 +20,7 @@ function addPlan() {
         <td><input type="hidden" name="productNames[]" value="${productName}">${productName}</td>
         <td><input type="hidden" name="productCodes[]" value="${productCode}">${productCode}</td>
         <td><input type="hidden" name="productQuantities[]" value="${productQuantity}">${productQuantity}</td>
-        <td>
-          <button type="button" style="border: none; background: transparent;" onclick="removeRow(this)">
-            <i class="bi bi-x" style="font-size: 1.2rem; color: #888;"></i>
-          </button>
-        </td>
+        <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">삭제</button></td>
     `;
 
     tableBody.appendChild(newRow);
@@ -38,15 +31,9 @@ function addPlan() {
     document.getElementById('productQuantity').value = '';
 }
 
+// 삭제 버튼 클릭 시 해당 행 삭제
 function removeRow(btn) {
-    const row = btn.closest('tr');
-    row.remove();
-
-    const tableBody = document.querySelector("#planTable tbody");
-    if (tableBody.children.length === 0) {
-        // 항목이 하나도 없으면 헤더 숨기기
-        document.getElementById('tableHeader').style.display = 'none';
-    }
+    btn.closest('tr').remove();
 }
 
 function triggerExcelUpload() {

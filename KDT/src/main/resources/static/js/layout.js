@@ -36,28 +36,28 @@ window.addEventListener('click', function(e) {
     }
 });
 
-const ctx = document.getElementById('productionChart').getContext('2d');
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['4/1', '4/2', '4/3', '4/4'],
-        datasets: [
-            {
-                label: '계획',
-                data: [100, 120, 130, 100],
-                backgroundColor: '#8884d8'
-            },
-            {
-                label: '실적',
-                data: [90, 110, 140, 80],
-                backgroundColor: '#82ca9d'
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: { beginAtZero: true }
-        }
-    }
-});
+// const ctx = document.getElementById('productionChart').getContext('2d');
+// new Chart(ctx, {
+//     type: 'bar',
+//     data: {
+//         labels: ['4/1', '4/2', '4/3', '4/4'],
+//         datasets: [
+//             {
+//                 label: '계획',
+//                 data: [100, 120, 130, 100],
+//                 backgroundColor: '#8884d8'
+//             },
+//             {
+//                 label: '실적',
+//                 data: [90, 110, 140, 80],
+//                 backgroundColor: '#82ca9d'
+//             }
+//         ]
+//     },
+//     options: {
+//         responsive: true,
+//         scales: {
+//             y: { beginAtZero: true }
+//         }
+//     }
+// });
