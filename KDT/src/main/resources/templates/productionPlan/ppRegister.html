@@ -12,16 +12,16 @@
         <div class="container" style="max-width: 800px; margin-left: 0;">
             <h3>📋 생산 계획 직접 등록</h3>
             <br>
-            <form method="post" action="">
+            <form method="post" action="/productionPlanSelf/ppRegister">
                 <!-- 날짜 입력 -->
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label for="startDate" class="form-label">생산 시작 날짜</label>
-                        <input type="date" id="startDate" name="생산 시작 날짜" class="form-control">
+                        <input type="date" id="startDate" name="ppStart" class="form-control">
                     </div>
                     <div class="col-md-4">
                         <label for="endDate" class="form-label">생산 종료 날짜</label>
-                        <input type="date" id="endDate" name="생산 종료 날짜" class="form-control">
+                        <input type="date" id="endDate" name="ppEnd" class="form-control">
                     </div>
                 </div>
 
@@ -29,7 +29,7 @@
                 <div class="row g-3 mt-3 align-items-end">
                     <div class="col-md-3">
                         <label for="productName" class="form-label">제품명</label>
-                        <select id="productName" name="제품명" class="form-control">
+                        <select id="productName" name="pppCode" class="form-control">
                             <option value="전기자전거A">전기자전거A</option>
                             <option value="전기자전거B">전기자전거B</option>
                             <option value="전동킥보드">전동킥보드</option>
@@ -37,11 +37,11 @@
                     </div>
                     <div class="col-md-3">
                         <label for="productCode" class="form-label">제품 코드</label>
-                        <input type="text" id="productCode" name="제품 코드" class="form-control">
+                        <input type="text" id="productCode" name="ppName" class="form-control">
                     </div>
                     <div class="col-md-2">
                         <label for="productQuantity" class="form-label">수량</label>
-                        <input type="number" id="productQuantity" name="수량" class="form-control">
+                        <input type="number" id="productQuantity" name="ppNum" class="form-control">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn btn-primary w-100" onclick="addPlan()">+ 추가</button>
@@ -79,9 +79,10 @@
             </h5>
 
             <!-- 엑셀 업로드 -->
-            <form id="excelUploadForm" enctype="multipart/form-data">
-                <input type="file" id="excelFile" name="file" accept=".xlsx,.xls" style="display: none;" required>
-                <button type="button" class="btn btn-success" onclick="triggerExcelUpload()">
+            <form id="excelUploadForm" method="post" enctype="multipart/form-data" th:action="@{/productionPlan/addProductPlan}">
+                <input name="where" type="hidden" value="Plan">
+                <input type="file" id="excelFile" name="file" accept=".xlsx,.xls" multiple>
+                <button type="button" id="excelUpload" class="btn btn-success">
                     <i class="bi bi-upload me-2"></i> 엑셀 업로드
                 </button>
             </form>
@@ -100,10 +101,12 @@
                 엑셀 파일 다운로드
             </h5>
             <div class="d-flex gap-2">
-                <button type="button" class="btn-purple">
+                <button type="button" class="btn-purple"
+                        onclick="location.href='/test/downloadProductPlan/true'">
                     <i class="bi bi-download me-2"></i> 템플릿 다운로드
                 </button>
-                <button type="button" class="btn-purple">
+                <button type="button" class="btn-purple"
+                        onclick="location.href='/test/downloadProductPlan/false'">
                     <i class="bi bi-database-down me-2"></i> 데이터 다운로드
                 </button>
             </div>

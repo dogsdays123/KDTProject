@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>구매조달 시스템</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="/css/layout.css" rel="stylesheet">
@@ -49,19 +50,16 @@
               <ul id="submenu-production-plan" class="submenu">
                   <li><a href="/productionPlan/ppList" class="nav-link">생산 계획 목록</a></li>
                   <li><a href="/productionPlan/ppRegister" class="nav-link">생산 계획 등록</a></li>
-                  <li><a href="#" class="nav-link">생산 계획 조회</a></li>
-                  <li><a href="#" class="nav-link">발주 계획 관리</a></li>
+                  <li><a href="/productionPlan/ppOrderPlan" class="nav-link">발주 계획 관리</a></li>
               </ul>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-product')">제품 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-product" class="submenu">
-                    <li><a href="#" class="nav-link">상품 등록</a></li>
-                    <li><a href="#" class="nav-link">상품 간편 등록</a></li>
-                    <li><a href="#" class="nav-link">상품 조회</a></li>
-                    <li><a href="#" class="nav-link">BOM 등록</a></li>
-                    <li><a href="#" class="nav-link">BOM 간편 등록</a></li>
-                    <li><a href="#" class="nav-link">BOM 조회</a></li>
+                    <li><a href="/product/productRegister" class="nav-link">상품 등록</a></li>
+                    <li><a href="/product/productList" class="nav-link">상품 목록</a></li>
+                    <li><a href="/product/bomRegister" class="nav-link">BOM 등록</a></li>
+                    <li><a href="/product/bomList" class="nav-link">BOM 목록</a></li>
                 </ul>
             </li>
             <li class="nav-item">
@@ -138,9 +136,9 @@
     <!-- sidebar end -->
     <!-- header start -->
     <div class="header">
-        <div th:replace="fragments/breadcrumb :: breadcrumb(
+        <div th:replace="~{fragments/breadcrumb :: breadcrumb(
             breadcrumbLevel1=${breadcrumbLevel1},
-            breadcrumbCurrent=${breadcrumbCurrent})">
+            breadcrumbCurrent=${breadcrumbCurrent})}">
         </div>
         <div class="user-info">
             <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>
@@ -160,6 +158,13 @@
         <!-- 생산 계획 페이지 -->
         <div layout:fragment="ppList"></div>
         <div layout:fragment="ppRegi"></div>
+        <div layout:fragment="ppOrder"></div>
+
+        <!-- 제품 관리 페이지 -->
+        <div layout:fragment="pdList"></div>
+        <div layout:fragment="pdRegi"></div>
+        <div layout:fragment="boList"></div>
+        <div layout:fragment="boRegi"></div>
 
     </main>
     <!-- main end -->

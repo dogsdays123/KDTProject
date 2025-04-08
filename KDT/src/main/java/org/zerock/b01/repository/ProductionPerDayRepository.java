@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ProductionPerDayRepository extends JpaRepository<ProductionPerDay, Long> {
 
-    @Query("select p from ProductionPerDay p where p.productionPlan.ppId=:id")
-    List<ProductionPerDay> findByProductionId(Long id);
+    @Query("select p from ProductionPerDay p where p.productionPlan.ppCode=:ppCode")
+    ProductionPerDay findByProductionId(String ppCode);
 }

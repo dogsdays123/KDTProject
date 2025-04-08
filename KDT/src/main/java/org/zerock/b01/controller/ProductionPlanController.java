@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.ProductionPerDayDTO;
 import org.zerock.b01.dto.ProductionPlanDTO;
@@ -66,7 +67,13 @@ public class ProductionPlanController {
 
     @GetMapping("/ppRegister")
     public void register() {
-        log.info("##REGISTER PAGE GET....##");
+        log.info("##PP REGISTER PAGE GET....##");
+    }
+
+    @PostMapping("ppRegister")
+    public void registerPost(ProductionPlanDTO productionPlanDTO, Model model, HttpServletRequest request) {
+        log.info("##PP REGISTER PAGE POST....##");
+        log.info(productionPlanDTO);
     }
 
     @GetMapping("/ppList")
@@ -74,13 +81,37 @@ public class ProductionPlanController {
         log.info("##LIST PAGE GET....##");
     }
 
+<<<<<<< HEAD
+    @GetMapping("/ppOrderPlan")
+    public void orderPlan() {
+        log.info("##ORDER PLAN PAGE GET....##");
+    }
+
     //생산계획 등록
+=======
+    //생산계획 직접등록
+    @PostMapping("/addProductPlanSelf")
+    public String uploadProductPlanSelf(ProductionPlanDTO productionPlanDTO, ProductionPerDayDTO[] productionPerDayDTOs, Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        String productionPlanCode = productionPlanService.registerProductionPlan(productionPlanDTO);
+        log.info("데이터 넘겨주기 2 = " + productionPlanCode);
+
+        productionPerDayService.registers(productionPerDayDTOs);
+
+        return "redirect:/productionPlan/ppRegister";
+    }
+
+    //생산계획 자동등록
+>>>>>>> 772d2059e2023863b592cf1573b39d6f6baa0549
     @PostMapping("/addProductPlan")
-    public String uploadProductPlan(@RequestParam("file") MultipartFile file, String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
-        XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
-        XSSFSheet worksheet = workbook.getSheetAt(0);
-        registerProductPlan(worksheet);
-        log.info("%%%%" + worksheet.getSheetName());
+    public String uploadProductPlan(@RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        for(MultipartFile file : files) {
+            XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+            XSSFSheet worksheet = workbook.getSheetAt(0);
+            registerProductPlan(worksheet);
+            log.info("%%%%" + worksheet.getSheetName());
+        }
 
         if (where.equals("dataUpload")) {
             redirectAttributes.addFlashAttribute("successMessage", "(특정)데이터 업로드가 성공적으로 완료되었습니다.");

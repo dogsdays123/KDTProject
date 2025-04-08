@@ -7,6 +7,7 @@
 }
 
 /* 기본 폰트 */
+
 @font-face {
     font-family: 'S-CoreDream-3Light';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
@@ -21,10 +22,16 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'NotoSansKR';
+    src: url('https://fonts.gstatic.com/s/notosanskr/v27/Pby6FmXiEBPT4ITbgNA5CgmOelzGdsJg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
 
 /* 전체 페이지 스타일 */
 body {
-    font-family: 'S-CoreDream-3Light';
+    font-family: 'NotoSansKR', sans-serif;
     /* 기본 폰트 설정 */
     background-color: white;
     /* 전체 배경색 (연한 회색) */
@@ -42,7 +49,6 @@ body {
 
 /* 로고 스타일 */
 .navbar-brand {
-    font-family: 'Giants-Bold';
     color: #007bff;
     /* 파란색 */
     font-size: 1.8rem;
@@ -57,7 +63,6 @@ body {
 }
 
 .rogo-span {
-    font-family: 'Giants-Bold';
     color: #007bff;
 }
 
