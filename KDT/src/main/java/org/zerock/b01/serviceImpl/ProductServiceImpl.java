@@ -1,9 +1,11 @@
 package org.zerock.b01.serviceImpl;
 
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Product;
+import org.zerock.b01.dto.ProductDTO;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.service.ProductService;
 
@@ -17,9 +19,40 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    ModelMapper modelMapper;
+
     @Override
     public List<Product> getProducts() {
         List<Product> products = productRepository.findAll();
         return products;
+    }
+
+    @Override
+    public String[] registerProducts(List<ProductDTO> productDTOs){
+
+        List<String> productNames = new ArrayList<>();
+        List<String> productRegister = new ArrayList<>();
+
+        for(ProductDTO productDTO : productDTOs){
+            Product product = modelMapper.map(productDTO, Product.class);
+
+            //이미 존재한 제품
+            if(productRepository.findByProductName(product.getPName()).isPresent()){
+                productNames.add(product.getPName());
+            }
+            //존재하지 않은 제품
+            else {
+                productRepository.save(product);
+                productRegister.add("제품 등록이 완료되었습니다.");
+            }
+        }
+
+        if(productNames.size() > 0){
+            productNames.add(" 제품은 이미 등록된 제품입니다.");
+            return productNames.toArray(new String[productNames.size()]);
+        } else {
+            return productRegister.toArray(new String[productRegister.size()]);
+        }
     }
 }

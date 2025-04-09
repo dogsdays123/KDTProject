@@ -16,28 +16,30 @@
                     <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="도움말"></i>
                 </div>
 
+                <!--등록 결과 메시지-->
+                <div th:if="${message}">
+                    <p th:text="${message}"></p>
+                </div>
+
                 <!-- 등록 폼 -->
-                <form th:action="@{/product/productRegister}" method="post" >
+                <form th:action="@{/product/goodsRegister}" method="post">
                     <div class="row g-2 mb-2">
                         <!-- 상품 코드 -->
                         <div class="col-md-2">
-                            <label for="productCode" class="form-label small">상품 코드</label>
-                            <input type="text" class="form-control form-control-sm" id="productCode" name="productCode" placeholder="예: PRD001" required>
+                            <label for="pCode" class="form-label small">상품 코드</label>
+                            <input type="text" class="form-control form-control-sm" id="pCode" placeholder="예: PRD001">
                         </div>
 
                         <!-- 상품명 -->
                         <div class="col-md-2">
-                            <label for="productName" class="form-label small">상품명</label>
-                            <input type="text" class="form-control form-control-sm" id="productName" name="productName" placeholder="예: 전기자전거A" required>
+                            <label for="pName" class="form-label small">상품명</label>
+                            <input type="text" class="form-control form-control-sm" id="pName" placeholder="예: 전기자전거A">
                         </div>
                         <div class="col-md-1 d-flex align-items-end">
                             <button type="button" class="btn btn-dark btn-sm w-100" onclick="addPlan()">+ 추가</button>
                         </div>
-                        <!-- 등록 버튼 -->
-<!--                        <div class="col-md-1 d-flex align-items-end">-->
-<!--                            <button type="button" class="btn btn-dark btn-sm w-100">등록</button>-->
-<!--                        </div>-->
                     </div>
+
                     <div style="width: 500px">
                         <div class="table-responsive mt-3">
                             <table class="table table-bordered table-hover table-sm align-middle" id="planTable">
@@ -54,7 +56,11 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- 제출 버튼 (테이블에서 추가된 항목을 전송) -->
+                    <button type="submit" class="btn btn-dark btn-sm" id="submitBtn" disabled>전체 등록</button>
                 </form>
+
             </div>
             <br>
             <!-- 엑셀 업로드 카드 -->

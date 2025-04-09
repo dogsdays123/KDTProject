@@ -8,14 +8,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.Product;
+import org.zerock.b01.dto.ProductDTO;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
+import org.zerock.b01.service.ProductService;
 import org.zerock.b01.service.ProductionPerDayService;
 import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 @Controller
@@ -27,6 +32,7 @@ public class ProductController {
     private final ProductionPlanService productionPlanService;
     private final ProductionPerDayService productionPerDayService;
     private final UserByService userByService;
+    private final ProductService productService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -65,5 +71,32 @@ public class ProductController {
     @GetMapping("/goodsRegister")
     public void productRegister() {
         log.info("##PRODUCT REGISTER PAGE GET....##");
+    }
+
+    @PostMapping("/goodsRegister")
+    public String productRegisterPost(@RequestParam("pCodes[]") List<String> pCodes,
+                                      @RequestParam("pNames[]") List<String> pNames,
+                                      Model model, RedirectAttributes redirectAttributes,
+                                      HttpServletRequest request) {
+
+        log.info("##PRODUCT REGISTER PAGE GET....##");
+
+        List<ProductDTO> products = new ArrayList<>();
+
+        // pCodes와 pNames 배열을 순회하여 Product 객체를 만들어 products 리스트에 추가
+        for (int i = 0; i < pCodes.size(); i++) {
+            ProductDTO product = new ProductDTO();
+            product.setPCode(pCodes.get(i)); // pCode를 설정
+            product.setPName(pNames.get(i)); // pName을 설정
+            products.add(product); // 제품 리스트에 추가
+        }
+
+        String[] message = productService.registerProducts(products);
+        String messageString = String.join(",", message);
+
+        // 리다이렉트 시에 message를 전달
+        redirectAttributes.addFlashAttribute("message", messageString);
+
+        return "redirect:/product/goodsRegister";
     }
 }

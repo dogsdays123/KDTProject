@@ -21,6 +21,7 @@ import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
+import org.zerock.b01.dto.ProductDTO;
 import org.zerock.b01.dto.ProductionPerDayDTO;
 import org.zerock.b01.dto.ProductionPlanDTO;
 import org.zerock.b01.dto.UserByDTO;
@@ -33,6 +34,7 @@ import org.zerock.b01.service.UserByService;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,6 +78,9 @@ public class ProductionPlanController {
         log.info("##PP REGISTER PAGE GET....##");
         List<Product> productList = productService.getProducts();
         model.addAttribute("productList", productList);
+        log.info("$$$$" + productList);
+
+        // 반환할 뷰 이름을 명시합니다.
         return "/productionPlan/ppRegister";
     }
 
@@ -97,12 +102,41 @@ public class ProductionPlanController {
 
     //생산계획 직접등록
     @PostMapping("/addProductPlanSelf")
-    public String uploadProductPlanSelf(ProductionPlanDTO productionPlanDTO, ProductionPerDayDTO[] productionPerDayDTOs, Model model, RedirectAttributes redirectAttributes) throws IOException {
+    public String uploadProductPlanSelf(@RequestParam("ppStarts[]") List<LocalDate> ppStarts,
+                                        @RequestParam("ppEnds[]") List<LocalDate> ppEnds,
+                                        @RequestParam("pNames[]") List<String> pNames,
+                                        @RequestParam("ppCodes[]") List<String> ppCodes,
+                                        @RequestParam("ppNums[]") List<Integer> ppNums,
+                                        @RequestParam("day1[]") List<Integer> day1,
+                                        @RequestParam("day2[]") List<Integer> day2,
+                                        @RequestParam("day3[]") List<Integer> day3,
+                                        @RequestParam("day4[]") List<Integer> day4,
+                                        @RequestParam("day5[]") List<Integer> day5,
+                                        Model model, RedirectAttributes redirectAttributes,
+                                        HttpServletRequest request) throws IOException {
 
-        String productionPlanCode = productionPlanService.registerProductionPlan(productionPlanDTO);
-        log.info("데이터 넘겨주기 2 = " + productionPlanCode);
+        List<ProductionPlanDTO> productionPlanDTOs = new ArrayList<>();
 
-        productionPerDayService.registers(productionPerDayDTOs);
+        // pCodes와 pNames 배열을 순회하여 Product 객체를 만들어 products 리스트에 추가
+        for (int i = 0; i < ppStarts.size(); i++) {
+            ProductionPlanDTO productionPlanDTO = new ProductionPlanDTO();
+            productionPlanDTO.setPpStart(ppStarts.get(i));
+            productionPlanDTO.setPpEnd(ppEnds.get(i));
+            productionPlanDTO.setPpName(pNames.get(i));
+            productionPlanDTO.setPpCode(ppCodes.get(i));
+            productionPlanDTO.setPpNum(ppNums.get(i));
+
+            productionPlanDTOs.add(productionPlanDTO); // 제품 리스트에 추가
+            productionPlanService.registerProductionPlan(productionPlanDTO);
+
+//            PlanPerDay도 수정해야함
+//            ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
+//            productionPerDayDTO.setPpdNum(day1.get(i));
+//            productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
+//            productionPerDayDTO.setPpCode(productionPlanCode);
+//            productionPerDayService.register(productionPerDayDTO);
+//            productionPerDayService.registers(productionPerDayDTOs);
+        }
 
         return "redirect:/productionPlan/ppRegister";
     }

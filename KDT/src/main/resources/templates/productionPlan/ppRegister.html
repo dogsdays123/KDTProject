@@ -14,27 +14,27 @@
                 <h4 class="mb-0 me-2">생산 계획 등록</h4>
                 <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="도움말"></i>
             </div>
-            <form method="post" action="/productionPlanSelf/ppRegister">
+            <form method="post" th:action="@{/productionPlan/addProductPlanSelf}">
                 <div style="max-width: 1200px; margin-left: 0;">
                     <!-- 1줄: 날짜 + 제품명 + 코드 + 수량 -->
                     <div class="row g-2 mb-2">
                         <div class="col-md-2">
                             <label for="startDate" class="form-label small">시작일</label>
-                            <input type="date" id="startDate" name="ppStart" class="form-control form-control-sm">
+                            <input type="date" id="startDate" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-2">
                             <label for="endDate" class="form-label small">종료일</label>
-                            <input type="date" id="endDate" name="ppEnd" class="form-control form-control-sm">
+                            <input type="date" id="endDate" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-2">
                             <label for="productName" class="form-label small">제품명</label>
-                            <select id="productName" name="pppCode" class="form-select form-select-sm">
-                                <option th:each="product : ${productList}" th:value="${product}"></option>
+                            <select id="productName" class="form-select form-select-sm">
+                                <option th:each="product : ${productList}" th:value="${product.pName}" th:text="${product.pName}"></option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="productCode" class="form-label small">제품 코드</label>
-                            <input type="text" id="productCode" name="ppName" class="form-control form-control-sm">
+                            <label for="productCode" class="form-label small">생산 계획 코드</label>
+                            <input type="text" id="productCode" class="form-control form-control-sm">
                         </div>
                     </div>
 
@@ -42,27 +42,27 @@
                     <div class="row g-2 mb-2 align-items-end">
                         <div class="col-md-1">
                             <label for="productQuantity" class="form-label small">전체 수량</label>
-                            <input type="number" id="productQuantity" name="ppNum" class="form-control form-control-sm">
+                            <input type="number" id="productQuantity" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-1">
                             <label class="form-label small">1일차</label>
-                            <input type="number" id="product1Qty" class="form-control form-control-sm" name="day1Qty">
+                            <input type="number" id="product1Qty" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-1">
                             <label class="form-label small">2일차</label>
-                            <input type="number" id="product2Qty" class="form-control form-control-sm" name="day2Qty">
+                            <input type="number" id="product2Qty" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-1">
                             <label class="form-label small">3일차</label>
-                            <input type="number" id="product3Qty" class="form-control form-control-sm" name="day3Qty">
+                            <input type="number" id="product3Qty" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-1">
                             <label class="form-label small">4일차</label>
-                            <input type="number" id="product4Qty" class="form-control form-control-sm" name="day4Qty">
+                            <input type="number" id="product4Qty" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-1">
                             <label class="form-label small">5일차</label>
-                            <input type="number" id="product5Qty" class="form-control form-control-sm" name="day5Qty">
+                            <input type="number" id="product5Qty" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-2 d-flex gap-1">
 
@@ -78,7 +78,7 @@
                             <th>시작 날짜</th>
                             <th>종료 날짜</th>
                             <th>제품명</th>
-                            <th>제품 코드</th>
+                            <th>생산 계획 코드</th>
                             <th>수량</th>
                             <th>1일차</th>
                             <th>2일차</th>
