@@ -31,9 +31,9 @@ public class ProductionPlan extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CurrentStatus ppState;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "pId", nullable = false)
-    private String pppCode; // 제품 외래키
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pId", nullable = false)
+    private Product product; // 제품 외래키
 
     public void set(String ppCode){
         this.ppCode = ppCode;

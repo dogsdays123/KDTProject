@@ -19,7 +19,8 @@ public class Contract extends BaseEntity {
 
     private String cCode;
 
-    private String cMName;
+    //부품 이름을 명확히 기재하여 주십시오
+    private String cMaterialName;
 
     private String cSize;
 

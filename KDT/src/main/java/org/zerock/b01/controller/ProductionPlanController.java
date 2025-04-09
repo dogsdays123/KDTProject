@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.CurrentStatus;
+import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.ProductionPerDayDTO;
 import org.zerock.b01.dto.ProductionPlanDTO;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
+import org.zerock.b01.service.ProductService;
 import org.zerock.b01.service.ProductionPerDayService;
 import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
@@ -31,6 +33,8 @@ import org.zerock.b01.service.UserByService;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 @Log4j2
 @Controller
@@ -39,6 +43,7 @@ import java.time.LocalDate;
 @RequestMapping("/productionPlan")
 public class ProductionPlanController {
 
+    private final ProductService productService;
     @Value("${org.zerock.upload.readyPath}")
     private String readyPath;
 
@@ -67,8 +72,11 @@ public class ProductionPlanController {
     }
 
     @GetMapping("/ppRegister")
-    public void register() {
+    public String register(Model model) {
         log.info("##PP REGISTER PAGE GET....##");
+        List<Product> productList = productService.getProducts();
+        model.addAttribute("productList", productList);
+        return "/productionPlan/ppRegister";
     }
 
     @PostMapping("ppRegister")
@@ -154,13 +162,20 @@ public class ProductionPlanController {
             log.info("데이터 넘겨주기 2 = " + productionPlanCode);
 
             //6에서부터 10까지는 일별 생산량이다.
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < 30; j++) {
 
                 if (row.getCell(6 + j, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
 
                     int quantity = Integer.parseInt(formatter.formatCellValue(row.getCell(6 + j)));
                     ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
                     productionPerDayDTO.setPpdNum(quantity);
+                    productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
+                    productionPerDayDTO.setPpCode(productionPlanCode);
+                    productionPerDayService.register(productionPerDayDTO);
+
+                } else{
+                    ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
+                    productionPerDayDTO.setPpdNum(0);
                     productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
                     productionPerDayDTO.setPpCode(productionPlanCode);
                     productionPerDayService.register(productionPerDayDTO);
