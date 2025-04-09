@@ -18,7 +18,7 @@ public class ProductionPlan extends BaseEntity {
     @Column(length = 20, nullable = false)
     private Long ppId;
 
-    private String ppName;
+    private String pName;
 
     private String ppCode;
 

@@ -31,7 +31,7 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
     @Override
     public String registerProductionPlan(ProductionPlanDTO productionPlanDTO) {
         ProductionPlan plan = modelMapper.map(productionPlanDTO, ProductionPlan.class);
-        Product product = productionPlanRepository.findByProduct(productionPlanDTO.getPpName());
+        Product product = productionPlanRepository.findByProduct(productionPlanDTO.getPName());
 
         //만약 생산계획 코드가 없고, 새로 입력된 경우
         if (productionPlanDTO.getPpCode() == null) {
@@ -48,7 +48,7 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
         } else { //생산 계획 코드가 있는 경우 덮어쓰기한다.
             log.info("haveOld" + plan.getPpCode());
             plan = productionPlanRepository.findByProductionPlanCode(productionPlanDTO.getPpCode());
-            plan.setPpName(productionPlanDTO.getPpName());
+            plan.setPName(productionPlanDTO.getPName());
 
             plan.setPpId(product.getPId());
 
@@ -70,7 +70,7 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
         String prefix = "";
 
         for(Product product : products){
-            if(dto.getPpName().equals(product.getPName())){
+            if(dto.getPName().equals(product.getPName())){
                 prefix = product.getPCode();
             } else{
                 prefix = "DEFAULT";

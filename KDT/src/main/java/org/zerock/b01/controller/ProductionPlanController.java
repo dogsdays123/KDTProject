@@ -122,7 +122,7 @@ public class ProductionPlanController {
             ProductionPlanDTO productionPlanDTO = new ProductionPlanDTO();
             productionPlanDTO.setPpStart(ppStarts.get(i));
             productionPlanDTO.setPpEnd(ppEnds.get(i));
-            productionPlanDTO.setPpName(pNames.get(i));
+            productionPlanDTO.setPName(pNames.get(i));
             productionPlanDTO.setPpCode(ppCodes.get(i));
             productionPlanDTO.setPpNum(ppNums.get(i));
 
@@ -187,7 +187,7 @@ public class ProductionPlanController {
             Integer productionQuantity = Integer.parseInt(formatter.formatCellValue(row.getCell(5)));
 
             entity.setPppCode(productCode);
-            entity.setPpName(productName);
+            entity.setPName(productName);
             entity.setPpStart(productionStartDate);
             entity.setPpEnd(productionEndDate);
             entity.setPpNum(productionQuantity);
