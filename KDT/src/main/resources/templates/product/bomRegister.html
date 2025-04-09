@@ -5,9 +5,124 @@
       th:with="breadcrumbLevel1='제품 관리', breadcrumbCurrent='BOM 등록'">
 <head>
   <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">-->
-  <!--    <link href="/css/production/list.css" rel="stylesheet">-->
+      <link href="/css/product/bomRegister.css" rel="stylesheet">
 </head>
 <body>
   <div layout:fragment="boRegi">
+    <div class="container-fluid">
+      <div class="container" style="max-width: 1000px; margin-left: 0">
+        <div class="d-flex align-items-center mb-3">
+          <h4 class="mb-0 me-2">BOM 등록</h4>
+          <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="도움말"></i>
+        </div>
+
+        <!-- 등록 폼 -->
+        <form>
+          <div style="max-width: 1200px; margin-left: 0;">
+            <div class="row g-2 mb-2">
+              <div class="col-md-2">
+                <label for="productName" class="form-label small">상품 선택</label>
+                <select id="productName" name="상품명" class="form-select form-select-sm">
+                  <option value="전기자전거A">전기자전거A</option>
+                  <option value="전기자전거B">전기자전거B</option>
+                  <option value="전동킥보드">전동킥보드</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <label for="productCode" class="form-label small">상품 코드</label>
+                <input type="text" id="productCode" name="상품코드" class="form-control form-control-sm">
+              </div>
+            </div>
+            <div class="row g-2 mb-2 align-items-end">
+              <div class="col-md-3">
+                <label for="productCode" class="form-label small">부품 선택</label>
+                <input type="text" id="partName" name="부품명" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-3">
+                <label for="productCode" class="form-label small">자재 선택</label>
+                <input type="text" id="materialName" name="자재명" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-1">
+                <label class="form-label small">필요수량</label>
+                <input type="number" id="productQuantity" class="form-control form-control-sm" name="수량">
+              </div>
+              <div class="col-md-2 d-flex gap-1">
+                <button type="button" class="btn btn-dark btn-sm w-50" onclick="addPlan()">+ 추가</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="width: 800px">
+            <div class="table-responsive mt-3">
+              <table class="table table-bordered table-hover table-sm align-middle" id="planTable">
+                <thead class="table-light small text-center">
+                <tr>
+                  <th>상품명</th>
+                  <th>상품 코드</th>
+                  <th>부품명</th>
+                  <th>자재명</th>
+                  <th>필요수량</th>
+                </tr>
+                </thead>
+                <tbody class="small text-center">
+                <!-- JS로 항목이 추가됨 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+      <br>
+      <!-- 엑셀 업로드 카드 -->
+      <div class="card p-3">
+        <h6 class="mb-2">
+          <i class="bi bi-file-earmark-excel-fill text-success"></i> 엑셀 파일 간편 등록
+        </h6>
+
+        <!-- 엑셀 업로드 -->
+        <form id="excelUploadForm" method="post" enctype="multipart/form-data">
+          <input name="where" type="hidden" value="Plan">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <label for="excelFile" class="custom-file-upload">
+              <i class="bi bi-paperclip me-1"></i> 파일 선택
+            </label>
+            <button type="button" id="excelUpload" class="btn btn-dark btn-sm">
+              <i class="bi bi-upload me-1"></i> 엑셀 업로드
+            </button>
+          </div>
+          <input type="file" id="excelFile" name="file" accept=".xlsx,.xls" multiple>
+        </form>
+        <small class="text-muted mt-2 d-block">※ .xlsx 또는 .xls 형식의 파일만 업로드 가능합니다.</small>
+
+        <!-- 업로드된 파일명 출력 -->
+        <div id="uploadedFileList" class="mt-3" style="display: none;">
+          <h6 class="mb-2">📂 업로드된 파일</h6>
+          <ul class="list-group list-group-sm" id="fileList" style="font-size: 0.9rem;"></ul>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="card p-3">
+        <h6 class="mb-2">
+          <i class="bi bi-file-earmark-excel-fill icon-purple"></i>
+          엑셀 파일 다운로드
+        </h6>
+        <div class="d-flex gap-2">
+          <button type="button" id="tempDownload" class="btn btn-outline-dark btn-sm"
+                  onclick="location.href='/test/downloadProductPlan/true'">
+            <i class="bi bi-download me-1"></i> 템플릿 다운로드
+          </button>
+          <button type="button" id="dataDownload" class="btn btn-outline-dark btn-sm"
+                  onclick="location.href='/test/downloadProductPlan/false'">
+            <i class="bi bi-database-down me-1"></i> 데이터 다운로드
+          </button>
+        </div>
+        <small class="text-muted mt-2 d-block">
+          ※ 간편 등록 엑셀 템플릿 다운로드가 가능합니다.
+        </small>
+      </div>
+    </div>
+    <script th:src="@{/js/product/bomRegister.js}"></script>
   </div>
 </body>

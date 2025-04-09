@@ -19,11 +19,11 @@
     <div class="sidebar">
         <ul class="nav flex-column">
             <a href="/mainPage/main"><img src="/image/PNS-logo.PNG"></a>
-            <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
-            <li class="nav-item"><a href="/mainPage/guide" class="nav-link"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무 활용가이드</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" title="시작하기"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
+            <li class="nav-item"><a href="/mainPage/guide" class="nav-link" title="실무 활용가이드"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무 활용가이드</a></li>
             <hr>
             <li class="nav-item">
-                <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-user')"><i class="bi bi-people"></i>&nbsp;&nbsp;계정 관리&nbsp;&nbsp;<span>▾</span></a>
+                <a href="#" class="nav-link" title="계정 관리" onclick="toggleSubmenu('submenu-user')"><i class="bi bi-people"></i>&nbsp;&nbsp;계정 관리&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-user" class="submenu">
                   <li><a href="#" class="nav-link">사원 목록 조회</a></li>
                   <li><a href="#" class="nav-link">업체 목록 조회</a></li>
@@ -31,14 +31,14 @@
               </ul>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-dept')"><i class="bi bi-person-gear"></i>&nbsp;&nbsp;권한 및 부서 관리&nbsp;&nbsp;<span>▾</span></a>
+              <a href="#" class="nav-link" title="권한 및 부서 관리" onclick="toggleSubmenu('submenu-dept')"><i class="bi bi-person-gear"></i>&nbsp;&nbsp;권한 및 부서 관리&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-dept" class="submenu">
                   <li><a href="#" class="nav-link">부서 관리</a></li>
                   <li><a href="#" class="nav-link">권한 설정</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-agree')"><i class="bi bi-person-check"></i>&nbsp;&nbsp;가입 승인&nbsp;&nbsp;<span>▾</span></a>
+              <a href="#" class="nav-link" title="가입 승인" onclick="toggleSubmenu('submenu-agree')"><i class="bi bi-person-check"></i>&nbsp;&nbsp;가입 승인&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-agree" class="submenu">
                   <li><a href="#" class="nav-link">신규 가입자 승인</a></li>
                   <li><a href="#" class="nav-link">업체 등록 승인</a></li>
@@ -56,8 +56,8 @@
             <li class="nav-item">
                 <a href="#" class="nav-link" onclick="toggleSubmenu('submenu-product')">제품 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-product" class="submenu">
-                    <li><a href="/product/productRegister" class="nav-link">상품 등록</a></li>
-                    <li><a href="/product/productList" class="nav-link">상품 목록</a></li>
+                    <li><a href="/product/goodsRegister" class="nav-link">상품 등록</a></li>
+                    <li><a href="/product/goodsList" class="nav-link">상품 목록</a></li>
                     <li><a href="/product/bomRegister" class="nav-link">BOM 등록</a></li>
                     <li><a href="/product/bomList" class="nav-link">BOM 목록</a></li>
                 </ul>
@@ -142,7 +142,7 @@
         </div>
         <div class="user-info">
             <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>
-            <i class="bi bi-person-circle" onclick="toggleUserDropdown()"></i>
+            <i class="bi bi-person-circle" onclick="toggleUserDropdown()" title="마이페이지/로그아웃"></i>
             <div class="user-dropdown">
                 <a href="/mainPage/myPage">마이페이지</a>
                 <a href="/logout">로그아웃</a>

@@ -5,7 +5,7 @@
       th:with="breadcrumbLevel1='제품 관리', breadcrumbCurrent='상품 등록'">
 <head>
 <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">-->
-    <link href="/css/product/register.css" rel="stylesheet">
+    <link href="/css/product/goodsRegister.css" rel="stylesheet">
 </head>
 <body>
     <div layout:fragment="pdRegi">
@@ -30,10 +30,28 @@
                             <label for="productName" class="form-label small">상품명</label>
                             <input type="text" class="form-control form-control-sm" id="productName" name="productName" placeholder="예: 전기자전거A" required>
                         </div>
-
-                        <!-- 등록 버튼 -->
                         <div class="col-md-1 d-flex align-items-end">
-                            <button type="button" class="btn btn-dark btn-sm w-100">등록</button>
+                            <button type="button" class="btn btn-dark btn-sm w-100" onclick="addPlan()">+ 추가</button>
+                        </div>
+                        <!-- 등록 버튼 -->
+<!--                        <div class="col-md-1 d-flex align-items-end">-->
+<!--                            <button type="button" class="btn btn-dark btn-sm w-100">등록</button>-->
+<!--                        </div>-->
+                    </div>
+                    <div style="width: 500px">
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-hover table-sm align-middle" id="planTable">
+                                <thead class="table-light small text-center">
+                                <tr>
+                                    <th>상품 코드</th>
+                                    <th>상품명</th>
+                                    <th>삭제</th>
+                                </tr>
+                                </thead>
+                                <tbody class="small text-center">
+                                <!-- JS로 항목이 추가됨 -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </form>
@@ -89,5 +107,6 @@
                 </small>
             </div>
         </div>
+        <script th:src="@{/js/product/productRegister.js}"></script>
     </div>
 </body>

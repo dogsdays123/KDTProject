@@ -5,9 +5,182 @@
       th:with="breadcrumbLevel1='제품 관리', breadcrumbCurrent='BOM 목록'">
 <head>
     <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">-->
-    <!--    <link href="/css/production/list.css" rel="stylesheet">-->
+        <link href="/css/product/bomList.css" rel="stylesheet">
 </head>
 <body>
     <div layout:fragment="boList">
+        <div class="container-fluid">
+            <div class="container" style="max-width: 1000px; margin-left: 0;">
+                <div class="d-flex align-items-center mb-3">
+                    <h4 class="mb-0 me-2">BOM 목록</h4>
+                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="BOM 목록 가이드"></i>
+                </div>
+
+                <!-- 검색 필터 -->
+                <form>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-2">
+                            <label for="parts" class="form-label small">부품 선택</label>
+                            <select class="form-select form-select-sm" id="parts">
+                                <option selected>전체</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="materials" class="form-label small">자재 선택</label>
+                            <select class="form-select form-select-sm" id="materials">
+                                <option selected>전체</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- 2줄: 검색어 입력 -->
+                <form>
+                    <div class="row g-2 mt-2">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
+                                <input type="text" class="form-control" id="keyword" placeholder="검색어 입력">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br>
+            <div class="container" style="max-width: 800px; margin-left: 0;">
+                <div class="bg-white rounded shadow-sm">
+                    <div style="max-height: 550px; overflow-y: auto;">
+                        <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                            <thead class="table-light">
+                            <tr>
+                                <th>부품명</th>
+                                <th>부품코드</th>
+                                <th>자재명</th>
+                                <th>자재수량</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>(전기자전거)경적</td>
+                                <td>MATB3MAT001</td>
+                                <td>전자식 경적</td>
+                                <td>10</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>

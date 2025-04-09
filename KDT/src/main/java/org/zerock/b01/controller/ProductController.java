@@ -57,12 +57,12 @@ public class ProductController {
         log.info("##BOM REGISTER PAGE GET....##");
     }
 
-    @GetMapping("/productList")
+    @GetMapping("/goodsList")
     public void productList() {
         log.info("##PRODUCT LIST PAGE GET....##");
     }
 
-    @GetMapping("/productRegister")
+    @GetMapping("/goodsRegister")
     public void productRegister() {
         log.info("##PRODUCT REGISTER PAGE GET....##");
     }
