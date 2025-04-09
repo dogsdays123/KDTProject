@@ -29,16 +29,16 @@ function addPlan() {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="startDates[]" value="${startDate}">${startDate}</td>
-        <td><input type="hidden" name="endDates[]" value="${endDate}">${endDate}</td>
-        <td><input type="hidden" name="productNames[]" value="${productName}">${productName}</td>
-        <td><input type="hidden" name="productCodes[]" value="${productCode}">${productCode}</td>
-        <td><input type="hidden" name="productQuantities[]" value="${productQuantity}">${productQuantity}</td>
-        <td><input type="hidden" name="product1Qties[]" value="${product1Qty}">${product1Qty}</td>
-        <td><input type="hidden" name="product2Qties[]" value="${product2Qty}">${product2Qty}</td>
-        <td><input type="hidden" name="product3Qties[]" value="${product3Qty}">${product3Qty}</td>
-        <td><input type="hidden" name="product4Qties[]" value="${product4Qty}">${product4Qty}</td>
-        <td><input type="hidden" name="product5Qties[]" value="${product5Qty}">${product5Qty}</td>
+        <td><input type="hidden" name="ppStarts[]" value="${startDate}">${startDate}</td>
+        <td><input type="hidden" name="ppEnds[]" value="${endDate}">${endDate}</td>
+        <td><input type="hidden" name="pNames[]" value="${productName}">${productName}</td>
+        <td><input type="hidden" name="ppCodes[]" value="${productCode}">${productCode}</td>
+        <td><input type="hidden" name="ppNums[]" value="${productQuantity}">${productQuantity}</td>
+        <td><input type="hidden" name="day1[]" value="${product1Qty}">${product1Qty}</td>
+        <td><input type="hidden" name="day2[]" value="${product2Qty}">${product2Qty}</td>
+        <td><input type="hidden" name="day3[]" value="${product3Qty}">${product3Qty}</td>
+        <td><input type="hidden" name="day4[]" value="${product4Qty}">${product4Qty}</td>
+        <td><input type="hidden" name="day5[]" value="${product5Qty}">${product5Qty}</td>
         <td>
           <button type="button" class="btn btn-outline-dark btn-sm" onclick="removeRow(this)" aria-label="삭제">
             <i class="bi bi-x-lg"></i>
