@@ -19,7 +19,7 @@ public class ProductionPerDay extends BaseEntity {
     private int ppdNum; //일당 생산량
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ppCode", nullable = false)
+    @JoinColumn(name = "ppId", nullable = false)
     private ProductionPlan productionPlan;
 
     private LocalDate pDate;

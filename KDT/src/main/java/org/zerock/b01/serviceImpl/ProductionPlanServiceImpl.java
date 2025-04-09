@@ -5,12 +5,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.CurrentStatus;
+import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.dto.ProductionPlanDTO;
+import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.service.ProductionPlanService;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Log4j2
 @Service
@@ -21,9 +24,14 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
     @Autowired
     private ProductionPlanRepository productionPlanRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    //생산계획 등록
     @Override
     public String registerProductionPlan(ProductionPlanDTO productionPlanDTO) {
         ProductionPlan plan = modelMapper.map(productionPlanDTO, ProductionPlan.class);
+        Product product = productionPlanRepository.findByProduct(productionPlanDTO.getPpName());
 
         //만약 생산계획 코드가 없고, 새로 입력된 경우
         if (productionPlanDTO.getPpCode() == null) {
@@ -41,7 +49,9 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
             log.info("haveOld" + plan.getPpCode());
             plan = productionPlanRepository.findByProductionPlanCode(productionPlanDTO.getPpCode());
             plan.setPpName(productionPlanDTO.getPpName());
-            plan.setPppCode(productionPlanDTO.getPppCode());
+
+            plan.setPpId(product.getPId());
+
             plan.setPpNum(productionPlanDTO.getPpNum());
             plan.setPpStart(productionPlanDTO.getPpStart());
             plan.setPpEnd(productionPlanDTO.getPpEnd());
@@ -53,35 +63,18 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
         return plan.getPpCode();
     }
 
-    private ProductionPlan toEntity(ProductionPlanDTO dto) {
-        if (dto == null) return null;
-
-        ProductionPlan plan = new ProductionPlan();
-        plan.setPpId(dto.getPpId());
-        plan.setPppCode(dto.getPppCode());
-        plan.setPpName(dto.getPpName());
-        plan.setPpStart(dto.getPpStart());
-        plan.setPpEnd(dto.getPpEnd());
-        plan.setPpNum(dto.getPpNum());
-        plan.setPpState(CurrentStatus.ON_HOLD);
-        return plan;
-    }
-
     private String generateProductionPlanCode(ProductionPlanDTO dto) {
+        List<Product> products = productRepository.findByProducts();
+
         // 제품명에 따른 접두어 설정
-        String prefix;
-        switch (dto.getPpName()) {
-            case "전기자전거A":
-                prefix = "PDPBA";
-                break;
-            case "전기자전거B":
-                prefix = "PDPBB";
-                break;
-            case "전동킥보드":
-                prefix = "PDPBK";
-                break;
-            default:
-                prefix = "PDPUN";
+        String prefix = "";
+
+        for(Product product : products){
+            if(dto.getPpName().equals(product.getPName())){
+                prefix = product.getPCode();
+            } else{
+                prefix = "DEFAULT";
+            }
         }
 
         // 날짜 포맷 (예: 20231120)

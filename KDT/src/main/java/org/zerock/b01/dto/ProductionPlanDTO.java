@@ -18,6 +18,9 @@ public class ProductionPlanDTO {
     private LocalDate ppStart;
     private LocalDate ppEnd;
     private Integer ppNum;
+
+    //product
     private String pppCode;
+
     private String ppState;
 }

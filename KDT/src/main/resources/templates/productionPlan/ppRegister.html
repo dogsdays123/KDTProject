@@ -29,9 +29,7 @@
                         <div class="col-md-2">
                             <label for="productName" class="form-label small">제품명</label>
                             <select id="productName" name="pppCode" class="form-select form-select-sm">
-                                <option value="전기자전거A">전기자전거A</option>
-                                <option value="전기자전거B">전기자전거B</option>
-                                <option value="전동킥보드">전동킥보드</option>
+                                <option th:each="product : ${productList}" th:value="${product}"></option>
                             </select>
                         </div>
                         <div class="col-md-2">
