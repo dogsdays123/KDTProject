@@ -56,8 +56,20 @@ function addPlan() {
 }
 
 // 삭제 버튼 클릭 시 해당 행 삭제
-function removeRow(btn) {
-    btn.closest('tr').remove();
+function removeRow(button) {
+    const row = button.closest('tr');
+    row.remove();
+
+    // #registerRow를 제외한 나머지 데이터 행이 0개인지 확인
+    const tableBody = document.getElementById('goodsTbody'); // 실제 tbody id로 변경
+    const remainingRows = tableBody.querySelectorAll('tr:not(#registerRow)');
+
+    if (remainingRows.length === 0) {
+        const registerRow = document.getElementById('registerRow');
+        if (registerRow) {
+            registerRow.remove();
+        }
+    }
 }
 
 function clearPlanTable() {
