@@ -14,7 +14,7 @@ public class ProductionPlanDTO {
 
     private Long ppId;
     private String ppCode;
-    private String ppName;
+    private String pName;
     private LocalDate ppStart;
     private LocalDate ppEnd;
     private Integer ppNum;

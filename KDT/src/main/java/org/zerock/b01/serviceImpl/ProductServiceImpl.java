@@ -32,7 +32,9 @@ public class ProductServiceImpl implements ProductService {
     public String[] registerProducts(List<ProductDTO> productDTOs){
 
         List<String> productNames = new ArrayList<>();
+
         List<String> productRegister = new ArrayList<>();
+        productRegister.add("제품 등록이 완료되었습니다.");
 
         for(ProductDTO productDTO : productDTOs){
             Product product = modelMapper.map(productDTO, Product.class);
@@ -44,7 +46,6 @@ public class ProductServiceImpl implements ProductService {
             //존재하지 않은 제품
             else {
                 productRepository.save(product);
-                productRegister.add("제품 등록이 완료되었습니다.");
             }
         }
 
