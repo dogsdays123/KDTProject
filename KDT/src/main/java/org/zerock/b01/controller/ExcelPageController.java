@@ -40,7 +40,7 @@ import java.time.LocalDate;
 @RequestMapping("/test")
 public class ExcelPageController {
 
-    @Value("${org.zerock.upload.readyPath}")
+    @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
     private final ProductionPlanService productionPlanService;

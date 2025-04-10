@@ -31,6 +31,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public String[] registerProducts(List<ProductDTO> productDTOs){
 
+        log.info("innerProductRegister" + productDTOs);
+
         List<String> productNames = new ArrayList<>();
 
         List<String> productRegister = new ArrayList<>();
@@ -54,6 +56,23 @@ public class ProductServiceImpl implements ProductService {
             return productNames.toArray(new String[productNames.size()]);
         } else {
             return productRegister.toArray(new String[productRegister.size()]);
+        }
+    }
+
+    @Override
+    public void registerProductsEasy(List<ProductDTO> productDTOs){
+
+        log.info("innerProductRegister" + productDTOs);
+
+        for(ProductDTO productDTO : productDTOs){
+
+            Product product = modelMapper.map(productDTO, Product.class);
+
+            if(productRepository.findByProductName(product.getPName()).isPresent()){
+
+            } else {
+                productRepository.save(product);
+            }
         }
     }
 }

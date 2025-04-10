@@ -27,7 +27,8 @@ import org.zerock.b01.service.UserByService;
 public class SupplyController {
 
     private final ProductService productService;
-    @Value("${org.zerock.upload.readyPath}")
+
+    @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
     private final ProductionPlanService productionPlanService;

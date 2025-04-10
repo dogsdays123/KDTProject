@@ -5,11 +5,11 @@
       th:with="breadcrumbLevel1='제품 관리', breadcrumbCurrent='상품 목록'">
 <head>
     <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">-->
-        <link href="/css/product/goodsList.css" rel="stylesheet">
+    <link href="/css/product/goodsList.css" rel="stylesheet">
 </head>
 <body>
-    <div layout:fragment="pdList">
-        <div class="container-fluid">
+<div layout:fragment="pdList">
+    <div class="container-fluid">
             <div class="container" style="max-width: 1000px; margin-left: 0;">
                 <div class="d-flex align-items-center mb-3">
                     <h4 class="mb-0 me-2">상품 목록</h4>
@@ -17,33 +17,32 @@
                 </div>
 
                 <!-- 검색 필터 -->
-                <form>
+                <form th:action="@{/product/goodsList}" method="get">
+                    <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2">
                             <label for="productCode" class="form-label small">상품 코드</label>
-                            <input type="text" id="productCode" class="form-control form-control-sm" title="상품 코드">
+                            <input type="text" id="productCode" name="pCode" class="form-control form-control-sm" title="상품 코드">
                         </div>
                         <div class="col-md-2">
                             <label for="productName" class="form-label small">상품명</label>
-                            <select id="productName" name="제품명" class="form-select form-select-sm" title="상품 선택">
-                                <option value="">전체</option>
-                                <option value="전기자전거A">전기자전거A</option>
-                                <option value="전기자전거B">전기자전거B</option>
-                                <option value="전동킥보드">전동킥보드</option>
+                            <select id="productName" name="pName" class="form-select form-select-sm" title="상품 선택">
+                                <option value="all">전체</option>
+                                <option th:each="product : ${productList}" th:value="${product.pName}" th:text="${product.pName}"></option>
                             </select>
                         </div>
                         <div class="col-md-1 d-flex align-items-end">
-                            <button type="button" class="btn btn-dark btn-sm w-100" title="필터 적용">적용</button>
+                            <button type="submit" class="btn btn-dark btn-sm w-100" title="필터 적용">적용</button>
                         </div>
                     </div>
-                </form>
-                <!-- 2줄: 검색어 입력 -->
-                <form>
+
+                    <!--검색어 입력-->
                     <div class="row g-2 mt-2">
                         <div class="col-md-6">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
-                                <input type="text" class="form-control" id="keyword" placeholder="검색어 입력">
+                                <span class="input-group-text bg-white"><i
+                                        class="fas fa-search text-secondary"></i></span>
+                                <input type="text" class="form-control" id="keyword" name="keyword" placeholder="검색어 입력">
                             </div>
                         </div>
                     </div>
@@ -59,29 +58,20 @@
                                 <th>상품 코드</th>
                                 <th>상품명</th>
                                 <th>상품 등록 일자</th>
+                                <th>작성자</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>MATB3FIN001</td>
-                                <td>전기자전거A</td>
-                                <td>2025-04-09</td>
-                            </tr>
-                            <tr>
-                                <td>MATB3FIN002</td>
-                                <td>전기자전거B</td>
-                                <td>2025-04-09</td>
-                            </tr>
-                            <tr>
-                                <td>MATK2FIN001</td>
-                                <td>전동킥보드</td>
-                                <td>2025-04-09</td>
+                            <tr th:each="dto:${responseDTO.dtoList}">
+                                <td th:text="${dto.getPCode()}"></td>
+                                <td th:text="${dto.getPName()}"></td>
+                                <td th:text="${#temporals.format(dto.getStartDate(), 'yyyy-MM-dd')}"></td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-        </div>
     </div>
+</div>
 </body>

@@ -9,6 +9,10 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,7 +53,8 @@ import java.util.stream.Stream;
 public class ProductionPlanController {
 
     private final ProductService productService;
-    @Value("${org.zerock.upload.readyPath}")
+
+    @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
     private final ProductionPlanService productionPlanService;
@@ -101,6 +106,29 @@ public class ProductionPlanController {
     @GetMapping("/ppList")
     public void list() {
         log.info("##LIST PAGE GET....##");
+    }
+
+    @GetMapping("/downloadProductPlan/{isTemplate}")
+    public ResponseEntity<Resource> downloadProductPlan(@PathVariable("isTemplate") boolean isTemplate) {
+        // 요청에 따라 파일을 결정
+        String filePath = isTemplate ? (readyPath + "/template.xlsx") : (readyPath + "/data.xlsx");
+
+        // 파일 시스템에서 파일을 찾음
+        Resource resource = new FileSystemResource(filePath);
+
+        // 파일이 없으면 404 반환
+        if (!resource.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 응답 헤더 설정 (파일 다운로드를 위해 Content-Disposition 설정)
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename());
+
+        // 파일 반환
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(resource);
     }
 
     //생산계획 직접등록
@@ -162,7 +190,7 @@ public class ProductionPlanController {
         return "redirect:/productionPlan/ppRegister";
     }
 
-    //생산계획 자동등록
+    //생산계획 자동 등록
     @PostMapping("/addProductPlan")
     public String uploadProductPlan(@RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
 

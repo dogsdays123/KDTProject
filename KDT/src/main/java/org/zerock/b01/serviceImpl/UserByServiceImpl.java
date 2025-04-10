@@ -12,6 +12,7 @@ import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.UserByService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -80,5 +81,11 @@ public class UserByServiceImpl implements UserByService {
             log.info("널!!!!!");
             return null;
         }
+    }
+
+    @Override
+    public List<UserBy> readAllUser(){
+        List<UserBy> userByDTOList = userByRepository.findAll();
+        return userByDTOList;
     }
 }
