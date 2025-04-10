@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -18,6 +20,8 @@ import org.zerock.b01.service.ProductService;
 import org.zerock.b01.service.ProductionPerDayService;
 import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
+
+import java.io.ByteArrayOutputStream;
 
 @Log4j2
 @Controller
@@ -66,6 +70,18 @@ public class SupplyController {
 
     @GetMapping("/procureRegister")
     public void procureRegister() {
-        log.info("##PP procureRegister REGISTER PAGE GET....##");
+        log.info("##PROCURE REGISTER PAGE GET....##");
     }
+
+    @GetMapping("/procureList")
+    public void procureList() {
+        log.info("##PROCURE LIST PAGE GET....##");
+    }
+
+    @GetMapping("/purchaseOrder")
+    public void purchaseOrder() {
+        log.info("##PURCHASE ORDER PAGE GET....##");
+    }
+
+
 }

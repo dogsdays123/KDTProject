@@ -12,10 +12,16 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'NotoSansKR';
+  src: url('https://fonts.gstatic.com/s/notosanskr/v27/Pby6FmXiEBPT4ITbgNA5CgmOelzGdsJg.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
+  /*font-family: 'NotoSansKR', sans-serif;*/
   font-family: 'S-CoreDream-3Light';
-  background: url('/image/background.jpg') no-repeat center center fixed;
-  background-size: cover;
 }
 
 .login-container {
