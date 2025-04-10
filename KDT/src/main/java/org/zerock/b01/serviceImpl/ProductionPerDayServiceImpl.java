@@ -1,15 +1,20 @@
 package org.zerock.b01.serviceImpl;
 
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.ProductionPerDay;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.dto.ProductionPerDayDTO;
+import org.zerock.b01.dto.ProductionPlanDTO;
 import org.zerock.b01.repository.ProductionPerDayRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.service.ProductionPerDayService;
 
+import java.util.List;
+
+@Log4j2
 @Service
 public class ProductionPerDayServiceImpl implements ProductionPerDayService {
 
@@ -29,17 +34,19 @@ public class ProductionPerDayServiceImpl implements ProductionPerDayService {
     }
 
     @Override
-    public void registers(ProductionPerDayDTO[] productionPerDayDTOs) {
+    public void registers(List<ProductionPerDayDTO> productionPerDayDTOs) {
+
+        log.info("count!!" + productionPerDayDTOs.size());
 
         for (ProductionPerDayDTO productionPerDayDTO : productionPerDayDTOs) {
+            log.info("date&&" + productionPerDayDTO.getPpdDate());
+
             ProductionPerDay productionPerDay = modelMapper.map(productionPerDayDTO, ProductionPerDay.class);
-            if(productionPerDayRepository.findByProductionId(productionPerDayDTO.getPpCode()) == null){
-                productionPerDayRepository.save(productionPerDay);
-            } else {
+            ProductionPlan plan = productionPlanRepository.findByProductionPerDay(productionPerDayDTO.getPpCode());
 
-            }
+            productionPerDay.setProductionPlan(plan);
+            productionPerDayRepository.save(productionPerDay);
         }
-
     }
 
     private ProductionPerDay dtoToEntity(ProductionPerDayDTO dto) {
@@ -48,7 +55,7 @@ public class ProductionPerDayServiceImpl implements ProductionPerDayService {
 
         return ProductionPerDay.builder()
                 .ppdId(dto.getPpdId())
-                .pDate(dto.getPpdDate())
+                .ppdDate(dto.getPpdDate())
                 .ppdNum(dto.getPpdNum())
                 .productionPlan(plan)
                 .build();

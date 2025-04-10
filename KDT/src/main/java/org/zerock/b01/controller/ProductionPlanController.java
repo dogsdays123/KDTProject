@@ -37,6 +37,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Log4j2
 @Controller
@@ -55,7 +58,7 @@ public class ProductionPlanController {
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if(auth == null) {
+        if (auth == null) {
             log.info("aaaaaa 인증정보 없음");
             model.addAttribute("userBy", null);
         } else {
@@ -70,7 +73,7 @@ public class ProductionPlanController {
             log.info("#### 일반 로그인 사용자 정보: " + userByDTO);
 
             model.addAttribute("userBy", userByDTO);
-            }
+        }
     }
 
     @GetMapping("/ppRegister")
@@ -117,6 +120,9 @@ public class ProductionPlanController {
 
         List<ProductionPlanDTO> productionPlanDTOs = new ArrayList<>();
 
+        List<List<Integer>> days = Stream.of(day1, day2, day3, day4, day5)
+                .collect(Collectors.toList());
+
         // pCodes와 pNames 배열을 순회하여 Product 객체를 만들어 products 리스트에 추가
         for (int i = 0; i < ppStarts.size(); i++) {
             ProductionPlanDTO productionPlanDTO = new ProductionPlanDTO();
@@ -125,17 +131,32 @@ public class ProductionPlanController {
             productionPlanDTO.setPName(pNames.get(i));
             productionPlanDTO.setPpCode(ppCodes.get(i));
             productionPlanDTO.setPpNum(ppNums.get(i));
-
-            productionPlanDTOs.add(productionPlanDTO); // 제품 리스트에 추가
             productionPlanService.registerProductionPlan(productionPlanDTO);
 
-//            PlanPerDay도 수정해야함
-//            ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
-//            productionPerDayDTO.setPpdNum(day1.get(i));
-//            productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
-//            productionPerDayDTO.setPpCode(productionPlanCode);
-//            productionPerDayService.register(productionPerDayDTO);
-//            productionPerDayService.registers(productionPerDayDTOs);
+            productionPlanDTOs.add(productionPlanDTO); // 제품 리스트에 추가
+
+
+//          PlanPerDay도 수정해야함
+
+            LocalDate productionStartDate = productionPlanDTO.getPpStart();
+
+            List<ProductionPerDayDTO> productionPerDayDTOs = IntStream.range(0, days.size())
+                    .boxed()
+                    .flatMap(dayIndex -> {
+                        List<Integer> currentDayList = days.get(dayIndex);
+                        return IntStream.range(0, currentDayList.size())
+                                .mapToObj(j -> {
+                                    // 여기서 날자 계산이 잘 되게 해야 한다.
+                                    ProductionPerDayDTO dto = new ProductionPerDayDTO();
+                                    dto.setPpdNum(currentDayList.get(j)); // 현재 일 수의 생산 숫자
+                                    dto.setPpdDate(productionStartDate.plusDays(dayIndex)); // 날짜
+                                    dto.setPpCode(productionPlanDTO.getPpCode());
+                                    return dto;
+                                });
+                    })
+                    .collect(Collectors.toList());
+            log.info("Total productionPerDayDTOs size: " + productionPerDayDTOs.size());
+            productionPerDayService.registers(productionPerDayDTOs);
         }
 
         return "redirect:/productionPlan/ppRegister";
@@ -145,7 +166,7 @@ public class ProductionPlanController {
     @PostMapping("/addProductPlan")
     public String uploadProductPlan(@RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
 
-        for(MultipartFile file : files) {
+        for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
             registerProductPlan(worksheet);
@@ -207,7 +228,7 @@ public class ProductionPlanController {
                     productionPerDayDTO.setPpCode(productionPlanCode);
                     productionPerDayService.register(productionPerDayDTO);
 
-                } else{
+                } else {
                     ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
                     productionPerDayDTO.setPpdNum(0);
                     productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));

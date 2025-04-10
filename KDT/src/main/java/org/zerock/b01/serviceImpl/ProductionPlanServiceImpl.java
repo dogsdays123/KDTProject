@@ -27,11 +27,19 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Override
+    public ProductionPlan findProductionPlan(ProductionPlanDTO productionPlanDTO){
+        ProductionPlan productionPlan = modelMapper.map(productionPlanDTO, ProductionPlan.class);
+        return productionPlan;
+    }
+
     //생산계획 등록
     @Override
     public String registerProductionPlan(ProductionPlanDTO productionPlanDTO) {
+
         ProductionPlan plan = modelMapper.map(productionPlanDTO, ProductionPlan.class);
         Product product = productionPlanRepository.findByProduct(productionPlanDTO.getPName());
+        log.info("****" + plan.getPpId());
 
         //만약 생산계획 코드가 없고, 새로 입력된 경우
         if (productionPlanDTO.getPpCode() == null) {
@@ -49,15 +57,14 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
             log.info("haveOld" + plan.getPpCode());
             plan = productionPlanRepository.findByProductionPlanCode(productionPlanDTO.getPpCode());
             plan.setPName(productionPlanDTO.getPName());
-
-            plan.setPpId(product.getPId());
-
             plan.setPpNum(productionPlanDTO.getPpNum());
             plan.setPpStart(productionPlanDTO.getPpStart());
             plan.setPpEnd(productionPlanDTO.getPpEnd());
         }
 
+        plan.setProduct(product);
         plan.setPpState(CurrentStatus.ON_HOLD);
+        log.info("****" + plan.getPpId());
         productionPlanRepository.save(plan);
 
         return plan.getPpCode();

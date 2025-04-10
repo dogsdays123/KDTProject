@@ -13,6 +13,9 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
     @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
     ProductionPlan findByProductionPlanCode(String ppCode);
 
+    @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
+    ProductionPlan findByProductionPerDay(String ppCode);
+
     @Query("select p from Product p where p.pName=:pName")
     Product findByProduct(String pName);
 }
