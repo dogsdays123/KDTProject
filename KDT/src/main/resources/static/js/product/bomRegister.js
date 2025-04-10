@@ -39,7 +39,6 @@ function addPlan() {
         return; // 항목 없으면 함수 종료
     }
 
-// 등록/삭제 버튼 추가 또는 위치 재정렬
     if (!document.getElementById('registerRow')) {
         const registerRow = document.createElement('tr');
         registerRow.id = 'registerRow';
@@ -58,9 +57,13 @@ function addPlan() {
         tableBody.appendChild(registerRow);
     }``
     // 입력값 초기화
-    document.getElementById('productName').value = '';
-    document.getElementById('productCode').value = '';
+    document.getElementById('productName').selectedIndex = 0;
+    document.getElementById('productCode').selectedIndex = 0;
+    document.getElementById('partName').value = '';
+    document.getElementById('materialName').value = '';
+    document.getElementById('productQuantity').value = '';
 }
+
 
 // 삭제 버튼 클릭 시 해당 행 삭제
 function removeRow(button) {
@@ -78,6 +81,7 @@ function removeRow(button) {
         }
     }
 }
+
 
 function clearPlanTable() {
     const tableBody = document.querySelector("#planTable tbody");

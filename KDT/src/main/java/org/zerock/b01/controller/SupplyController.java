@@ -63,4 +63,9 @@ public class SupplyController {
     public void materialRegister() {
         log.info("##MATERIAL REGISTER PAGE GET....##");
     }
+
+    @GetMapping("/procureRegister")
+    public void procureRegister() {
+        log.info("##PP procureRegister REGISTER PAGE GET....##");
+    }
 }
