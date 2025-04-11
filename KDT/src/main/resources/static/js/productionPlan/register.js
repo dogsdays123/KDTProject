@@ -3,42 +3,25 @@ function addPlan() {
     const endDate = document.getElementById('endDate').value;
     const productName = document.getElementById('productName').value;
     const productCode = document.getElementById('productCode').value;
-    const productQuantity = document.getElementById('productQuantity').value;
-    const product1Qty = document.getElementById('product1Qty').value;
-    const product2Qty = document.getElementById('product2Qty').value;
-    const product3Qty = document.getElementById('product3Qty').value;
-    const product4Qty = document.getElementById('product4Qty').value;
-    const product5Qty = document.getElementById('product5Qty').value;
+    const productNum = document.getElementById('productNum').value;
+    const uId = document.getElementById("uId").value;
+    let rowIndex = 0;
 
-    const totalByDays = Number(product1Qty) + Number(product2Qty) + Number(product3Qty) +
-        Number(product4Qty) + Number(product5Qty);
-
-    if (Number(productQuantity) !== totalByDays) {
-        alert('전체 수량과 일별 수량의 합이 일치하지 않습니다!');
-        return;
-    }
-
-    if (!startDate || !endDate || !productName || !productCode || !productQuantity || !product1Qty || !product2Qty
-    || !product3Qty || !product4Qty || !product5Qty) {
+    if (!startDate || !endDate || !productName || !productCode) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
 
     const tableBody = document.querySelector("#planTable tbody");
-
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="ppStarts[]" value="${startDate}">${startDate}</td>
-        <td><input type="hidden" name="ppEnds[]" value="${endDate}">${endDate}</td>
-        <td><input type="hidden" name="pNames[]" value="${productName}">${productName}</td>
-        <td><input type="hidden" name="ppCodes[]" value="${productCode}">${productCode}</td>
-        <td><input type="hidden" name="ppNums[]" value="${productQuantity}">${productQuantity}</td>
-        <td><input type="hidden" name="day1[]" value="${product1Qty}">${product1Qty}</td>
-        <td><input type="hidden" name="day2[]" value="${product2Qty}">${product2Qty}</td>
-        <td><input type="hidden" name="day3[]" value="${product3Qty}">${product3Qty}</td>
-        <td><input type="hidden" name="day4[]" value="${product4Qty}">${product4Qty}</td>
-        <td><input type="hidden" name="day5[]" value="${product5Qty}">${product5Qty}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].ppStart" value="${startDate}">${startDate}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].ppEnd" value="${endDate}">${endDate}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].pName" value="${productName}">${productName}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].ppCode" value="${productCode}">${productCode}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].ppNum" value="${productNum}">${productNum}</td>   
+        <td><input type="hidden" name="plans[${rowIndex}].uId" value="${uId}">${uId}</td>       
         <td>
           <button type="button" class="btn btn-outline-dark btn-sm" onclick="removeRow(this)" aria-label="삭제">
             <i class="bi bi-x-lg"></i>
@@ -47,6 +30,7 @@ function addPlan() {
     `;
 
     tableBody.appendChild(newRow);
+    rowIndex++;
 
     const planRows = tableBody.querySelectorAll('tr:not(#registerRow)');
     if (planRows.length === 0) {
@@ -78,13 +62,6 @@ function addPlan() {
     // 입력값 초기화
     document.getElementById('productName').selectedIndex = 0;
     document.getElementById('productCode').value = '';
-    document.getElementById('productQuantity').value = '';
-    document.getElementById('product1Qty').value = '';
-    document.getElementById('product2Qty').value = '';
-    document.getElementById('product3Qty').value = '';
-    document.getElementById('product4Qty').value = '';
-    document.getElementById('product5Qty').value = '';
-
 
 }
 
@@ -124,6 +101,7 @@ $(document).ready(function () {
         // 숨겨진 입력 필드의 값 가져오기
         var whereValue = $('input[name="where"]').val();  // "where"라는 이름의 input 값 가져오기
         var files = $('#excelFile')[0].files;  // 여러 파일 객체 가져오기
+        var uId = $('input[name="uId"]').val();
 
         // FormData 객체 생성
         var formData = new FormData();
@@ -133,6 +111,7 @@ $(document).ready(function () {
             formData.append('file', files[i]);  // 'file' 이름으로 여러 파일 추가
         }
 
+        formData.append('uId', uId);
         formData.append('where', whereValue);  // 숨겨진 필드 'where' 값 추가
 
 

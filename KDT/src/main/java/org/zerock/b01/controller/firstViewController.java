@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.UserBy;
+import org.zerock.b01.dto.SupplierDTO;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.UserByService;
@@ -49,12 +50,26 @@ public class firstViewController {
     }
 
     @PostMapping("/join")
-    public String join(UserByDTO userByDTO, Model model, RedirectAttributes redirectAttributes) {
+    public String join(@ModelAttribute("userByDTO") UserByDTO userByDTO,
+                       @ModelAttribute("supplierDTO") SupplierDTO supplierDTO,
+                       Model model, RedirectAttributes redirectAttributes) {
+
         log.info("join");
         log.info("%%%%" + userByDTO);
 
+        //html에서 수정하기 귀찮음
+        if(userByDTO.getUserJob().contains("협력회사") && userByDTO.getUserType().equals("our")) {
+            String userJob = userByDTO.getUserJob().replace(",협력회사", "");
+            userByDTO.setUserJob(userJob);
+        }
+
+        if(userByDTO.getUserJob().contains("협력회사") && userByDTO.getUserType().equals("other")) {
+            String userJob = "협력회사";
+            userByDTO.setUserJob(userJob);
+        }
+
         try {
-            userByService.join(userByDTO);
+            userByService.join(userByDTO, supplierDTO);
         } catch (UserByService.MidExistException e) {
             redirectAttributes.addFlashAttribute("error", "uId");
             return "redirect:/firstView/join";

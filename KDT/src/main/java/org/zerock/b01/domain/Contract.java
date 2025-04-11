@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class Contract extends BaseEntity {
 
     @Id
-    private Long cId;
-
     private String cCode;
 
     //부품 이름을 명확히 기재하여 주십시오

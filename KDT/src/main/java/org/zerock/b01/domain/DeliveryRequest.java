@@ -11,8 +11,6 @@ import lombok.*;
 public class DeliveryRequest extends BaseEntity {
 
     @Id
-    private Long drId;
-
     private String drCode;
 
     private String drNum;
@@ -23,7 +21,7 @@ public class DeliveryRequest extends BaseEntity {
     private CurrentStatus drState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oId", nullable = false)
+    @JoinColumn(name = "oCode", nullable = false)
     private OrderBy orderBy; // 발주서 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,6 +29,6 @@ public class DeliveryRequest extends BaseEntity {
     private Supplier supplier; // 공급업체 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mId", nullable = false)
+    @JoinColumn(name = "mCode", nullable = false)
     private Material material; // 자재 외래키
 }

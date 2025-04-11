@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.ProductService;
-import org.zerock.b01.service.ProductionPerDayService;
 import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
 
@@ -31,8 +30,6 @@ public class SupplyController {
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
-    private final ProductionPlanService productionPlanService;
-    private final ProductionPerDayService productionPerDayService;
     private final UserByService userByService;
 
     @ModelAttribute

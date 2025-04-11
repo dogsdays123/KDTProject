@@ -15,4 +15,6 @@ public class ProductDTO {
 
     private LocalDateTime regDate;
     private LocalDateTime modDate;
+
+    private String uName;
 }

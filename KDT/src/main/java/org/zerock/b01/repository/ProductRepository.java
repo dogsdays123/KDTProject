@@ -16,6 +16,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, AllSear
     @Query("select p from Product p where p.pName=:pName")
     Optional<Product> findByProductName(@Param("pName") String pName);
 
-    @Query("select p from Product p where p.pId =:pId")
-    Optional<Product> findByProductId(@Param("pId") long pId);
+    @Query("select p from Product p where p.pCode =:pCode")
+    Optional<Product> findByProductId(@Param("pCode") String pCode);
 }

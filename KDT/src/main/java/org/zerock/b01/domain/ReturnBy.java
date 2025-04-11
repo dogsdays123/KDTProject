@@ -12,8 +12,6 @@ import lombok.*;
 public class ReturnBy extends BaseEntity {
 
     @Id
-    private Long rId;
-
     private String rCode;
 
     private String rNum;
@@ -22,6 +20,6 @@ public class ReturnBy extends BaseEntity {
     private CurrentStatus rState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ipId", nullable = false)
+    @JoinColumn(name = "ipCode", nullable = false)
     private InPut inPut; // 입고 외래키
 }

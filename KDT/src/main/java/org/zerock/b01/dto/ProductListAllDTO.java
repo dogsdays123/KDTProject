@@ -12,8 +12,8 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 public class ProductListAllDTO {
-    private Long pId;
-    private String pCode; //제품코드
+    private String pCode;
     private String pName; //제품이름
+    private String uName; //작성자
     private LocalDate StartDate;
 }

@@ -7,8 +7,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.MemberRole;
+import org.zerock.b01.domain.Supplier;
 import org.zerock.b01.domain.UserBy;
+import org.zerock.b01.dto.SupplierDTO;
 import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.repository.SupplierRepository;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.UserByService;
 
@@ -24,6 +27,7 @@ public class UserByServiceImpl implements UserByService {
     private final ModelMapper modelMapper;
     private final UserByRepository userByRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SupplierRepository supplierRepository;
 
     @Override
     public String registerUser(UserByDTO userByDTO){
@@ -33,7 +37,7 @@ public class UserByServiceImpl implements UserByService {
     }
 
     @Override
-    public void join(UserByDTO userByDTO) throws MidExistException{
+    public void join(UserByDTO userByDTO, SupplierDTO supplierDTO) throws MidExistException{
         String uId = userByDTO.getUId();
         log.info("look at me @@@@@@@@@@   " + uId);
         boolean exist = userByRepository.existsById(uId);
@@ -51,6 +55,13 @@ public class UserByServiceImpl implements UserByService {
         log.info(userBy.getRoleSet());
 
         userByRepository.save(userBy);
+
+        if(supplierDTO !=null && userByRepository.findById(userBy.getUId()).isPresent()){
+            Supplier supplier = modelMapper.map(supplierDTO, Supplier.class);
+            supplier.setUserBy(userBy);
+            log.info("-^-^-" + supplier.getUserBy());
+            supplierRepository.save(supplier);
+        }
     }
 
     @Override

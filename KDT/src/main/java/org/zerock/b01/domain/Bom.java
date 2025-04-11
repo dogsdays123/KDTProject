@@ -18,10 +18,10 @@ public class Bom extends BaseEntity {
     private String bComponentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mId", nullable = false)
+    @JoinColumn(name = "mCode", nullable = false)
     private Material material; // 자재 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pId", nullable = false)
+    @JoinColumn(name = "pCode", nullable = false)
     private Product product; // 제품 외래키
 }

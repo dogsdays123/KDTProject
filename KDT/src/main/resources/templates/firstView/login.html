@@ -143,30 +143,53 @@
                             <br>
                             <!-- 'PNS'를 선택했을 때 보이는 div -->
                             <div id="types">
-                                <div id="uBirthDayDiv" style="display: none">
+                                <div id="user" style="display: none">
                                     <label for="uBirthDay" class="form-label"></label>
                                     <label class="form-label" style="width: 170px;"><span style="color: red;">*</span>&nbsp 부서</label>
                                     <br>
                                     <div class="radio-group">
-                                        <input type="radio" class="form-control" id="productDept" name="userJob" value="생산부서">
+                                        <input type="radio" class="form-control user" id="productDept" name="userJob" value="생산부서">
                                         <label for="productDept">생산부서</label>
 
-                                        <input type="radio" class="form-control" id="purchaseDept" name="userJob" value="구매부서">
+                                        <input type="radio" class="form-control user" id="purchaseDept" name="userJob" value="구매부서">
                                         <label for="purchaseDept">구매부서</label>
 
-                                        <input type="radio" class="form-control" id="materialsDept" name="userJob" value="자재부서">
+                                        <input type="radio" class="form-control user" id="materialsDept" name="userJob" value="자재부서">
                                         <label for="materialsDept">자재부서</label>
                                     </div>
                                     <br>
                                     <label class="form-label" style="width: 170px;"><span style="color: red;">*</span>&nbsp 생년월일</label>
-                                    <input type="date" class="form-control" name="uBirthDay" id="uBirthDay" placeholder="생년월일">
+                                    <input type="date" class="form-control user" name="uBirthDay" id="uBirthDay" placeholder="생년월일">
                                     <br>
                                 </div>
 
                                 <!-- '협력회사'를 선택했을 때 보이는 div -->
-                                <div id="uAddressDiv" style="display: none">
-                                    <label for="uAddress" class="form-label"></label>
-                                    <input type="text" class="form-control" name="uAddress" id="uAddress" placeholder="기업주소">
+                                <div id="sup" style="display: none">
+                                    <input type="hidden" name="sAgree" value="disAgree">
+                                    <input type="hidden" name="sContract" value="">
+                                    <input type="hidden" name="userJob" value="협력회사">
+                                    <label for="sName" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sName" id="sName" placeholder="기업명">
+                                    <label for="sRegNum" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sRegNum" id="sRegNum" placeholder="사업자번호">
+                                    <label for="sAddress" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sAddress" id="sAddress" placeholder="사업지주소">
+                                    <label for="sAddressExtra" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sAddressExtra" id="sAddressExtra" placeholder="세부주소">
+                                    <label for="sManager" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sManager" id="sManager" placeholder="관리자명">
+                                    <label for="sBusinessType" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sBusinessType" id="sBusinessType" placeholder="업태">
+                                    <label for="sBusinessArray" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sBusinessArray" id="sBusinessArray" placeholder="업종">
+                                    <label for="sPhone" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sPhone" id="sPhone" placeholder="회사 전화번호">
+                                    <label for="sFax" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sFax" id="sFax" placeholder="회사 팩스번호">
+                                    <label for="sPhoneDirect" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sPhoneDirect" id="sPhoneDirect" placeholder="관리자 직통번호">
+                                    <label for="sExponent" class="form-label"></label>
+                                    <input type="text" class="form-control supplier" name="sExponent" id="sExponent" placeholder="회사 대표명">
                                 </div>
                             </div>
                         </div>

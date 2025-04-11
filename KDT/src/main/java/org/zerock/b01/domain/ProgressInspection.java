@@ -23,11 +23,11 @@ public class ProgressInspection extends BaseEntity {
     private CurrentStatus psState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oId", nullable = false)
+    @JoinColumn(name = "oCode", nullable = false)
     private OrderBy orderBy; // 발주서 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mId", nullable = false)
+    @JoinColumn(name = "mCode", nullable = false)
     private Material material; // 자재 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -5,16 +5,18 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pId;
-
     private String pCode;
 
     private String pName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uId", nullable = false)
+    private UserBy userBy;
 }

@@ -25,12 +25,22 @@ public class PageRequestDTO {
     private int size = 10;
 
     private String type; //검색의 종류
-
     private String keyword;
 
+    //공통
+    private String uName; //작성자
+    private String pName; //제품이름
+
+    //product
     private String pCode;
-    private String pName;
     private LocalDate startDate;
+
+    //plan
+    private String ppCode;
+    private String ppNum;
+    private LocalDate ppStart;
+    private LocalDate ppEnd;
+    private String ppState;
 
     public String[] getTypes() {
         if(type == null || type.isEmpty()) {

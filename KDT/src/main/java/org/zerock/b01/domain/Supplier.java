@@ -5,12 +5,14 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Supplier extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sId;
 
     private String sName;
@@ -23,11 +25,21 @@ public class Supplier extends BaseEntity {
 
     private String sManager;
 
-    private String sContract;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cId")
+    private Contract sContract;
 
     private String sBusinessType;
 
+    private String sBusinessArray;
+
     private String sPhone;
+
+    private String sFax;
+
+    private String sPhoneDirect;
+
+    private String sExponent;
 
     private String sAgree;
 

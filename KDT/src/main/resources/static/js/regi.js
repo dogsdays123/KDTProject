@@ -156,14 +156,32 @@ $(document).ready(function() {
     $('input[name="userType"]').on('change', function() {
         var userType = $('input[name="userType"]:checked').val();
 
+        const supplierInputs = document.querySelectorAll('.supplier');
+        const userInputs = document.querySelectorAll('.user');
+
+
         if (userType === 'other') {
             // '협력회사' 선택 시
-            $('#uAddressDiv').show(); // 주소 입력 필드 보이기
-            $('#uBirthDayDiv').hide(); // 생년월일 필드 숨기기
+            supplierInputs.forEach(input => {
+                input.required = true;
+            });
+            userInputs.forEach(input => {
+                input.required = false;
+            });
+
+            $('#sup').show(); // 주소 입력 필드 보이기
+            $('#user').hide(); // 생년월일 필드 숨기기
         } else if (userType === 'our') {
             // 'PNS' 선택 시
-            $('#uAddressDiv').hide(); // 주소 입력 필드 숨기기
-            $('#uBirthDayDiv').show(); // 생년월일 필드 보이기
+            supplierInputs.forEach(input => {
+                input.required = false;
+            });
+            userInputs.forEach(input => {
+                input.required = true;
+            });
+
+            $('#sup').hide(); // 주소 입력 필드 숨기기
+            $('#user').show(); // 생년월일 필드 보이기
         }
 
         // AJAX 요청 보내기

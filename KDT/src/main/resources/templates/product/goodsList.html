@@ -4,8 +4,41 @@
       layout:decorate="~{layout/basic.html}"
       th:with="breadcrumbLevel1='제품 관리', breadcrumbCurrent='상품 목록'">
 <head>
-    <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">-->
     <link href="/css/product/goodsList.css" rel="stylesheet">
+    <style>
+        .page-link {
+            display: inline-block;
+            padding: 6px 12px;
+            margin: 0 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #343a40;             /* 기본 글씨색 */
+            background-color: #f8f9fa;  /* 밝은 배경 */
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .page-link:hover {
+            background-color: #e2e6ea;  /* 마우스 오버 시 배경색 */
+            color: #212529;
+            text-decoration: none;
+        }
+
+        .page-link.active {
+            background-color: #343a40;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .page-link.disabled {
+            color: #adb5bd;
+            pointer-events: none;
+            background-color: #e9ecef;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="pdList">
@@ -19,6 +52,7 @@
                 <!-- 검색 필터 -->
                 <form th:action="@{/product/goodsList}" method="get">
                     <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
+
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2">
                             <label for="productCode" class="form-label small">상품 코드</label>
@@ -34,6 +68,7 @@
                         <div class="col-md-1 d-flex align-items-end">
                             <button type="submit" class="btn btn-dark btn-sm w-100" title="필터 적용">적용</button>
                         </div>
+                        <button type="button" class="clearBtn btn btn-white btn-sm w-100" title="필터 초기화">초기화</button>
                     </div>
 
                     <!--검색어 입력-->
@@ -61,17 +96,63 @@
                                 <th>작성자</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="goodsTable" th:with="link = ${pageRequestDTO.getLink()}">
                             <tr th:each="dto:${responseDTO.dtoList}">
                                 <td th:text="${dto.getPCode()}"></td>
                                 <td th:text="${dto.getPName()}"></td>
                                 <td th:text="${#temporals.format(dto.getStartDate(), 'yyyy-MM-dd')}"></td>
+                                <td th:text="${dto.getUName()}"></td>
                             </tr>
                             </tbody>
                         </table>
+                        <br>
+                        <div class="d-flex justify-content-center">
+                            <ul class="pagination flex-wrap">
+                                <li class="page-item" th:if="${responseDTO.prev}">
+                                    <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                                </li>
+
+                                <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                                    <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                        <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                    </li>
+                                </th:block>
+
+                                <li class="page-item" th:if="${responseDTO.next}">
+                                    <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
     </div>
 </div>
 </body>
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if (target.tagName !== 'A') {
+            return
+        }
+
+        const num = target.getAttribute("data-num")
+
+        const formObj = document.querySelector("form")
+
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+        formObj.submit()
+    }, false)
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location = '/product/goodsList'
+    }, false)
+</script>

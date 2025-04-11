@@ -23,6 +23,7 @@
 
                 <!-- 등록 폼 -->
                 <form th:action="@{/product/goodsRegister}" method="post">
+                    <input type="hidden" name="uId" th:value="${userBy.uId}">
                     <div class="row g-2 mb-2">
                         <!-- 상품 코드 -->
                         <div class="col-md-2">
@@ -71,6 +72,7 @@
 
                 <!-- 엑셀 업로드 -->
                 <form id="excelUploadForm" method="post" enctype="multipart/form-data" th:action="@{/product/addProduct}">
+                    <input type="hidden" id="uId" name="uId" th:value="${userBy.uId}">
                     <input name="where" type="hidden" value="Plan">
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <label for="excelFile" class="custom-file-upload">

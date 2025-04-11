@@ -11,8 +11,6 @@ import lombok.*;
 public class InPut extends BaseEntity {
 
     @Id
-    private Long ipId;
-
     private String ipCode;
 
     private String ipNum;
@@ -25,10 +23,10 @@ public class InPut extends BaseEntity {
     private CurrentStatus ipState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "drId", nullable = false)
+    @JoinColumn(name = "drCode", nullable = false)
     private DeliveryRequest deliveryRequest; // 납품 지시 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oId", nullable = false)
+    @JoinColumn(name = "oCode", nullable = false)
     private OrderBy orderBy; // 발주서 외래키
 }

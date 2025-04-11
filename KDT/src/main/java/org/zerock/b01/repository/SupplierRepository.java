@@ -1,0 +1,16 @@
+package org.zerock.b01.repository;
+
+import org.hibernate.type.descriptor.converter.spi.JpaAttributeConverter;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.zerock.b01.domain.Supplier;
+
+import java.util.List;
+
+public interface SupplierRepository extends JpaRepository<Supplier, Long> {
+
+    @Query("select s from Supplier s")
+    List<Supplier> findAllSupplier();
+
+}

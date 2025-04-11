@@ -14,13 +14,9 @@ import java.time.LocalDate;
 public class ProductionPlan extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(length = 20, nullable = false)
-    private Long ppId;
+    private String ppCode;
 
     private String pName;
-
-    private String ppCode;
 
     private Integer ppNum;
 
@@ -28,11 +24,15 @@ public class ProductionPlan extends BaseEntity {
 
     private LocalDate ppEnd;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uId", nullable = false)
+    private UserBy userBy;
+
     @Enumerated(EnumType.STRING)
     private CurrentStatus ppState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pId", nullable = false)
+    @JoinColumn(name = "pCode", nullable = false)
     private Product product; // 제품 외래키
 
     public void set(String ppCode){

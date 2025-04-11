@@ -11,8 +11,6 @@ import lombok.*;
 public class OrderBy extends BaseEntity {
 
     @Id
-    private Long oId;
-
     private String oCode;
 
     private String oNum;
@@ -29,7 +27,7 @@ public class OrderBy extends BaseEntity {
     private String oRemarks;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mId", nullable = false)
+    @JoinColumn(name = "mCode", nullable = false)
     private Material material; // 자재 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +35,6 @@ public class OrderBy extends BaseEntity {
     private Supplier supplier; // 공급업체 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dppId", nullable = false)
+    @JoinColumn(name = "dppCode", nullable = false)
     private DeliveryProcurementPlan deliveryProcurementPlan; // 조달 계획 외래키
 }

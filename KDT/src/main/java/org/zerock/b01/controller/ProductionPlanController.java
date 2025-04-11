@@ -21,17 +21,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
-import org.zerock.b01.domain.UserBy;
-import org.zerock.b01.dto.ProductDTO;
-import org.zerock.b01.dto.ProductionPerDayDTO;
-import org.zerock.b01.dto.ProductionPlanDTO;
-import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
+import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.ProductService;
-import org.zerock.b01.service.ProductionPerDayService;
 import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
 
@@ -39,11 +34,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Log4j2
 @Controller
@@ -53,12 +44,12 @@ import java.util.stream.Stream;
 public class ProductionPlanController {
 
     private final ProductService productService;
+    private final PageService pageService;
 
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
     private final ProductionPlanService productionPlanService;
-    private final ProductionPerDayService productionPerDayService;
     private final UserByService userByService;
 
     @ModelAttribute
@@ -104,8 +95,22 @@ public class ProductionPlanController {
     }
 
     @GetMapping("/ppList")
-    public void list() {
-        log.info("##LIST PAGE GET....##");
+    public void planList(PageRequestDTO pageRequestDTO, Model model) {
+
+        pageRequestDTO.setSize(10);
+
+        PageResponseDTO<PlanListAllDTO> responseDTO =
+                pageService.planListWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<ProductionPlan> planList = productionPlanService.getPlans();
+        model.addAttribute("planList", planList);
+        model.addAttribute("responseDTO", responseDTO);
+
+        log.info("^&^&" + responseDTO);
     }
 
     @GetMapping("/downloadProductPlan/{isTemplate}")
@@ -133,58 +138,15 @@ public class ProductionPlanController {
 
     //생산계획 직접등록
     @PostMapping("/addProductPlanSelf")
-    public String uploadProductPlanSelf(@RequestParam("ppStarts[]") List<LocalDate> ppStarts,
-                                        @RequestParam("ppEnds[]") List<LocalDate> ppEnds,
-                                        @RequestParam("pNames[]") List<String> pNames,
-                                        @RequestParam("ppCodes[]") List<String> ppCodes,
-                                        @RequestParam("ppNums[]") List<Integer> ppNums,
-                                        @RequestParam("day1[]") List<Integer> day1,
-                                        @RequestParam("day2[]") List<Integer> day2,
-                                        @RequestParam("day3[]") List<Integer> day3,
-                                        @RequestParam("day4[]") List<Integer> day4,
-                                        @RequestParam("day5[]") List<Integer> day5,
+    public String uploadProductPlanSelf(@ModelAttribute ProductionPlanFormDTO form,
                                         Model model, RedirectAttributes redirectAttributes,
                                         HttpServletRequest request) throws IOException {
 
-        List<ProductionPlanDTO> productionPlanDTOs = new ArrayList<>();
-
-        List<List<Integer>> days = Stream.of(day1, day2, day3, day4, day5)
-                .collect(Collectors.toList());
+        List<ProductionPlanDTO> productionPlanDTOs = form.getPlans();
 
         // pCodes와 pNames 배열을 순회하여 Product 객체를 만들어 products 리스트에 추가
-        for (int i = 0; i < ppStarts.size(); i++) {
-            ProductionPlanDTO productionPlanDTO = new ProductionPlanDTO();
-            productionPlanDTO.setPpStart(ppStarts.get(i));
-            productionPlanDTO.setPpEnd(ppEnds.get(i));
-            productionPlanDTO.setPName(pNames.get(i));
-            productionPlanDTO.setPpCode(ppCodes.get(i));
-            productionPlanDTO.setPpNum(ppNums.get(i));
-            productionPlanService.registerProductionPlan(productionPlanDTO);
-
-            productionPlanDTOs.add(productionPlanDTO); // 제품 리스트에 추가
-
-
-//          PlanPerDay도 수정해야함
-
-            LocalDate productionStartDate = productionPlanDTO.getPpStart();
-
-            List<ProductionPerDayDTO> productionPerDayDTOs = IntStream.range(0, days.size())
-                    .boxed()
-                    .flatMap(dayIndex -> {
-                        List<Integer> currentDayList = days.get(dayIndex);
-                        return IntStream.range(0, currentDayList.size())
-                                .mapToObj(j -> {
-                                    // 여기서 날자 계산이 잘 되게 해야 한다.
-                                    ProductionPerDayDTO dto = new ProductionPerDayDTO();
-                                    dto.setPpdNum(currentDayList.get(j)); // 현재 일 수의 생산 숫자
-                                    dto.setPpdDate(productionStartDate.plusDays(dayIndex)); // 날짜
-                                    dto.setPpCode(productionPlanDTO.getPpCode());
-                                    return dto;
-                                });
-                    })
-                    .collect(Collectors.toList());
-            log.info("Total productionPerDayDTOs size: " + productionPerDayDTOs.size());
-            productionPerDayService.registers(productionPerDayDTOs);
+        for (ProductionPlanDTO productionPlanDTO : productionPlanDTOs) {
+            productionPlanService.registerProductionPlan(productionPlanDTO, productionPlanDTO.getUId());
         }
 
         return "redirect:/productionPlan/ppRegister";
@@ -192,12 +154,12 @@ public class ProductionPlanController {
 
     //생산계획 자동 등록
     @PostMapping("/addProductPlan")
-    public String uploadProductPlan(@RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
+    public String uploadProductPlan(String uId, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
 
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            registerProductPlan(worksheet);
+            registerProductPlanOnController(uId, worksheet);
             log.info("%%%%" + worksheet.getSheetName());
         }
 
@@ -212,7 +174,7 @@ public class ProductionPlanController {
     }
 
 
-    private void registerProductPlan(XSSFSheet worksheet) {
+    private void registerProductPlanOnController(String uId, XSSFSheet worksheet) {
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
 
             ProductionPlanDTO entity = new ProductionPlanDTO();
@@ -241,29 +203,29 @@ public class ProductionPlanController {
             entity.setPpEnd(productionEndDate);
             entity.setPpNum(productionQuantity);
 
-            String productionPlanCode = productionPlanService.registerProductionPlan(entity);
+            String productionPlanCode = productionPlanService.registerProductionPlan(entity, uId);
             log.info("데이터 넘겨주기 2 = " + productionPlanCode);
 
-            //6에서부터 10까지는 일별 생산량이다.
-            for (int j = 0; j < 30; j++) {
-
-                if (row.getCell(6 + j, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
-
-                    int quantity = Integer.parseInt(formatter.formatCellValue(row.getCell(6 + j)));
-                    ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
-                    productionPerDayDTO.setPpdNum(quantity);
-                    productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
-                    productionPerDayDTO.setPpCode(productionPlanCode);
-                    productionPerDayService.register(productionPerDayDTO);
-
-                } else {
-                    ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
-                    productionPerDayDTO.setPpdNum(0);
-                    productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
-                    productionPerDayDTO.setPpCode(productionPlanCode);
-                    productionPerDayService.register(productionPerDayDTO);
-                }
-            }
+//            //6에서부터 10까지는 일별 생산량이다.
+//            for (int j = 0; j < 30; j++) {
+//
+//                if (row.getCell(6 + j, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
+//
+//                    int quantity = Integer.parseInt(formatter.formatCellValue(row.getCell(6 + j)));
+//                    ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
+//                    productionPerDayDTO.setPpdNum(quantity);
+//                    productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
+//                    productionPerDayDTO.setPpCode(productionPlanCode);
+//                    productionPerDayService.register(productionPerDayDTO);
+//
+//                } else {
+//                    ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
+//                    productionPerDayDTO.setPpdNum(0);
+//                    productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
+//                    productionPerDayDTO.setPpCode(productionPlanCode);
+//                    productionPerDayService.register(productionPerDayDTO);
+//                }
+//            }
         }
     }
 }

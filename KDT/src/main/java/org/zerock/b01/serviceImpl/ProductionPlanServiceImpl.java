@@ -10,6 +10,7 @@ import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.dto.ProductionPlanDTO;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
+import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.ProductionPlanService;
 
 import java.time.format.DateTimeFormatter;
@@ -26,6 +27,8 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private UserByRepository userByRepository;
 
     @Override
     public ProductionPlan findProductionPlan(ProductionPlanDTO productionPlanDTO){
@@ -35,18 +38,20 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
     //생산계획 등록
     @Override
-    public String registerProductionPlan(ProductionPlanDTO productionPlanDTO) {
+    public String registerProductionPlan(ProductionPlanDTO productionPlanDTO, String uId) {
 
         ProductionPlan plan = modelMapper.map(productionPlanDTO, ProductionPlan.class);
         Product product = productionPlanRepository.findByProduct(productionPlanDTO.getPName());
-        log.info("****" + plan.getPpId());
+
+        plan.setUserBy(userByRepository.findByUId(uId));
+        log.info("&&&& " + uId);
 
         //만약 생산계획 코드가 없고, 새로 입력된 경우
         if (productionPlanDTO.getPpCode() == null) {
             log.info("NoHaveNew" + plan.getPpCode());
             // 생산 계획 코드 생성 로직 추가
-            String productionPlanCode = generateProductionPlanCode(productionPlanDTO);
-            plan.set(productionPlanCode);
+//            String productionPlanCode = generateProductionPlanCode(productionPlanDTO);
+//            plan.set(productionPlanCode);
         }
         //생산계획 코드가 있지만, 새로 입력된 경우
         else if(productionPlanRepository.findByProductionPlanCode(productionPlanDTO.getPpCode()) == null){
@@ -55,7 +60,6 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
         } else { //생산 계획 코드가 있는 경우 덮어쓰기한다.
             log.info("haveOld" + plan.getPpCode());
-            plan = productionPlanRepository.findByProductionPlanCode(productionPlanDTO.getPpCode());
             plan.setPName(productionPlanDTO.getPName());
             plan.setPpNum(productionPlanDTO.getPpNum());
             plan.setPpStart(productionPlanDTO.getPpStart());
@@ -64,13 +68,17 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
         plan.setProduct(product);
         plan.setPpState(CurrentStatus.ON_HOLD);
-        log.info("****" + plan.getPpId());
+        log.info("****" + plan.getPpCode());
         productionPlanRepository.save(plan);
 
         return plan.getPpCode();
     }
 
-    private String generateProductionPlanCode(ProductionPlanDTO dto) {
+    public List<ProductionPlan> getPlans(){
+        return productionPlanRepository.findByPlans();
+    }
+
+    public String generateProductionPlanCode(ProductionPlanDTO dto) {
         List<Product> products = productRepository.findByProducts();
 
         // 제품명에 따른 접두어 설정
@@ -78,7 +86,7 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
         for(Product product : products){
             if(dto.getPName().equals(product.getPName())){
-                prefix = product.getPCode();
+                prefix = product.getPName();
             } else{
                 prefix = "DEFAULT";
             }

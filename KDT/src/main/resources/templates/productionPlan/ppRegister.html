@@ -15,6 +15,7 @@
                 <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="도움말"></i>
             </div>
             <form method="post" th:action="@{/productionPlan/addProductPlanSelf}">
+                <input type="hidden" name="uId" th:value="${userBy.uId}">
                 <div style="max-width: 1200px; margin-left: 0;">
                     <!-- 1줄: 날짜 + 제품명 + 코드 + 수량 -->
                     <div class="row g-2 mb-2">
@@ -36,36 +37,15 @@
                             <label for="productCode" class="form-label small">생산 계획 코드</label>
                             <input type="text" id="productCode" class="form-control form-control-sm">
                         </div>
+                        <div class="col-md-2">
+                            <label for="productNum" class="form-label small">생산 갯수</label>
+                            <input type="number" id="productNum" class="form-control form-control-sm">
+                        </div>
                     </div>
 
                     <!-- 2줄: 1~5일차 + 버튼 -->
                     <div class="row g-2 mb-2 align-items-end">
-                        <div class="col-md-1">
-                            <label for="productQuantity" class="form-label small">전체 수량</label>
-                            <input type="number" id="productQuantity" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-1">
-                            <label class="form-label small">1일차</label>
-                            <input type="number" id="product1Qty" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-1">
-                            <label class="form-label small">2일차</label>
-                            <input type="number" id="product2Qty" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-1">
-                            <label class="form-label small">3일차</label>
-                            <input type="number" id="product3Qty" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-1">
-                            <label class="form-label small">4일차</label>
-                            <input type="number" id="product4Qty" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-1">
-                            <label class="form-label small">5일차</label>
-                            <input type="number" id="product5Qty" class="form-control form-control-sm">
-                        </div>
                         <div class="col-md-2 d-flex gap-1">
-
                             <button type="button" class="btn btn-dark btn-sm w-50" onclick="addPlan()">+ 추가</button>
                         </div>
                     </div>
@@ -80,11 +60,6 @@
                             <th>제품명</th>
                             <th>생산 계획 코드</th>
                             <th>수량</th>
-                            <th>1일차</th>
-                            <th>2일차</th>
-                            <th>3일차</th>
-                            <th>4일차</th>
-                            <th>5일차</th>
                             <th>삭제</th>
                         </tr>
                         </thead>
@@ -103,6 +78,7 @@
 
             <!-- 엑셀 업로드 -->
             <form id="excelUploadForm" method="post" enctype="multipart/form-data" th:action="@{/productionPlan/addProductPlan}">
+                <input type="hidden" id="uId" name="uId" th:value="${userBy.uId}">
                 <input name="where" type="hidden" value="Plan">
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <label for="excelFile" class="custom-file-upload">

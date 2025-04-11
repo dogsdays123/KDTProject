@@ -40,11 +40,9 @@ public class ProductController {
     @Value("${org.zerock.upload.readyProductPath}")
     private String readyPath;
 
-    private final ProductionPlanService productionPlanService;
-    private final ProductionPerDayService productionPerDayService;
     private final UserByService userByService;
     private final ProductService productService;
-    private final ProductPageService productPageService;
+    private final PageService pageService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -76,18 +74,22 @@ public class ProductController {
     }
 
     @GetMapping("/goodsList")
-    public String productList(PageRequestDTO pageRequestDTO, Model model) {
+    public void productList(PageRequestDTO pageRequestDTO, Model model) {
+
+        pageRequestDTO.setSize(10);
 
         PageResponseDTO<ProductListAllDTO> responseDTO =
-                productPageService.listWithAll(pageRequestDTO);
+                pageService.productListWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
 
         List<Product> productList = productService.getProducts();
         model.addAttribute("productList", productList);
         model.addAttribute("responseDTO", responseDTO);
 
         log.info("^&^&" + responseDTO);
-
-        return "product/goodsList";
     }
 
     @GetMapping("/goodsRegister")
@@ -120,12 +122,13 @@ public class ProductController {
 
     //제품 직접 등록
     @PostMapping("/goodsRegister")
-    public String productRegisterPost(@RequestParam("pCodes[]") List<String> pCodes,
+    public String productRegisterPost(String uName,
+                                      @RequestParam("pCodes[]") List<String> pCodes,
                                       @RequestParam("pNames[]") List<String> pNames,
                                       Model model, RedirectAttributes redirectAttributes,
                                       HttpServletRequest request) {
 
-        log.info("##PRODUCT REGISTER PAGE GET....##");
+        log.info(" ^^^^ " + uName);
 
         List<ProductDTO> products = new ArrayList<>();
 
@@ -137,7 +140,7 @@ public class ProductController {
             products.add(product); // 제품 리스트에 추가
         }
 
-        String[] message = productService.registerProducts(products);
+        String[] message = productService.registerProducts(products, uName);
         String messageString = String.join(",", message);
 
         // 리다이렉트 시에 message를 전달
@@ -148,21 +151,21 @@ public class ProductController {
 
     //제품 자동 등록
     @PostMapping("/addProduct")
-    public String uploadProduct(@RequestParam("file") MultipartFile[] files, @RequestParam("where") String where,  Model model, RedirectAttributes redirectAttributes) throws IOException {
+    public String uploadProduct(String uName, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where,  Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        log.info("&^&^" + uName);
 
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            registerProduct(worksheet);
+            registerProduct(worksheet, uName);
             log.info("%%%%" + worksheet.getSheetName());
         }
-
-        log.info("&^&^");
 
         return "redirect:/product/goodsRegister";
     }
 
-    private void registerProduct(XSSFSheet worksheet) {
+    private void registerProduct(XSSFSheet worksheet, String uName) {
 
         List<ProductDTO> productDTOs = new ArrayList<>();
 
@@ -185,7 +188,7 @@ public class ProductController {
             productDTOs.add(productDTO);
         }
 
-        productService.registerProductsEasy(productDTOs);
+        productService.registerProductsEasy(productDTOs, uName);
         log.info("^^^^&&&&&4");
     }
 }

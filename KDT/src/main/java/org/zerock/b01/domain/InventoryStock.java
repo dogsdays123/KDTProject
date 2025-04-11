@@ -18,7 +18,7 @@ public class InventoryStock extends BaseEntity {
     private String isAvailable;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mId", nullable = false)
+    @JoinColumn(name = "mCode", nullable = false)
     private Material material; // 자재 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)

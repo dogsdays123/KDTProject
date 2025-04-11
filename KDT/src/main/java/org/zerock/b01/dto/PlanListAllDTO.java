@@ -1,27 +1,23 @@
 package org.zerock.b01.dto;
 
-import lombok.*;
-import org.zerock.b01.domain.Product;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@Builder
+@Data
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class ProductionPlanDTO {
-
+public class PlanListAllDTO {
     private String ppCode;
     private String pName;
+    private String ppNum;
     private LocalDate ppStart;
     private LocalDate ppEnd;
-    private Integer ppNum;
-
-    private String uId;
-
-    //product
-    private String pppCode;
-
     private String ppState;
+    private String uName;
+
 }

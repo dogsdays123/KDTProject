@@ -20,6 +20,6 @@ public class SupplierStock extends BaseEntity {
     private Supplier supplier; // 공급업체 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mId", nullable = false)
+    @JoinColumn(name = "mCode", nullable = false)
     private Material material; // 자재 외래키
 }
