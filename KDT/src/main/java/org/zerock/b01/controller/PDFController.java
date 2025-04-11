@@ -50,7 +50,7 @@ public class PDFController {
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if(auth == null) {
+        if (auth == null) {
             log.info("aaaaaa 인증정보 없음");
             model.addAttribute("userBy", null);
         } else {
@@ -69,8 +69,8 @@ public class PDFController {
     }
 
     @PostMapping("/purchase/order/pdf/download")
-    public ResponseEntity<byte[]> downloadPurchaseOrderPdf(@RequestBody Map<String, Object> formData) {
-        byte[] pdfBytes = generateDummyPdf(); // 여기에 진짜 PDF 생성
+    public ResponseEntity<byte[]> downloadPurchaseOrderPdf(@RequestBody PurchaseOrderRequestDTO request) {
+        byte[] pdfBytes = pdfService.createPdf(request); // 여기에 진짜 PDF 생성
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
@@ -93,67 +93,5 @@ public class PDFController {
         headers.setContentDisposition(ContentDisposition.attachment().filename("purchase_order.pdf").build());
 
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
-    }
-
-    private byte[] generateDummyPdf() {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            Document document = new Document();
-            PdfWriter.getInstance(document, out);
-            document.open();
-
-            BaseFont baseFont = BaseFont.createFont(
-                    "src/main/resources/fonts/malgun.ttf",  // 또는 classpath 경로
-                    BaseFont.IDENTITY_H,
-                    BaseFont.EMBEDDED
-            );
-            // 1. 발주서 제목
-            Font koreanFont = new Font(baseFont, 12);
-            document.add(new Paragraph("구매 발주서", koreanFont));
-            document.add(new Paragraph(" ")); // 줄바꿈
-
-            // 2. 공급회사 정보
-            PdfPTable infoTable = new PdfPTable(2);
-
-            infoTable.addCell(new PdfPCell(new Phrase("상품명", koreanFont)));
-            infoTable.addCell(new PdfPCell(new Phrase("규격", koreanFont)));
-            infoTable.addCell(new PdfPCell(new Phrase("수량", koreanFont)));
-            infoTable.addCell(new PdfPCell(new Phrase("단가", koreanFont)));
-            infoTable.addCell(new PdfPCell(new Phrase("공급가액", koreanFont)));
-
-            infoTable.addCell(new PdfPCell(new Phrase("전기자전거 안장", koreanFont)));
-            infoTable.addCell(new PdfPCell(new Phrase("표준형", koreanFont)));
-            infoTable.addCell(new PdfPCell(new Phrase("100", koreanFont)));
-            infoTable.addCell(new PdfPCell(new Phrase("12,000", koreanFont)));
-            infoTable.addCell(new PdfPCell(new Phrase("1,200,000", koreanFont)));
-
-            document.add(infoTable);
-            document.add(new Paragraph(" "));
-
-            // 3. 품목 테이블
-            PdfPTable itemTable = new PdfPTable(5);
-            itemTable.addCell(new PdfPCell(new Phrase("상품명", koreanFont)));
-            itemTable.addCell(new PdfPCell(new Phrase("규격", koreanFont)));
-            itemTable.addCell(new PdfPCell(new Phrase("수량", koreanFont)));
-            itemTable.addCell(new PdfPCell(new Phrase("단가", koreanFont)));
-            itemTable.addCell(new PdfPCell(new Phrase("공급가액", koreanFont)));
-
-            itemTable.addCell(new PdfPCell(new Phrase("전기자전거 안장", koreanFont)));
-            itemTable.addCell(new PdfPCell(new Phrase("표준형", koreanFont)));
-            itemTable.addCell(new PdfPCell(new Phrase("100", koreanFont)));
-            itemTable.addCell(new PdfPCell(new Phrase("12,000", koreanFont)));
-            itemTable.addCell(new PdfPCell(new Phrase("1,200,000", koreanFont)));
-
-            document.add(itemTable);
-
-            // 4. 특이사항
-            document.add(new Paragraph("희망 입고일: 2025-04-15"));
-            document.add(new Paragraph("특이사항: 포장 상태 확인 후 납품 바랍니다."));
-
-            document.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return out.toByteArray();
     }
 }

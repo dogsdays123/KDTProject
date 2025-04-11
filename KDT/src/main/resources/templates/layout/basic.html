@@ -76,9 +76,9 @@
                 <a href="#" class="nav-link" title="발주 관리" onclick="toggleSubmenu('submenu-ordering')"><i class="bi bi-inboxes"></i>&nbsp;&nbsp;발주 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-ordering" class="submenu">
                     <li><a href="/supply/purchaseOrder" title="구매 발주서 등록" class="nav-link">구매 발주서 등록</a></li>
-                    <li><a href="#" class="nav-link">구매 발주서 목록</a></li>
-                    <li><a href="#" class="nav-link">진척 검수 관리</a></li>
-                    <li><a href="#" class="nav-link">납입 지시 요청</a></li>
+                    <li><a href="/supply/purchaseOrderList" title="구매 발주서 목록" class="nav-link">구매 발주서 목록</a></li>
+                    <li><a href="/supply/progressInspection" title="진척 검수 관리" class="nav-link">진척 검수 관리</a></li>
+                    <li><a href="/supply/requestDelivery" title="납입 지시 요청" class="nav-link">납입 지시 요청</a></li>
                     <li><a href="#" class="nav-link">발주 진행 현황</a></li>
                     <li><a href="#" class="nav-link">거래 명세서 목록</a></li>
                 </ul>
@@ -164,6 +164,9 @@
 
         <!-- 발주 관리 페이지 -->
         <div layout:fragment="spPorder"></div>
+        <div layout:fragment="spPList"></div>
+        <div layout:fragment="spPInsp"></div>
+        <div layout:fragment="spRDeli"></div>
 
 
     </main>

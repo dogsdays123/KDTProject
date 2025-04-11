@@ -83,5 +83,18 @@ public class SupplyController {
         log.info("##PURCHASE ORDER PAGE GET....##");
     }
 
+    @GetMapping("/purchaseOrderList")
+    public void purchaseOrderList() {
+        log.info("##PURCHASE OREDER LIST PAGE GET....##");
+    }
 
+    @GetMapping("/progressInspection")
+    public void progressInspection() {
+        log.info("##PROGRESS INSPECTION PAGE GET....##");
+    }
+
+    @GetMapping("/requestDelivery")
+    public void requestDelivery() {
+        log.info("##REQUEST DELIVERY PAGE GET....##");
+    }
 }

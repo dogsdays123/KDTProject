@@ -25,11 +25,15 @@
                                 <th><input type="checkbox" id="selectAll"></th>
                                 <th>생산계획코드</th>
                                 <th>조달계획코드</th>
+                                <th>공급업체</th>
                                 <th>자재코드</th>
                                 <th>자재명</th>
+                                <!-- 가로 : width / 깊이 : depth / 세로 : heigth   -->
+                                <th hidden="hidden">가로</th>
+                                <th hidden="hidden">깊이</th>
+                                <th hidden="hidden">세로</th>
                                 <th>조달수량</th>
                                 <th>조달납기일</th>
-                                <th>공급업체</th>
                                 <th>등록일</th>
                                 <th>상태</th>
                             </tr>
@@ -39,30 +43,38 @@
                                 <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
                                 <td>SSGHCD001</td>
                                 <td>MATB3MAT001</td>
+                                <td>SAMSON</td>
                                 <td>JJAN001</td>
                                 <td>(전기자전거)안장</td>
+                                <!-- 가로 : width / 깊이 : depth / 세로 : heigth   -->
+                                <td hidden="hidden">5</td>
+                                <td hidden="hidden">6</td>
+                                <td hidden="hidden">7.5</td>
                                 <td>100</td>
                                 <td>2025-04-10</td>
-                                <td>SAMSON</td>
                                 <td>2025-04-02</td>
                                 <td>진행중</td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
+                                <td>TVX12000E</td>
+                                <td>PED1200Z</td>
+                                <td>카인드몰</td>
+                                <td>FEDAL29A</td>
+                                <td>(전기자전거)페달</td>
+                                <!-- 가로 : width / 깊이 : depth / 세로 : heigth   -->
+                                <td hidden="hidden">3</td>
+                                <td hidden="hidden">4</td>
+                                <td hidden="hidden">3.5</td>
+                                <td>150</td>
                                 <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
+                                <td>2025-04-03</td>
                                 <td>진행중</td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-end">
+                    <div class="text-start">
                         <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
                             선택 항목 발주서 작성
                         </button>
@@ -74,27 +86,68 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="purchaseOrderModalLabel">구매 발주서 입력</h5>
+                        <h5 class="modal-title" id="purchaseOrderModalLabel">구매 발주서</h5>&nbsp;&nbsp;
+                        <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="purchaseOrderForm">
                             <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">공급업체 이메일 <span class="text-danger">*</span></label>
-                                    <input type="email" id="supplierEmail" class="form-control form-control-sm" placeholder="supplier@example.com" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">단가 <span class="text-danger">*</span></label>
+                                <p class="text-muted small mb-2">
+                                    선택된 조달 계획 코드 : <strong><span id="planCodeInput"></span></strong>&nbsp;&nbsp;
+                                </p>
+                                <p class="text-muted small mb-2">
+                                    공급업체 : <strong><span id="productSupplier"></span></strong>&nbsp;&nbsp;
+                                    자재명 : <strong><span id="productNameInput"></span></strong>&nbsp;&nbsp;
+                                    조달수량 : <strong><span id="productQtyInput"></span></strong>&nbsp;&nbsp;
+                                    조달납기일 : <strong><span id="productDate"></span></strong>
+                                </p>
+                                <div class="col-12">
+                                    <label class="form-label"><span class="text-danger">*</span> 단가</label>
                                     <input type="number" id="unitPrice" class="form-control form-control-sm" placeholder="예: 12000" required>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">공급 납기일</label>
-                                    <input type="date" id="dueDate" class="form-control form-control-sm">
+
+                                <div class="col-12">
+                                    <label class="form-label"><span class="text-danger">*</span> 납품 장소</label>
+                                    <input type="text" id="deliveryLocation" class="form-control form-control-sm" required>
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="form-label">비고 / 요청사항</label>
+
+                                <div class="col-12">
+                                    <label class="form-label"><span class="text-danger">*</span> 희망 입고일</label>
+                                    <input type="date" id="deliveryDate" class="form-control form-control-sm" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">특이사항(요청사항)</label>
                                     <textarea class="form-control form-control-sm" rows="2" id="orderMemo" placeholder="특이사항이 있으면 입력하세요."></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label"><span class="text-danger">*</span> 결제 일자</label>
+                                    <input type="date" id="payDate" class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label d-block"><span class="text-danger">*</span> 결제 방법</label>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="payMethodCash" class="form-check-input">
+                                        <label for="payMethodCash" class="form-check-label">계좌이체(입금자명 : DG전동)</label>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="payMethodCard" class="form-check-input">
+                                        <label for="payMethodCard" class="form-check-label">신용카드결제</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label d-block"><span class="text-danger">*</span> 증빙 서류 요청</label>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="payDocumentsTex" class="form-check-input">
+                                        <label for="payDocumentsTex" class="form-check-label">세금계산서</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" id="payDocumentsCash" class="form-check-input">
+                                        <label for="payDocumentsCash" class="form-check-label">현금영수증</label>
+                                    </div>
                                 </div>
                             </div>
                         </form>

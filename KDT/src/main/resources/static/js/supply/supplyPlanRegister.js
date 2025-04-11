@@ -1,12 +1,28 @@
-function openProcurementModal(planCode) {
-    // 선택된 생산계획코드 세팅
-    document.getElementById('selectedPlanCodeLabel').innerText = planCode;
-    document.getElementById('selectedPlanCode').value = planCode;
+document.getElementById('openPurchaseModal').addEventListener('click', function () {
+    const selectedRows = Array.from(document.querySelectorAll('.selectPlan:checked'))
+        .map(cb => cb.closest('tr')); // 체크된 체크박스의 행 가져오기
 
-    // 모달 열기
+    if (selectedRows.length === 0) {
+        alert('하나 이상의 항목을 선택해주세요.');
+        return;
+    }
+
+    // 예: 첫 번째 선택된 행 기준
+    const firstRow = selectedRows[0].children;
+
+    const planCode = firstRow[1].innerText;   // 생산 계획 코드
+    const productName = firstRow[5].innerText; // 생산 제품명
+    const quantity = firstRow[6].innerText;   // 생산 수량
+
+    // 모달에 값 주입
+    document.getElementById('planCodeInput').innerText = planCode;
+    document.getElementById('productNameInput').innerText = productName;
+    document.getElementById('productQtyInput').innerText = quantity;
+
     const modal = new bootstrap.Modal(document.getElementById('procurementModal'));
     modal.show();
-}
+});
+
 
 function resetView() {
     const modal = bootstrap.Modal.getInstance(document.getElementById('procurementModal'));
