@@ -1,3 +1,13 @@
+document.querySelectorAll('.selectPlan').forEach((checkbox) => {
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            document.querySelectorAll('.selectPlan').forEach((cb) => {
+                if (cb !== this) cb.checked = false;
+            });
+        }
+    });
+});
+
 document.getElementById('openPurchaseModal').addEventListener('click', function () {
     const selected = document.querySelector('.selectPlan:checked');
     if (!selected) {

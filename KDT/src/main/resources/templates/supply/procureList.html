@@ -289,8 +289,35 @@
                 <div>
                     <div class="text-start">
                         <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
-                            선택 항목 구매요청 등록
+                            선택 항목 구매 요청 등록
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="purchaseOrderModalLabel">구매 요청 등록</h5>&nbsp;&nbsp;
+                        <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="purchaseOrderForm">
+                            <div class="row g-3 mb-3">
+                                <p class="text-muted small mb-2">
+                                    선택된 조달 계획 코드 : <strong><span id="planCodeInput"></span></strong>&nbsp;&nbsp;
+                                </p>
+                                <p class="text-muted small mb-2">
+                                    자재명 : <strong><span id="materialName"></span></strong>&nbsp;&nbsp;
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-dark btn-sm">요청 등록</button>
                     </div>
                 </div>
             </div>

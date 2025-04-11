@@ -11,6 +11,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,15 +35,12 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
-// ************************
-// 구매 발주서 PDF 컨트롤러
-// ************************
 public class PDFController {
 
 
     private final ProductService productService;
-    @Value("${org.zerock.upload.readyPath}")
-    private String readyPath;
+//    @Value("${org.zerock.upload.readyPath}")
+//    private String readyPath;
 
     private final ProductionPlanService productionPlanService;
     private final ProductionPerDayService productionPerDayService;
