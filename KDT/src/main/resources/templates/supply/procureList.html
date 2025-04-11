@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}"
+      th:with="breadcrumbLevel1='조달 관리', breadcrumbCurrent='조달 계획 목록'">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="/css/supply/list.css" rel="stylesheet">
+</head>
+<body>
+    <div layout:fragment="spPcList">
+        <div class="container-fluid">
+            <div class="container" style="max-width: 1000px; margin-left: 0;">
+                <div class="d-flex align-items-center mb-3">
+                    <h4 class="mb-0 me-2">조달 계획 목록</h4>
+                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="도움말"></i>
+                </div>
+                <form>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-2">
+                            <label for="materialCodes" class="form-label small">생산 계획 코드</label>
+                            <select class="form-select form-select-sm" id="materialCodes" title="자재 코드">
+                                <option selected>전체</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="materials" class="form-label small">조달 계획 코드</label>
+                            <select class="form-select form-select-sm" id="materials" title="자재 선택">
+                                <option selected>전체</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="materialTypes" class="form-label small">자재 코드</label>
+                            <select class="form-select form-select-sm" id="materialTypes" title="자재 유형">
+                                <option selected>전체</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="materialNames" class="form-label small">자재명</label>
+                            <select class="form-select form-select-sm" id="materialNames" title="자재 유형">
+                                <option selected>전체</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="pruocureDate" class="form-label small">조달 납기일</label>
+                            <input type="date" class="form-control form-control-sm" id="pruocureDate">
+                        </div>
+                        <div class="col-md-1">
+                            <label for="state" class="form-label small">상태</label>
+                            <select class="form-select form-select-sm" id="state" title="상태">
+                                <option selected>전체</option>
+                                <option value="-">-</option>
+                                <option value="-">-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm w-100" title="필터 적용">적용</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- 2줄: 검색어 입력 -->
+                <form>
+                    <div class="row g-2 mt-2">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
+                                <input type="text" class="form-control" id="keyword" title="검색어 입력" placeholder="검색어 입력">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="d-flex justify-content-end mb-2" style="margin-right: 15px">
+                <form>
+                    <div class="col-auto">
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터">
+                            <option selected>전체</option>
+                            <option value="20">20개씩</option>
+                            <option value="30">30개씩</option>
+                            <option value="50">50개씩</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="container" style="max-width: 1600px; margin-left: 0;">
+                <div class="bg-white rounded">
+                    <div style="max-height: 480px; overflow-y: auto;">
+                        <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                            <thead class="table-light small text-center">
+                            <tr>
+                                <th><input type="checkbox" id="selectAll"></th>
+                                <th>생산계획코드</th>
+                                <th>조달계획코드</th>
+                                <th>자재코드</th>
+                                <th>자재명</th>
+                                <th>조달수량</th>
+                                <th>조달납기일</th>
+                                <th>공급업체</th>
+                                <th>등록일</th>
+                                <th>상태</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
+                                <td>SSGHCD001</td>
+                                <td>MATB3MAT001</td>
+                                <td>JJAN001</td>
+                                <td>(전기자전거)안장</td>
+                                <td>100</td>
+                                <td>2025-04-10</td>
+                                <td>SAMSON</td>
+                                <td>2025-04-02</td>
+                                <td>진행중</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-start">
+                        <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
+                            선택 항목 구매 요청 등록
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="purchaseOrderModalLabel">구매 요청 등록</h5>&nbsp;&nbsp;
+                        <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="purchaseOrderForm">
+                            <div class="row g-3 mb-3">
+                                <p class="text-muted small mb-2">
+                                    선택된 조달 계획 코드 : <strong><span id="planCodeInput"></span></strong>&nbsp;&nbsp;
+                                </p>
+                                <p class="text-muted small mb-2">
+                                    자재명 : <strong><span id="materialName"></span></strong>&nbsp;&nbsp;
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-dark btn-sm">요청 등록</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/supply/procureList.js}"></script>
+    </div>
+</body>
