@@ -48,14 +48,14 @@ function collectSelectedPlans() {
         cells.forEach((c, idx) => console.log(`셀 ${idx}:`, c.textContent.trim()));
         plans.push({
 
-            materialName: cells[4].textContent.trim(),
-            width: cells[5].textContent.trim(),
-            depth: cells[6].textContent.trim(),
-            height: cells[7].textContent.trim(),
-            quantity: cells[5].textContent.trim() || "0",
-            dueDate: cells[6].textContent.trim(),
+            materialName: cells[5].textContent.trim(),
+            width: cells[6].textContent.trim(),
+            depth: cells[7].textContent.trim(),
+            height: cells[8].textContent.trim(),
+            quantity: cells[9].textContent.trim() || "0",
+            dueDate: cells[10].textContent.trim(),
 
-            supplier: cells[7].textContent.trim(),
+            supplier: cells[3].textContent.trim(),
         });
     });
 
