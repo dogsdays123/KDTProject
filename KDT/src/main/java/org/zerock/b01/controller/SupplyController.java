@@ -31,7 +31,8 @@ import java.io.ByteArrayOutputStream;
 public class SupplyController {
 
     private final ProductService productService;
-    @Value("${org.zerock.upload.readyPath}")
+
+    @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
     private final ProductionPlanService productionPlanService;

@@ -8,4 +8,5 @@ import java.util.List;
 public interface ProductService {
     List<Product> getProducts();
     String[] registerProducts(List<ProductDTO> productDTOs);
+    void registerProductsEasy(List<ProductDTO> productDTOs);
 }

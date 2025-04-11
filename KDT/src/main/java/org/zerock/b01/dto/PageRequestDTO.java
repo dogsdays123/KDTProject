@@ -28,13 +28,9 @@ public class PageRequestDTO {
 
     private String keyword;
 
-    private String allId; // (마이페이지) 거래 - 작성자 ID
-
-    private String addressCityFilter; // 채용 공고 지역 '시' 필터
-
-    private LocalDate startDate; //날짜 검색: 시작일
-
-    private LocalDate endDate; // 날짜 검색: 시작일
+    private String pCode;
+    private String pName;
+    private LocalDate startDate;
 
     public String[] getTypes() {
         if(type == null || type.isEmpty()) {
@@ -65,14 +61,6 @@ public class PageRequestDTO {
                 } catch (UnsupportedEncodingException e){
 
                 }
-            }
-
-            //날짜 검색
-            if (startDate != null) {
-                builder.append("&startDate=").append(startDate);
-            }
-            if (endDate != null) {
-                builder.append("&endDate=").append(endDate);
             }
 
             link = builder.toString();
