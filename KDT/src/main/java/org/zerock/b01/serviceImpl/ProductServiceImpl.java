@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String[] registerProducts(List<ProductDTO> productDTOs, String uName){
+    public String[] registerProducts(List<ProductDTO> productDTOs, String uId){
 
         List<String> errorMessage = new ArrayList<>();
 
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
         for(ProductDTO productDTO : productDTOs){
             Product product = modelMapper.map(productDTO, Product.class);
-            product.setUserBy(userByRepository.findByUId(uName));
+            product.setUserBy(userByRepository.findByUId(uId));
 
             //이미 존재한 코드
             if(productRepository.findByProductId(product.getPCode()).isPresent()){
@@ -73,16 +73,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void registerProductsEasy(List<ProductDTO> productDTOs, String uName){
+    public void registerProductsEasy(List<ProductDTO> productDTOs, String uId){
 
         log.info("innerProductRegister" + productDTOs);
 
         for(ProductDTO productDTO : productDTOs){
 
-            log.info(" UUUU " + uName);
+            log.info(" UUUU " + uId);
 
             Product product = modelMapper.map(productDTO, Product.class);
-            product.setUserBy(userByRepository.findByUId(uName));
+            product.setUserBy(userByRepository.findByUId(uId));
 
             log.info(" UUUU " + userByRepository.findByUId(productDTO.getUName()));
 

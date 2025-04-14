@@ -15,5 +15,5 @@ public class ProductListAllDTO {
     private String pCode;
     private String pName; //제품이름
     private String uName; //작성자
-    private LocalDate StartDate;
+    private LocalDate pReg;
 }

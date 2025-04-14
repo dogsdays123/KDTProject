@@ -65,12 +65,18 @@ public class ProductController {
     }
     @GetMapping("/bomList")
     public void bomList() {
-        log.info("##BOM LIST PAGE GET....##");
+
     }
 
     @GetMapping("/bomRegister")
-    public void bomRegister() {
-        log.info("##BOM REGISTER PAGE GET....##");
+    public String bomRegister(Model model) {
+        log.info("##PP REGISTER PAGE GET....##");
+        List<Product> productList = productService.getProducts();
+        model.addAttribute("productList", productList);
+        log.info("$$$$" + productList);
+
+        // 반환할 뷰 이름을 명시합니다.
+        return "/product/bomRegister";
     }
 
     @GetMapping("/goodsList")
@@ -120,15 +126,20 @@ public class ProductController {
                 .body(resource);
     }
 
+    @PostMapping("/bomRegister")
+    public String bomRegisterPost(){
+        return null;
+    }
+
     //제품 직접 등록
     @PostMapping("/goodsRegister")
-    public String productRegisterPost(String uName,
+    public String productRegisterPost(String uId,
                                       @RequestParam("pCodes[]") List<String> pCodes,
                                       @RequestParam("pNames[]") List<String> pNames,
                                       Model model, RedirectAttributes redirectAttributes,
                                       HttpServletRequest request) {
 
-        log.info(" ^^^^ " + uName);
+        log.info(" ^^^^ " + uId);
 
         List<ProductDTO> products = new ArrayList<>();
 
@@ -140,7 +151,8 @@ public class ProductController {
             products.add(product); // 제품 리스트에 추가
         }
 
-        String[] message = productService.registerProducts(products, uName);
+        log.info(" ^^^^ " + uId);
+        String[] message = productService.registerProducts(products, uId);
         String messageString = String.join(",", message);
 
         // 리다이렉트 시에 message를 전달

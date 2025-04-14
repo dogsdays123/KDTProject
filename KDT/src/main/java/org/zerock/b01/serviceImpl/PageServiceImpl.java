@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.dto.PageRequestDTO;
 import org.zerock.b01.dto.PageResponseDTO;
 import org.zerock.b01.dto.PlanListAllDTO;
@@ -38,6 +39,7 @@ public class PageServiceImpl implements PageService {
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
         String ppCode = pageRequestDTO.getPpCode();
+        String pCode = pageRequestDTO.getPCode();
         String ppNum = pageRequestDTO.getPpNum();
         String pName = pageRequestDTO.getPName();
         String uName = pageRequestDTO.getUName();
@@ -48,7 +50,7 @@ public class PageServiceImpl implements PageService {
         Pageable pageable = pageRequestDTO.getPageable("ppId");
 
         Page<PlanListAllDTO> result = productionPlanRepository
-                .planSearchWithAll(types, keyword, ppCode, ppNum, pName,
+                .planSearchWithAll(types, keyword, ppCode, pCode, ppNum, pName,
                         uName, ppState, ppStart, ppEnd, pageable);
 
         return PageResponseDTO.<PlanListAllDTO>withAll()
@@ -60,18 +62,17 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public PageResponseDTO<ProductListAllDTO> productListWithAll(PageRequestDTO pageRequestDTO){
-        log.info(">>>> 요청된 페이지 번호: {}", pageRequestDTO.getPage());
+        log.info(">>>> 요청된 페이지 번호: {}", pageRequestDTO.getPpStart());
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
         String pCode = pageRequestDTO.getPCode();
         String pName = pageRequestDTO.getPName();
         String uName = pageRequestDTO.getUName();
-        LocalDate startDate = pageRequestDTO.getStartDate();
-        LocalDate endDate = pageRequestDTO.getStartDate();
+        LocalDate regDate = pageRequestDTO.getPReg();
 
         Pageable pageable = pageRequestDTO.getPageable("pId");
 
-        Page<ProductListAllDTO> result = productRepository.productSearchWithAll(types, keyword, pCode, pName, uName, startDate, endDate, pageable);
+        Page<ProductListAllDTO> result = productRepository.productSearchWithAll(types, keyword, pCode, pName, uName, regDate, pageable);
 
         return PageResponseDTO.<ProductListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

@@ -113,7 +113,7 @@
                             <tr th:each="dto:${responseDTO.dtoList}">
                                 <td th:text="${dto.getPCode()}"></td>
                                 <td th:text="${dto.getPName()}"></td>
-                                <td th:text="${#temporals.format(dto.getStartDate(), 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#temporals.format(dto.getPReg(), 'yyyy-MM-dd')}"></td>
                                 <td th:text="${dto.getUName()}"></td>
                             </tr>
                             </tbody>

@@ -1,3 +1,5 @@
+<!--부품등록이 먼저 있어야 함. 협력회사가 작성하든, 자회사가 작성하든-->
+
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
@@ -17,15 +19,14 @@
         </div>
 
         <!-- 등록 폼 -->
-        <form>
+        <form method="post" th:action="@{/product/bomRegister}">
+          <input type="hidden" name="uId" th:value="${userBy.uId}">
           <div style="max-width: 1200px; margin-left: 0;">
             <div class="row g-2 mb-2">
               <div class="col-md-2">
                 <label for="productName" class="form-label small">상품 선택</label>
-                <select id="productName" name="상품명" class="form-select form-select-sm">
-                  <option value="전기자전거A">전기자전거A</option>
-                  <option value="전기자전거B">전기자전거B</option>
-                  <option value="전동킥보드">전동킥보드</option>
+                <select id="productName" class="form-select form-select-sm">
+                  <option th:each="product : ${productList}" th:value="${product.pName}" th:text="${product.pName}"></option>
                 </select>
               </div>
               <div class="col-md-2">

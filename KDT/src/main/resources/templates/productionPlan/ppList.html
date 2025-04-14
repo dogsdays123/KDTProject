@@ -48,6 +48,7 @@
                         <div class="col-md-1 d-flex align-items-end">
                             <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
                         </div>
+                        <button type="button" class="clearBtn btn btn-white btn-sm w-100" title="필터 초기화">초기화</button>
                     </div>
                 </form>
                     <!-- 2줄: 검색어 입력 -->
@@ -81,19 +82,23 @@
                             <thead class="table-light small text-center">
                             <tr>
                                 <th>생산 계획 코드</th>
-                                <th>생산 시작일</th>
-                                <th>생산 종료일</th>
                                 <th>생산 제품 코드</th>
                                 <th>생산 제품명</th>
+                                <th>생산 시작일</th>
+                                <th>생산 종료일</th>
+                                <th>작성자</th>
                                 <th>상태</th>
                             </tr>
                             </thead>
                             <tbody id="plansTable" th:with="link = ${pageRequestDTO.getLink()}">
                             <tr th:each="dto:${responseDTO.dtoList}">
+                                <td th:text="${dto.getPpCode()}"></td>
                                 <td th:text="${dto.getPCode()}"></td>
                                 <td th:text="${dto.getPName()}"></td>
-                                <td th:text="${#temporals.format(dto.getStartDate(), 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#temporals.format(dto.getPpStart(), 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#temporals.format(dto.getPpEnd(), 'yyyy-MM-dd')}"></td>
                                 <td th:text="${dto.getUName()}"></td>
+                                <td class="CheckState" th:data-state="${dto.getPpState() != null ? dto.getPpState() : 'UNKNOWN'}"></td>
                             </tr>
                             </tbody>
                         </table>

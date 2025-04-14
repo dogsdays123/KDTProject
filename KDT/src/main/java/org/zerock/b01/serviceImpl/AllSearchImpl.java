@@ -43,36 +43,25 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     @Override
-    public Page<ProductListAllDTO> productSearchWithAll(String[] types, String keyword, String pCode, String pName, String uName, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+    public Page<ProductListAllDTO> productSearchWithAll(String[] types, String keyword, String pCode, String pName, String uName, LocalDate regDate, Pageable pageable) {
 
         QProduct product = QProduct.product;
         JPQLQuery<Product> query = from(product);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        LocalDate localDateStart;
 
-        if(startDate != null) {
-            localDateStart = startDate;
-        } else {
-            //날짜받기
-            DateTimePath<LocalDateTime> dateTimePath = Expressions.dateTimePath(LocalDateTime.class, "regDate");
-            // LocalDateTime에서 LocalDate로 변환
-            LocalDateTime localDateTimeStart = LocalDateTime.now();
-            localDateStart = localDateTimeStart.toLocalDate();
-        }
-
-        if(keyword != null && !keyword.isEmpty()) {
+        if (keyword != null && !keyword.isEmpty()) {
             booleanBuilder.and(product.pName.contains(keyword));
         }
 
-        if(pName != null && !pName.equals("all")){
+        if (pName != null && !pName.equals("all")) {
             booleanBuilder.and(product.pName.contains(pName));
         }
 
-        if(pCode != null && !pCode.isEmpty()) {
+        if (pCode != null && !pCode.isEmpty()) {
             booleanBuilder.and(product.pCode.contains(pCode));
         }
 
-        if(uName != null && !uName.isEmpty()) {
+        if (uName != null && !uName.isEmpty()) {
             booleanBuilder.and(product.pCode.contains(uName));
         }
 
@@ -82,63 +71,50 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.limit(pageable.getPageSize());
         List<Product> resultList = query.fetch();
 
-        log.info(">>> 검색 조건{}", product.userBy.uName);
+        log.info(">>> 검색 조건{}", regDate);
 
         // DTO로 변환
-        if(startDate != null && endDate != null) {
-            List<ProductListAllDTO> dtoList = resultList.stream()
-                    .map(prod -> ProductListAllDTO.builder()
-                            .pCode(prod.getPCode())
-                            .pName(prod.getPName())
-                            .StartDate(startDate)
-                            .uName(prod.getUserBy().getUName())
-                            .build())
-                    .collect(Collectors.toList());
+        List<ProductListAllDTO> dtoList = resultList.stream()
+                .map(prod -> ProductListAllDTO.builder()
+                        .pCode(prod.getPCode())
+                        .pName(prod.getPName())
+                        .pReg(prod.getRegDate() != null ? prod.getRegDate().toLocalDate() : null)
+                        .uName(prod.getUserBy().getUName())
+                        .build())
+                .collect(Collectors.toList());
 
-            // 전체 개수
-            // 카운트용 별도 쿼리 생성
-            JPQLQuery<Product> countQuery = from(product).where(booleanBuilder);
-            long total = countQuery.fetchCount();
+        // 전체 개수
+        // 카운트용 별도 쿼리 생성
+        JPQLQuery<Product> countQuery = from(product).where(booleanBuilder);
+        long total = countQuery.fetchCount();
 
-            return new PageImpl<>(dtoList, pageable, total);
-
-        } else {
-            List<ProductListAllDTO> dtoList = resultList.stream()
-                    .map(prod -> ProductListAllDTO.builder()
-                            .pCode(prod.getPCode())
-                            .pName(prod.getPName())
-                            .StartDate(localDateStart)
-                            .uName(prod.getUserBy().getUName())
-                            .build())
-                    .collect(Collectors.toList());
-
-            // 전체 개수
-            // 카운트용 별도 쿼리 생성
-            JPQLQuery<Product> countQuery = from(product).where(booleanBuilder);
-            long total = countQuery.fetchCount();
-
-            return new PageImpl<>(dtoList, pageable, total);
-        }
+        return new PageImpl<>(dtoList, pageable, total);
     }
 
     @Override
-    public Page<PlanListAllDTO> planSearchWithAll(String[] types, String keyword, String ppCode,
+    public Page<PlanListAllDTO> planSearchWithAll(String[] types, String keyword, String ppCode, String pCode,
                                                   String ppNum, String pName, String uName,
                                                   String ppState, LocalDate ppStart, LocalDate ppEnd,
                                                   Pageable pageable) {
         QProductionPlan productPlan = QProductionPlan.productionPlan;
+        QProduct product = QProduct.product;
         JPQLQuery<ProductionPlan> query = from(productPlan);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        if(pName != null && !pName.isEmpty()) {
+        if (pName != null && !pName.isEmpty()) {
             booleanBuilder.and(productPlan.pName.contains(pName));
         }
 
-        if(ppCode != null && !ppCode.isEmpty()) {
+        if (ppCode != null && !ppCode.isEmpty()) {
             booleanBuilder.and(productPlan.ppCode.contains(ppCode));
         }
 
-        if(uName != null && !uName.isEmpty()) {
+        //얘는 제품 나머지는 플랜
+        if (pCode != null && !pCode.isEmpty()) {
+            booleanBuilder.and(product.pCode.contains(pCode));
+        }
+
+        if (uName != null && !uName.isEmpty()) {
             booleanBuilder.and(productPlan.userBy.uName.contains(uName));
         }
 
@@ -157,6 +133,24 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.limit(pageable.getPageSize());
         List<ProductionPlan> resultList = query.fetch();
 
-        return null;
+        List<PlanListAllDTO> dtoList = resultList.stream()
+                .map(plan -> PlanListAllDTO.builder()
+                        .ppCode(plan.getPpCode())
+                        .pCode(plan.getProduct().getPCode())
+                        .pName(plan.getPName())
+                        .ppNum(plan.getPpNum())
+                        .ppState(plan.getPpState().toString())
+                        .ppStart(plan.getPpStart())
+                        .ppEnd(plan.getPpEnd())
+                        .uName(plan.getUserBy().getUName())
+                        .build())
+                .collect(Collectors.toList());
+
+        // 전체 개수
+        // 카운트용 별도 쿼리 생성
+        JPQLQuery<ProductionPlan> countQuery = from(productPlan).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
     }
 }

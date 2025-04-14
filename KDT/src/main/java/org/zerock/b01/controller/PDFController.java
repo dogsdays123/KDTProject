@@ -43,7 +43,6 @@ public class PDFController {
 //    private String readyPath;
 
     private final ProductionPlanService productionPlanService;
-    private final ProductionPerDayService productionPerDayService;
     private final UserByService userByService;
 
     @ModelAttribute

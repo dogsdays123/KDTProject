@@ -115,7 +115,7 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" title="견적 관리" onclick="toggleSubmenu('submenu-estimate')"><i class="bi bi-clipboard"></i>&nbsp;&nbsp;견적 관리&nbsp;&nbsp;<span>▾</span</a>
+                <a href="#" class="nav-link" title="견적 관리" onclick="toggleSubmenu('submenu-estimate')"><i class="bi bi-clipboard"></i>&nbsp;&nbsp;견적 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-estimate" class="submenu">
                     <li><a href="#" class="nav-link">견적서 등록</a></li>
                     <li><a href="#" class="nav-link">견적서 목록</a></li>
@@ -170,77 +170,13 @@
 
 
     </main>
-    <!-- main end -->
-
-
-<!--        <div class="container">-->
-<!--            <div class="row g-4">-->
-
-<!--                &lt;!&ndash; 자재 재고 현황 &ndash;&gt;-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-body">-->
-<!--                            <h5 class="card-title">자재 재고 현황</h5>-->
-
-<!--                            <div class="mb-3">-->
-<!--                                <div class="progress-label">-->
-<!--                                    <span>철판</span><span>45개</span>-->
-<!--                                </div>-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar" style="width: 90%;"></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="mb-3">-->
-<!--                                <div class="progress-label">-->
-<!--                                    <span>볼트</span><span>12개</span>-->
-<!--                                </div>-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar bg-warning" style="width: 24%;"></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="mb-3">-->
-<!--                                <div class="progress-label">-->
-<!--                                    <span>모터</span><span>5개</span>-->
-<!--                                </div>-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar bg-danger" style="width: 10%;"></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; 납기 일정 알림 &ndash;&gt;-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-body">-->
-<!--                            <h5 class="card-title text-danger">🚨 납기 지연 알림</h5>-->
-<!--                            <ul class="text-danger small ps-3">-->
-<!--                                <li>모터 입고 지연 - 4/5 생산 차질 예상</li>-->
-<!--                                <li>볼트 재고 부족 - 긴급 발주 필요</li>-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; 생산 계획 대비 실적 &ndash;&gt;-->
-<!--                <div class="col-12">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-body">-->
-<!--                            <h5 class="card-title">생산 계획 대비 실적</h5>-->
-<!--                            <canvas id="productionChart" height="200"></canvas>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--            </div>-->
-<!--        </div>-->
 
 </body>
+
+<!--특정 위치에서 script를 사용하려면 <script layout:fragment="script" th:inline="javascript"> 를 사용해야 함-->
+<!--아니면 여기에 직접 명시해줘야 해당 페이지에 적용됨 아니면 적용 안됨-->
 <div layout:fragment="script"></div>
 <script src="/js/layout.js" defer></script>
+<script src="/js/checkState.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </html>

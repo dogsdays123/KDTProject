@@ -33,7 +33,7 @@ public class PageRequestDTO {
 
     //product
     private String pCode;
-    private LocalDate startDate;
+    private LocalDate pReg;
 
     //plan
     private String ppCode;
