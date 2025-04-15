@@ -1,3 +1,8 @@
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('closed');
+}
+
 // 사이드바 메뉴 클릭 관련 함수
 function toggleSubmenu(id) {
     var allSubmenus = document.querySelectorAll('.submenu');

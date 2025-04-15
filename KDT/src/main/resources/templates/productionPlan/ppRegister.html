@@ -37,16 +37,12 @@
                             <label for="productCode" class="form-label small">생산 계획 코드</label>
                             <input type="text" id="productCode" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <label for="productNum" class="form-label small">생산 갯수</label>
                             <input type="number" id="productNum" class="form-control form-control-sm">
                         </div>
-                    </div>
-
-                    <!-- 2줄: 1~5일차 + 버튼 -->
-                    <div class="row g-2 mb-2 align-items-end">
-                        <div class="col-md-2 d-flex gap-1">
-                            <button type="button" class="btn btn-dark btn-sm w-50" onclick="addPlan()">+ 추가</button>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm w-100" onclick="addPlan()">+ 추가</button>
                         </div>
                     </div>
                 </div>
@@ -55,10 +51,10 @@
                     <table class="table table-bordered table-hover table-sm align-middle" id="planTable">
                         <thead class="table-light small text-center">
                         <tr>
-                            <th>시작 날짜</th>
-                            <th>종료 날짜</th>
+                            <th>시작날짜</th>
+                            <th>종료날짜</th>
                             <th>제품명</th>
-                            <th>생산 계획 코드</th>
+                            <th>생산계획코드</th>
                             <th>수량</th>
                             <th>삭제</th>
                         </tr>

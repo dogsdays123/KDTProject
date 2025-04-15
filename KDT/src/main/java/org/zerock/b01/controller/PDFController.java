@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.b01.dto.PurchaseOrderRequestDTO;
+import org.zerock.b01.dto.TransactionStatementDTO;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
@@ -65,6 +66,9 @@ public class PDFController {
         }
     }
 
+    private final PdfService pdfService;
+
+    // DG 전동 구매 발주서 pdf
     @PostMapping("/purchase/order/pdf/download")
     public ResponseEntity<byte[]> downloadPurchaseOrderPdf(@RequestBody PurchaseOrderRequestDTO request) {
         byte[] pdfBytes = pdfService.createPdf(request); // 여기에 진짜 PDF 생성
@@ -76,14 +80,38 @@ public class PDFController {
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 
-    private final PdfService pdfService;
-
     @PostMapping("/purchase/order/pdf/preview")
     public ResponseEntity<byte[]> previewPurchaseOrderPdf(@RequestBody PurchaseOrderRequestDTO request) {
         log.info("## PDF PREVIEW 요청 ##");
 
         // PDF 생성 로직 - 예시로 dummy 데이터 사용
         byte[] pdf = pdfService.createPdf(request); // 전달받은 값으로 PDF 생성
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.attachment().filename("purchase_order.pdf").build());
+
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+    }
+
+    // 협력업체 거래명세서 pdf
+    @PostMapping("/supplier/purchase/order/pdf/download")
+    public ResponseEntity<byte[]> downloadSupplierPurchaseOrderPdf(@RequestBody TransactionStatementDTO request) {
+        byte[] pdfBytes = pdfService.createSupplierPdf(request); // 여기에 진짜 PDF 생성
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.attachment().filename("purchase_order.pdf").build());
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/supplier/purchase/order/pdf/preview")
+    public ResponseEntity<byte[]> previewSupplierPurchaseOrderPdf(@RequestBody TransactionStatementDTO request) {
+        log.info("## PDF PREVIEW 요청 ##");
+
+        // PDF 생성 로직 - 예시로 dummy 데이터 사용
+        byte[] pdf = pdfService.createSupplierPdf(request); // 전달받은 값으로 PDF 생성
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

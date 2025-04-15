@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,23 +11,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.ProductService;
-import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
 
-import java.io.ByteArrayOutputStream;
-
+//자재관리 컨트롤러
 @Log4j2
 @Controller
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/supply")
-public class SupplyController {
-
+@RequestMapping("/material")
+public class MaterialController {
     private final ProductService productService;
 
     @Value("${org.zerock.upload.readyPlanPath}")
@@ -56,49 +51,15 @@ public class SupplyController {
         }
     }
 
-    @GetMapping("/materialList")
-    public void materialList() {
-        log.info("##MATERIAL LIST PAGE GET....##");
-    }
+    @GetMapping("/inventoryRegister")
+    public void inventoryRegister(){ log.info("##MATERIAL INVENTORY REGISTER PAGE GET....##"); }
 
-    @GetMapping("/materialRegister")
-    public void materialRegister() {
-        log.info("##MATERIAL REGISTER PAGE GET....##");
-    }
+    @GetMapping("/inventoryList")
+    public void inventoryList(){ log.info("##MATERIAL INVENTORY LIST PAGE GET....##"); }
 
-    @GetMapping("/procureRegister")
-    public void procureRegister() {
-        log.info("##PROCURE REGISTER PAGE GET....##");
-    }
+    @GetMapping("/receipt")
+    public void receipt(){ log.info("##MATERIAL RECEIPT PAGE GET....##"); }
 
-    @GetMapping("/procureList")
-    public void procureList() {
-        log.info("##PROCURE LIST PAGE GET....##");
-    }
-
-    @GetMapping("/purchaseOrder")
-    public void purchaseOrder() {
-        log.info("##PURCHASE ORDER PAGE GET....##");
-    }
-
-    @GetMapping("/purchaseOrderList")
-    public void purchaseOrderList() {
-        log.info("##PURCHASE OREDER LIST PAGE GET....##");
-    }
-
-    @GetMapping("/progressInspection")
-    public void progressInspection() {
-        log.info("##PROGRESS INSPECTION PAGE GET....##");
-    }
-
-    @GetMapping("/requestDelivery")
-    public void requestDelivery() {
-        log.info("##REQUEST DELIVERY PAGE GET....##");
-    }
-
-    @GetMapping("/purchaseOrderStatus")
-    public void purchaseOrderStatus() { log.info("##PURCHASE ORDER STATUS PAGE GET....##"); }
-
-    @GetMapping("/transactionStatement")
-    public void transactionStatement() { log.info("##TRANSACTION STATEMENT PAGE GET....##"); }
+    @GetMapping("/receiptList")
+    public void receiptList(){ log.info("##MATERIAL RECEIPT LIST PAGE GET....##"); }
 }

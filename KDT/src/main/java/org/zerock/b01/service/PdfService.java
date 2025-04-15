@@ -9,6 +9,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.dto.PurchaseItemDTO;
 import org.zerock.b01.dto.PurchaseOrderRequestDTO;
+import org.zerock.b01.dto.TransactionItemDTO;
+import org.zerock.b01.dto.TransactionStatementDTO;
 
 import java.io.ByteArrayOutputStream;
 import java.text.NumberFormat;
@@ -19,6 +21,296 @@ import static java.awt.SystemColor.text;
 
 @Service
 public class PdfService {
+
+    public byte[] createSupplierPdf(TransactionStatementDTO request) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            Document document = new Document(PageSize.A4.rotate()); // A4 가로
+//            Document document = new Document(); // A4 가로
+//            document.setMargins(0f, 0f, 0f, 0f);  // 모든 여백을 0으로 설정
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            // 한글 폰트
+            BaseFont baseFont = BaseFont.createFont(
+                    "src/main/resources/fonts/malgun.ttf",
+                    BaseFont.IDENTITY_H,
+                    BaseFont.EMBEDDED
+            );
+
+            //  PDF 에 작성될 폰트 설정
+            Font font = new Font(baseFont, 9);
+            Font titleFont = new Font(baseFont, 20, Font.BOLD);
+            Font contentTitleFont = new Font(baseFont, 12, Font.BOLD);
+            Font contentTitleFont1 = new Font(baseFont, 10, Font.BOLD);
+            Font materialInfoFont = new Font(baseFont, 10, Font.NORMAL);
+
+            document.add(new Paragraph(" "));
+            PdfPTable materialInfoTableHeader = new PdfPTable(2);
+            materialInfoTableHeader.setWidthPercentage(100);
+
+            PdfPCell leftCell = new PdfPCell(new Phrase("", materialInfoFont));
+            leftCell.setBorder(Rectangle.NO_BORDER);
+            leftCell.setHorizontalAlignment(Element.ALIGN_LEFT); // 왼쪽 정렬
+
+            String today = new SimpleDateFormat("yyyy년 MM월 dd일").format(new Date());
+            PdfPCell rightCell = new PdfPCell(new Phrase("발행일 : " + today, materialInfoFont));
+            rightCell.setBorder(Rectangle.NO_BORDER);
+            rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT); // 오른쪽 정렬
+
+            materialInfoTableHeader.addCell(leftCell);
+            materialInfoTableHeader.addCell(rightCell);
+
+            document.add(materialInfoTableHeader);
+
+            PdfPTable materialInfoTableHeader1 = new PdfPTable(2);
+            materialInfoTableHeader1.setWidthPercentage(100);
+
+            PdfPCell leftCell1 = new PdfPCell(new Phrase("거래일자 : " + "2025-04-15", materialInfoFont));
+            leftCell1.setBorder(Rectangle.NO_BORDER);
+            leftCell1.setHorizontalAlignment(Element.ALIGN_LEFT); // 왼쪽 정렬
+
+            PdfPCell rightCell1 = new PdfPCell(new Phrase("인수자 : " + "DG전동", materialInfoFont));
+            rightCell1.setBorder(Rectangle.NO_BORDER);
+            rightCell1.setHorizontalAlignment(Element.ALIGN_RIGHT); // 오른쪽 정렬
+
+            materialInfoTableHeader1.addCell(leftCell1);
+            materialInfoTableHeader1.addCell(rightCell1);
+
+            document.add(new Paragraph(" "));
+
+            Paragraph titleParagraph = new Paragraph("거 래 명 세 서", titleFont);
+            titleParagraph.setAlignment(Element.ALIGN_CENTER);
+            document.add(titleParagraph);
+
+            document.add(new Paragraph(" "));
+            document.add(materialInfoTableHeader1);
+            document.add(new Paragraph(" "));
+            PdfPTable supplierInfoTable = new PdfPTable(4);
+            supplierInfoTable.setWidthPercentage(100);
+
+            float[] columnWidths = {1.5f, 3.5f, 1.5f, 3.5f};
+            supplierInfoTable.setWidths(columnWidths);
+
+            PdfPCell headerCell = new PdfPCell(new Phrase("공급 받는자", contentTitleFont));
+            headerCell.setColspan(4); // 열 4개 병합
+            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerCell.setBackgroundColor(new BaseColor(255, 204, 128)); // 배경색은 선택
+            headerCell.setPadding(7f); // 여백도 선택
+            supplierInfoTable.addCell(headerCell);
+
+            PdfPCell supplierAddressCell = new PdfPCell(new Phrase("부산광역시 사상구 학감대로 226 롯데프라자 2층", font));
+            supplierAddressCell.setColspan(3);
+            supplierAddressCell.setHorizontalAlignment(Element.ALIGN_CENTER);   // ← 가운데 정렬
+            supplierAddressCell.setVerticalAlignment(Element.ALIGN_MIDDLE);     // ← 수직 가운데 정렬
+            supplierAddressCell.setFixedHeight(20f);
+
+            supplierInfoTable.addCell(createCenteredCell("상호명", font));
+            supplierInfoTable.addCell(createCenteredCell("(주)DG전동", font));
+            supplierInfoTable.addCell(createCenteredCell("사업자등록번호", font));
+            supplierInfoTable.addCell(createCenteredCell("247-85-01361", font));
+            supplierInfoTable.addCell(createCenteredCell("대표자명", font));
+            supplierInfoTable.addCell(createCenteredCell("최전동", font));
+            supplierInfoTable.addCell(createCenteredCell("업종", font));
+            supplierInfoTable.addCell(createCenteredCell("전자상거래, 판촉물", font));
+            supplierInfoTable.addCell(createCenteredCell("사업장주소", font));
+            supplierInfoTable.addCell(supplierAddressCell);
+            supplierInfoTable.addCell(createCenteredCell("전화", font));
+            supplierInfoTable.addCell(createCenteredCell("1588-8888", font));
+            supplierInfoTable.addCell(createCenteredCell("팩스(FAX)", font));
+            supplierInfoTable.addCell(createCenteredCell("070-1234-5678", font));
+            supplierInfoTable.addCell(createCenteredCell("직통전화", font));
+            supplierInfoTable.addCell(createCenteredCell("010-1234-5678", font));
+            supplierInfoTable.addCell(createCenteredCell("담당직원", font));
+            supplierInfoTable.addCell(createCenteredCell("", font));
+            supplierInfoTable.addCell(createCenteredCell("비고", font));
+            supplierInfoTable.addCell(createCenteredCell("", font));
+
+            // 발신자(DG전동) 정보 테이블
+            PdfPTable orderInfoTable = new PdfPTable(4);
+            orderInfoTable.setWidthPercentage(100);
+
+            float[] columnWidths1 = {1.5f, 3.5f, 1.5f, 3.5f};
+            orderInfoTable.setWidths(columnWidths1);
+
+            PdfPCell orderHeaderCell = new PdfPCell(new Phrase("공급자", contentTitleFont));
+            orderHeaderCell.setColspan(4); // 열 4개 병합
+            orderHeaderCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            orderHeaderCell.setBackgroundColor(new BaseColor(173, 216, 230)); // 배경색은 선택
+            orderHeaderCell.setPadding(7f); // 여백도 선택
+            orderInfoTable.addCell(orderHeaderCell);
+
+            PdfPCell addressCell = new PdfPCell(new Phrase("수원시 영통구 영통동 980-3 디지털엠파이어 A동 312호", font));
+            addressCell.setColspan(3);
+            addressCell.setHorizontalAlignment(Element.ALIGN_CENTER);   // ← 가운데 정렬
+            addressCell.setVerticalAlignment(Element.ALIGN_MIDDLE);     // ← 수직 가운데 정렬
+            addressCell.setFixedHeight(20f);                            // ← 필요 시 높이 조정
+
+            orderInfoTable.addCell(createCenteredCell("회사명", font));
+            orderInfoTable.addCell(createCenteredCell("카인드몰", font));
+            orderInfoTable.addCell(createCenteredCell("대표자명", font));
+            orderInfoTable.addCell(createCenteredCell("김제철", font));
+
+            orderInfoTable.addCell(createCenteredCell("사업자등록번호", font));
+            orderInfoTable.addCell(createCenteredCell("123-45-67890", font));
+            orderInfoTable.addCell(createCenteredCell("전화", font));
+            orderInfoTable.addCell(createCenteredCell("031-234-5678", font));
+
+            orderInfoTable.addCell(createCenteredCell("사업자소재지", font));
+            orderInfoTable.addCell(addressCell);
+
+            orderInfoTable.addCell(createCenteredCell("이메일", font));
+            orderInfoTable.addCell(createCenteredCell("dg98@naver.com", font));
+            orderInfoTable.addCell(createCenteredCell("직통전화", font));
+            orderInfoTable.addCell(createCenteredCell("010-2345-8980", font));
+
+            orderInfoTable.addCell(createCenteredCell("팩스번호", font));
+            orderInfoTable.addCell(createCenteredCell("02-1234-7781", font));
+            orderInfoTable.addCell(createCenteredCell("발주담당자", font));
+            orderInfoTable.addCell(createCenteredCell("홍발주", font));
+
+            PdfPTable rowTable = new PdfPTable(2);  // 3개의 열을 가진 테이블
+            rowTable.setWidthPercentage(100);
+
+            PdfPCell supplierInfoTableCell = new PdfPCell(supplierInfoTable);
+            supplierInfoTableCell.setBorder(0);  // 테두리 없애기
+            supplierInfoTableCell.setHorizontalAlignment(Element.ALIGN_LEFT);  // 왼쪽 정렬
+            supplierInfoTableCell.setVerticalAlignment(Element.ALIGN_TOP);    // 위쪽 정렬
+//            supplierInfoTableCell.setPadding(5f);  // 패딩을 적절히 설정
+//            supplierInfoTableCell.setFixedHeight(200f); // 고정된 높이 설정
+            rowTable.addCell(supplierInfoTableCell);
+
+            PdfPCell orderInfoTableCell = new PdfPCell(orderInfoTable);
+            orderInfoTableCell.setBorder(0);  // 테두리 없애기
+            orderInfoTableCell.setHorizontalAlignment(Element.ALIGN_LEFT);  // 왼쪽 정렬
+            orderInfoTableCell.setVerticalAlignment(Element.ALIGN_TOP);    // 위쪽 정렬
+//            orderInfoTableCell.setPadding(5f);  // 패딩을 적절히 설정
+//            orderInfoTableCell.setFixedHeight(200f); // 고정된 높이 설정
+            rowTable.addCell(orderInfoTableCell);
+            document.add(rowTable);
+
+            document.add(new Paragraph(" "));
+            PdfPTable materialInfoTableHeader2 = new PdfPTable(1);
+            materialInfoTableHeader2.setWidthPercentage(100);
+
+            PdfPCell leftCell2 = new PdfPCell(new Phrase("아래와 같이 발주합니다.", materialInfoFont));
+            leftCell2.setBorder(Rectangle.NO_BORDER);
+            leftCell2.setHorizontalAlignment(Element.ALIGN_LEFT); // 왼쪽 정렬
+
+            materialInfoTableHeader2.addCell(leftCell2);
+            document.add(materialInfoTableHeader2);
+            document.add(new Paragraph(" "));
+            // 품목 정보 시작 헤더
+
+            BaseColor headerColor = new BaseColor(230, 230, 250); // 연보라
+            BaseColor totalColor = new BaseColor(240, 240, 240);  // 연회색
+
+            PdfPTable materialInfoTable = new PdfPTable(7);
+            materialInfoTable.setWidthPercentage(100);
+
+            float[] columnWidths2 = {1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 1.5f, 2.5f};
+            materialInfoTable.setWidths(columnWidths2);
+
+            PdfPCell headerNameCell = createColoredCell("상품명", contentTitleFont1, headerColor);
+            headerNameCell.setColspan(3); //
+            // 여백도 선택
+            materialInfoTable.addCell(headerNameCell);
+
+            materialInfoTable.addCell(createColoredCell("규격", contentTitleFont1, headerColor));
+            materialInfoTable.addCell(createColoredCell("수량", contentTitleFont1, headerColor));
+            materialInfoTable.addCell(createColoredCell("단가", contentTitleFont1, headerColor));
+            materialInfoTable.addCell(createColoredCell("공급가액(VAT포함)", contentTitleFont1, headerColor));
+
+            for(TransactionItemDTO item : request.getPlans()){
+                String standard = item.getWidth() + "x" + item.getDepth() + "x" + item.getHeight();
+                // 수량 x 단가
+                NumberFormat numberFormat = NumberFormat.getInstance();
+
+                int quantity = Integer.parseInt(item.getQuantity());
+                int unitPrice = Integer.parseInt(item.getUnitPrice());
+                int total = quantity * unitPrice;
+
+                String formattedQuantity = numberFormat.format(quantity);
+                String formattedUnitPrice = numberFormat.format(unitPrice);
+
+                int vat = total / 10; // 10% 부가세
+                int sum = total + vat; // VAT 포함 금액
+
+                String formattedTotal = "\\ " + numberFormat.format(total);
+                String formattedVat = "\\ " + numberFormat.format(vat);
+                String formattedSum = "\\ " + numberFormat.format(sum);
+
+                PdfPCell nameCell = createCenteredCell(item.getMaterialName(), font);
+                nameCell.setColspan(3);
+                materialInfoTable.addCell(nameCell);
+
+                materialInfoTable.addCell(createCenteredCell(standard, font));
+                materialInfoTable.addCell(createCenteredCell(formattedQuantity, font)); // 수량
+                materialInfoTable.addCell(createCenteredCell(formattedUnitPrice, font)); // 단가
+                materialInfoTable.addCell(createCenteredCell(formattedSum, font)); // 공급가액(VAT)포함)
+
+                PdfPCell nameCell2 = createCenteredCell("", font);
+                nameCell2.setColspan(3);
+                materialInfoTable.addCell(nameCell2);
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+
+                PdfPCell nameCell3 = createCenteredCell("", font);
+                nameCell3.setColspan(3);
+                materialInfoTable.addCell(nameCell3);
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+
+                PdfPCell nameCell4 = createCenteredCell("", font);
+                nameCell4.setColspan(3);
+                materialInfoTable.addCell(nameCell4);
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+
+                PdfPCell nameCell5 = createCenteredCell("", font);
+                nameCell5.setColspan(3);
+                materialInfoTable.addCell(nameCell5);
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+                materialInfoTable.addCell("");
+
+                // 아래 합계 정보 (공급가액, 세액, 합계)
+                PdfPCell priceSumCell = createColoredCell(formattedSum, contentTitleFont1, headerColor);
+                priceSumCell.setColspan(2);
+
+                materialInfoTable.addCell(createColoredCell("공급가액", contentTitleFont1, headerColor));
+                materialInfoTable.addCell(createColoredCell(formattedTotal, contentTitleFont1, headerColor));
+                materialInfoTable.addCell(createColoredCell("세액(VAT)", contentTitleFont1, headerColor));
+                materialInfoTable.addCell(createColoredCell(formattedVat, contentTitleFont1, headerColor));
+                materialInfoTable.addCell(createColoredCell("합계", contentTitleFont1, headerColor));
+                materialInfoTable.addCell(priceSumCell);
+
+
+
+            }
+
+
+            document.add(materialInfoTable);
+            document.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
+    }
+
+
+
+
     public byte[] createPdf(PurchaseOrderRequestDTO request) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -340,6 +632,15 @@ public class PdfService {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER); // 가운데 정렬
         cell.setFixedHeight(20f); // 고정 높이 설정 (단위: pt)
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);    // 세로 가운데
+        return cell;
+    }
+
+    private PdfPCell createHeightCenteredCell(String text, Font font, float height) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER); // 가운데 정렬
+//        cell.setFixedHeight(20f); // 고정 높이 설정 (단위: pt)
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setFixedHeight(height);// 세로 가운데
         return cell;
     }
 
