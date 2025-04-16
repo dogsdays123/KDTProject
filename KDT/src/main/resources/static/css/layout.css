@@ -32,11 +32,16 @@ body {
   height: 100vh;
   background: #ffffff;
   border-right: 1px solid #ddd;
-
   overflow-y: auto;
-  scrollbar-gutter: stable; /* 콘텐츠 너비 유지 */
-  padding: 20px 10px 20px 20px; /* 우측 여백 확보 */
+  padding: 20px 10px 20px 20px;
   box-sizing: border-box;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .sidebar img {
@@ -44,25 +49,33 @@ body {
   height: auto;
   margin-bottom: 20px;
 }
+
 .header {
   height: 60px;
-  margin-left: 260px;
+  margin-left: 250px;
   padding: 10px 20px;
   border-bottom: 1px solid #ddd;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: margin-left 0.3s ease;
 }
+
 .main-content {
   overflow-y: auto;
-  height: calc(100vh - 60px); /* header 높이 제외 */
-  margin-left: 260px;
+  height: calc(100vh - 60px); /* header 제외 */
+  margin-left: 250px;
   padding: 20px 20px 20px 10px;
-  display: block; /* 혹은 flex/grid 제거 */
-  justify-content: flex-start;
-  align-items: flex-start;
+  transition: margin-left 0.3s ease;
 }
+
+/* 사이드바가 닫히면 헤더와 콘텐츠가 왼쪽으로 붙음 */
+.sidebar.closed ~ .header,
+.sidebar.closed ~ .main-content {
+  margin-left: 0;
+}
+
 .download-card {
   padding: 15px;
   border: 1px solid #ddd;

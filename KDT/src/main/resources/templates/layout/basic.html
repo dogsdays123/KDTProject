@@ -84,18 +84,19 @@
                     <li><a href="/supply/purchaseOrderList" title="구매 발주서 목록" class="nav-link">구매 발주서 목록</a></li>
                     <li><a href="/supply/progressInspection" title="진척 검수 관리" class="nav-link">진척 검수 관리</a></li>
                     <li><a href="/supply/requestDelivery" title="납입 지시 요청" class="nav-link">납입 지시 요청</a></li>
-                    <li><a href="#" class="nav-link">발주 진행 현황</a></li>
-                    <li><a href="#" class="nav-link">거래 명세서 목록</a></li>
+                    <li><a href="/supply/purchaseOrderStatus" title="발주 진행 현황" class="nav-link">발주 진행 현황</a></li>
+                    <li><a href="/supply/transactionStatement" title="거래 명세서 목록" class="nav-link">거래 명세서 목록</a></li>
                 </ul>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link" title="자재 관리" onclick="toggleSubmenu('submenu-materials')"><i class="bi bi-boxes"></i>&nbsp;&nbsp;자재 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-materials" class="submenu">
-                    <li><a href="#" class="nav-link">자재 재고 등록</a></li>
-                    <li><a href="#" class="nav-link">자재 재고 목록</a></li>
-                    <li><a href="#" class="nav-link">실시간 가용재고 조회</a></li>
-                    <li><a href="#" class="nav-link">자재 입고 처리</a></li>
-                    <li><a href="#" class="nav-link">자재 출고 처리</a></li>
+                    <li><a href="/material/inventoryRegister" title="자재 재고 등록" class="nav-link">자재 재고 등록</a></li>
+                    <li><a href="/material/inventoryList" title="자재 재고 목록" class="nav-link">자재 재고 목록</a></li>
+                    <li><a href="/material/receipt" title="자재 입고 처리" class="nav-link">입고 관리</a></li>
+                    <li><a href="/material/receiptList" title="자재 입고 목록" class="nav-link">입고 목록</a></li>
+                    <li><a href="#" title="자재 출고 관리" class="nav-link">출고 관리</a></li>
+                    <li><a href="#" title="자재 출고 목록" class="nav-link">출고 목록</a></li>
                 </ul>
             </li>
             <hr>
@@ -103,6 +104,7 @@
             <li class="nav-item">
                 <a href="#" class="nav-link" title="거래 관리" onclick="toggleSubmenu('submenu-supplier')"><i class="bi bi-wallet2"></i>&nbsp;&nbsp;거래 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-supplier" class="submenu">
+                    <li><a href="/supplier/purchaseOrderList" title="발주서 목록" class="nav-link">발주서 목록</a></li>
                     <li><a href="#" class="nav-link">거래 내역 목록</a></li>
                     <li><a href="#" class="nav-link">납품 검수 관리</a></li>
                     <li><a href="#" class="nav-link">납품 지시 요청</a></li>
@@ -131,9 +133,14 @@
     <!-- sidebar end -->
     <!-- header start -->
     <div class="header">
-        <div th:replace="~{fragments/breadcrumb :: breadcrumb(
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="menu-toggle" style="cursor: pointer" title="메뉴 토글" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i> <!-- 햄버거 아이콘 -->
+            </div>
+            <div th:replace="~{fragments/breadcrumb :: breadcrumb(
             breadcrumbLevel1=${breadcrumbLevel1},
             breadcrumbCurrent=${breadcrumbCurrent})}">
+            </div>
         </div>
         <div class="user-info">
             <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>
@@ -172,7 +179,18 @@
         <div layout:fragment="spPList"></div>
         <div layout:fragment="spPInsp"></div>
         <div layout:fragment="spRDeli"></div>
+        <div layout:fragment="spPoStatus"></div>
+        <div layout:fragment="spTrState"></div>
 
+        <!--  자재 관리 페이지 -->
+        <div layout:fragment="mtInRegi"></div>
+        <div layout:fragment="mtInList"></div>
+        <div layout:fragment="mtReceipt"></div>
+        <div layout:fragment="mtReList"></div>
+
+        <!-- 협력업체 -->
+        <!-- 거래 관리 페이지 -->
+        <div layout:fragment="slPList"></div>
 
     </main>
 

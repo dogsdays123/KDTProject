@@ -2,7 +2,7 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}"
-      th:with="breadcrumbLevel1='조달 관리', breadcrumbCurrent='납입 지시 요청'">
+      th:with="breadcrumbLevel1='발주 관리', breadcrumbCurrent='납입 지시 요청'">
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="/css/supply/list.css" rel="stylesheet">
@@ -18,11 +18,11 @@
         <form>
           <div class="row g-2 align-items-end">
             <div class="col-md-2">
-              <label for="orderDate" class="form-label small">발주일자</label>
+              <label for="orderDate" class="form-label small">발주 일자</label>
               <input type="date" class="form-control form-control-sm" id="orderDate" title="발주일자">
             </div>
             <div class="col-md-2">
-              <label for="supplierName" class="form-label small">공급업체명</label>
+              <label for="supplierName" class="form-label small">공급 업체명</label>
               <select class="form-select form-select-sm" id="supplierName" title="공급업체명">
                 <option selected>전체</option>
                 <option value="-">-</option>
@@ -31,11 +31,11 @@
               </select>
             </div>
             <div class="col-md-2">
-              <label for="supplyDate" class="form-label small">납기일자</label>
+              <label for="supplyDate" class="form-label small">납기 일자</label>
               <input type="date" class="form-control form-control-sm" id="supplyDate" title="납기일자">
             </div>
             <div class="col-md-1">
-              <label for="payMethod" class="form-label small">결제방식</label>
+              <label for="payMethod" class="form-label small">결제 방식</label>
               <select class="form-select form-select-sm" id="payMethod" title="결제방식">
                 <option selected>전체</option>
                 <option value="-">-</option>
@@ -69,19 +69,19 @@
           </div>
         </form>
       </div>
-      <div class="d-flex justify-content-end mb-2" style="margin-right: 15px">
-        <form>
-          <div class="col-auto">
-            <select class="form-select form-select-sm" title="정렬 갯수 필터">
-              <option selected>전체</option>
-              <option value="20">20개씩</option>
-              <option value="30">30개씩</option>
-              <option value="50">50개씩</option>
-            </select>
-          </div>
-        </form>
-      </div>
       <div class="container" style="max-width: 1600px; margin-left: 0;">
+        <div class="d-flex justify-content-end mb-2" style="margin-right: 15px">
+          <form>
+            <div class="col-auto">
+              <select class="form-select form-select-sm" title="정렬 갯수 필터">
+                <option selected>전체</option>
+                <option value="20">20개씩</option>
+                <option value="30">30개씩</option>
+                <option value="50">50개씩</option>
+              </select>
+            </div>
+          </form>
+        </div>
         <div class="bg-white rounded">
           <div style="max-height: 550px; overflow-y: auto;">
             <table class="table table-sm table-bordered table-hover align-middle fs-6">
@@ -94,8 +94,8 @@
                 <th>발주일자</th>
                 <th>납기일자</th>
                 <th>지시수량</th>
-                <th>전체 발주 수량</th>
-                <th>잔여 수량</th>
+                <th>전체발주수량</th>
+                <th>잔여수량</th>
               </tr>
               </thead>
               <tbody>
