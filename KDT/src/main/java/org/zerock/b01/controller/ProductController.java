@@ -163,21 +163,21 @@ public class ProductController {
 
     //제품 자동 등록
     @PostMapping("/addProduct")
-    public String uploadProduct(String uName, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where,  Model model, RedirectAttributes redirectAttributes) throws IOException {
+    public String uploadProduct(String uId, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where,  Model model, RedirectAttributes redirectAttributes) throws IOException {
 
-        log.info("&^&^" + uName);
+        log.info("&^&^" + uId);
 
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            registerProduct(worksheet, uName);
+            registerProduct(worksheet, uId);
             log.info("%%%%" + worksheet.getSheetName());
         }
 
         return "redirect:/product/goodsRegister";
     }
 
-    private void registerProduct(XSSFSheet worksheet, String uName) {
+    private void registerProduct(XSSFSheet worksheet, String uId) {
 
         List<ProductDTO> productDTOs = new ArrayList<>();
 
@@ -200,7 +200,7 @@ public class ProductController {
             productDTOs.add(productDTO);
         }
 
-        productService.registerProductsEasy(productDTOs, uName);
+        productService.registerProductsEasy(productDTOs, uId);
         log.info("^^^^&&&&&4");
     }
 }

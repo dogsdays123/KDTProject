@@ -1,8 +1,8 @@
 function addPlan() {
-    const productName = document.getElementById('productsName').value;
-    const materialTypes = document.getElementById('materialTypes').value;
-    const materialNames = document.getElementById('materialNames').value;
-    const materialCodes = document.getElementById('materialCodes').value;
+    const pName = document.getElementById('pName').value;
+    const mType = document.getElementById('mType').value;
+    const mName = document.getElementById('mName').value;
+    const mCode = document.getElementById('mCode').value;
     const supplier = document.getElementById('supplier').value;
     const leadTime = document.getElementById('leadTime').value;
     const depth = document.getElementById('depth').value;
@@ -10,10 +10,12 @@ function addPlan() {
     const width = document.getElementById('width').value;
     const weight = document.getElementById('weight').value;
     const unitPrice = document.getElementById('unitPrice').value;
-    const minSupplyNum = document.getElementById('minSupplyNum').value;
+    const mMinNum = document.getElementById('mMinNum').value;
+    let rowIndex = 0;
+    //uId는 따로 받아온다.
 
-    if (!productName || !materialTypes || !materialNames || !materialCodes || !supplier || !leadTime
-        || !depth || !height || !width || !weight || !unitPrice || !minSupplyNum) {
+    if (!pName || !mType || !mName || !mCode || !supplier || !leadTime
+        || !depth || !height || !width || !weight || !unitPrice || !mMinNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -23,11 +25,11 @@ function addPlan() {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="materialNames[]" value="${materialNames}">${materialNames}</td>
-        <td><input type="hidden" name="materialCodes[]" value="${materialCodes}">${materialCodes}</td>
-        <td><input type="hidden" name="materialTypes[]" value="${materialTypes}">${materialTypes}</td>
-        <td><input type="hidden" name="productNames[]" value="${productName}">${productName}</td>
-        <td><input type="hidden" name="minSupplyNumes[]" value="${minSupplyNum}">${minSupplyNum}</td>
+        <td><input type="hidden" name="material[${rowIndex}]." value="${mName}">${mName}</td>
+        <td><input type="hidden" name="mCode[]" value="${mCode}">${mCode}</td>
+        <td><input type="hidden" name="mType[]" value="${mType}">${mType}</td>
+        <td><input type="hidden" name="productNames[]" value="${pName}">${pName}</td>
+        <td><input type="hidden" name="mMinNum[]" value="${mMinNum}">${mMinNum}</td>
         <td><input type="hidden" name="depth[]" value="${depth}">${depth}</td>
         <td><input type="hidden" name="height[]" value="${height}">${height}</td>
         <td><input type="hidden" name="width[]" value="${width}">${width}</td>
@@ -69,7 +71,8 @@ function addPlan() {
         // 항상 버튼을 마지막으로 이동
         const registerRow = document.getElementById('registerRow');
         tableBody.appendChild(registerRow);
-    }``
+    }
+    ``
 
     // 입력값 초기화
     document.getElementById('productsName').selectedIndex = 0;
@@ -109,3 +112,10 @@ function clearPlanTable() {
     const tableBody = document.querySelector("#planTable tbody");
     tableBody.innerHTML = ""; // 모든 row 삭제
 }
+
+$(document).ready(function () {
+    $('#productName').select2({
+        placeholder: "검색",
+        allowClear: true
+    });
+});

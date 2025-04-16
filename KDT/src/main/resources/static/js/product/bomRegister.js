@@ -87,3 +87,10 @@ function clearPlanTable() {
     const tableBody = document.querySelector("#planTable tbody");
     tableBody.innerHTML = ""; // 모든 row 삭제
 }
+
+$(document).ready(function () {
+    $('#productName').select2({
+        placeholder: "검색",
+        allowClear: true
+    });
+});
