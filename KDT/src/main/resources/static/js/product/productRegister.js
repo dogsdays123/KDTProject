@@ -97,7 +97,7 @@ $(document).ready(function () {
         // 숨겨진 입력 필드의 값 가져오기
         var whereValue = $('input[name="where"]').val();  // "where"라는 이름의 input 값 가져오기
         var files = $('#excelFile')[0].files;  // 여러 파일 객체 가져오기
-        var uName = $('#uName').val();
+        var uId = $('#uId').val();
 
         // FormData 객체 생성
         var formData = new FormData();
@@ -107,7 +107,7 @@ $(document).ready(function () {
             formData.append('file', files[i]);  // 'file' 이름으로 여러 파일 추가
         }
 
-        formData.append('uName', uName);
+        formData.append('uId', uId);
         formData.append('where', whereValue);  // 숨겨진 필드 'where' 값 추가
 
 

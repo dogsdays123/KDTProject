@@ -26,7 +26,10 @@
               <div class="col-md-2">
                 <label for="productName" class="form-label small">상품 선택</label>
                 <select id="productName" class="form-select form-select-sm">
-                  <option th:each="product : ${productList}" th:value="${product.pName}" th:text="${product.pName}"></option>
+                  <option value="" selected>선택</option>
+                  <th:block th:each="product : ${productList}">
+                    <option th:value="${product.pName}" th:text="${product.pName}"></option>
+                  </th:block>
                 </select>
               </div>
               <div class="col-md-2">

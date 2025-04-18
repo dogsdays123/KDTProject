@@ -20,26 +20,29 @@
                     <!-- 1줄: 날짜 + 제품명 + 코드 + 수량 -->
                     <div class="row g-2 mb-2">
                         <div class="col-md-2">
-                            <label for="startDate" class="form-label small">시작일</label>
-                            <input type="date" id="startDate" class="form-control form-control-sm">
+                            <label for="ppStart" class="form-label small">시작일</label>
+                            <input type="date" id="ppStart" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-2">
-                            <label for="endDate" class="form-label small">종료일</label>
-                            <input type="date" id="endDate" class="form-control form-control-sm">
+                            <label for="ppEnd" class="form-label small">종료일</label>
+                            <input type="date" id="ppEnd" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-2">
-                            <label for="productName" class="form-label small">제품명</label>
-                            <select id="productName" class="form-select form-select-sm">
-                                <option th:each="product : ${productList}" th:value="${product.pName}" th:text="${product.pName}"></option>
+                            <label for="pName" class="form-label small">제품명</label>
+                            <select id="pName" class="form-select form-select-sm">
+                                <option value="" selected>선택</option>
+                                <th:block th:each="product : ${productList}">
+                                    <option th:value="${product.pName}" th:text="${product.pName}"></option>
+                                </th:block>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="productCode" class="form-label small">생산 계획 코드</label>
-                            <input type="text" id="productCode" class="form-control form-control-sm">
+                            <label for="ppCode" class="form-label small">생산 계획 코드</label>
+                            <input type="text" id="ppCode" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-1">
-                            <label for="productNum" class="form-label small">생산 갯수</label>
-                            <input type="number" id="productNum" class="form-control form-control-sm">
+                        <div class="col-md-2">
+                            <label for="ppNum" class="form-label small">생산 갯수</label>
+                            <input type="number" id="ppNum" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-1 d-flex align-items-end">
                             <button type="button" class="btn btn-dark btn-sm w-100" onclick="addPlan()">+ 추가</button>

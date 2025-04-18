@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.ProductService;
@@ -21,6 +22,7 @@ import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 @Log4j2
 @Controller
@@ -38,7 +40,7 @@ public class SupplyController {
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if(auth == null) {
+        if (auth == null) {
             log.info("aaaaaa 인증정보 없음");
             model.addAttribute("userBy", null);
         } else {
@@ -62,8 +64,12 @@ public class SupplyController {
     }
 
     @GetMapping("/materialRegister")
-    public void materialRegister() {
-        log.info("##MATERIAL REGISTER PAGE GET....##");
+    public String materialRegister(Model model) {
+        List<Product> productList = productService.getProducts();
+        model.addAttribute("productList", productList);
+
+        // 반환할 뷰 이름을 명시합니다.
+        return "/supply/materialRegister";
     }
 
     @GetMapping("/procureRegister")
@@ -96,9 +102,18 @@ public class SupplyController {
         log.info("##REQUEST DELIVERY PAGE GET....##");
     }
 
+    @PostMapping("/addMaterialSelf")
+    public void addMaterialSelf() {
+        log.info("##ADD MATERIAL SELF PAGE GET....##");
+    }
+
     @GetMapping("/purchaseOrderStatus")
-    public void purchaseOrderStatus() { log.info("##PURCHASE ORDER STATUS PAGE GET....##"); }
+    public void purchaseOrderStatus() {
+        log.info("##PURCHASE ORDER STATUS PAGE GET....##");
+    }
 
     @GetMapping("/transactionStatement")
-    public void transactionStatement() { log.info("##TRANSACTION STATEMENT PAGE GET....##"); }
+    public void transactionStatement() {
+        log.info("##TRANSACTION STATEMENT PAGE GET....##");
+    }
 }

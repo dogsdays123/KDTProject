@@ -1,16 +1,13 @@
-package org.zerock.b01.domain;
+package org.zerock.b01.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
 @Getter
+@Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Material extends BaseEntity {
-
-    @Id
+@NoArgsConstructor
+public class MaterialDTO {
     private String mCode;
 
     private String mType;
@@ -35,11 +32,7 @@ public class Material extends BaseEntity {
 
     private String mComponentType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pCode", nullable = false)
-    private Product product;
+    private String pCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sId", nullable = false)
-    private Supplier supplier;
+    private Long sId;
 }

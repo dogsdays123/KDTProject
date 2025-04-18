@@ -1,13 +1,13 @@
 function addPlan() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const productName = document.getElementById('productName').value;
-    const productCode = document.getElementById('productCode').value;
-    const productNum = document.getElementById('productNum').value;
+    const ppStart = document.getElementById('ppStart').value;
+    const ppEnd = document.getElementById('ppEnd').value;
+    const pName = document.getElementById('pName').value;
+    const ppCode = document.getElementById('ppCode').value;
+    const ppNum = document.getElementById('ppNum').value;
     const uId = document.getElementById("uId").value;
     let rowIndex = 0;
 
-    if (!startDate || !endDate || !productName || !productCode) {
+    if (!ppStart || !ppEnd || !pName || !ppCode || !ppNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -16,11 +16,11 @@ function addPlan() {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="plans[${rowIndex}].ppStart" value="${startDate}">${startDate}</td>
-        <td><input type="hidden" name="plans[${rowIndex}].ppEnd" value="${endDate}">${endDate}</td>
-        <td><input type="hidden" name="plans[${rowIndex}].pName" value="${productName}">${productName}</td>
-        <td><input type="hidden" name="plans[${rowIndex}].ppCode" value="${productCode}">${productCode}</td>
-        <td><input type="hidden" name="plans[${rowIndex}].ppNum" value="${productNum}">${productNum}</td>   
+        <td><input type="hidden" name="plans[${rowIndex}].ppStart" value="${ppStart}">${ppStart}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].ppEnd" value="${ppEnd}">${ppEnd}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].pName" value="${pName}">${pName}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].ppCode" value="${ppCode}">${ppCode}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].ppNum" value="${ppNum}">${ppNum}</td>   
         <td><input type="hidden" name="plans[${rowIndex}].uId" value="${uId}">${uId}</td>       
         <td>
           <button type="button" class="btn btn-outline-dark btn-sm" onclick="removeRow(this)" aria-label="삭제">
@@ -60,8 +60,8 @@ function addPlan() {
         tableBody.appendChild(registerRow);
     }``
     // 입력값 초기화
-    document.getElementById('productName').selectedIndex = 0;
-    document.getElementById('productCode').value = '';
+    document.getElementById('pName').selectedIndex = 0;
+    document.getElementById('ppCode').value = '';
 
 }
 
@@ -198,3 +198,10 @@ function updateFileCount() {
         document.getElementById('uploadedFileCount').style.display = 'none';
     }
 }
+
+$(document).ready(function () {
+    $('#pName').select2({
+        placeholder: "검색",
+        allowClear: true
+    });
+});
