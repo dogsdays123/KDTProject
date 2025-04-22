@@ -17,15 +17,24 @@
 
                 <!-- 등록 폼 -->
                 <form method="post" th:action="@{/supply/addMaterialSelf}">
-                    <input type="hidden" name="uId" th:value="${userBy.uId}">
+                    <input type="hidden" id="uId" name="uId" th:value="${userBy.uId}">
                     <div style="max-width: 1200px; margin-left: 0;">
                         <div class="row g-2 mb-2">
                             <div class="col-md-2">
                                 <label for="pName" class="form-label small">자재 분류 품목</label>
-                                <select id="pName" name="부품명" class="form-select form-select-sm">
+                                <select id="pName" class="form-select form-select-sm">
                                     <option value="" selected>선택</option>
                                     <th:block th:each="product : ${productList}">
                                         <option th:value="${product.pName}" th:text="${product.pName}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="mComponentType" class="form-label small">자재 종류</label>
+                                <select id="mComponentType" name="부품명" class="form-select form-select-sm">
+                                    <option value="" selected>선택</option>
+                                    <th:block th:each="bom : ${bomList}">
+                                        <option th:value="${bom.pName}" th:text="${bom.pName}"></option>
                                     </th:block>
                                 </select>
                             </div>
@@ -51,12 +60,12 @@
                                 <label for="supplier" class="form-label small">공급사</label>
                                 <input type="text" id="supplier" name="공급사" class="form-control form-control-sm">
                             </div>
-                            <div class="col-md-2">
+                        </div>
+                        <div class="row g-2 mb-2 align-items-end">
+                            <div class="col-md-1">
                                 <label for="leadTime" class="form-label small">리드 타임</label>
                                 <input type="text" id="leadTime" name="리드타임" class="form-control form-control-sm">
                             </div>
-                        </div>
-                        <div class="row g-2 mb-2 align-items-end">
                             <div class="col-md-1">
                                 <label for="depth" class="form-label small">규격</label>
                                 <input type="text" id="depth" name="높이" placeholder="높이(cm)" class="form-control form-control-sm">

@@ -5,6 +5,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,10 +37,18 @@ public class Material extends BaseEntity {
     private String mComponentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uId", nullable = false)
+    private UserBy userBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pCode", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sId", nullable = false)
+    @JoinColumn(name = "sId", nullable = true)
     private Supplier supplier;
+
+    public void set(String mCode) {
+        this.mCode = mCode;
+    }
 }

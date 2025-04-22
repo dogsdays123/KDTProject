@@ -14,14 +14,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.Bom;
+import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
+import org.zerock.b01.dto.MaterialDTO;
+import org.zerock.b01.dto.MaterialFormDTO;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
-import org.zerock.b01.service.ProductService;
-import org.zerock.b01.service.ProductionPlanService;
-import org.zerock.b01.service.UserByService;
+import org.zerock.b01.service.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @Log4j2
@@ -31,12 +35,13 @@ import java.util.List;
 @RequestMapping("/supply")
 public class SupplyController {
 
-    private final ProductService productService;
-
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
+    private final ProductService productService;
     private final UserByService userByService;
+    private final MaterialService materialService;
+    private final BomService bomService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -67,6 +72,9 @@ public class SupplyController {
     public String materialRegister(Model model) {
         List<Product> productList = productService.getProducts();
         model.addAttribute("productList", productList);
+
+        List<Bom> bomList = bomService.getBoms();
+        model.addAttribute("bomList", bomList);
 
         // 반환할 뷰 이름을 명시합니다.
         return "/supply/materialRegister";
@@ -103,8 +111,16 @@ public class SupplyController {
     }
 
     @PostMapping("/addMaterialSelf")
-    public void addMaterialSelf() {
-        log.info("##ADD MATERIAL SELF PAGE GET....##");
+    public String addMaterialSelf(@ModelAttribute MaterialFormDTO form, Model model,
+                                RedirectAttributes redirectAttributes, HttpServletRequest request) throws IOException {
+
+        List<MaterialDTO> materialDTOs = form.getMaterials();
+
+        for(MaterialDTO materialDTO : materialDTOs) {
+            materialService.registerMaterial(materialDTO, materialDTO.getUId());
+        }
+
+        return "redirect:/supply/materialRegister";
     }
 
     @GetMapping("/purchaseOrderStatus")

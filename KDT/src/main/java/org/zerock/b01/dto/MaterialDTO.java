@@ -2,6 +2,8 @@ package org.zerock.b01.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Builder
@@ -32,7 +34,11 @@ public class MaterialDTO {
 
     private String mComponentType;
 
-    private String pCode;
+    private LocalDate regDate;
+
+    private String uId;
+
+    private String pName;
 
     private Long sId;
 }

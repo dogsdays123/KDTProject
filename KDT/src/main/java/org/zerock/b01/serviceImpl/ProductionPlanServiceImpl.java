@@ -50,8 +50,8 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
         if (productionPlanDTO.getPpCode() == null) {
             log.info("NoHaveNew" + plan.getPpCode());
             // 생산 계획 코드 생성 로직 추가
-//            String productionPlanCode = generateProductionPlanCode(productionPlanDTO);
-//            plan.set(productionPlanCode);
+            String productionPlanCode = generateProductionPlanCode(productionPlanDTO);
+            plan.set(productionPlanCode);
         }
         //생산계획 코드가 있지만, 새로 입력된 경우
         else if(productionPlanRepository.findByProductionPlanCode(productionPlanDTO.getPpCode()) == null){
