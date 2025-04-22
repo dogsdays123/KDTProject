@@ -120,7 +120,19 @@ function clearPlanTable() {
 
 $(document).ready(function () {
     $('#pName').select2({
-        placeholder: "검색",
-        allowClear: true
+        placeholder: "검색 또는 직접 입력",
+        tags: true, // ← 이게 핵심! 직접 입력 허용
+        allowClear: true,
+        createTag: function (params) {
+            const term = $.trim(params.term);
+            if (term === '') {
+                return null;
+            }
+            return {
+                id: term,
+                text: term,
+                newTag: true // 사용자 입력값 구분
+            };
+        }
     });
 });

@@ -43,6 +43,14 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
         ProductionPlan plan = modelMapper.map(productionPlanDTO, ProductionPlan.class);
         Product product = productionPlanRepository.findByProduct(productionPlanDTO.getPName());
 
+        if(product == null){
+            product = new Product();
+            product.setPName(productionPlanDTO.getPName());
+            product.setPCode(productionPlanDTO.getPppCode());
+            product.setUserBy(userByRepository.findByUId(uId));
+            productRepository.save(product);
+        }
+
         plan.setUserBy(userByRepository.findByUId(uId));
         log.info("&&&& " + uId);
 

@@ -10,6 +10,7 @@ public interface UserByService {
     UserByDTO readOne(String uId);
     UserByDTO readOneForEmail(String uEmail);
     String registerUser(UserByDTO userByDTO);
+    String changeUserProfile(String email);
 
     List<UserBy> readAllUser();
 

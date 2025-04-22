@@ -2,6 +2,7 @@ function addPlan() {
     const ppStart = document.getElementById('ppStart').value;
     const ppEnd = document.getElementById('ppEnd').value;
     const pName = document.getElementById('pName').value;
+    const pppCode = document.getElementById('pppCode').value;
     const ppCode = document.getElementById('ppCode').value;
     const ppNum = document.getElementById('ppNum').value;
     const uId = document.getElementById("uId").value;
@@ -19,6 +20,7 @@ function addPlan() {
         <td><input type="hidden" name="plans[${rowIndex}].ppStart" value="${ppStart}">${ppStart}</td>
         <td><input type="hidden" name="plans[${rowIndex}].ppEnd" value="${ppEnd}">${ppEnd}</td>
         <td><input type="hidden" name="plans[${rowIndex}].pName" value="${pName}">${pName}</td>
+        <td><input type="hidden" name="plans[${rowIndex}].pppCode" value="${pppCode}">${pppCode}</td>
         <td><input type="hidden" name="plans[${rowIndex}].ppCode" value="${ppCode}">${ppCode}</td>
         <td><input type="hidden" name="plans[${rowIndex}].ppNum" value="${ppNum}">${ppNum}</td>   
         <td><input type="hidden" name="plans[${rowIndex}].uId" value="${uId}">${uId}</td>       
@@ -201,7 +203,19 @@ function updateFileCount() {
 
 $(document).ready(function () {
     $('#pName').select2({
-        placeholder: "검색",
-        allowClear: true
+        placeholder: "검색 또는 직접 입력",
+        tags: true, // ← 이게 핵심! 직접 입력 허용
+        allowClear: true,
+        createTag: function (params) {
+            const term = $.trim(params.term);
+            if (term === '') {
+                return null;
+            }
+            return {
+                id: term,
+                text: term,
+                newTag: true // 사용자 입력값 구분
+            };
+        }
     });
 });

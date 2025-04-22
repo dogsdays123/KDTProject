@@ -135,4 +135,21 @@ public class firstViewController {
 
         return response; // JSON 형식으로 반환
     }
+
+    @PostMapping("/forgot")
+    @ResponseBody
+    public Map<String, String> forgotPassword(@RequestParam("checkEmail") String email) {
+        Map<String, String> result = new HashMap<>();
+
+        String msg = userByService.changeUserProfile(email); // ex: "임시 비밀번호를 전송했습니다."
+        result.put("msg", msg);
+
+        return result; // JSON 형태로 응답
+    }
+
+    @PostMapping("/find")
+    public String find(@ModelAttribute("userByDTO") UserByDTO userByDTO, Model model, RedirectAttributes redirectAttributes) {
+
+        return "redirect:/firstView/login";
+    }
 }
