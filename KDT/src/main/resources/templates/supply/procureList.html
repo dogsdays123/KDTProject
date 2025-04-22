@@ -83,7 +83,7 @@
                 </form>
             </div>
             <div class="container" style="max-width: 1600px; margin-left: 0;">
-                <div class="d-flex justify-content-end mb-2" style="margin-right: 15px">
+                <div class="d-flex justify-content-end mb-2">
                     <form>
                         <div class="col-auto">
                             <select class="form-select form-select-sm" title="정렬 갯수 필터">
@@ -101,15 +101,16 @@
                             <thead class="table-light small text-center">
                             <tr>
                                 <th><input type="checkbox" id="selectAll"></th>
-                                <th>생산계획코드</th>
-                                <th>조달계획코드</th>
-                                <th>자재코드</th>
+                                <th>생산 계획 코드</th>
+                                <th>조달 계획 코드</th>
+                                <th>자재 코드</th>
                                 <th>자재명</th>
-                                <th>조달수량</th>
-                                <th>조달납기일</th>
-                                <th>공급업체</th>
+                                <th>조달 수량</th>
+                                <th>조달 납기일</th>
+                                <th>공급 업체</th>
                                 <th>등록일</th>
                                 <th>상태</th>
+                                <th>수정</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -124,173 +125,43 @@
                                 <td>SAMSON</td>
                                 <td>2025-04-02</td>
                                 <td>진행중</td>
+                                <td>
+                                    <button type="button" class="icon-button" id="openPurchaseRegiModal" title="BOM 정보 수정">
+                                        <i class="bi bi-pencil fs-6"></i>
+                                    </button>
+                                </td>
                             </tr>
                             <tr>
                                 <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
+                                <td>DIFF001</td>
+                                <td>AA1-20250402</td>
+                                <td>BB112</td>
+                                <td>(전동킥보드)바퀴</td>
+                                <td>150</td>
+                                <td>2025-04-22</td>
+                                <td>카인드몰</td>
                                 <td>2025-04-02</td>
                                 <td>진행중</td>
+                                <td>
+                                    <button type="button" class="icon-button" id="openPurchaseRegiModal1" title="BOM 정보 수정">
+                                        <i class="bi bi-pencil fs-6"></i>
+                                    </button>
+                                </td>
                             </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                            </tr>
-
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div>
                     <div class="text-start">
-                        <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
-                            선택 항목 구매 요청 등록
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
+                                선택 항목 구매 요청 등록
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
+                                선택 항목 삭제
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -318,6 +189,58 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">취소</button>
                         <button type="button" class="btn btn-dark btn-sm">요청 등록</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="purchaseOrderRegiModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="purchaseOrderRegiModalLabel">조달 계획 수정</h5>&nbsp;&nbsp;
+                        <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="purchaseOrderRegiForm">
+                            <div class="row g-3 mb-3">
+                                <div class="col-12">
+                                    <label class="form-label"><span class="text-danger">*</span> 자재 코드</label>
+                                    <input type="text" id="ppProductCode" class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label"><span class="text-danger">*</span> 상품명</label>
+                                    <input type="text" id="ppProductName" class="form-control form-control-sm" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary btn-sm">수정</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="purchaseOrderModalDelLabel">조달 계획 삭제</h5>&nbsp;&nbsp;
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="purchaseOrderDelForm">
+                            <div class="row g-3 mb-3">
+                                <span>선택된 조달 계획 코드</span>
+                                <ul class="text-muted small mb-2" id="selectedPlanList" style="list-style: none"></ul>
+                            </div>
+                            <small class="text-muted mt-2 d-block"><span class="text-danger">정말 삭제하시겠습니까?</span></small>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-danger btn-sm">삭제</button>
                     </div>
                 </div>
             </div>

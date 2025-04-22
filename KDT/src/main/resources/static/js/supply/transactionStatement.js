@@ -4,23 +4,6 @@ document.getElementById('selectAll').addEventListener('change', function () {
     });
 });
 
-document.getElementById('openPurchaseModal').addEventListener('click', function () {
-    const selectedRows = Array.from(document.querySelectorAll('.selectPlan:checked'))
-        .map(cb => cb.closest('tr')); // 체크된 체크박스의 행 가져오기
-
-    if (selectedRows.length === 0) {
-        alert('하나 이상의 항목을 선택해주세요.');
-        return;
-    }
-
-    if (selectedRows.length > 1) {
-        alert('진척 검수 요청은 1개 항목만 선택 가능합니다.');
-        return;
-    }
-    const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
-    modal.show();
-});
-
 document.getElementById('openPurchaseDelModal').addEventListener('click', function () {
 
     const selectedListEl = document.getElementById('selectedPlanList');

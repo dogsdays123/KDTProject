@@ -30,8 +30,8 @@
             <li class="nav-item">
                 <a href="#" class="nav-link" title="계정 관리" onclick="toggleSubmenu('submenu-user')"><i class="bi bi-people"></i>&nbsp;&nbsp;계정 관리&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-user" class="submenu">
-                  <li><a href="#" class="nav-link">사원 목록 조회</a></li>
-                  <li><a href="#" class="nav-link">업체 목록 조회</a></li>
+                  <li><a href="/memberManagement/employeeList" class="nav-link">사원 목록 조회</a></li>
+                  <li><a href="/memberManagement/supplierList" class="nav-link">업체 목록 조회</a></li>
                   <li><a href="#" class="nav-link">가입 상세 정보 보기</a></li>
               </ul>
             </li>
@@ -63,6 +63,8 @@
                 <ul id="submenu-product" class="submenu">
                     <li><a href="/product/goodsRegister" class="nav-link">상품 등록</a></li>
                     <li><a href="/product/goodsList" class="nav-link">상품 목록</a></li>
+                    <li><a href="/supply/materialRegister" title="부품 정보 등록" class="nav-link">부품 등록</a></li>
+                    <li><a href="/supply/materialList" title="부품 정보 목록" class="nav-link">부품 목록</a></li>
                     <li><a href="/product/bomRegister" class="nav-link">BOM 등록</a></li>
                     <li><a href="/product/bomList" class="nav-link">BOM 목록</a></li>
                 </ul>
@@ -70,9 +72,6 @@
             <li class="nav-item">
               <a href="#" class="nav-link" title="조달 관리" onclick="toggleSubmenu('submenu-procurement')"><i class="bi bi-bounding-box-circles"></i>&nbsp;&nbsp;조달 관리&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-procurement" class="submenu">
-                      <!--   메뉴삭제     -->
-<!--                  <li><a href="/supply/materialRegister" title="품복 정보 등록" class="nav-link">품목 정보 등록</a></li>-->
-<!--                  <li><a href="/supply/materialList" title="품목 정보 목록" class="nav-link">품목 정보 목록</a></li>-->
                   <li><a href="/supply/procureRegister" title="조달 계획 등록" class="nav-link">조달 계획 등록</a></li>
                   <li><a href="/supply/procureList" title="조달 계획 목록" class="nav-link">조달 계획 목록</a></li>
                   <li><a href="#" class="nav-link">공급 업체 관리</a></li>
@@ -149,6 +148,12 @@
     <main class="main-content">
         <div layout:fragment="mypage"></div>
         <div layout:fragment="guide"></div>
+
+        <!-- 관리자 전용 계정 관련 페이지 -->
+        <div layout:fragment="mmEmpList"></div>
+        <div layout:fragment="mmSupList"></div>
+
+
 
         <!-- 생산 계획 페이지 -->
         <div layout:fragment="ppList"></div>

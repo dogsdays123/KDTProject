@@ -12,6 +12,27 @@ td{
     font-size: 0.85rem;
 }
 
+.icon-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 2px;
+    cursor: pointer;
+}
+
+.icon-button:hover i {
+    color: #495057;
+}
+
+.icon-button i {
+    font-size: 1.1rem;
+}
+
+tr.hover-row.selected {
+    background-color: #f1f1f1;
+    outline: 2px solid #0d6efd;
+}
+
 .nav-tabs .nav-link.active {
     background-color: #2b2d30; /* 약간 더 진한 회색 */
     color: #f2f3f5;       /* 검정 텍스트 */
@@ -21,4 +42,10 @@ td{
 .nav-link:hover{
     color: #2b2d30;
 
+}
+
+ul, li {
+    list-style: none;
+    color: #495057;
+    margin-bottom: 5px;
 }

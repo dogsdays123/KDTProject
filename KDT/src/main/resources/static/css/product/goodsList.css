@@ -11,3 +11,87 @@ td{
     padding: 0.4rem 0.5rem;
     font-size: 0.85rem;
 }
+
+.icon-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 2px;
+    cursor: pointer;
+}
+
+.icon-button:hover i {
+    color: #495057;
+}
+
+.icon-button i {
+    font-size: 1.1rem;
+}
+
+tr.hover-row.selected {
+    background-color: #f1f1f1;
+    outline: 2px solid #0d6efd;
+}
+
+/* 페이지 네이션 */
+.pagination {
+    padding: 30px 0;
+}
+
+.pagination ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.pagination .pageitem {
+    transition: border-bottom-color 0.5s;
+    border-bottom: 4px solid #0d89fd00;
+    font-size: large;
+    padding: 0 2px;
+}
+
+.pagination .pagearrow {
+    transition: all 0.5s;
+    font-size: large;
+    padding: 0 2px;
+}
+
+.pagination li {
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px 14px;
+    color: #222;
+}
+
+.pagination li a {
+    text-decoration: none;
+    color: #222;
+}
+
+.pagination .is-active .pageitem {
+    font-weight: bold;
+    color: #0d6efd;
+    border-bottom-color: #0d89fd !important;
+}
+
+.pagination .is-deactive {
+    pointer-events: none;
+    color: #0000003a;
+}
+
+.pagination li:hover .pageitem {
+    border-bottom-color: #0d89fda1;
+}
+
+.pagination li:hover .pagearrow.leftarrow {
+    color: #0d89fd;
+    font-weight: bold;
+    text-shadow: -10px 0 #0d89fd;
+}
+
+.pagination li:hover .pagearrow.rightarrow {
+    color: #0d89fd;
+    font-weight: bold;
+    text-shadow: 10px 0 #0d89fd;
+}
