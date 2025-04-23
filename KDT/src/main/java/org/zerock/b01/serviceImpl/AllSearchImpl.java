@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.PlanListAllDTO;
 import org.zerock.b01.dto.ProductListAllDTO;
+import org.zerock.b01.dto.UserByAllDTO;
 import org.zerock.b01.service.AllSearch;
 
 import java.time.LocalDate;
@@ -149,6 +150,50 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         // 전체 개수
         // 카운트용 별도 쿼리 생성
         JPQLQuery<ProductionPlan> countQuery = from(productPlan).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public Page<UserByAllDTO> userBySearchWithAll(String[] types, String keyword, String uName,
+                                                  String userJob, String userRank, LocalDateTime modDate,
+                                                  String status, Pageable pageable){
+        QUserBy userBy = QUserBy.userBy;
+        JPQLQuery<UserBy> query = from(userBy);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (uName != null && !uName.isEmpty()) {
+            booleanBuilder.and(userBy.uName.contains(uName));
+        }
+
+        if (userJob != null && !userJob.isEmpty()) {
+            booleanBuilder.and(userBy.userJob.contains(userJob));
+        }
+
+        // userRank가 null 또는 ""인 유저만 남기기
+        booleanBuilder.and(
+                userBy.userRank.isNull()
+                        .or(userBy.userRank.eq(""))
+        );
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        List<UserBy> resultList = query.fetch();
+
+        List<UserByAllDTO> dtoList = resultList.stream()
+                .map(user -> UserByAllDTO.builder()
+                        .uName(user.getUName())
+                        .userJob(user.getUserJob())
+                        .userRank(user.getUserRank())
+                        .modDate(user.getModDate())
+                        .build())
+                .collect(Collectors.toList());
+
+        // 전체 개수
+        // 카운트용 별도 쿼리 생성
+        JPQLQuery<UserBy> countQuery = from(userBy).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

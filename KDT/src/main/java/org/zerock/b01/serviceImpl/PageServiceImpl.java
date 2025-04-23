@@ -9,15 +9,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.CurrentStatus;
-import org.zerock.b01.dto.PageRequestDTO;
-import org.zerock.b01.dto.PageResponseDTO;
-import org.zerock.b01.dto.PlanListAllDTO;
-import org.zerock.b01.dto.ProductListAllDTO;
+import org.zerock.b01.dto.*;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.service.PageService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @Log4j2
@@ -75,6 +73,33 @@ public class PageServiceImpl implements PageService {
         Page<ProductListAllDTO> result = productRepository.productSearchWithAll(types, keyword, pCode, pName, uName, regDate, pageable);
 
         return PageResponseDTO.<ProductListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<UserByAllDTO> userByWithAll(PageRequestDTO pageRequestDTO){
+        log.info(">>>> 요청된 페이지 번호: {}", pageRequestDTO.getPpStart());
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String uName = pageRequestDTO.getUName();
+        String userJob = pageRequestDTO.getUserJob();
+        String userRank = pageRequestDTO.getUserRank();
+        LocalDateTime modDate = pageRequestDTO.getModDate();
+        String status = "";
+        if(userRank == null){
+            status = "대기중";
+        } else {
+            status = "완료";
+        }
+
+        Pageable pageable = pageRequestDTO.getPageable("uId");
+
+        Page<UserByAllDTO> result = productRepository.userBySearchWithAll(types, keyword, uName, userJob, userRank, modDate, status, pageable);
+
+        return PageResponseDTO.<UserByAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())

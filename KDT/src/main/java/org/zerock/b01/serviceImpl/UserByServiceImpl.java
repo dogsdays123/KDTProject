@@ -37,6 +37,9 @@ public class UserByServiceImpl implements UserByService {
     @Override
     public String registerUser(UserByDTO userByDTO){
         UserBy userBy = modelMapper.map(userByDTO, UserBy.class);
+        if (userByRepository.findByuEmail(userBy.getUEmail()).isPresent()) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
         String uId = userByRepository.save(userBy).getUId();
         return uId;
     }
@@ -103,6 +106,14 @@ public class UserByServiceImpl implements UserByService {
     public List<UserBy> readAllUser(){
         List<UserBy> userByDTOList = userByRepository.findAll();
         return userByDTOList;
+    }
+
+    @Override
+    public void changeUser(UserByDTO userByDTO){
+        Optional<UserBy> user = userByRepository.findById(userByDTO.getUId());
+        UserBy realUser = user.orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없음"));
+        realUser.changeUPassword(passwordEncoder.encode(userByDTO.getUPassword()));
+        realUser.changeAll(userByDTO.getUAddress(), userByDTO.getUEmail(), userByDTO.getUPhone());
     }
 
     @Override

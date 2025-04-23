@@ -11,6 +11,7 @@ public interface UserByService {
     UserByDTO readOneForEmail(String uEmail);
     String registerUser(UserByDTO userByDTO);
     String changeUserProfile(String email);
+    void changeUser(UserByDTO userByDTO);
 
     List<UserBy> readAllUser();
 

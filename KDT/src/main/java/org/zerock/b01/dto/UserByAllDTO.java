@@ -5,26 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class UserByDTO {
-    private String uId;
-    private String uPassword;
+public class UserByAllDTO {
     private String uName;
-    private String uAddress;
-    private String userType;
     private String userJob;
+    //유저 랭크에 따라 신청상태가 변경됨
     private String userRank;
-    private String uEmail;
-    private String uPhone;
-    private LocalDate uBirthDay;
-
-
-    private LocalDateTime regDate;
     private LocalDateTime modDate;
+    private String status;
 }

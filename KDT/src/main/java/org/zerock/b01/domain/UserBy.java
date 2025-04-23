@@ -27,6 +27,9 @@ public class UserBy extends BaseEntity {
 
     private String userJob;
 
+    private String userRank;
+
+    @Column(nullable = false, unique = true)
     private String uEmail;
 
     private String uPhone;
@@ -46,5 +49,10 @@ public class UserBy extends BaseEntity {
     }
     public void clearRoles() {
         this.roleSet.clear();
+    }
+    public void changeAll(String uAddress, String uEmail, String uPhone) {
+        this.uAddress = uAddress;
+        this.uEmail = uEmail;
+        this.uPhone = uPhone;
     }
 }

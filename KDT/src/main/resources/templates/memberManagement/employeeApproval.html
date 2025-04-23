@@ -45,7 +45,8 @@
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
                         <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
-                        <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
+                        <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화
+                        </button>
                     </div>
                 </div>
             </form>
@@ -84,31 +85,19 @@
                             <th>이름</th>
                             <th>부서</th>
                             <th>직책</th>
-                            <th>입사일</th>
                             <th>신청일</th>
                             <th>상태</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
+                        <tbody id="userWaitTable" th:with="link = ${pageRequestDTO.getLink()}">
+                        <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>1001</td>
-                            <td>박시현</td>
-                            <td>생산부서</td>
-                            <td>대리</td>
-                            <td>2021-03-14</td>
-                            <td>2021-03-15</td>
-                            <td>대기</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>1002</td>
-                            <td>서승원</td>
-                            <td>구매부서</td>
-                            <td>과장</td>
-                            <td>2019-08-01</td>
-                            <td>2019-08-05</td>
-                            <td>대기</td>
+                            <td></td>
+                            <td th:text="${dto.getUName()}"></td>
+                            <td th:text="${dto.getUserJob()}"></td>
+                            <td th:text="${dto.getUserRank()}"></td>
+                            <td th:text="${#temporals.format(dto.getModDate(), 'yyyy-MM-dd')}"></td>
+                            <td th:text="${dto.getStatus()}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -126,8 +115,9 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg" >
+    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
                 <div class="modal-header">
@@ -161,7 +151,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+    <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -191,9 +182,11 @@
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
                     <button type="button" class="btn btn-danger btn-sm" id="btnBatchReject">반려</button>
                 </div>
+            </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/memberManagement/employeeApproval.js}"></script>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/memberManagement/employeeApproval.js}"></script>
 </div>
 </body>
+
