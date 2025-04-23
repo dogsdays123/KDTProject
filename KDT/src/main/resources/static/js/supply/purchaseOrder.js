@@ -15,6 +15,10 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
         return;
     }
 
+    if (selectedRows.length > 1) {
+        alert('발주서 작성은 1개 항목만 선택 가능합니다.');
+        return;
+    }
     const firstRow = selectedRows[0].children;
 
     const supplier = firstRow[3].innerText;   // 공급업체

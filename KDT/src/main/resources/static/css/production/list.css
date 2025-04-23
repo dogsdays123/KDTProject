@@ -12,6 +12,7 @@ td{
     font-size: 0.85rem;
 }
 
+
 #hoverPopup {
     background-color: white;
     border: 1px solid #ccc;
@@ -25,8 +26,6 @@ td{
 .icon-button {
     background: none;
     border: none;
-    padding: 4px;
-    margin: 0 2px;
     cursor: pointer;
 }
 
@@ -35,7 +34,7 @@ td{
 }
 
 .icon-button i {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 
 tr.hover-row.selected {

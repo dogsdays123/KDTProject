@@ -109,3 +109,35 @@
     border: 1px solid #7e57c2;
     color: white;
 }
+
+.custom-select-sm {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529; /* 일반 텍스트 색상, 예시로 #212529 사용 */
+    background-color: #ffffff; /* 배경 색상, 예시로 #ffffff 사용 */
+    background-clip: padding-box;
+    border: 1px solid #ced4da; /* 경계 색상, 예시로 #ced4da 사용 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: .25rem; /* 기본적인 border-radius */
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.icon-button:hover i {
+    color: #495057;
+}
+
+.icon-button i {
+    font-size: 0.9rem;
+}

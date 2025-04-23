@@ -22,9 +22,9 @@ function addPlan() {
         <td><input type="hidden" name="materialNames[]" value="${materialName}">${materialName}</td> 
         <td><input type="hidden" name="productQuantities[]" value="${productQuantity}">${productQuantity}</td> 
         <td>
-          <button type="button" class="btn btn-outline-dark btn-sm" onclick="removeRow(this)" aria-label="삭제">
-            <i class="bi bi-x-lg"></i>
-          </button>
+              <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
+                <i class="bi bi-x-lg"></i>
+              </button>
         </td>
     `;
 
@@ -45,8 +45,8 @@ function addPlan() {
         registerRow.innerHTML = `
         <td colspan="11" class="text-center" style="padding: 10px">
             <div class="d-flex justify-content-center gap-2">
-                <button type="submit" class="btn btn-dark btn-sm">전체 등록</button>
                 <button type="button" class="btn btn-outline-dark btn-sm" onclick="clearPlanTable()">전체 삭제</button>
+                <button type="submit" class="btn btn-dark btn-sm">전체 등록</button>
             </div>
         </td>
     `;

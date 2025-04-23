@@ -13,7 +13,7 @@
             <div class="container" style="max-width: 1200px; margin-left: 0;">
                 <div class="d-flex align-items-center mb-3">
                     <h4 class="mb-0 me-2">구매 발주서 목록</h4>
-                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="품목 정보 목록 가이드"></i>
+                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="구매 발주서 목록 가이드"></i>
                 </div>
 
                 <!-- 검색 필터 -->
@@ -98,13 +98,13 @@
                         <table class="table table-sm table-bordered table-hover align-middle fs-6">
                             <thead class="table-light small text-center">
                             <tr>
-                                <th><input type="checkbox" id="selectAll"></th>
+                                <th><input type="checkbox" id="selectAll" title="전체선택"></th>
                                 <th>발주 코드</th>
                                 <th>발주 일자</th>
                                 <th>자재명</th>
                                 <th>발주 수량</th>
-                                <th>공급 업체명</th>
-                                <th>총금액</th>
+                                <th>공급 업체</th>
+                                <th>총 금액</th>
                                 <th>납기일</th>
                                 <th>결제 방식</th>
                                 <th>발주자</th>
@@ -115,7 +115,7 @@
                             <tbody>
                             <tr>
                             <tr>
-                                <td><input type="checkbox" class="selectPlan"></td>
+                                <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
                                 <td>BALJU001</td>
                                 <td>2025-04-11</td>
                                 <td>안장A</td>
@@ -133,7 +133,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><input type="checkbox" class="selectPlan"></td>
+                                <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
                                 <td>CCJS-011</td>
                                 <td>2025-04-30</td>
                                 <td>바퀴</td>
@@ -204,7 +204,7 @@
             </div>
         </div>
         <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="purchaseOrderModalDelLabel">발주서 정보 삭제</h5>&nbsp;&nbsp;
@@ -212,11 +212,24 @@
                     </div>
                     <div class="modal-body">
                         <form id="purchaseOrderDelForm">
-                            <div class="row g-3 mb-3">
-                                <span>선택된 발주 코드</span>
-                                <ul class="text-muted small mb-2" id="selectedPlanList" style="list-style: none"></ul>
+                            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                    <thead class="table-light small text-center">
+                                    <tr>
+                                        <th>발주 코드</th>
+                                        <th>발주 일자</th>
+                                        <th>자재명</th>
+                                        <th>발주 수량</th>
+                                        <th>공급 업체</th>
+                                        <th>총 금액</th>
+                                        <th>납기일</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="deleteTableBody">
+                                    <!-- JS로 선택된 사원 목록 추가 -->
+                                    </tbody>
+                                </table>
                             </div>
-                            <small class="text-muted mt-2 d-block"><span class="text-danger">정말 삭제하시겠습니까?</span></small>
                         </form>
                     </div>
                     <div class="modal-footer">

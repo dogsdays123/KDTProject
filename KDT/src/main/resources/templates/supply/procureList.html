@@ -171,30 +171,37 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="purchaseOrderModalLabel">구매 요청 등록</h5>&nbsp;&nbsp;
-                        <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="purchaseOrderForm">
-                            <div class="row g-3 mb-3">
-                                <p class="text-muted small mb-2">
-                                    선택된 조달 계획 코드 : <strong><span id="planCodeInput"></span></strong>&nbsp;&nbsp;
-                                </p>
-                                <p class="text-muted small mb-2">
-                                    자재명 : <strong><span id="materialName"></span></strong>&nbsp;&nbsp;
-                                </p>
+                            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                    <thead class="table-light small text-center">
+                                    <tr>
+                                        <th>조달 계획 코드</th>
+                                        <th>자재명</th>
+                                        <th>조달 수량</th>
+                                        <th>조달 납기일</th>
+                                        <th>공급 업체</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="procureTableBody">
+                                    <!-- JS로 선택된 사원 목록 추가 -->
+                                    </tbody>
+                                </table>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                        <button type="button" class="btn btn-dark btn-sm">요청 등록</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary btn-sm">요청 등록</button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal fade" id="purchaseOrderRegiModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="purchaseOrderRegiModalLabel">조달 계획 수정</h5>&nbsp;&nbsp;
@@ -223,7 +230,7 @@
             </div>
         </div>
         <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="purchaseOrderModalDelLabel">조달 계획 삭제</h5>&nbsp;&nbsp;
@@ -231,11 +238,22 @@
                     </div>
                     <div class="modal-body">
                         <form id="purchaseOrderDelForm">
-                            <div class="row g-3 mb-3">
-                                <span>선택된 조달 계획 코드</span>
-                                <ul class="text-muted small mb-2" id="selectedPlanList" style="list-style: none"></ul>
+                            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                    <thead class="table-light small text-center">
+                                    <tr>
+                                        <th>조달 계획 코드</th>
+                                        <th>자재명</th>
+                                        <th>조달 수량</th>
+                                        <th>조달 납기일</th>
+                                        <th>공급 업체</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="deleteTableBody">
+                                    <!-- JS로 선택된 사원 목록 추가 -->
+                                    </tbody>
+                                </table>
                             </div>
-                            <small class="text-muted mt-2 d-block"><span class="text-danger">정말 삭제하시겠습니까?</span></small>
                         </form>
                     </div>
                     <div class="modal-footer">

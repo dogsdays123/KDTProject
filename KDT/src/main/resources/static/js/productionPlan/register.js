@@ -25,7 +25,7 @@ function addPlan() {
         <td><input type="hidden" name="plans[${rowIndex}].ppNum" value="${ppNum}">${ppNum}</td>   
         <td><input type="hidden" name="plans[${rowIndex}].uId" value="${uId}">${uId}</td>       
         <td>
-          <button type="button" class="btn btn-outline-dark btn-sm" onclick="removeRow(this)" aria-label="삭제">
+          <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
             <i class="bi bi-x-lg"></i>
           </button>
         </td>
@@ -50,8 +50,8 @@ function addPlan() {
         registerRow.innerHTML = `
         <td colspan="11" class="text-center" style="padding: 10px">
             <div class="d-flex justify-content-center gap-2">
-                <button type="submit" class="btn btn-dark btn-sm">전체 등록</button>
                 <button type="button" class="btn btn-outline-dark btn-sm" onclick="clearPlanTable()">전체 삭제</button>
+                <button type="submit" class="btn btn-dark btn-sm">전체 등록</button>
             </div>
         </td>
     `;
@@ -62,8 +62,13 @@ function addPlan() {
         tableBody.appendChild(registerRow);
     }``
     // 입력값 초기화
-    document.getElementById('pName').selectedIndex = 0;
+    document.getElementById('ppStart').value = '';
+    document.getElementById('ppEnd').value = '';
+    document.getElementById('pName').value = '';
+    document.getElementById('pppCode').value = '';
     document.getElementById('ppCode').value = '';
+    document.getElementById('ppNum').value = '';
+    document.getElementById('uId').value = '';
 
 }
 

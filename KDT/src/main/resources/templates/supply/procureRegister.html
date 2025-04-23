@@ -64,7 +64,7 @@
                 </form>
             </div>
             <div class="container" style="max-width: 1600px; margin-left: 0;">
-                <div class="d-flex justify-content-end mb-2" style="margin-right: 15px">
+                <div class="d-flex justify-content-end mb-2">
                     <form>
                         <div class="col-auto">
                             <select class="form-select form-select-sm" title="정렬 갯수 필터">
@@ -403,12 +403,12 @@
                                         <table class="table table-sm table-bordered table-hover align-middle fs-6" style="table-layout: fixed; width: 100%;">
                                             <thead class="table-light small text-center">
                                             <tr>
-                                                <th>조달계획코드</th>
-                                                <th>공급업체</th>
+                                                <th>조달 계획 코드</th>
+                                                <th>공급 업체</th>
                                                 <th>자재명</th>
-                                                <th>자재코드</th>
-                                                <th>필요수량</th>
-                                                <th>조달수량</th>
+                                                <th>자재 코드</th>
+                                                <th>필요 수량</th>
+                                                <th>조달 수량</th>
                                                 <th>납기일</th>
                                                 <th>삭제</th>
                                             </tr>
@@ -419,10 +419,10 @@
                                     <br>
                                     <div class="row justify-content-center g-2 align-items-center mb-2">
                                         <div class="col-auto">
-                                            <button type="submit" class="btn btn-primary btn-sm px-3">일괄 등록</button>
+                                            <button type="button" class="btn btn-secondary btn-sm px-3" onclick="resetView()">취소</button>
                                         </div>
                                         <div class="col-auto">
-                                            <button type="button" class="btn btn-secondary btn-sm px-3" onclick="resetView()">취소</button>
+                                            <button type="submit" class="btn btn-primary btn-sm px-3">일괄 등록</button>
                                         </div>
                                     </div>
                                 </form>

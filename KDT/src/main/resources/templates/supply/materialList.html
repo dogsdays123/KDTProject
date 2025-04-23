@@ -13,7 +13,7 @@
             <div class="container" style="max-width: 1000px; margin-left: 0;">
                 <div class="d-flex align-items-center mb-3">
                     <h4 class="mb-0 me-2">부품 정보 목록</h4>
-                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="품목 정보 목록 가이드"></i>
+                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="부품 정보 목록 가이드"></i>
                 </div>
 
                 <!-- 검색 필터 -->
@@ -90,7 +90,7 @@
                         <table class="table table-sm table-bordered table-hover align-middle fs-6">
                             <thead class="table-light small text-center">
                             <tr>
-                                <th><input type="checkbox" id="selectAll"></th>
+                                <th><input type="checkbox" id="selectAll" title="전체선택"></th>
                                 <th>부품</th>
                                 <th>자재 코드</th>
                                 <th>자재명</th>
@@ -102,14 +102,14 @@
                                 <th>가로</th>
                                 <th>무게</th>
                                 <th>단가</th>
-                                <th>공급사</th>
+                                <th>공급 업체</th>
                                 <th>리드 타임</th>
                                 <th>수정</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td><input type="checkbox" class="selectPlan"></td>
+                                <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
                                 <td>안장</td>
                                 <td>MATB3MAT001</td>
                                 <td>BTR 무통증 스프링 쿠션 자전거</td>
@@ -129,6 +129,27 @@
                                     </button>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><input type="checkbox" class="selectPlan"></td>
+                                <td>페달</td>
+                                <td>PERD-001</td>
+                                <td>CH 초경량 페달 신발고정장치(유)</td>
+                                <td>조립품</td>
+                                <td>(전기자전거)페달</td>
+                                <td>2</td>
+                                <td>6</td>
+                                <td>5</td>
+                                <td>7.5</td>
+                                <td>3.5kg</td>
+                                <td>25,000</td>
+                                <td>DG전동</td>
+                                <td>3</td>
+                                <td>
+                                    <button type="button" class="icon-button" title="부품 정보 수정">
+                                        <i class="bi bi-pencil fs-6"></i>
+                                    </button>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                         <div class="text-start">
@@ -139,7 +160,7 @@
                     </div>
                 </div>
                 <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="purchaseOrderModalLabel">부품 정보 수정</h5>&nbsp;&nbsp;
@@ -168,22 +189,30 @@
                     </div>
                 </div>
                 <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="purchaseOrderModalDelLabel">부품 정보 삭제</h5>&nbsp;&nbsp;
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <form id="purchaseOrderDelForm">
-                                    <div class="row g-3 mb-3">
-                                        <div class="row g-3 mb-3">
-                                            <span>선택된 부품 코드</span>
-                                            <ul class="text-muted small mb-2" id="selectedPlanList" style="list-style: none"></ul>
-                                        </div>
-                                    </div>
-                                    <small class="text-muted mt-2 d-block"><span class="text-danger">정말 삭제하시겠습니까?</span></small>
-                                </form>
+                            <div class="modal-body modal-lg">
+                                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                    <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                        <thead class="table-light small text-center">
+                                        <tr>
+                                            <th>부품</th>
+                                            <th>자재 코드</th>
+                                            <th>자재명</th>
+                                            <th>자재 유형</th>
+                                            <th>자재 분류 품목</th>
+                                            <th>단가</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="deleteTableBody">
+                                        <!-- JS로 선택된 사원 목록 추가 -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
