@@ -60,6 +60,11 @@ public class PageController {
         log.info ("layout myPage test...");
     }
 
+    @PostMapping("/myPage")
+    public void myPagePost(){
+
+    }
+
     // 전화번호 포맷팅 메서드
     private String formatPhoneNumber(String phoneNumber) {
         if (phoneNumber.length() == 11) {

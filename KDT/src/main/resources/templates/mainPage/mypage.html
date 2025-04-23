@@ -41,9 +41,43 @@
             </div>
 
             <div class="mt-4">
-                <a href="#" class="btn btn-primary">정보 수정</a>
+                <button type="button" class="btn btn-primary" id="openPurchaseModal" title="생산 계획 수정">
+                    정보수정
+                </button>
                 <a href="#" class="btn btn-danger">회원 탈퇴</a>
             </div>
         </form>
     </div>
 </div>
+
+<!--  마이페이지 모달창 start -->
+<div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="purchaseOrderModalLabel">상품 정보 수정</h5>&nbsp;&nbsp;
+                <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="purchaseOrderForm">
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <label class="form-label"><span class="text-danger">*</span> 상품 코드</label>
+                            <input type="text" id="ppProductCode" class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label"><span class="text-danger">*</span> 상품명</label>
+                            <input type="text" id="ppProductName" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary btn-sm">수정</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 마이페이지 모달창 end -->
