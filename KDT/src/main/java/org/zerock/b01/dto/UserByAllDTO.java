@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 public class UserByAllDTO {
+    private String uId;
     private String uName;
     private String userJob;
     //유저 랭크에 따라 신청상태가 변경됨

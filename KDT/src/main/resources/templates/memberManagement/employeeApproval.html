@@ -92,7 +92,7 @@
                         <tbody id="userWaitTable" th:with="link = ${pageRequestDTO.getLink()}">
                         <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td></td>
+                            <td th:text="${dto.getUId()}"></td>
                             <td th:text="${dto.getUName()}"></td>
                             <td th:text="${dto.getUserJob()}"></td>
                             <td th:text="${dto.getUserRank()}"></td>

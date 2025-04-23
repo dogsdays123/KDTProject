@@ -39,6 +39,7 @@ public class PageRequestDTO {
     private String userRank;
     private LocalDateTime modDate;
     private String status;
+    private String uId;
 
     //product
     private String pCode;

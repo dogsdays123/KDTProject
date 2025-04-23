@@ -158,7 +158,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     @Override
     public Page<UserByAllDTO> userBySearchWithAll(String[] types, String keyword, String uName,
                                                   String userJob, String userRank, LocalDateTime modDate,
-                                                  String status, Pageable pageable){
+                                                  String status, String uId, Pageable pageable){
         QUserBy userBy = QUserBy.userBy;
         JPQLQuery<UserBy> query = from(userBy);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -188,6 +188,8 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .userJob(user.getUserJob())
                         .userRank(user.getUserRank())
                         .modDate(user.getModDate())
+                        .status(status)
+                        .uId(user.getUId())
                         .build())
                 .collect(Collectors.toList());
 

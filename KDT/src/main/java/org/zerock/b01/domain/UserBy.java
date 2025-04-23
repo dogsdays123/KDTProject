@@ -36,6 +36,8 @@ public class UserBy extends BaseEntity {
 
     private LocalDate uBirthDay;
 
+    private String status;
+
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)

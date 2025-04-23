@@ -89,6 +89,7 @@ public class PageServiceImpl implements PageService {
         String userRank = pageRequestDTO.getUserRank();
         LocalDateTime modDate = pageRequestDTO.getModDate();
         String status = "";
+        String uId = pageRequestDTO.getUId();
         if(userRank == null){
             status = "대기중";
         } else {
@@ -97,7 +98,7 @@ public class PageServiceImpl implements PageService {
 
         Pageable pageable = pageRequestDTO.getPageable("uId");
 
-        Page<UserByAllDTO> result = productRepository.userBySearchWithAll(types, keyword, uName, userJob, userRank, modDate, status, pageable);
+        Page<UserByAllDTO> result = productRepository.userBySearchWithAll(types, keyword, uName, userJob, userRank, modDate, status, uId, pageable);
 
         return PageResponseDTO.<UserByAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
