@@ -57,4 +57,10 @@ public class MemberManagementController {
 
     @GetMapping("/supplierList")
     public void supplierList() { log.info("##supplierList LIST PAGE GET....##"); }
+
+    @GetMapping("/employeeApproval")
+    public void employeeApproval() { log.info("##employeeApproval PAGE GET....##"); }
+
+    @GetMapping("/supplierApproval")
+    public void supplierApproval() { log.info("##supplierApproval PAGE GET....##"); }
 }

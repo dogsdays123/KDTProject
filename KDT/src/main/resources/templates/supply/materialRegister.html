@@ -2,7 +2,7 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}"
-      th:with="breadcrumbLevel1='조달 관리', breadcrumbCurrent='품목 정보 등록'">
+      th:with="breadcrumbLevel1='조달 관리', breadcrumbCurrent='부품 정보 등록'">
 <head>
     <link href="/css/supply/register.css" rel="stylesheet">
 </head>
@@ -11,7 +11,7 @@
         <div class="container-fluid">
             <div class="container" style="max-width: 1000px; margin-left: 0;">
                 <div class="d-flex align-items-center mb-3">
-                    <h4 class="mb-0 me-2">품목 정보 등록</h4>
+                    <h4 class="mb-0 me-2">부품 정보 등록</h4>
                     <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="품목 정보 등록 가이드"></i>
                 </div>
 
@@ -57,7 +57,7 @@
                                 <input type="text" id="mCode" name="자재코드" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-2">
-                                <label for="supplier" class="form-label small">공급사</label>
+                                <label for="supplier" class="form-label small">공급 업체</label>
                                 <input type="text" id="supplier" name="공급사" class="form-control form-control-sm">
                             </div>
                         </div>
@@ -107,17 +107,19 @@
                                 <thead class="table-light small text-center">
                                 <tr>
                                     <th>자재명</th>
-                                    <th>자재코드</th>
-                                    <th>자재유형</th>
-                                    <th>자재분류품목</th>
+                                    <th>자재 코드</th>
+                                    <th>자재 유형</th>
+                                    <th>자재 종류</th>
+                                    <th>자재 분류 품목</th>
                                     <th>수량</th>
                                     <th>높이</th>
                                     <th>세로</th>
                                     <th>가로</th>
                                     <th>무게</th>
                                     <th>단가</th>
-                                    <th>공급사</th>
+                                    <th>공급 업체</th>
                                     <th>리드타임</th>
+                                    <th>등록자</th>
                                     <th>삭제</th>
                                 </tr>
                                 </thead>

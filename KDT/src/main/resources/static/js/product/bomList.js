@@ -24,6 +24,12 @@ document.querySelectorAll('.icon-button').forEach(button => {
 
 document.getElementById('openPurchaseDelModal').addEventListener('click', function () {
 
+    const selectedRows = document.querySelectorAll('.selectPlan:checked');
+    if (selectedRows.length === 0) {
+        alert('삭제할 항목을 선택해 주세요.');
+        return;
+    }
+
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));
     modal.show();
 });

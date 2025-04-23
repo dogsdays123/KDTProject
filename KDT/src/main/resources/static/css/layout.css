@@ -180,3 +180,26 @@ body {
   font-weight: bold;
   font-size: 18px;
 }
+
+.tooltip-wrap {
+  position: relative;
+  display: inline-block;
+}
+.tooltip-wrap .tooltip-text {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  top: 38px;
+  left: 10%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+}
+.tooltip-wrap:hover .tooltip-text {
+  visibility: visible;
+}

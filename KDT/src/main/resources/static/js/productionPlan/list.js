@@ -29,17 +29,29 @@ document.querySelectorAll('.icon-button').forEach(button => {
 
 document.getElementById('openPurchaseDelModal').addEventListener('click', function () {
 
-    const selectedListEl = document.getElementById('selectedPlanList');
-    selectedListEl.innerHTML = ''; // 기존 내용 초기화
-
     const selectedRows = document.querySelectorAll('.selectPlan:checked');
+    if (selectedRows.length === 0) {
+        alert('삭제할 항목을 선택해 주세요.');
+        return;
+    }
+
+    const tbody = document.getElementById('deleteTableBody');
+    tbody.innerHTML = ''; // 기존 내용 비우기
 
     selectedRows.forEach(checkbox => {
         const row = checkbox.closest('tr');
-        const planCode = row.querySelector('td:nth-child(2)').innerText;
-        const li = document.createElement('li');
-        li.textContent = planCode;
-        selectedListEl.appendChild(li);
+        const cells = row.querySelectorAll('td');
+        const newRow = document.createElement('tr');
+
+        newRow.innerHTML = `
+            <td>${cells[1].textContent.trim()}</td>
+            <td>${cells[2].textContent.trim()}</td>
+            <td>${cells[3].textContent.trim()}</td>
+            <td>${cells[4].textContent.trim()}</td>
+            <td>${cells[5].textContent.trim()}</td>
+        `;
+
+        tbody.appendChild(newRow);
     });
 
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));

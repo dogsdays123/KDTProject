@@ -16,7 +16,7 @@ function addPlan() {
     let rowIndex = 0;
     //uId는 따로 받아온다.
 
-    if (!pName || !mComponentType || !mType || !mName || !mCode || !supplier || !leadTime
+    if (!pName || !mType || !mName || !mCode || !supplier || !leadTime
         || !depth || !height || !width || !weight || !unitPrice || !mMinNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
@@ -30,8 +30,8 @@ function addPlan() {
     newRow.innerHTML = `
         <td><input type="hidden" name="materials[${rowIndex}].mName" value="${mName}">${mName}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mCode" value="${mCode}">${mCode}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mType" value="${mType}">${mType}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
         <td><input type="hidden" name="materials[${rowIndex}].pName" value="${pName}">${pName}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mMinNum" value="${mMinNum}">${mMinNum}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mDepth" value="${depth}">${depth}</td>
@@ -39,10 +39,11 @@ function addPlan() {
         <td><input type="hidden" name="materials[${rowIndex}].mWidth" value="${width}">${width}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mWeight" value="${weight}">${weight}</td>
         <td><input type="hidden" name="materials[${rowIndex}].unitPrice" value="${unitPrice}">${unitPrice}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].supplier" value="${supplier}">${supplier}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mLeadTime" value="${leadTime}">${leadTime}</td>
         <td><input type="hidden" name="materials[${rowIndex}].uId" value="${uId}">${uId}</td> 
         <td>
-          <button type="button" class="btn btn-outline-dark btn-sm" onclick="removeRow(this)" aria-label="삭제">
+          <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
             <i class="bi bi-x-lg"></i>
           </button>
         </td>
@@ -63,10 +64,10 @@ function addPlan() {
         const registerRow = document.createElement('tr');
         registerRow.id = 'registerRow';
         registerRow.innerHTML = `
-        <td colspan="11" class="text-center" style="padding: 10px">
+        <td colspan="15" class="text-center" style="padding: 10px">
             <div class="d-flex justify-content-center gap-2">
-                <button type="submit" class="btn btn-dark btn-sm">전체 등록</button>
                 <button type="button" class="btn btn-outline-dark btn-sm" onclick="clearPlanTable()">전체 삭제</button>
+                <button type="submit" class="btn btn-dark btn-sm">전체 등록</button>
             </div>
         </td>
     `;

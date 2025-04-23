@@ -29,7 +29,7 @@
                         </div>
                         <div class="col-md-2">
                             <label for="pName" class="form-label small">제품명</label>
-                            <select id="pName" class="form-select form-select-sm">
+                            <select class="form-select form-select-sm" id="pName">
                                 <option value="" selected>선택</option>
                                 <th:block th:each="product : ${productList}">
                                     <option th:value="${product.pName}" th:text="${product.pName}"></option>
@@ -44,7 +44,7 @@
                             <label for="ppCode" class="form-label small">생산 계획 코드</label>
                             <input type="text" id="ppCode" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <label for="ppNum" class="form-label small">생산 수량</label>
                             <input type="number" id="ppNum" class="form-control form-control-sm">
                         </div>
@@ -58,10 +58,11 @@
                     <table class="table table-bordered table-hover table-sm align-middle" id="planTable">
                         <thead class="table-light small text-center">
                         <tr>
-                            <th>시작날짜</th>
-                            <th>종료날짜</th>
+                            <th>시작 날짜</th>
+                            <th>종료 날짜</th>
                             <th>제품명</th>
-                            <th>생산계획코드</th>
+                            <th>제품 코드</th>
+                            <th>생산 계획 코드</th>
                             <th>수량</th>
                             <th>등록자</th>
                             <th>삭제</th>
