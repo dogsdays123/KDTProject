@@ -42,6 +42,10 @@ public class PageController {
             userByDTO = userByService.readOne(username);
             log.info("##### 일반 로그인 사용자 정보: " + userByDTO);
 
+            if(userByDTO.getStatus() == null){
+
+            }
+
             model.addAttribute("userBy", userByDTO);
             String formattedPhone = formatPhoneNumber(userByDTO.getUPhone());
             model.addAttribute("formattedPhone", formattedPhone);

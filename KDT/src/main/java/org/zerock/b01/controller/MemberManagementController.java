@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.ProductService;
 import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
+
+import java.io.IOException;
+import java.util.List;
 
 @Log4j2
 @Controller
@@ -94,4 +98,18 @@ public class MemberManagementController {
 
         log.info("^&^& " + responseDTO);
     }
-}
+
+   @PostMapping("/supplierApprovalAgree")
+    public void supplierApprovalAgree(){}
+//                                        Model model, RedirectAttributes redirectAttributes,
+//                                        HttpServletRequest request) throws IOException {
+//
+//        List<ProductionPlanDTO> productionPlanDTOs = form.getPlans();
+//
+//        // pCodes와 pNames 배열을 순회하여 Product 객체를 만들어 products 리스트에 추가
+//        for (ProductionPlanDTO productionPlanDTO : productionPlanDTOs) {
+//            productionPlanService.registerProductionPlan(productionPlanDTO, productionPlanDTO.getUId());
+//        }
+//
+//        return "redirect:/productionPlan/ppRegister";
+    }
