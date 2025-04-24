@@ -35,6 +35,11 @@ public class UserByServiceImpl implements UserByService {
     private final JavaMailSender mailSender;
 
     @Override
+    public void registerAdmin(UserBy user){
+        userByRepository.save(user).getUId();
+    }
+
+    @Override
     public String registerUser(UserByDTO userByDTO){
         UserBy userBy = modelMapper.map(userByDTO, UserBy.class);
         if (userByRepository.findByuEmail(userBy.getUEmail()).isPresent()) {

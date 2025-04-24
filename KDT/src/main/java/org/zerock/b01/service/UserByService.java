@@ -9,6 +9,7 @@ import java.util.List;
 public interface UserByService {
     UserByDTO readOne(String uId);
     UserByDTO readOneForEmail(String uEmail);
+    void registerAdmin(UserBy user);
     String registerUser(UserByDTO userByDTO);
     String changeUserProfile(String email);
     void changeUser(UserByDTO userByDTO);
