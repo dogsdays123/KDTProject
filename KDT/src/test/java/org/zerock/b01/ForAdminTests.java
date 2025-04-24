@@ -31,6 +31,8 @@ public class ForAdminTests {
                 .uName("관리자")
                 .uEmail("Admin@admin.admin")
                 .roleSet(Set.of(MemberRole.ADMIN))
+                .status("승인")
+                .uPhone("01000000000")
                 .build();
 
         userByService.registerAdmin(user);

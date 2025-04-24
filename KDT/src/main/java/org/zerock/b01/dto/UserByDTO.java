@@ -23,7 +23,8 @@ public class UserByDTO {
     private String uEmail;
     private String uPhone;
     private LocalDate uBirthDay;
-
+    private String status;
+    private String role;
 
     private LocalDateTime regDate;
     private LocalDateTime modDate;
