@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/basic.html}"
+      th:with="breadcrumbLevel1='거래 관리', breadcrumbCurrent='납품 지시 요청'">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="/css/supply/list.css" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="slRDeli">
+    <div class="container-fluid">
+        <div class="container" style="max-width: 1600px; margin-left: 0;">
+            <div class="d-flex align-items-center mb-3">
+                <h4 class="mb-0 me-2">납품 지시 요청</h4>
+                <div class="tooltip-wrap">
+                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                    <span class="tooltip-text">고객사가 납품을 요청한 목록들을 조회하고 관리할 수 있습니다.</span>
+                </div>
+            </div>
+            <form>
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-2">
+                        <label for="supplyDate" class="form-label small">납기일</label>
+                        <input type="date" class="form-control form-control-sm" id="supplyDate" title="납기일자">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">지시일</label>
+                        <input type="date" class="form-control form-control-sm" title="지시일자">
+                    </div>
+                    <div class="col-md-1">
+                        <label for="status" class="form-label small">상태</label>
+                        <select class="form-select form-select-sm" id="status" title="상태">
+                            <option selected>전체</option>
+                            <option value="-">납입준비중</option>
+                            <option value="-">납품완료</option>
+                            <option value="-">납기지연</option>
+                            <option value="-">반려</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end gap-2">
+                        <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                        <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
+                    </div>
+                </div>
+            </form>
+            <!-- 2줄: 검색어 입력 -->
+            <form>
+                <div class="row g-2 mt-2">
+                    <div class="col-md-6">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
+                            <input type="text" class="form-control" id="keyword" title="검색어 입력" placeholder="검색어 입력">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="container" style="max-width: 1600px; margin-left: 0;">
+            <div class="d-flex justify-content-end mb-2">
+                <form>
+                    <div class="col-auto">
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터">
+                            <option selected>전체</option>
+                            <option value="20">20개씩</option>
+                            <option value="30">30개씩</option>
+                            <option value="50">50개씩</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-white rounded">
+                <div style="max-height: 550px; overflow-y: auto;">
+                    <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                        <thead class="table-light small text-center">
+                        <tr>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th>발주 코드</th>
+                            <th>요청자</th>
+                            <th>자재명</th>
+                            <th>납기일</th>
+                            <th>지시 수량</th>
+                            <th>전체 발주 수량</th>
+                            <th>상태</th>
+                            <th>수정</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="selectPlan"></td>
+                            <td>BAJU-250424-001</td>
+                            <td>박시현</td>
+                            <td>안장A00-01-B</td>
+                            <td>2025-04-11</td>
+                            <td>100</td>
+                            <td>180</td>
+                            <td>납입준비중</td>
+                            <td>
+                                <div class="icon-button tooltip-wrap-top" style="cursor: pointer">
+                                    <i class="bi bi-pencil fs-6"></i>
+                                    <span class="tooltip-text-top">수정하기</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="selectPlan"></td>
+                            <td>BAJU-250405-002</td>
+                            <td>박시현</td>
+                            <td>안장A00-01-B</td>
+                            <td>2025-04-05</td>
+                            <td>200</td>
+                            <td>250</td>
+                            <td>납품완료</td>
+                            <td>
+                                <div class="icon-button tooltip-wrap-top" style="cursor: pointer">
+                                    <i class="bi bi-pencil fs-6"></i>
+                                    <span class="tooltip-text-top">수정하기</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="selectPlan"></td>
+                            <td>BAJU-250329-001</td>
+                            <td>박시현</td>
+                            <td>안장A00-01-B</td>
+                            <td>2025-03-29</td>
+                            <td>40</td>
+                            <td>100</td>
+                            <td>납품완료</td>
+                            <td>
+                                <div class="icon-button tooltip-wrap-top" style="cursor: pointer">
+                                    <i class="bi bi-pencil fs-6"></i>
+                                    <span class="tooltip-text-top">수정하기</span>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-start">
+                    <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
+                        선택 항목 납품 승인
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
+                        선택 항목 삭제
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">납품 정보 수정</h5>&nbsp;&nbsp;
+                    <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="row g-3 mb-3">
+                            <p class="text-muted small mb-2">
+                                선택된 발주 코드 : <strong><span id="planCodeInput"></span></strong>&nbsp;&nbsp;
+                            </p>
+                            <p class="text-muted small mb-2">
+                                요청자 : <strong><span id="productSupplier"></span></strong>&nbsp;&nbsp;
+                                자재명 : <strong><span id="productNameInput"></span></strong>&nbsp;&nbsp;
+                            </p>
+                            <div class="col-12">
+                                <label for="status" class="form-label small"><span class="text-danger">*</span> 납품 상태</label>
+                                <select class="form-select form-select-sm" id="piStatus" title="상태">
+                                    <option selected>전체</option>
+                                    <option value="-">납입준비중</option>
+                                    <option value="-">납품완료</option>
+                                    <option value="-">납기지연</option>
+                                    <option value="-">반려</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary btn-sm">수정</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="purchaseOrderModalLabel">납입 요청 승인/반려</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                            <thead class="table-light small text-center">
+                            <tr>
+                                <th>발주 코드</th>
+                                <th>요청자</th>
+                                <th>자재명</th>
+                                <th>납기일</th>
+                                <th>지시 수량</th>
+                                <th>상태</th>
+                            </tr>
+                            </thead>
+                            <tbody id="inspectionTableBody">
+                            <!-- JS로 선택된 사원 목록 추가 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <form id="purchaseOrderForm">
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <label class="form-label">특이사항(반려사유)</label>
+                                <textarea class="form-control form-control-sm" rows="2" id="orderMemo" placeholder="특이사항이 있으면 입력하세요."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-danger btn-sm">반려</button>
+                    <button type="button" class="btn btn-primary btn-sm">승인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="purchaseOrderModalDelLabel">납품 검수 정보 삭제</h5>&nbsp;&nbsp;
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="purchaseOrderDelForm">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                <thead class="table-light small text-center">
+                                <tr>
+                                    <th>발주 코드</th>
+                                    <th>요청자</th>
+                                    <th>자재명</th>
+                                    <th>납기일</th>
+                                    <th>지시수량</th>
+                                    <th>상태</th>
+                                </tr>
+                                </thead>
+                                <tbody id="deleteTableBody">
+                                <!-- JS로 선택된 사원 목록 추가 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-danger btn-sm">요청취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/supplier/requestDelivery.js}"></script>
+</div>
+</body>

@@ -24,8 +24,9 @@
     <!-- sidebar 시작 -->
     <div class="sidebar">
         <ul class="nav flex-column">
-            <a href="/mainPage/main"><img src="/image/PNS-logo.PNG"></a>
-            <li class="nav-item"><a href="#" class="nav-link" title="시작하기"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
+<!--            <a href="/mainPage/main"><img src="/image/PNS-logo.PNG"></a>-->
+            <li class="nav-item"><a href="/mainPage/beforeApproval" class="nav-link" title="시작하기"><i class="bi bi-stopwatch"></i>&nbsp;&nbsp;승인대기</a></li>
+            <li class="nav-item"><a href="/mainPage/main" class="nav-link" title="시작하기"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
             <li class="nav-item"><a href="/mainPage/guide" class="nav-link" title="실무 활용가이드"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무 활용가이드</a></li>
             <hr>
             <li class="nav-item">
@@ -43,13 +44,13 @@
                     <!--                  <li><a href="#" class="nav-link">가입 상세 정보 보기</a></li>-->
               </ul>
             </li>
-<!--            <li class="nav-item">-->
-<!--              <a href="#" class="nav-link" title="권한 및 부서 관리" onclick="toggleSubmenu('submenu-dept')"><i class="bi bi-person-gear"></i>&nbsp;&nbsp;권한 및 부서 관리&nbsp;&nbsp;<span>▾</span></a>-->
+            <li class="nav-item">
+              <a href="/memberManagement/roleSet" class="nav-link" title="권한 관리" onclick="toggleSubmenu('submenu-dept')"><i class="bi bi-person-gear"></i>&nbsp;&nbsp;권한 관리&nbsp;&nbsp;</a>
 <!--              <ul id="submenu-dept" class="submenu">-->
-<!--                  <li><a href="#" class="nav-link">부서 관리</a></li>-->
+<!--                  <li><a href="" class="nav-link">권한 관리</a></li>-->
 <!--                  <li><a href="#" class="nav-link">권한 설정</a></li>-->
 <!--              </ul>-->
-<!--            </li>-->
+            </li>
             <hr>
             <li class="nav-item">
               <a href="#" class="nav-link" title="생산 계획" onclick="toggleSubmenu('submenu-production-plan')"><i class="bi bi-calendar3"></i>&nbsp;&nbsp;생산 계획&nbsp;&nbsp;<span>▾</span></a>
@@ -64,10 +65,7 @@
                 <ul id="submenu-product" class="submenu">
                     <li><a href="/product/goodsRegister" class="nav-link">상품 등록</a></li>
                     <li><a href="/product/goodsList" class="nav-link">상품 목록</a></li>
-                    <li class="tooltip-wrap">
-                        <a href="/supply/materialRegister" class="nav-link">부품 등록</a>
-                        <span class="tooltip-text">부품 정보 등록</span>
-                    </li>
+                    <li><a href="/supply/materialRegister" class="nav-link">부품 등록</a></li>
                     <li><a href="/supply/materialList" title="부품 정보 목록" class="nav-link">부품 목록</a></li>
                     <li><a href="/product/bomRegister" class="nav-link">BOM 등록</a></li>
                     <li><a href="/product/bomList" class="nav-link">BOM 목록</a></li>
@@ -100,8 +98,8 @@
                     <li><a href="/material/inventoryList" title="자재 재고 목록" class="nav-link">자재 재고 목록</a></li>
                     <li><a href="/material/receipt" title="자재 입고 처리" class="nav-link">입고 관리</a></li>
                     <li><a href="/material/receiptList" title="자재 입고 목록" class="nav-link">입고 목록</a></li>
-                    <li><a href="#" title="자재 출고 관리" class="nav-link">출고 관리</a></li>
-                    <li><a href="#" title="자재 출고 목록" class="nav-link">출고 목록</a></li>
+                    <li><a href="/material/delivery" title="자재 출고 관리" class="nav-link">출고 관리</a></li>
+                    <li><a href="/material/deliveryList" title="자재 출고 목록" class="nav-link">출고 목록</a></li>
                 </ul>
             </li>
             <hr>
@@ -110,18 +108,17 @@
                 <a href="#" class="nav-link" title="거래 관리" onclick="toggleSubmenu('submenu-supplier')"><i class="bi bi-wallet2"></i>&nbsp;&nbsp;거래 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-supplier" class="submenu">
                     <li><a href="/supplier/purchaseOrderList" title="발주서 목록" class="nav-link">발주서 목록</a></li>
-                    <li><a href="#" class="nav-link">거래 내역 목록</a></li>
-                    <li><a href="#" class="nav-link">납품 검수 관리</a></li>
-                    <li><a href="#" class="nav-link">납품 지시 요청</a></li>
-                    <li><a href="#" class="nav-link">발주 내역 조회</a></li>
+                    <li><a href="/supplier/transactionHistory" class="nav-link">거래 내역 목록</a></li>
+                    <li><a href="/supplier/progressInspection" class="nav-link">납품 검수 관리</a></li>
+                    <li><a href="/supplier/requestDelivery" class="nav-link">납품 지시 요청</a></li>
                     <li><a href="#" class="nav-link">거래 명세서 관리</a></li>
-                    <li><a href="#" class="nav-link">반품 부품 목록</a></li>
                 </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" title="자재 관리" onclick="toggleSubmenu('submenu-price')"><i class="bi bi-boxes"></i>&nbsp;&nbsp;자재 관리&nbsp;&nbsp;<span>▾</span></a>
+                <a href="/supplier/inventoryList" class="nav-link" title="자재 관리" onclick="toggleSubmenu('submenu-price')"><i class="bi bi-boxes"></i>&nbsp;&nbsp;자재 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-price" class="submenu">
-                    <li><a href="#" class="nav-link">자재 품목 목록</a></li>
+                    <li><a href="/supplier/inventoryRegister" class="nav-link">자재 등록</a></li>
+                    <li><a href="/supplier/inventoryList" class="nav-link">자재 목록</a></li>
                 </ul>
             </li>
         </ul>
@@ -141,9 +138,9 @@
         </div>
         <div class="user-info">
             <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>
-            <div class="tooltip-wrap">
+            <div class="tooltip-wrap-left">
                 <i class="bi bi-person-circle" onclick="toggleUserDropdown()"></i>
-                <span class="tooltip-text">마이페이지/로그아웃</span>
+                <span class="tooltip-text-left">마이페이지/로그아웃</span>
             </div>
 
             <div class="user-dropdown">
@@ -156,6 +153,8 @@
     <!-- main start  -->
     <main class="main-content">
         <div layout:fragment="mypage"></div>
+        <div layout:fragment="beforeApproval"></div>
+        <div layout:fragment="main"></div>
         <div layout:fragment="guide"></div>
 
         <!-- 관리자 전용 계정 관련 페이지 -->
@@ -163,7 +162,7 @@
         <div layout:fragment="mmSupList"></div>
         <div layout:fragment="mmEmpAppr"></div>
         <div layout:fragment="mmSupAppr"></div>
-
+        <div layout:fragment="mmRoleSet"></div>
 
 
         <!-- 생산 계획 페이지 -->
@@ -196,11 +195,17 @@
         <div layout:fragment="mtInList"></div>
         <div layout:fragment="mtReceipt"></div>
         <div layout:fragment="mtReList"></div>
+        <div layout:fragment="mtDelivery"></div>
+        <div layout:fragment="mtDeList"></div>
 
         <!-- 협력업체 -->
         <!-- 거래 관리 페이지 -->
         <div layout:fragment="slPList"></div>
-
+        <div layout:fragment="slTHistory"></div>
+        <div layout:fragment="slPInsp"></div>
+        <div layout:fragment="slRDeli"></div>
+        <div layout:fragment="slIList"></div>
+        <div layout:fragment="slIRegi"></div>
     </main>
 
 </body>

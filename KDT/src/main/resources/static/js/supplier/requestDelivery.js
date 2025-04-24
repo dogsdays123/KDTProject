@@ -4,17 +4,31 @@ document.getElementById('selectAll').addEventListener('change', function () {
     });
 });
 
+document.querySelectorAll('.icon-button').forEach(button => {
+    button.addEventListener('click', function () {
+        const row = this.closest('tr'); // 클릭한 버튼이 속한 tr
+
+        // 각 td 값을 가져오기
+        const ppCode = row.querySelector('td:nth-child(2)').innerText;
+        const pCode = row.querySelector('td:nth-child(3)').innerText;
+        const pName = row.querySelector('td:nth-child(4)').innerText;
+
+        document.getElementById('planCodeInput').innerText = ppCode;
+        document.getElementById('productSupplier').innerText = pCode;
+        document.getElementById('productNameInput').innerText = pName;
+
+        // 모달 띄우기
+        const modal = new bootstrap.Modal(document.getElementById('registerModal'));
+        modal.show();
+    });
+});
+
 document.getElementById('openPurchaseModal').addEventListener('click', function () {
     const selectedRows = Array.from(document.querySelectorAll('.selectPlan:checked'))
         .map(cb => cb.closest('tr')); // 체크된 체크박스의 행 가져오기
 
     if (selectedRows.length === 0) {
         alert('하나 이상의 항목을 선택해주세요.');
-        return;
-    }
-
-    if (selectedRows.length > 1) {
-        alert('진척 검수 요청은 1개 항목만 선택 가능합니다.');
         return;
     }
 
@@ -32,7 +46,6 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
             <td>${cells[3].textContent.trim()}</td>
             <td>${cells[4].textContent.trim()}</td>
             <td>${cells[5].textContent.trim()}</td>
-            <td>${cells[6].textContent.trim()}</td>
             <td>${cells[7].textContent.trim()}</td>
         `;
 
@@ -52,11 +65,6 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         return;
     }
 
-    if (selectedRows.length > 1) {
-        alert('진척 검수 요청 취소는 1개 항목만 선택 가능합니다.');
-        return;
-    }
-
     const tbody = document.getElementById('deleteTableBody');
     tbody.innerHTML = ''; // 기존 내용 비우기
 
@@ -71,7 +79,6 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
             <td>${cells[3].textContent.trim()}</td>
             <td>${cells[4].textContent.trim()}</td>
             <td>${cells[5].textContent.trim()}</td>
-            <td>${cells[6].textContent.trim()}</td>
             <td>${cells[7].textContent.trim()}</td>
         `;
 

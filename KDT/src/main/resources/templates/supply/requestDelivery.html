@@ -52,8 +52,9 @@
                 <option value="-">납품진행중</option>
               </select>
             </div>
-            <div class="col-md-1 d-flex align-items-end">
-              <button type="button" class="btn btn-dark btn-sm w-100" title="필터 적용">적용</button>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+              <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+              <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
             </div>
           </div>
         </form>
@@ -70,7 +71,7 @@
         </form>
       </div>
       <div class="container" style="max-width: 1600px; margin-left: 0;">
-        <div class="d-flex justify-content-end mb-2" style="margin-right: 15px">
+        <div class="d-flex justify-content-end mb-2">
           <form>
             <div class="col-auto">
               <select class="form-select form-select-sm" title="정렬 갯수 필터">
@@ -88,14 +89,14 @@
               <thead class="table-light small text-center">
               <tr>
                 <th><input type="checkbox" id="selectAll"></th>
-                <th>발주코드</th>
-                <th>공급업체명</th>
+                <th>발주 코드</th>
+                <th>공급 업체</th>
                 <th>자재명</th>
-                <th>발주일자</th>
-                <th>납기일자</th>
-                <th>지시수량</th>
-                <th>전체발주수량</th>
-                <th>잔여수량</th>
+                <th>발주일</th>
+                <th>납기일</th>
+                <th>지시 수량</th>
+                <th>전체 발주 수량</th>
+                <th>잔여 수량</th>
               </tr>
               </thead>
               <tbody>
@@ -178,7 +179,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm">요청 등록</button>
+            <button type="button" class="btn btn-primary btn-sm">요청 등록</button>
           </div>
         </div>
       </div>

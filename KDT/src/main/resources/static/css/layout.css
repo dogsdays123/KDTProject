@@ -73,7 +73,8 @@ body {
 /* 사이드바가 닫히면 헤더와 콘텐츠가 왼쪽으로 붙음 */
 .sidebar.closed ~ .header,
 .sidebar.closed ~ .main-content {
-  margin-left: 0;
+  margin-left:20px;
+
 }
 
 .download-card {
@@ -194,12 +195,78 @@ body {
   border-radius: 4px;
   position: absolute;
   z-index: 1;
-  top: 38px;
-  left: 10%;
-  transform: translateX(-50%);
+
+  /* 수정된 위치 설정 */
+  top: 100%;         /* 기준 요소 아래에 위치 */
+  left: 100%;        /* 기준 요소 오른쪽에 위치 */
+  margin-top: 8px;   /* 약간의 간격 */
+  margin-left: 8px;
+
   white-space: nowrap;
   font-size: 12px;
+  transform: none;  /* translateX 제거 */
 }
 .tooltip-wrap:hover .tooltip-text {
   visibility: visible;
+}
+
+.tooltip-wrap-left {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-wrap-left:hover .tooltip-text-left {
+  visibility: visible;
+}
+
+.tooltip-wrap-left .tooltip-text-left {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+
+  /* 좌측 아래 방향으로 위치 설정 */
+  top: 100%;           /* 요소 아래 */
+  right: 100%;         /* 요소 왼쪽 */
+  margin-top: 8px;     /* 아래로 약간 띄움 */
+  margin-right: 8px;   /* 왼쪽으로 약간 띄움 */
+
+  white-space: nowrap;
+  font-size: 12px;
+  transform: none;     /* transform 제거 */
+}
+
+
+.tooltip-wrap-top {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-wrap-top:hover .tooltip-text-top {
+  visibility: visible;
+}
+
+.tooltip-wrap-top .tooltip-text-top {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+
+  /* 좌측 아래 방향으로 위치 설정 */
+  bottom: 100%;           /* 요소 아래 */
+  right: 100%;         /* 요소 왼쪽 */
+  margin-top: 8px;     /* 아래로 약간 띄움 */
+  margin-right: 8px;   /* 왼쪽으로 약간 띄움 */
+
+  white-space: nowrap;
+  font-size: 12px;
+  transform: none;     /* transform 제거 */
 }

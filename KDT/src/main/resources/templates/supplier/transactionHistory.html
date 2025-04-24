@@ -2,17 +2,17 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}"
-      th:with="breadcrumbLevel1='발주 관리', breadcrumbCurrent='거래 명세서 목록'">
+      th:with="breadcrumbLevel1='거래 관리', breadcrumbCurrent='거래 내역 목록'">
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="/css/supply/list.css" rel="stylesheet">
 </head>
 <body>
-<div layout:fragment="spTrState">
+<div layout:fragment="slTHistory">
     <div class="container-fluid">
         <div class="container" style="max-width: 1200px; margin-left: 0;">
             <div class="d-flex align-items-center mb-3">
-                <h4 class="mb-0 me-2">거래 명세서 목록</h4>
+                <h4 class="mb-0 me-2">거래 내역 목록</h4>
                 <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="납입 지시 요청"></i>
             </div>
             <form>
@@ -79,65 +79,42 @@
                     <table class="table table-sm table-bordered table-hover align-middle fs-6">
                         <thead class="table-light small text-center">
                         <tr>
-                            <th><input type="checkbox" id="selectAll"></th>
-                            <th style="width: 150px">공급 업체</th>
+                            <th><input type="checkbox" id="selectAll" title="전체선택"></th>
+                            <th>거래 코드</th>
+                            <th>거래일</th>
                             <th>자재명</th>
-                            <th>단가</th>
                             <th>수량</th>
-                            <th style="width: 150px">총 금액</th>
-                            <th style="width: 150px">발급일</th>
-                            <th style="width: 150px">거래일</th>
-                            <th>상세</th>
+                            <th>단가</th>
+                            <th>총액</th>
+                            <th>거래 유형</th>
+                            <th>진행 상태</th>
+                            <th>결제 상태</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td><input type="checkbox" class="selectPlan"></td>
-                            <td style="width: 150px">SAMSON</td>
-                            <td>안장A</td>
-                            <td>7,500</td>
-                            <td>150</td>
-                            <td style="width: 150px">875,200</td>
-                            <td style="width: 150px">2025-04-15</td>
-                            <td style="width: 150px">2025-04-07</td>
-                            <td>
-                                <div class="icon-button tooltip-wrap-top" style="cursor: pointer">
-                                    <i class="bi bi-search"></i>
-                                    <span class="tooltip-text-top">거래 명세서 상세보기</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan"></td>
-                            <td style="width: 150px">바이크철제몰</td>
-                            <td>페달C</td>
-                            <td>12,500</td>
+                            <td>TA-250424001</td>
+                            <td>2025-03-28</td>
+                            <td>18인치 바이크 타이어</td>
                             <td>250</td>
-                            <td style="width: 150px">1,235,200</td>
-                            <td style="width: 150px">2025-04-15</td>
-                            <td style="width: 150px">2025-04-08</td>
-                            <td>
-                                <div class="icon-button tooltip-wrap-top" style="cursor: pointer">
-                                    <i class="bi bi-search"></i>
-                                    <span class="tooltip-text-top">거래 명세서 상세보기</span>
-                                </div>
-                            </td>
+                            <td>15000</td>
+                            <td>3750000</td>
+                            <td>납품</td>
+                            <td>납품완료</td>
+                            <td>결제완료</td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" class="selectPlan"></td>
-                            <td style="width: 150px">KENDA</td>
-                            <td>체인</td>
-                            <td>15,350</td>
+                            <td>TA-250424002</td>
+                            <td>2025-04-02</td>
+                            <td>18인치 바이크 타이어</td>
                             <td>150</td>
-                            <td style="width: 150px">2,751,200</td>
-                            <td style="width: 150px">2025-04-15</td>
-                            <td style="width: 150px">2025-04-11</td>
-                            <td>
-                                <div class="icon-button tooltip-wrap-top" style="cursor: pointer">
-                                    <i class="bi bi-search"></i>
-                                    <span class="tooltip-text-top">거래 명세서 상세보기</span>
-                                </div>
-                            </td>
+                            <td>15000</td>
+                            <td>2250000</td>
+                            <td>납품</td>
+                            <td>납품완료</td>
+                            <td>결제완료</td>
                         </tr>
                         </tbody>
                     </table>
@@ -154,7 +131,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="purchaseOrderModalDelLabel">거래 명세서 정보 삭제</h5>&nbsp;&nbsp;
+                    <h5 class="modal-title" id="purchaseOrderModalDelLabel">거래 내역 정보 삭제</h5>&nbsp;&nbsp;
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -163,13 +140,13 @@
                             <table class="table table-sm table-bordered table-hover align-middle fs-6">
                                 <thead class="table-light small text-center">
                                 <tr>
-                                    <th>공급 업체</th>
-                                    <th>자재명</th>
-                                    <th>단가</th>
-                                    <th>발주 수량</th>
-                                    <th>총 금액</th>
-                                    <th>발급일</th>
+                                    <th>거래 코드</th>
                                     <th>거래일</th>
+                                    <th>자재명</th>
+                                    <th>수량</th>
+                                    <th>단가</th>
+                                    <th>총액</th>
+                                    <th>진행상태</th>
                                 </tr>
                                 </thead>
                                 <tbody id="deleteTableBody">
@@ -187,6 +164,6 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/supply/transactionStatement.js}"></script>
+    <script th:src="@{/js/supplier/transactionHistory.js}"></script>
 </div>
 </body>

@@ -9,22 +9,17 @@ document.querySelectorAll('.icon-button').forEach(button => {
         const row = this.closest('tr'); // 클릭한 버튼이 속한 tr
 
         // 각 td 값을 가져오기
-        const ppCode = row.querySelector('td:nth-child(2)').innerText; //자재명
-        const pCode = row.querySelector('td:nth-child(3)').innerText; //자재코드
-        const pType = row.querySelector('td:nth-child(4)').innerText; //자재유형
-        const pGoods = row.querySelector('td:nth-child(5)').innerText; //분류품목
-        const cStock = row.querySelector('td:nth-child(6)').innerText; //현재재고
-        const aStock = row.querySelector('td:nth-child(7)').innerText; //가용재고
-        const hLocal = row.querySelector('td:nth-child(8)').innerText; //위치
-
-
-        document.getElementById('materialName').value = ppCode;
-        document.getElementById('materialCode').value = pCode;
-        document.getElementById('materialType').value = pType;
-        document.getElementById('goodsType').value = pGoods;
-        document.getElementById('currentStock').value = cStock;
-        document.getElementById('availableStock').value = aStock;
-        document.getElementById('houseLocation').value = hLocal;
+        // const ppCode = row.querySelector('td:nth-child(2)').innerText;
+        // const pCode = row.querySelector('td:nth-child(3)').innerText;
+        // const pName = row.querySelector('td:nth-child(4)').innerText;
+        // const pStart = row.querySelector('td:nth-child(5)').innerText;
+        // const pEnd = row.querySelector('td:nth-child(6)').innerText;
+        //
+        // document.getElementById('planCodeInput').value = ppCode;
+        // document.getElementById('ppProductCode').value = pCode;
+        // document.getElementById('ppProductName').value = pName;
+        // document.getElementById('ppStartDay').value = pStart;
+        // document.getElementById('ppEndDay').value = pEnd;
 
         // 모달 띄우기
         const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));

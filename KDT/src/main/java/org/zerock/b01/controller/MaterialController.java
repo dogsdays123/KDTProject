@@ -62,4 +62,10 @@ public class MaterialController {
 
     @GetMapping("/receiptList")
     public void receiptList(){ log.info("##MATERIAL RECEIPT LIST PAGE GET....##"); }
+
+    @GetMapping("/delivery")
+    public void delivery(){ log.info("##MATERIAL DELIVERY PAGE GET....##"); }
+
+    @GetMapping("/deliveryList")
+    public void deliveryList(){ log.info("##MATERIAL DELIVERY LIST PAGE GET....##"); }
 }

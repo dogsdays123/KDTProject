@@ -14,7 +14,10 @@
             <div class="container" style="max-width: 1200px; margin-left: 0;">
                 <div class="d-flex align-items-center mb-3">
                     <h4 class="mb-0 me-2">생산 계획 목록</h4>
-                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="도움말"></i>
+                    <div class="tooltip-wrap">
+                        <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                        <span class="tooltip-text">등록된 모든 생산 계획을 조회하고 관리할 수 있습니다.</span>
+                    </div>
                 </div>
 
                 <!-- 검색 필터 -->
@@ -47,8 +50,8 @@
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
-                            <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
-                            <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
+                            <button type="button" id="filterBtn" class="btn btn-dark btn-sm w-100">적용</button>
+                            <button type="button" id="filterResetBtn" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                         </div>
 
                     </div>

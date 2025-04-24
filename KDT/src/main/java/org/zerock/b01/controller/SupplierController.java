@@ -54,4 +54,19 @@ public class SupplierController {
 
     @GetMapping("/purchaseOrderList")
     public void purchaseOrderList() { log.info("##SUPPLIER :: PURCHASE ORDER LIST PAGE GET....##");}
+
+    @GetMapping("/transactionHistory")
+    public void transactionHistory() { log.info("##SUPPLIER :: TRANSACTION HISTORY PAGE GET....##");}
+
+    @GetMapping("/progressInspection")
+    public void progressInspection() { log.info("##SUPPLIER :: PROGRESS INSPECTION PAGE GET....##");}
+
+    @GetMapping("/requestDelivery")
+    public void requestDelivery() { log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");}
+
+    @GetMapping("/inventoryList")
+    public void inventoryList() { log.info("##SUPPLIER :: INVENTORY PAGE GET....##");}
+
+    @GetMapping("/inventoryRegister")
+    public void inventoryRegister() { log.info("##SUPPLIER :: REGISTER PAGE GET....##");}
 }

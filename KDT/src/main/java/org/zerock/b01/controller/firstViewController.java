@@ -28,7 +28,7 @@ public class firstViewController {
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if(auth == null) {
+        if (auth == null) {
             log.info("aaaaaa 인증정보 없음");
             model.addAttribute("userBy", null);
         } else {
@@ -58,12 +58,12 @@ public class firstViewController {
         log.info("%%%%" + userByDTO);
 
         //html에서 수정하기 귀찮음
-        if(userByDTO.getUserJob().contains("협력회사") && userByDTO.getUserType().equals("our")) {
+        if (userByDTO.getUserJob().contains("협력회사") && userByDTO.getUserType().equals("our")) {
             String userJob = userByDTO.getUserJob().replace(",협력회사", "");
             userByDTO.setUserJob(userJob);
         }
 
-        if(userByDTO.getUserJob().contains("협력회사") && userByDTO.getUserType().equals("other")) {
+        if (userByDTO.getUserJob().contains("협력회사") && userByDTO.getUserType().equals("other")) {
             String userJob = "협력회사";
             userByDTO.setUserJob(userJob);
         }
@@ -125,7 +125,7 @@ public class firstViewController {
 
         model.addAttribute("userType", userType);
 
-        if(userType.equals("our")) {
+        if (userType.equals("our")) {
             log.info("userType체크" + userType);
             response.put("isAvailable", true);
         } else {

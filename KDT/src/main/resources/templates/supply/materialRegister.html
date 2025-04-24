@@ -12,7 +12,10 @@
             <div class="container" style="max-width: 1000px; margin-left: 0;">
                 <div class="d-flex align-items-center mb-3">
                     <h4 class="mb-0 me-2">부품 정보 등록</h4>
-                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="품목 정보 등록 가이드"></i>
+                    <div class="tooltip-wrap">
+                        <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                        <span class="tooltip-text">새 부품을 등록하고 관리할 수 있습니다.</span>
+                    </div>
                 </div>
 
                 <!-- 등록 폼 -->
@@ -20,7 +23,7 @@
                     <input type="hidden" id="uId" name="uId" th:value="${userBy.uId}">
                     <div style="max-width: 1200px; margin-left: 0;">
                         <div class="row g-2 mb-2">
-                            <div class="col-md-2">
+                            <div class="col-md-3" style="width: 200px">
                                 <label for="pName" class="form-label small">자재 분류 품목</label>
                                 <select id="pName" class="form-select form-select-sm">
                                     <option value="" selected>선택</option>
@@ -38,7 +41,7 @@
                                     </th:block>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2" style="width: 100px">
                                 <label for="mType" class="form-label small">자재 유형</label>
                                 <select id="mType" name="자재 유형" class="form-select form-select-sm">
                                     <option value="" selected>선택</option>

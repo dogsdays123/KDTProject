@@ -63,4 +63,7 @@ public class MemberManagementController {
 
     @GetMapping("/supplierApproval")
     public void supplierApproval() { log.info("##supplierApproval PAGE GET....##"); }
+
+    @GetMapping("/roleSet")
+    public void roleSet() { log.info("##roleSet PAGE GET....##"); }
 }
