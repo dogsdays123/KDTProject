@@ -106,6 +106,8 @@ public class ProductionPlanController {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
 
+        log.info("테스트 ");
+
         List<ProductionPlan> planList = productionPlanService.getPlans();
         model.addAttribute("planList", planList);
         model.addAttribute("responseDTO", responseDTO);

@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.zerock.b01.domain.UserBy;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -30,6 +32,23 @@ public class PageRequestDTO {
     //공통
     private String uName; //작성자
     private String pName; //제품이름
+
+    //유저
+    private String userJob;
+    //유저 랭크에 따라 신청상태가 변경됨
+    private String userRank;
+    private LocalDateTime uRegDate;
+    private String uStatus;
+    private String uId;
+
+    //협력업체
+    private String sName;
+    private String sRegNum;
+    private String sBusinessType;
+    private String sManager;
+    private String sPhone;
+    private LocalDateTime sRegDate;
+    private String sStatus;
 
     //product
     private String pCode;

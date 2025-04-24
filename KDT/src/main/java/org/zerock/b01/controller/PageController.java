@@ -14,6 +14,9 @@ import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.UserByService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Log4j2
 @Controller
 @RequestMapping("/mainPage")
@@ -58,6 +61,32 @@ public class PageController {
     @GetMapping("/myPage")
     public void myPage() {
         log.info ("layout myPage test...");
+    }
+
+    @PostMapping("/myPage")
+    public String myPagePost(@ModelAttribute UserByDTO userByDTO, Model model) {
+        userByService.changeUser(userByDTO);
+        // POST 처리 후 마이페이지 GET으로 리다이렉트
+        return "redirect:/mainPage/myPage";
+    }
+
+    @PostMapping("/checkEmail")
+    @ResponseBody
+    public Map<String, Object> checkEmail(@RequestParam("uEmail") String uEmail, @RequestParam("uId") String uId, Model model) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 아이디 중복 여부 체크
+        if (userByService.readOneForEmail(uEmail) != null && !userByService.readOneForEmail(uEmail).getUId().equals(uId)) {
+            response.put("isAvailable", false); // 아이디가 이미 존재하는 경우
+            model.addAttribute("checkEmail", false);
+        } else {
+            response.put("isAvailable", true);  // 아이디가 사용 가능한 경우
+            model.addAttribute("checkEmail", true);
+        }
+
+        log.info("email체크" + uEmail);
+
+        return response; // JSON 형식으로 반환
     }
 
     // 전화번호 포맷팅 메서드
