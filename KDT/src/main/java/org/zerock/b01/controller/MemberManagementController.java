@@ -88,6 +88,6 @@ public class MemberManagementController {
 
         model.addAttribute("responseDTO", responseDTO);
 
-        log.info("^&^&" + responseDTO);
+        log.info("^&^& " + responseDTO);
     }
 }
