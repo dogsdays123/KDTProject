@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -77,7 +78,8 @@ public class MemberManagementController {
 
     @GetMapping("/roleSet")
     public void roleSet() { log.info("##roleSet PAGE GET....##"); }
-    
+
+    @GetMapping("/supplierApproval")
     public void supplierApproval(PageRequestDTO pageRequestDTO, Model model) {
         pageRequestDTO.setSize(10);
 
