@@ -6,11 +6,9 @@ document.getElementById('selectAll').addEventListener('change', function () {
 
 document.getElementById('openPurchaseDelModal').addEventListener('click', function () {
 
-    const selectedRows = Array.from(document.querySelectorAll('.selectPlan:checked'))
-        .map(cb => cb.closest('tr')); // 체크된 체크박스의 행 가져오기
-
+    const selectedRows = document.querySelectorAll('.selectPlan:checked');
     if (selectedRows.length === 0) {
-        alert('하나 이상의 항목을 선택해주세요.');
+        alert('삭제할 항목을 선택해 주세요.');
         return;
     }
 
@@ -30,6 +28,8 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
             <td>${cells[5].textContent.trim()}</td>
             <td>${cells[6].textContent.trim()}</td>
             <td>${cells[7].textContent.trim()}</td>
+            <td>${cells[8].textContent.trim()}</td>
+            <td>${cells[9].textContent.trim()}</td>
         `;
 
         tbody.appendChild(newRow);

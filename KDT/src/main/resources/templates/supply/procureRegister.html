@@ -13,11 +13,11 @@
             <div class="container" style="max-width: 1000px; margin-left: 0;">
                 <div class="d-flex align-items-center mb-3">
                     <h4 class="mb-0 me-2">조달 계획 등록</h4>
-                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="도움말"></i>
+                    <div class="tooltip-wrap">
+                        <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                        <span class="tooltip-text">필요한 자재의 조달 계획을 등록하고 관리할 수 있습니다. ※ 조달 계획을 등록하기 위해 먼저 해당하는 생산 계획을 선택해 주세요.</span>
+                    </div>
                 </div>
-                <small class="text-muted mt-2 d-block">※ 조달 계획을 등록하기 위해 먼저 해당하는 생산 계획을 검색 후 선택해 주세요.</small>
-                <!-- 검색 필터 -->
-                <br>
                 <form>
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2">
@@ -46,8 +46,9 @@
                                 <option value="전동킥보드">전동킥보드</option>
                             </select>
                         </div>
-                        <div class="col-md-1 d-flex align-items-end">
+                        <div class="col-md-2 d-flex align-items-end gap-2">
                             <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                            <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                         </div>
                     </div>
                 </form>

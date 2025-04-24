@@ -29,7 +29,7 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
             <td>${cells[4].textContent.trim()}</td>
             <td>${cells[5].textContent.trim()}</td>
             <td>${cells[6].textContent.trim()}</td>
-            <td>${cells[7].textContent.trim()}</td>
+            <td>${cells[8].textContent.trim()}</td>
         `;
 
         tbody.appendChild(newRow);

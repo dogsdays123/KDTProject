@@ -75,7 +75,9 @@ public class MemberManagementController {
         log.info("^&^&" + responseDTO);
     }
 
-    @GetMapping("/supplierApproval")
+    @GetMapping("/roleSet")
+    public void roleSet() { log.info("##roleSet PAGE GET....##"); }
+    
     public void supplierApproval(PageRequestDTO pageRequestDTO, Model model) {
         pageRequestDTO.setSize(10);
 

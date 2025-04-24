@@ -18,7 +18,7 @@
         <form>
           <div class="row g-2 align-items-end">
             <div class="col-md-2">
-              <label for="orderDate" class="form-label small">발주 일자</label>
+              <label for="orderDate" class="form-label small">발주일</label>
               <input type="date" class="form-control form-control-sm" id="orderDate" title="발주일자">
             </div>
             <div class="col-md-2">
@@ -40,7 +40,7 @@
               </select>
             </div>
             <div class="col-md-2">
-              <label for="supplyDate" class="form-label small">납기 일자</label>
+              <label for="supplyDate" class="form-label small">납기일</label>
               <input type="date" class="form-control form-control-sm" id="supplyDate" title="납기일자">
             </div>
             <div class="col-md-1">
@@ -61,8 +61,9 @@
                 <option value="-">납품진행중</option>
               </select>
             </div>
-            <div class="col-md-1 d-flex align-items-end">
-              <button type="button" class="btn btn-dark btn-sm w-100" title="필터 적용">적용</button>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+              <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+              <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
             </div>
           </div>
         </form>
@@ -79,7 +80,7 @@
         </form>
       </div>
       <div class="container" style="max-width: 1600px; margin-left: 0;">
-        <div class="d-flex justify-content-end mb-2" style="margin-right: 15px">
+        <div class="d-flex justify-content-end mb-2">
           <form>
             <div class="col-auto">
               <select class="form-select form-select-sm" title="정렬 갯수 필터">
@@ -96,14 +97,14 @@
             <table class="table table-sm table-bordered table-hover align-middle fs-6">
               <thead class="table-light small text-center">
               <tr>
-                <th>발주코드</th>
-                <th>발주일자</th>
-                <th>공급업체명</th>
+                <th>발주 코드</th>
+                <th>발주일</th>
+                <th>공급 업체</th>
                 <th>자재명</th>
-                <th>발주수량</th>
-                <th>총금액</th>
+                <th>발주 수량</th>
+                <th>총 금액</th>
                 <th>납기일</th>
-                <th>입고여부</th>
+                <th>입고 여부</th>
                 <th>상태</th>
                 <th>발주자</th>
               </tr>

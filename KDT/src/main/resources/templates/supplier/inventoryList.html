@@ -2,18 +2,21 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}"
-      th:with="breadcrumbLevel1='자재 관리', breadcrumbCurrent='자재 재고 목록'">
+      th:with="breadcrumbLevel1='자재 관리', breadcrumbCurrent='자재 취급 목록'">
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="/css/supply/list.css" rel="stylesheet">
 </head>
 <body>
-<div layout:fragment="mtInList">
+<div layout:fragment="slIList">
     <div class="container-fluid">
         <div class="container" style="max-width: 1000px; margin-left: 0;">
             <div class="d-flex align-items-center mb-3">
-                <h4 class="mb-0 me-2">자재 재고 목록</h4>
-                <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="자재 재고 목록 가이드"></i>
+                <h4 class="mb-0 me-2">자재 취급 목록</h4>
+                <div class="tooltip-wrap">
+                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                    <span class="tooltip-text">취급하는 자재(품목)의 항목을 조회하고 관리할 수 있습니다.</span>
+                </div>
             </div>
 
             <!-- 검색 필터 -->

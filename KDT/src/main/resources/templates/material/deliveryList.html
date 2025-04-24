@@ -2,27 +2,27 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}"
-      th:with="breadcrumbLevel1='자재 관리', breadcrumbCurrent='입고 목록'">
+      th:with="breadcrumbLevel1='자재 관리', breadcrumbCurrent='출고 목록'">
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="/css/supply/list.css" rel="stylesheet">
 </head>
 <body>
-<div layout:fragment="mtReList">
+<div layout:fragment="mtDeList">
     <div class="container-fluid">
         <div class="container" style="max-width: 1200px; margin-left: 0;">
             <div class="d-flex align-items-center mb-3">
-                <h4 class="mb-0 me-2">입고 목록</h4>
+                <h4 class="mb-0 me-2">출고 목록</h4>
                 <div class="tooltip-wrap">
                     <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
-                    <span class="tooltip-text">입고 검수가 완료된 입고 목록입니다.</span>
+                    <span class="tooltip-text">출고 처리가 완료된 출고 목록입니다.</span>
                 </div>
             </div>
             <form>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label class="form-label small">입고 코드</label>
-                        <select class="form-select form-select-sm" title="입고번호">
+                        <label class="form-label small">출고 코드</label>
+                        <select class="form-select form-select-sm" title="출고코드">
                             <option selected>전체</option>
                             <option value="-">-</option>
                             <option value="-">-</option>
@@ -30,26 +30,8 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label small">발주 코드</label>
-                        <select class="form-select form-select-sm" title="발주번호">
-                            <option selected>전체</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1" style="width: 150px">
-                        <label class="form-label small">공급 업체</label>
-                        <select class="form-select form-select-sm" title="업체명">
-                            <option selected>전체</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2" style="width: 110px">
-                        <label class="form-label small">부품</label>
-                        <select class="form-select form-select-sm" title="업체명">
+                        <label class="form-label small">자재 코드</label>
+                        <select class="form-select form-select-sm" title="자재코드">
                             <option selected>전체</option>
                             <option value="-">-</option>
                             <option value="-">-</option>
@@ -66,12 +48,12 @@
                         </select>
                     </div>
                     <div class="col-md-1">
-                        <label class="form-label small">검수 결과</label>
-                        <select class="form-select form-select-sm" title="검수결과">
+                        <label class="form-label small">상태</label>
+                        <select class="form-select form-select-sm" title="상태">
                             <option selected>전체</option>
-                            <option value="-">통과</option>
-                            <option value="-">불량</option>
-                            <option value="-">-</option>
+                            <option value="-">대기</option>
+                            <option value="-">완료</option>
+                            <option value="-">부분완료</option>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
@@ -111,53 +93,49 @@
                         <thead class="table-light small text-center">
                         <tr>
                             <th><input type="checkbox" id="selectAll" title="전체선택"></th>
-                            <th>입고 코드</th>
-                            <th>발주 코드</th>
-                            <th>공급 업체</th>
+                            <th>출고 코드</th>
                             <th>자재 코드</th>
                             <th>자재명</th>
-                            <th>수량</th>
-                            <th>검수 결과</th>
-                            <th>입고일</th>
-                            <th>창고 위치</th>
+                            <th>출고 수량</th>
+                            <th>출고 요청일</th>
+                            <th>출고 완료일</th>
+                            <th>요청 부서</th>
+                            <th>출고 상태</th>
+                            <th>수정</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>IPGO-20250402</td>
+                            <td>DELI-001</td>
                             <td>BA-20250401</td>
-                            <td>SAMSON</td>
-                            <td>MATB3MAT001</td>
-                            <td>타이어-17인치 메탈</td>
-                            <td>500</td>
-                            <td>불량</td>
-                            <td>2024-04-15</td>
-                            <td>A-2</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>SDX-0402</td>
-                            <td>ZS-20250401</td>
-                            <td>카인드몰</td>
-                            <td>AAA-1201</td>
                             <td>고품질 안장(BLACK-S)</td>
-                            <td>250</td>
-                            <td>불량</td>
+                            <td>200</td>
                             <td>2024-04-15</td>
-                            <td>A-2</td>
+                            <td>2024-04-16</td>
+                            <td>구매부서</td>
+                            <td>대기</td>
+                            <td>
+                                <button type="button" class="icon-button" id="openPurchaseModal" title="출고 정보 수정">
+                                    <i class="bi bi-pencil fs-6"></i>
+                                </button>
+                            </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>CHEK-20250402</td>
-                            <td>PLAN-20250401</td>
-                            <td>해당제철</td>
-                            <td>TITLE001</td>
+                            <td>DELI-002</td>
+                            <td>CZ-20250217</td>
                             <td>경량 메탈 프레임(실버)</td>
-                            <td>300</td>
-                            <td>통과</td>
-                            <td>2024-04-15</td>
-                            <td>A-2</td>
+                            <td>100</td>
+                            <td>2024-04-23</td>
+                            <td>2024-04-23</td>
+                            <td>구매부서</td>
+                            <td>대기</td>
+                            <td>
+                                <button type="button" class="icon-button" title="출고 정보 수정">
+                                    <i class="bi bi-pencil fs-6"></i>
+                                </button>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -166,6 +144,44 @@
                             선택 항목 삭제
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="purchaseOrderModalLabel">출고 정보 수정</h5>&nbsp;&nbsp;
+                    <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="purchaseOrderForm">
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <label class="form-label"><span class="text-danger">*</span> 출고 수량</label>
+                                <input type="text" id="deliveryQuantity" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label"><span class="text-danger">*</span> 출고 일자</label>
+                                <input type="text" id="deliveryDate" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label"><span class="text-danger">*</span> 출고 상태</label>
+                                <input type="text" id="deliveryState" class="form-control form-control-sm" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label"><span class="text-danger">*</span> 출고 담당자</label>
+                                <input type="date" id="deliveryEmp" class="form-control form-control-sm" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary btn-sm">수정</button>
                 </div>
             </div>
         </div>
@@ -182,15 +198,14 @@
                         <table class="table table-sm table-bordered table-hover align-middle fs-6">
                             <thead class="table-light small text-center">
                             <tr>
-                                <th>입고 코드</th>
-                                <th>발주 코드</th>
-                                <th>공급 업체</th>
+                                <th>출고 코드</th>
                                 <th>자재 코드</th>
                                 <th>자재명</th>
-                                <th>수량</th>
-                                <th>검수 결과</th>
-                                <th>입고일</th>
-                                <th>창고 위치</th>
+                                <th>출고 수량</th>
+                                <th>출고 요청일</th>
+                                <th>출고 완료일</th>
+                                <th>요청 부서</th>
+                                <th>출고 상태</th>
                             </tr>
                             </thead>
                             <tbody id="deleteTableBody">
@@ -207,6 +222,6 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/material/recepitList.js}"></script>
+    <script th:src="@{/js/material/deliveryList.js}"></script>
 </div>
 </body>

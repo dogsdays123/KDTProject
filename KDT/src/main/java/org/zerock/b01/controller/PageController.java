@@ -97,4 +97,10 @@ public class PageController {
         }
         return phoneNumber;  // 예외적인 경우 그대로 반환
     }
+
+    // 관리자 가입 승인 전 메인 페이지
+    @GetMapping("/beforeApproval")
+    public void beforeApproval() {
+        log.info ("layout page test...");
+    }
 }

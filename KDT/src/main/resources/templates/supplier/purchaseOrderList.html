@@ -20,7 +20,7 @@
       <form>
         <div class="row g-2 align-items-end">
           <div class="col-md-2">
-            <label for="orderCode" class="form-label small">발주코드</label>
+            <label for="orderCode" class="form-label small">발주 코드</label>
             <select class="form-select form-select-sm" id="orderCode" title="발주코드">
               <option selected>전체</option>
               <option value="-">-</option>
@@ -38,11 +38,11 @@
             </select>
           </div>
           <div class="col-md-2">
-            <label for="orderDate" class="form-label small">납기일자</label>
+            <label for="orderDate" class="form-label small">납기일</label>
             <input type="date" class="form-control form-control-sm" id="orderDate" title="납기일">
           </div>
           <div class="col-md-2">
-            <label for="orderStatus" class="form-label small">거래상태</label>
+            <label for="orderStatus" class="form-label small">거래 상태</label>
             <select class="form-select form-select-sm" id="orderStatus" title="거래상태">
               <option selected>전체</option>
               <option value="-">발주확인</option>
@@ -51,15 +51,16 @@
             </select>
           </div>
           <div class="col-md-1">
-            <label for="status" class="form-label small">입고여부</label>
+            <label for="status" class="form-label small">입고 여부</label>
             <select class="form-select form-select-sm" id="status" title="상태">
               <option selected>전체</option>
               <option value="-">납입완료</option>
               <option value="-">-</option>
             </select>
           </div>
-          <div class="col-md-1 d-flex align-items-end">
-            <button type="button" class="btn btn-dark btn-sm w-100" title="필터 적용">적용</button>
+          <div class="col-md-2 d-flex align-items-end gap-2">
+            <button type="button" id="filterBtn" class="btn btn-dark btn-sm w-100">적용</button>
+            <button type="button" id="filterResetBtn" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
           </div>
         </div>
       </form>
@@ -76,7 +77,7 @@
       </form>
     </div>
     <div class="container" style="max-width: 1600px; margin-left: 0;">
-      <div class="d-flex justify-content-end mb-2" style="margin-right: 15px">
+      <div class="d-flex justify-content-end mb-2">
         <form>
           <div class="col-auto">
             <select class="form-select form-select-sm" title="정렬 갯수 필터">
@@ -94,14 +95,14 @@
             <thead class="table-light small text-center">
             <tr>
               <th><input type="checkbox" id="selectAll"></th>
-              <th>발주코드</th>
+              <th>발주 코드</th>
               <th>자재명</th>
-              <th>발주수량</th>
+              <th>발주 수량</th>
               <th>단가</th>
-              <th>총금액</th>
+              <th>총 금액</th>
               <th>납기일</th>
-              <th>거래상태</th>
-              <th>입고여부</th>
+              <th>거래 상태</th>
+              <th>입고 여부</th>
               <th>발주서</th>
               <th hidden="hidden">가로</th>
               <th hidden="hidden">깊이</th>
@@ -119,7 +120,12 @@
               <td>2025-04-30</td>
               <td>발주 확인됨</td>
               <td>납입 완료</td>
-              <td><button class="btn btn-sm btn-success confirm-btn" data-id="BALJU001">상세 보기</button></td>
+              <td>
+                <div class="icon-button tooltip-wrap-top" style="cursor: pointer">
+                  <i class="bi bi-search"></i>
+                  <span class="tooltip-text-top">발주서 상세보기</span>
+                </div>
+              </td>
               <td hidden="hidden">5</td>
               <td hidden="hidden">6</td>
               <td hidden="hidden">7.5</td>
@@ -129,12 +135,17 @@
               <td>GABOZA112</td>
               <td>페달A</td>
               <td>220</td>
-              <td class="unitPrice">5780</td>
-              <td class="totalPrice">1271600</td>
+              <td>5780</td>
+              <td>1271600</td>
               <td>2025-05-01</td>
               <td>확인전</td>
               <td>진행중</td>
-              <td><button class="btn btn-sm btn-success confirm-btn" data-id="BALJU001">상세 보기</button></td>
+              <td>
+                <div class="icon-button tooltip-wrap-top" style="cursor: pointer">
+                  <i class="bi bi-search"></i>
+                  <span class="tooltip-text-top">거래 명세서 상세보기</span>
+                </div>
+              </td>
               <td hidden="hidden">5</td>
               <td hidden="hidden">6</td>
               <td hidden="hidden">7.5</td>
@@ -143,9 +154,16 @@
           </table>
         </div>
         <div class="text-start">
-          <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
-            선택 항목 납입 처리
-          </button>
+          <div class="text-start">
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
+                선택 항목 납입 처리
+              </button>
+              <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
+                선택 항목 삭제
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -155,7 +173,6 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="purchaseOrderModalLabel">납입 처리 및 거래명세서 발급</h5>&nbsp;&nbsp;
-          <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -170,7 +187,7 @@
                 실납입 수량 : <strong><span id="productQuantityInput"></span></strong>&nbsp;&nbsp;
               </p>
               <p class="text-muted small">
-                납입 처리 시 선택된 발주 항목의 상태가 '납입 완료'로 변경되며, 거래명세서가 자동으로 발급됩니다.
+                납입 처리 시 선택된 발주 항목의 상태가 <span class="text-danger">'납입 완료'</span>로 변경되며, 거래명세서가 자동으로 발급됩니다.
               </p>
             </div>
 
@@ -181,7 +198,40 @@
           <button type="button" class="btn btn-outline-secondary btn-sm" onclick="previewPurchaseOrderPDF()">
             미리보기
           </button>
-          <button type="button" class="btn btn-primary btn-sm" onclick="generatePurchaseOrderPDF()">PDF 발행 및 메일 전송</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="generatePurchaseOrderPDF()">PDF 발행 및 납입처리</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="purchaseOrderModalDelLabel">발주서 정보 삭제</h5>&nbsp;&nbsp;
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modal-lg">
+          <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+            <table class="table table-sm table-bordered table-hover align-middle fs-6">
+              <thead class="table-light small text-center">
+              <tr>
+                <th>발주 코드</th>
+                <th>자재명</th>
+                <th>발주 수량</th>
+                <th>단가</th>
+                <th>총 금액</th>
+                <th>납기일</th>
+              </tr>
+              </thead>
+              <tbody id="deleteTableBody">
+              <!-- JS로 선택된 사원 목록 추가 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-danger btn-sm">삭제</button>
         </div>
       </div>
     </div>
