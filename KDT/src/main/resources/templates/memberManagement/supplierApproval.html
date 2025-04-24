@@ -78,26 +78,16 @@
                             <th>상태</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
+                        <tbody id="userWaitTable" th:with="link = ${pageRequestDTO.getLink()}">
+                        <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>바이크코리아</td>
-                            <td>123-44-98754</td>
-                            <td>제조업</td>
-                            <td>홍사월</td>
-                            <td>02-123-9988</td>
-                            <td>2021-03-14</td>
-                            <td>대기</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>카인드몰</td>
-                            <td>203-12-44323</td>
-                            <td>도소매업</td>
-                            <td>최진희</td>
-                            <td>031-343-1126</td>
-                            <td>2023-07-15</td>
-                            <td>대기</td>
+                            <td th:text="${dto.getSName()}"></td>
+                            <td th:text="${dto.getSRegNum()}"></td>
+                            <td th:text="${dto.getSBusinessType()}"></td>
+                            <td th:text="${dto.getSManager()}"></td>
+                            <td th:text="${dto.getSPhone()}"></td>
+                            <td th:text="${#temporals.format(dto.getRegDate(), 'yyyy-MM-dd')}"></td>
+                            <td th:text="${dto.getSStatus()}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -185,4 +175,5 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script th:src="@{/js/memberManagement/supplierApproval.js}"></script>
     </div>
+</div>
 </body>

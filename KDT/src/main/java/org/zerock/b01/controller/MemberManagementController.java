@@ -12,10 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.zerock.b01.dto.PageRequestDTO;
-import org.zerock.b01.dto.PageResponseDTO;
-import org.zerock.b01.dto.UserByAllDTO;
-import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.ProductService;
@@ -79,5 +76,18 @@ public class MemberManagementController {
     }
 
     @GetMapping("/supplierApproval")
-    public void supplierApproval() { log.info("##supplierApproval PAGE GET....##"); }
+    public void supplierApproval(PageRequestDTO pageRequestDTO, Model model) {
+        pageRequestDTO.setSize(10);
+
+        PageResponseDTO<SupplierAllDTO> responseDTO =
+                pageService.supplierWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        model.addAttribute("responseDTO", responseDTO);
+
+        log.info("^&^&" + responseDTO);
+    }
 }

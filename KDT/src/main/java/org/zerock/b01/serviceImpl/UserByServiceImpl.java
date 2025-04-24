@@ -64,7 +64,7 @@ public class UserByServiceImpl implements UserByService {
 
         userByRepository.save(userBy);
 
-        if(supplierDTO !=null && userByRepository.findById(userBy.getUId()).isPresent()){
+        if((supplierDTO.getSName() != null && !supplierDTO.getSName().isEmpty()) && userByRepository.findById(userBy.getUId()).isPresent()){
             Supplier supplier = modelMapper.map(supplierDTO, Supplier.class);
             supplier.setUserBy(userBy);
             log.info("-^-^-" + supplier.getUserBy());

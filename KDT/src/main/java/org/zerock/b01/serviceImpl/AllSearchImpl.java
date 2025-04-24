@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.PlanListAllDTO;
 import org.zerock.b01.dto.ProductListAllDTO;
+import org.zerock.b01.dto.SupplierAllDTO;
 import org.zerock.b01.dto.UserByAllDTO;
 import org.zerock.b01.service.AllSearch;
 
@@ -158,7 +159,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     @Override
     public Page<UserByAllDTO> userBySearchWithAll(String[] types, String keyword, String uName,
                                                   String userJob, String userRank, LocalDateTime modDate,
-                                                  String status, String uId, Pageable pageable){
+                                                  String status, String uId,  Pageable pageable){
         QUserBy userBy = QUserBy.userBy;
         JPQLQuery<UserBy> query = from(userBy);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -171,11 +172,16 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(userBy.userJob.contains(userJob));
         }
 
-        // userRank가 null 또는 ""인 유저만 남기기
         booleanBuilder.and(
                 userBy.userRank.isNull()
-                        .or(userBy.userRank.eq(""))
+                        .or(userBy.userRank.isEmpty())
         );
+
+        booleanBuilder.and(
+                userBy.userJob.isNotNull()
+                        .and(userBy.userJob.ne("협력회사"))
+        );
+
 
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
@@ -196,6 +202,51 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         // 전체 개수
         // 카운트용 별도 쿼리 생성
         JPQLQuery<UserBy> countQuery = from(userBy).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public Page<SupplierAllDTO> supplierSearchWithAll(String[] types, String keyword, String sName, String sRegNum, String sBusinessType, LocalDateTime sRegDate, String sStatus, Pageable pageable){
+        QSupplier supplier = QSupplier.supplier;
+        JPQLQuery<Supplier> query = from(supplier);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (sName != null && !sName.isEmpty()) {
+            booleanBuilder.and(supplier.sName.contains(sName));
+        }
+
+        if (sRegNum != null && !sRegNum.isEmpty()) {
+            booleanBuilder.and(supplier.sRegNum.contains(sRegNum));
+        }
+
+        booleanBuilder.and(
+                supplier.sStatus.isNull()
+                        .or(supplier.sStatus.isEmpty())
+        );
+
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        List<Supplier> resultList = query.fetch();
+
+        List<SupplierAllDTO> dtoList = resultList.stream()
+                .map(sup -> SupplierAllDTO.builder()
+                        .sName(sup.getSName())
+                        .sRegNum(sup.getSRegNum())
+                        .sBusinessType(sup.getSBusinessType())
+                        .sManager(sup.getSManager())
+                        .sPhone(sup.getSPhone())
+                        .regDate(sup.getRegDate())
+                        .sStatus(sStatus)
+                        .build())
+                .collect(Collectors.toList());
+
+        // 전체 개수
+        // 카운트용 별도 쿼리 생성
+        JPQLQuery<Supplier> countQuery = from(supplier).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

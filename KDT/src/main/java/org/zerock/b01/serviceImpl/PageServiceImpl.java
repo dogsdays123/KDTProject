@@ -81,26 +81,54 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public PageResponseDTO<UserByAllDTO> userByWithAll(PageRequestDTO pageRequestDTO){
-        log.info(">>>> 요청된 페이지 번호: {}", pageRequestDTO.getPpStart());
+        log.info(">>>> user 페이지 번호: {}", pageRequestDTO.getPage());
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
         String uName = pageRequestDTO.getUName();
         String userJob = pageRequestDTO.getUserJob();
         String userRank = pageRequestDTO.getUserRank();
-        LocalDateTime modDate = pageRequestDTO.getModDate();
-        String status = "";
+        LocalDateTime regDate = pageRequestDTO.getURegDate();
+        String uStatus = "";
         String uId = pageRequestDTO.getUId();
         if(userRank == null){
-            status = "대기중";
+            uStatus = "대기중";
         } else {
-            status = "완료";
+            uStatus = "완료";
         }
 
         Pageable pageable = pageRequestDTO.getPageable("uId");
 
-        Page<UserByAllDTO> result = productRepository.userBySearchWithAll(types, keyword, uName, userJob, userRank, modDate, status, uId, pageable);
+        Page<UserByAllDTO> result = productRepository.userBySearchWithAll(types, keyword, uName, userJob, userRank, regDate, uStatus, uId, pageable);
 
         return PageResponseDTO.<UserByAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<SupplierAllDTO> supplierWithAll(PageRequestDTO pageRequestDTO){
+        log.info(">>>> supplier 페이지 번호: {}", pageRequestDTO.getPage());
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String sName = pageRequestDTO.getUName();
+        String sRegNum = pageRequestDTO.getUserJob();
+        String sBusinessType = pageRequestDTO.getUserRank();
+        LocalDateTime sRegDate = pageRequestDTO.getSRegDate();
+        String sStatus = "";
+        String uId = pageRequestDTO.getUId();
+        if(pageRequestDTO.getSStatus() == null){
+            sStatus = "대기중";
+        } else {
+            sStatus = "완료";
+        }
+
+        Pageable pageable = pageRequestDTO.getPageable("uId");
+
+        Page<SupplierAllDTO> result = productRepository.supplierSearchWithAll(types, keyword, sName, sRegNum, sBusinessType, sRegDate, sStatus, pageable);
+
+        return PageResponseDTO.<SupplierAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
