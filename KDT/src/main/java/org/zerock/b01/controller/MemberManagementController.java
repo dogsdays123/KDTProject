@@ -9,10 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -55,11 +52,15 @@ public class MemberManagementController {
     }
 
     @GetMapping("/employeeList")
-    public void employeeList() { log.info("##EMPLOYEE LIST PAGE GET....##"); }
+    public void employeeList() {
+        log.info("##EMPLOYEE LIST PAGE GET....##");
+    }
 
 
     @GetMapping("/supplierList")
-    public void supplierList() { log.info("##supplierList LIST PAGE GET....##"); }
+    public void supplierList() {
+        log.info("##supplierList LIST PAGE GET....##");
+    }
 
     @GetMapping("/employeeApproval")
     public void eaList(PageRequestDTO pageRequestDTO, Model model) {
@@ -80,8 +81,22 @@ public class MemberManagementController {
         log.info("^&^&" + responseDTO);
     }
 
-    @GetMapping("/roleSet")
-    public void roleSet() { log.info("##roleSet PAGE GET....##"); }
+    @PostMapping("/employeeApprovalAgree")
+    public String employeeApprovalAgree(@RequestParam("uId") List<String> uId, @RequestParam("userRank") List<String> userRank,
+                                        Model model, RedirectAttributes redirectAttributes,
+                                        HttpServletRequest request) throws IOException {
+
+        log.info("BBBBB " + uId);
+        for (int i = 0; i < uId.size(); i++) {
+            String id = uId.get(i);
+            String ur = userRank.get(i);
+
+            userByService.agreeEmployee(id, ur);
+        }
+
+        return "redirect:/memberManagement/employeeApproval";
+    }
+
 
     @GetMapping("/supplierApproval")
     public void supplierApproval(PageRequestDTO pageRequestDTO, Model model) {
@@ -99,17 +114,20 @@ public class MemberManagementController {
         log.info("^&^& " + responseDTO);
     }
 
-   @PostMapping("/supplierApprovalAgree")
-    public void supplierApprovalAgree(){}
-//                                        Model model, RedirectAttributes redirectAttributes,
-//                                        HttpServletRequest request) throws IOException {
-//
-//        List<ProductionPlanDTO> productionPlanDTOs = form.getPlans();
-//
-//        // pCodes와 pNames 배열을 순회하여 Product 객체를 만들어 products 리스트에 추가
-//        for (ProductionPlanDTO productionPlanDTO : productionPlanDTOs) {
-//            productionPlanService.registerProductionPlan(productionPlanDTO, productionPlanDTO.getUId());
-//        }
-//
-//        return "redirect:/productionPlan/ppRegister";
+    @PostMapping("/supplierApprovalAgree")
+    public String supplierApprovalAgree(@RequestParam("uId") List<String> uId,
+                                        Model model, RedirectAttributes redirectAttributes,
+                                        HttpServletRequest request) throws IOException {
+
+        for (String uid : uId){
+            userByService.agreeSupplier(uid);
+        }
+
+        return "redirect:/memberManagement/supplierApproval";
     }
+
+    @GetMapping("/roleSet")
+    public void roleSet() {
+        log.info("##roleSet PAGE GET....##");
+    }
+}

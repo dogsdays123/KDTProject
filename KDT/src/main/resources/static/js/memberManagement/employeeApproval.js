@@ -24,23 +24,20 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
     selectedEmpList.innerHTML = '';
 
     selectedRows.forEach((row, index) => {
-
         const tdList = row.querySelectorAll('td');
 
         const uId = tdList[1].textContent.trim();
         const uName = tdList[2].textContent.trim();
         const department = tdList[3].textContent.trim();
-        const position = tdList[4].querySelector('select')?.value || '';
+        const userRank = tdList[4].querySelector('select') ? tdList[4].querySelector('select').value : '';
         const regDate = tdList[5].textContent.trim();
         const status = tdList[6].textContent.trim();
 
         const fields = {
-            [`users[${index}].uId`]: uId,
-            [`users[${index}].uName`]: uName,
-            [`users[${index}].department`]: department,
-            [`users[${index}].position`]: position,
-            [`users[${index}].regDate`]: regDate,
-            [`users[${index}].status`]: status
+            [`uId`]: uId,
+            [`status`]: status,
+            [`userRank`]: userRank
+            //[`users[${index}].status`]: status
         };
 
         for (const [name, value] of Object.entries(fields)) {
@@ -58,7 +55,7 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
             <td>${uId}</td>
             <td>${uName}</td>
             <td>${department}</td>
-            <td>${position}</td>
+            <td>${userRank}</td>
             <td>${regDate}</td>
             <td>${status}</td>
         `;

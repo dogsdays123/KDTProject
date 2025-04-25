@@ -19,6 +19,7 @@ import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.UserByService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +38,20 @@ public class UserByServiceImpl implements UserByService {
     @Override
     public void registerAdmin(UserBy user){
         userByRepository.save(user).getUId();
+    }
+
+    @Override
+    public void agreeEmployee(String uId, String userRank){
+        UserBy user = userByRepository.findById(uId).orElseThrow();
+        String status = "승인";
+        user.changeRank(userRank, status);
+    }
+
+    @Override
+    public void agreeSupplier(String uId){
+        Supplier sup = supplierRepository.findSupplierByUser(userByRepository.findById(uId).orElseThrow());
+        String status = "승인";
+        sup.changeStatus(status);
     }
 
     @Override
@@ -59,6 +74,7 @@ public class UserByServiceImpl implements UserByService {
             throw new MidExistException();
         }
 
+        userByDTO.setStatus("대기중");
         UserBy userBy = modelMapper.map(userByDTO, UserBy.class);
         userBy.changeUPassword(passwordEncoder.encode(userByDTO.getUPassword()));
         userBy.addRole(MemberRole.USER);
@@ -69,7 +85,7 @@ public class UserByServiceImpl implements UserByService {
 
         userByRepository.save(userBy);
 
-        if((supplierDTO.getSName() != null && !supplierDTO.getSName().isEmpty()) && userByRepository.findById(userBy.getUId()).isPresent()){
+        if(userBy.getUserType().equals("other") && userByRepository.findById(userBy.getUId()).isPresent()){
             Supplier supplier = modelMapper.map(supplierDTO, Supplier.class);
             supplier.setUserBy(userBy);
             log.info("-^-^-" + supplier.getUserBy());

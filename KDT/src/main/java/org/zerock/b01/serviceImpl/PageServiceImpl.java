@@ -88,17 +88,12 @@ public class PageServiceImpl implements PageService {
         String userJob = pageRequestDTO.getUserJob();
         String userRank = pageRequestDTO.getUserRank();
         LocalDateTime regDate = pageRequestDTO.getURegDate();
-        String uStatus = "";
+        String status = pageRequestDTO.getStatus();
         String uId = pageRequestDTO.getUId();
-        if(userRank == null){
-            uStatus = "대기중";
-        } else {
-            uStatus = "완료";
-        }
 
         Pageable pageable = pageRequestDTO.getPageable("uId");
 
-        Page<UserByAllDTO> result = productRepository.userBySearchWithAll(types, keyword, uName, userJob, userRank, regDate, uStatus, uId, pageable);
+        Page<UserByAllDTO> result = productRepository.userBySearchWithAll(types, keyword, uName, userJob, userRank, regDate, status, uId, pageable);
 
         return PageResponseDTO.<UserByAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

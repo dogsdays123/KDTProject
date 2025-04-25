@@ -117,6 +117,23 @@
                         </div>
                     </div>
                 </div>
+                <div class="d-flex justify-content-center">
+                    <ul class="pagination flex-wrap">
+                        <li class="page-item" th:if="${responseDTO.prev}">
+                            <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                        </li>
+
+                        <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                            </li>
+                        </th:block>
+
+                        <li class="page-item" th:if="${responseDTO.next}">
+                            <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -125,7 +142,7 @@
     <div class="modal fade" id="AgreeModal" tabindex="-1" aria-labelledby="AgreeModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <form>
+            <form method="post" th:action="@{/memberManagement/employeeApprovalAgree}">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="batchApproveLabel">사원 가입 승인</h5>
@@ -153,7 +170,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-primary btn-sm" id="btnBatchApprove">승인</button>
+                    <button type="submit" class="btn btn-primary btn-sm">승인</button>
                 </div>
             </div>
             </form>
@@ -201,4 +218,31 @@
     <!--    모달-->
 </div>
 </body>
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if (target.tagName !== 'A') {
+            return
+        }
+
+        const num = target.getAttribute("data-num")
+
+        const formObj = document.querySelector("form")
+
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+        formObj.submit()
+    }, false)
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location = '/product/goodsList'
+    }, false)
+</script>
 
