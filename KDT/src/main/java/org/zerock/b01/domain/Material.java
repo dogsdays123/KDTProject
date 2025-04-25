@@ -12,29 +12,29 @@ import lombok.*;
 public class Material extends BaseEntity {
 
     @Id
-    private String mCode;
+    private String mCode; // 자재코드
 
-    private String mType;
+    private String mType; // 자재 유형
 
-    private String mName;
+    private String mName; // 자재명
 
-    private String mUnitPrice;
+    private String mUnitPrice; // 단위당 가격
 
-    private String mMinNum;
+    private String mMinNum; // 최소 공급 수량
 
-    private String mImageUrl;
+    private String mImageUrl; // 이미지
 
-    private Float mDepth;
+    private Float mDepth; // 높이
 
-    private Float mHeight;
+    private Float mHeight; // 세로
 
-    private Float mWidth;
+    private Float mWidth; // 가로
 
-    private Float mWeight;
+    private Float mWeight; // 무게
 
-    private String mLeadTime;
+    private String mLeadTime; // 조달시간
 
-    private String mComponentType;
+    private String mComponentType; //부품종류
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uId", nullable = false)
