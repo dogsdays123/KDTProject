@@ -1,10 +1,12 @@
 package org.zerock.b01.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,4 +21,11 @@ public class UserByAllDTO {
     private String userRank;
     private LocalDateTime modDate;
     private String status;
+
+    private String uPassword;
+    private String uAddress;
+    private String userType;
+    private String uEmail;
+    private String uPhone;
+    private LocalDate uBirthDay;
 }

@@ -38,7 +38,7 @@ public class PageRequestDTO {
     //유저 랭크에 따라 신청상태가 변경됨
     private String userRank;
     private LocalDateTime uRegDate;
-    private String uStatus;
+    private String status;
     private String uId;
 
     //협력업체

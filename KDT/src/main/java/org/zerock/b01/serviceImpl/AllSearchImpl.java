@@ -1,6 +1,7 @@
 package org.zerock.b01.serviceImpl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -185,16 +186,20 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(userBy.userJob.contains(userJob));
         }
 
-        booleanBuilder.and(
-                userBy.userRank.isNull()
-                        .or(userBy.userRank.isEmpty())
-        );
+        BooleanExpression rankCondition = userBy.userRank.isNull()
+                .or(userBy.userRank.isEmpty());
 
-        booleanBuilder.and(
-                userBy.userJob.isNotNull()
-                        .and(userBy.userJob.ne("협력회사"))
-        );
+        BooleanExpression jobCondition = userBy.userJob.isNotNull()
+                .and(userBy.userType.ne("other"));
 
+        BooleanExpression statusCondition =
+                userBy.status.eq("대기중")
+                        .or(userBy.status.isNull());
+
+        // 전부 and로 묶기
+        booleanBuilder.and(rankCondition)
+                .and(jobCondition)
+                .and(statusCondition);
 
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
@@ -207,7 +212,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .userJob(user.getUserJob())
                         .userRank(user.getUserRank())
                         .modDate(user.getModDate())
-                        .status(status)
+                        .status(user.getStatus())
                         .uId(user.getUId())
                         .build())
                 .collect(Collectors.toList());
@@ -247,6 +252,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
         List<SupplierAllDTO> dtoList = resultList.stream()
                 .map(sup -> SupplierAllDTO.builder()
+                        .uId(sup.getUserBy().getUId())
                         .sName(sup.getSName())
                         .sRegNum(sup.getSRegNum())
                         .sBusinessType(sup.getSBusinessType())

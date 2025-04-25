@@ -48,4 +48,8 @@ public class Supplier extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uId", nullable = false)
     private UserBy userBy;
+
+    public void changeStatus(String status) {
+        this.sStatus = status;
+    }
 }
