@@ -37,7 +37,7 @@ public class PageRequestDTO {
     private String userJob;
     //유저 랭크에 따라 신청상태가 변경됨
     private String userRank;
-    private LocalDateTime uRegDate;
+    private LocalDate uRegDate;
     private String status;
     private String uId;
 
@@ -47,7 +47,7 @@ public class PageRequestDTO {
     private String sBusinessType;
     private String sManager;
     private String sPhone;
-    private LocalDateTime sRegDate;
+    private LocalDate sRegDate;
     private String sStatus;
 
     //product

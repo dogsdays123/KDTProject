@@ -19,36 +19,39 @@
             <form>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label for="deptName" class="form-label small">부서 선택</label>
-                        <select class="form-select form-select-sm" id="deptName" title="부서 선택">
-                            <option selected>전체</option>
-                            <option value="-">생산</option>
-                            <option value="-">구매</option>
-                            <option value="-">자재</option>
-                            <option value="-">관리자</option>
+                        <label for="userJobSelect" class="form-label small">부서 선택</label>
+                        <select class="form-select form-select-sm" id="userJobSelect" name="userJob" title="부서 선택">
+                            <option th:value="${null}" selected>전체</option>
+                            <option value="생산부서">생산부서</option>
+                            <option value="구매부서">구매부서</option>
+                            <option value="자재부서">자재부서</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label for="hireDate" class="form-label small">입사일</label>
-                        <input type="date" class="form-control form-control-sm" id="hireDate">
+                        <label for="userStatusSelect" class="form-label small">승인 상태</label>
+                        <select class="form-select form-select-sm" id="userStatusSelect" name="status" title="부서 선택">
+                            <option th:value="${null}" selected>전체</option>
+                            <option value="승인">승인</option>
+                            <option value="반려">반려</option>
+                        </select>
                     </div>
                     <div class="col-md-2">
-                        <label for="approvalDate" class="form-label small">가입 승인일</label>
-                        <input type="date" class="form-control form-control-sm" id="approvalDate">
+                        <label for="regDateSelect" class="form-label small">회원 가입일</label>
+                        <input type="date" th:value="${pageRequestDTO.uRegDate}" class="form-control form-control-sm"
+                               id="regDateSelect" name="uRegDate">
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
-                        <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
+                        <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
+                        <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화
+                        </button>
                     </div>
                 </div>
-            </form>
-            <!-- 2줄: 검색어 입력 -->
-            <form>
                 <div class="row g-2 mt-2">
                     <div class="col-md-6">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
-                            <input type="text" class="form-control" id="keyword" title="검색어 입력" placeholder="검색어 입력">
+                            <input type="text" class="form-control" id="keyword" name="keyword" title="검색어 입력"
+                                   placeholder="검색어 입력">
                         </div>
                     </div>
                 </div>
@@ -56,13 +59,14 @@
         </div>
         <div class="container" style="max-width: 1600px; margin-left: 0;">
             <div class="d-flex justify-content-end mb-2">
-                <form>
+                <form id="pageSizeForm">
                     <div class="col-auto">
-                        <select class="form-select form-select-sm" title="정렬 갯수 필터">
-                            <option selected>전체</option>
-                            <option value="20">20개씩</option>
-                            <option value="30">30개씩</option>
-                            <option value="50">50개씩</option>
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size"
+                                onchange="this.form.submit()">
+                            <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                            <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                            <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                            <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
                         </select>
                     </div>
                 </form>
@@ -76,56 +80,72 @@
                             <th>사번</th>
                             <th>이름</th>
                             <th>부서</th>
-                            <th>직책</th>
-                            <th>입사일</th>
-                            <th>가입 승인일</th>
-                            <th>상세 정보</th>
+                            <th>역할</th>
+                            <th>신청일</th>
+                            <th>상태</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>1001</td>
-                            <td>박시현</td>
-                            <td>생산부서</td>
-                            <td>대리</td>
-                            <td>2021-03-14</td>
-                            <td>2021-03-15</td>
-                            <td>
-                                <button type="button" class="icon-button"  title="상세 정보 보기">
-                                    <i class="bi bi-person-lines-fill"></i>
-                                </button>
+                        <tbody id="userWaitTable" th:with="link = ${pageRequestDTO.getLink()}">
+                        <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
+                            <td><input type="checkbox" class="selectList" title="해당 행 선택"></td>
+                            <td th:text="${dto.getUId()}"></td>
+                            <td th:text="${dto.getUName()}"></td>
+                            <td style="width: 10rem;">
+                                <select class="form-select form-select-sm" id="department">
+                                    <option th:value="${dto.getUserJob()}" selected>[[${dto.getUserJob()}]]</option>
+                                    <option th:if="${dto.getUserJob() != '생산부서'}" value="생산부서">생산부서</option>
+                                    <option th:if="${dto.getUserJob() != '구매부서'}" value="구매부서">구매부서</option>
+                                    <option th:if="${dto.getUserJob() != '자재부서'}" value="자재부서">자재부서</option>
+                                </select>
                             </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>1002</td>
-                            <td>서승원</td>
-                            <td>구매부서</td>
-                            <td>과장</td>
-                            <td>2019-08-01</td>
-                            <td>2019-08-05</td>
-                            <td>
-                                <button type="button" class="icon-button" title="상세 정보 보기">
-                                    <i class="bi bi-person-lines-fill"></i>
-                                </button>
+                            <td style="width: 10rem;">
+                                <select class="form-select form-select-sm" style="width: 10rem; display: inline-block;">
+                                    <option value="관리자" selected>일반</option>
+                                    <option value="일반">관리자</option>
+                                </select>
+                            </td>
+                            <td th:text="${#temporals.format(dto.getModDate(), 'yyyy-MM-dd')}"></td>
+                            <td style="width: 5rem;">
+                                <select class="form-select form-select-sm" style="width: 5rem; display: inline-block;">
+                                    <option th:value="${dto.getStatus()}" selected>[[${dto.getStatus()}]]</option>
+                                    <option th:if="${dto.getStatus() != '승인'}" value="승인">승인</option>
+                                    <option th:if="${dto.getStatus() != '반려'}" value="반려">반려</option>
+                                </select>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                     <div class="text-start">
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
-                                선택 사원 부서 변경
+                            <button type="button" class="btn btn-primary btn-sm" id="modifyEmployeeModal">
+                                선택 사원 정보 변경
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
-                                선택 사원 삭제
+                            <button type="button" class="btn btn-danger btn-sm" id="removeEmployeeModal">
+                                선택 사원 영구 삭제
                             </button>
                         </div>
                     </div>
                 </div>
+                <div class="d-flex justify-content-center">
+                    <ul class="pagination flex-wrap">
+                        <li class="page-item" th:if="${responseDTO.prev}">
+                            <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                        </li>
+
+                        <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                <a th:class="page-link" th:data-num="${i}">[[${i}]]</a>
+                            </li>
+                        </th:block>
+
+                        <li class="page-item" th:if="${responseDTO.next}">
+                            <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
+
         <div class="modal fade" id="setAuthModal" tabindex="-1" aria-labelledby="setAuthModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -149,98 +169,118 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg" >
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="purchaseOrderModalLabel">사원 상세 정보</h5>&nbsp;&nbsp;
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="max-height: 700px; overflow-y: auto;">
-                    <form id="purchaseOrderForm">
-                        <div class="row g-3 mb-3">
-                            <div class="col-12">
-                                <label class="form-label">사번</label>
-                                <input type="text" id="uNum" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">이름</label>
-                                <input type="text" id="uName" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">부서</label>
-                                <input type="text" id="uJob" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">직책</label>
-                                <input type="text" id="uPosition" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">생년월일</label>
-                                <input type="text" id="uBirthDay" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">전화번호</label>
-                                <input type="text" id="uPhone" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">이메일</label>
-                                <input type="text" id="uEmail" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">주소</label>
-                                <input type="text" id="uAddress" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">입사일</label>
-                                <input type="date" id="uHireDate" class="form-control form-control-sm" required>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">가입 승인일</label>
-                                <input type="date" id="uAgreeDate" class="form-control form-control-sm" required>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+
+    <!--가입 승인 모달-->
+    <div class="modal fade" id="ModifyModal" tabindex="-1" aria-labelledby="modifyEmployeeLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="purchaseOrderModalDelLabel">사원 정보 삭제</h5>&nbsp;&nbsp;
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                        <table class="table table-sm table-bordered table-hover align-middle fs-6">
-                            <thead class="table-light small text-center">
-                            <tr>
-                                <th>사번</th>
-                                <th>이름</th>
-                                <th>부서</th>
-                                <th>직책</th>
-                                <th>신청일</th>
-                            </tr>
-                            </thead>
-                            <tbody class="selectedEmpList">
-                            <!-- JS로 선택된 사원 목록 추가 -->
-                            </tbody>
-                        </table>
+            <form method="post" th:action="@{/memberManagement/employeeApprovalAgree}">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="batchApproveLabel">사원 가입 승인</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                <thead class="table-light small text-center">
+                                <tr>
+                                    <th>사번</th>
+                                    <th>이름</th>
+                                    <th>부서</th>
+                                    <th>직책</th>
+                                    <th>신청일</th>
+                                </tr>
+                                </thead>
+                                <tbody class="selectedEmpListMo">
+                                <!-- JS로 선택된 사원 목록 추가 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-primary btn-sm">승인</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-danger btn-sm" id="btnBatchReject">삭제</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/memberManagement/employeeList.js}"></script>
+    <!--    모달-->
+
+    <!--가입 반려 모달-->
+    <div class="modal fade" id="RemoveModal" tabindex="-1" aria-labelledby="removeEmployeeLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <form method="post" th:action="@{/memberManagement/employeeApprovalDisAgree}">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="batchRejectLabel">사원 가입 반려</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                <thead class="table-light small text-center">
+                                <tr>
+                                    <th>사번</th>
+                                    <th>이름</th>
+                                    <th>부서</th>
+                                    <th>직책</th>
+                                    <th>신청일</th>
+                                </tr>
+                                </thead>
+                                <tbody class="selectedEmpListRm">
+                                <!-- JS로 선택된 사원 목록 추가 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="btnBatchReject">반려</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/memberManagement/employeeList.js}"></script>
+        <!--    모달-->
+    </div>
 </div>
 </body>
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = e.target;
+        if (target.tagName !== 'A') {
+            return;
+        }
+
+        const num = target.getAttribute("data-num");
+
+        // 검색 조건을 URL에서 가져오기
+        const searchParams = new URLSearchParams(window.location.search);
+
+        // 페이지 번호를 변경
+        searchParams.set('page', num);
+
+        // 페이지 전환을 위한 새로운 URL 생성
+        const newUrl = window.location.pathname + '?' + searchParams.toString();
+
+        // 페이지 리디렉션
+        window.location.href = newUrl;
+    }, false);
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location = '/memberManagement/employeeList'
+    }, false)
+</script>

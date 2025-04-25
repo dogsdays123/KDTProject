@@ -19,35 +19,28 @@
                 </div>
             </div>
 
-            <form>
+            <form id="searchForm">
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label for="deptName" class="form-label small">업태 선택</label>
-                        <select class="form-select form-select-sm" id="deptName" title="부서 선택">
-                            <option selected>전체</option>
-                            <option value="-">생산</option>
-                            <option value="-">구매</option>
-                            <option value="-">자재</option>
-                            <option value="-">관리자</option>
+                        <label for="sBusinessType" class="form-label small">업태 선택</label>
+                        <select class="form-select form-select-sm" id="sBusinessType" name="sBusinessType">
+                            <option selected>선택</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label for="hireDate" class="form-label small">신청일</label>
-                        <input type="date" class="form-control form-control-sm" id="hireDate">
+                        <label for="regDateSelect" class="form-label small">신청일</label>
+                        <input type="date" th:value="${pageRequestDTO.sRegDate}" class="form-control form-control-sm" id="regDateSelect" name="sRegDate">
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                        <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
                         <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                     </div>
                 </div>
-            </form>
-            <!-- 2줄: 검색어 입력 -->
-            <form>
                 <div class="row g-2 mt-2">
                     <div class="col-md-6">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
-                            <input type="text" class="form-control" id="keyword" title="검색어 입력" placeholder="검색어 입력">
+                            <input type="text" class="form-control" id="keyword" name="keyword" title="검색어 입력" placeholder="검색어 입력">
                         </div>
                     </div>
                 </div>
@@ -55,13 +48,13 @@
         </div>
         <div class="container" style="max-width: 1600px; margin-left: 0;">
             <div class="d-flex justify-content-end mb-2">
-                <form>
+                <form id="pageSizeForm">
                     <div class="col-auto">
-                        <select class="form-select form-select-sm" title="정렬 갯수 필터">
-                            <option selected>전체</option>
-                            <option value="20">20개씩</option>
-                            <option value="30">30개씩</option>
-                            <option value="50">50개씩</option>
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size" onchange="this.form.submit()">
+                            <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                            <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                            <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                            <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
                         </select>
                     </div>
                 </form>
@@ -153,7 +146,7 @@
                                     <th>상태</th>
                                 </tr>
                                 </thead>
-                                <tbody class="selectedSupList">
+                                <tbody class="selectedSupListArg">
                                 <!-- JS로 선택된 사원 목록 추가 -->
                                 </tbody>
                             </table>
@@ -170,41 +163,41 @@
     </div>
     <!--    모달-->
 
-    <!--    모달-->
+    <!--가입 반려 모달-->
     <div class="modal fade" id="DisAgreeModal" tabindex="-1" aria-labelledby="DisAgreeModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="batchRejectLabel">사원 가입 반려</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                        <table class="table table-sm table-bordered table-hover align-middle fs-6">
-                            <thead class="table-light small text-center">
-                            <tr>
-                                <th>상호</th>
-                                <th>사업자등록번호</th>
-                                <th>업태</th>
-                                <th>매니저</th>
-                                <th>전화번호</th>
-                                <th>신청일</th>
-                                <th>상태</th>
-                            </tr>
-                            </thead>
-                            <tbody class="selectedEmpList">
-                            <!-- JS로 선택된 사원 목록 추가 -->
-                            </tbody>
-                        </table>
+            <form method="post" th:action="@{/memberManagement/supplierApprovalDisAgree}">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="batchRejectLabel">사원 가입 반려</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                <thead class="table-light small text-center">
+                                <tr>
+                                    <th>사번</th>
+                                    <th>이름</th>
+                                    <th>부서</th>
+                                    <th>직책</th>
+                                    <th>신청일</th>
+                                </tr>
+                                </thead>
+                                <tbody class="selectedEmpListDis">
+                                <!-- JS로 선택된 사원 목록 추가 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="btnBatchReject">반려</button>
                     </div>
                 </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-danger btn-sm" id="btnBatchReject">반려</button>
-                </div>
-            </div>
+            </form>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script th:src="@{/js/memberManagement/supplierApproval.js}"></script>
@@ -214,28 +207,33 @@
 </body>
 <script layout:fragment="script" th:inline="javascript">
     document.querySelector(".pagination").addEventListener("click", function (e) {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
 
-        const target = e.target
-
+        const target = e.target;
         if (target.tagName !== 'A') {
-            return
+            return;
         }
 
-        const num = target.getAttribute("data-num")
+        const num = target.getAttribute("data-num");
 
-        const formObj = document.querySelector("form")
+        // 검색 조건을 URL에서 가져오기
+        const searchParams = new URLSearchParams(window.location.search);
 
-        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+        // 페이지 번호를 변경
+        searchParams.set('page', num);
 
-        formObj.submit()
-    }, false)
+        // 페이지 전환을 위한 새로운 URL 생성
+        const newUrl = window.location.pathname + '?' + searchParams.toString();
+
+        // 페이지 리디렉션
+        window.location.href = newUrl;
+    }, false);
 
     document.querySelector(".clearBtn").addEventListener("click", function (e) {
         e.preventDefault()
         e.stopPropagation()
 
-        self.location = '/product/goodsList'
+        self.location = '/memberManagement/supplierApproval'
     }, false)
 </script>

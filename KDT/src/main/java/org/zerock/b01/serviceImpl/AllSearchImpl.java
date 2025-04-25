@@ -172,18 +172,30 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
     @Override
     public Page<UserByAllDTO> userBySearchWithAll(String[] types, String keyword, String uName,
-                                                  String userJob, String userRank, LocalDateTime modDate,
+                                                  String userJob, String userRank, LocalDate regDate,
                                                   String status, String uId,  Pageable pageable){
         QUserBy userBy = QUserBy.userBy;
         JPQLQuery<UserBy> query = from(userBy);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        // keyword로 여러 필드 검색
+        if (keyword != null && !keyword.isEmpty()) {
+            booleanBuilder.and(userBy.uId.contains(keyword))
+                    .or(userBy.uName.contains(keyword));
+        }
 
         if (uName != null && !uName.isEmpty()) {
             booleanBuilder.and(userBy.uName.contains(uName));
         }
 
         if (userJob != null && !userJob.isEmpty()) {
-            booleanBuilder.and(userBy.userJob.contains(userJob));
+            if(!userJob.equals("전체")){
+                booleanBuilder.and(userBy.userJob.contains(userJob));
+            }
+        }
+
+        if (regDate != null) {
+            booleanBuilder.and(userBy.regDate.goe(regDate.atStartOfDay()));
         }
 
         BooleanExpression rankCondition = userBy.userRank.isNull()
@@ -226,23 +238,32 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     @Override
-    public Page<SupplierAllDTO> supplierSearchWithAll(String[] types, String keyword, String sName, String sRegNum, String sBusinessType, LocalDateTime sRegDate, String sStatus, Pageable pageable){
+    public Page<SupplierAllDTO> supplierSearchWithAll(String[] types, String keyword, String sName, String sRegNum, String sBusinessType, LocalDate sRegDate, String sStatus, Pageable pageable){
         QSupplier supplier = QSupplier.supplier;
         JPQLQuery<Supplier> query = from(supplier);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        if (sName != null && !sName.isEmpty()) {
-            booleanBuilder.and(supplier.sName.contains(sName));
+        // keyword로 여러 필드 검색
+        if (keyword != null && !keyword.isEmpty()) {
+            booleanBuilder.and(supplier.sName.contains(keyword));
         }
 
-        if (sRegNum != null && !sRegNum.isEmpty()) {
-            booleanBuilder.and(supplier.sRegNum.contains(sRegNum));
+        if (sRegDate != null && !sBusinessType.isEmpty()) {
+            booleanBuilder.and(supplier.regDate.goe(sRegDate.atStartOfDay()));
+        }
+
+        if (sBusinessType != null && !sBusinessType.isEmpty()) {
+            booleanBuilder.and(supplier.sBusinessType.contains(sBusinessType));
         }
 
         booleanBuilder.and(
                 supplier.sStatus.isNull()
                         .or(supplier.sStatus.isEmpty())
         );
+
+        if (sRegDate != null) {
+            booleanBuilder.and(supplier.regDate.goe(sRegDate.atStartOfDay()));
+        }
 
 
         query.where(booleanBuilder);
@@ -266,6 +287,76 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         // 전체 개수
         // 카운트용 별도 쿼리 생성
         JPQLQuery<Supplier> countQuery = from(supplier).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public Page<UserByAllDTO> userBySearchWithAllList(String[] types, String keyword, String uName,
+                                                  String userJob, String userRank, LocalDate regDate,
+                                                  String status, String uId,  Pageable pageable){
+        QUserBy userBy = QUserBy.userBy;
+        JPQLQuery<UserBy> query = from(userBy);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        // keyword로 여러 필드 검색
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+
+            keywordBuilder.or(userBy.uId.contains(keyword));
+            keywordBuilder.or(userBy.uName.contains(keyword));
+
+            booleanBuilder.and(keywordBuilder);
+        }
+
+        if (uName != null && !uName.isEmpty()) {
+            booleanBuilder.and(userBy.uName.contains(uName));
+        }
+
+        if (userJob != null && !userJob.isEmpty()) {
+            booleanBuilder.and(userBy.userJob.contains(userJob));
+        }
+
+        if (status != null && !status.isEmpty()) {
+            booleanBuilder.and(userBy.status.contains(status));
+        } else {
+            BooleanBuilder statusBuilder = new BooleanBuilder();
+            statusBuilder.or(userBy.status.contains("승인"));
+            statusBuilder.or(userBy.status.contains("반려"));
+
+            booleanBuilder.and(statusBuilder); // ✅ 전체 조건에 and로 묶기
+        }
+
+        if (regDate != null) {
+            booleanBuilder.and(userBy.regDate.goe(regDate.atStartOfDay()));
+        }
+
+
+        BooleanExpression userJobCondition = userBy.userJob.isNotNull();
+
+        // 전부 and로 묶기
+        booleanBuilder.and(userJobCondition);
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        List<UserBy> resultList = query.fetch();
+
+        List<UserByAllDTO> dtoList = resultList.stream()
+                .map(user -> UserByAllDTO.builder()
+                        .uName(user.getUName())
+                        .userJob(user.getUserJob())
+                        .userRank(user.getUserRank())
+                        .modDate(user.getModDate())
+                        .status(user.getStatus())
+                        .uId(user.getUId())
+                        .build())
+                .collect(Collectors.toList());
+
+        // 전체 개수
+        // 카운트용 별도 쿼리 생성
+        JPQLQuery<UserBy> countQuery = from(userBy).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);
