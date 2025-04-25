@@ -20,7 +20,7 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
     }
 
     // 선택된 사원 목록을 표시할 tbody
-    const selectedSupList = document.querySelector('.selectedSupList');
+    const selectedSupList = document.querySelector('.selectedSupListAgr');
     // 선택된 사원 목록을 초기화 (기존 내용 제거)
     selectedSupList.innerHTML = '';
 
@@ -37,7 +37,7 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
         const sStatus = tdList[8].textContent.trim();
 
         const fields = {
-            [`uId`]: uId,
+            [`uId`]: uId
         };
 
         for (const [name, value] of Object.entries(fields)) {
@@ -69,4 +69,73 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
     const modal = new bootstrap.Modal(document.getElementById('AgreeModal'));
     modal.show();
 });
+
+
+document.getElementById('openDisAgreeModal').addEventListener('click', function () {
+    const selectedRows = Array.from(document.querySelectorAll('.selectApproval:checked'))
+        .map(cb => cb.closest('tr')); // 체크된 체크박스의 tr 가져오기
+
+    const modalForm = document.querySelector('#DisAgreeModal form'); // 모달 폼 (ID는 실제 사용하는 폼의 ID로)
+
+    // 이전에 추가된 동적 hidden input 제거
+    modalForm.querySelectorAll('input.dynamic-hidden').forEach(input => input.remove());
+
+    if (selectedRows.length === 0) {
+        alert('하나 이상의 항목을 선택해주세요.');
+        return;
+    }
+
+    // 선택된 사원 목록을 표시할 tbody
+    const selectedEmpList = document.querySelector('.selectedEmpListDis');
+    // 선택된 사원 목록을 초기화 (기존 내용 제거)
+    selectedEmpList.innerHTML = '';
+
+    selectedRows.forEach((row, index) => {
+        const tdList = row.querySelectorAll('td');
+        console.log(tdList); // 확인용 콘솔 출력
+
+        const uId = tdList[1].textContent.trim();
+        const sName = tdList[2].textContent.trim();
+        const sRegNum = tdList[3].textContent.trim();
+        const sBusinessType = tdList[4].textContent.trim();
+        const sManager = tdList[5].textContent.trim();
+        const sPhone = tdList[6].textContent.trim();
+        const regDate = tdList[7].textContent.trim();
+        const sStatus = tdList[8].textContent.trim();
+
+        // hidden input 생성
+        const fields = {
+            [`uId`]: uId
+        };
+
+        for (const [name, value] of Object.entries(fields)) {
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = name;
+            hidden.value = value;
+            hidden.classList.add('dynamic-hidden');
+            modalForm.appendChild(hidden);
+        }
+
+        // 새로운 tr 요소를 생성하고, 선택된 사원 정보를 추가
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${uId}</td>
+            <td>${sName}</td>
+            <td>${sRegNum}</td>
+            <td>${sBusinessType}</td>
+            <td>${sManager}</td>
+            <td>${sPhone}</td>
+            <td>${regDate}</td>
+            <td>${sStatus}</td>
+        `;
+
+        // 생성한 tr 요소를 tbody에 추가
+        selectedEmpList.appendChild(newRow);
+    });
+
+    const modal = new bootstrap.Modal(document.getElementById('DisAgreeModal'));
+    modal.show();
+});
+
 

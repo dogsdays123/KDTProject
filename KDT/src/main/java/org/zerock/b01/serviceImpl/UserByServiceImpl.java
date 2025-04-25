@@ -48,9 +48,23 @@ public class UserByServiceImpl implements UserByService {
     }
 
     @Override
+    public void disAgreeEmployee(String uId, String userRank){
+        UserBy user = userByRepository.findById(uId).orElseThrow();
+        String status = "반려";
+        user.changeRank(userRank, status);
+    }
+
+    @Override
     public void agreeSupplier(String uId){
         Supplier sup = supplierRepository.findSupplierByUser(userByRepository.findById(uId).orElseThrow());
         String status = "승인";
+        sup.changeStatus(status);
+    }
+
+    @Override
+    public void disAgreeSupplier(String uId){
+        Supplier sup = supplierRepository.findSupplierByUser(userByRepository.findById(uId).orElseThrow());
+        String status = "반려";
         sup.changeStatus(status);
     }
 

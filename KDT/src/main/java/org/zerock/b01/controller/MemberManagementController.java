@@ -52,8 +52,22 @@ public class MemberManagementController {
     }
 
     @GetMapping("/employeeList")
-    public void employeeList() {
-        log.info("##EMPLOYEE LIST PAGE GET....##");
+    public void employeeList(PageRequestDTO pageRequestDTO, Model model) {
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<UserByAllDTO> responseDTO =
+                pageService.userByWithAllList(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        model.addAttribute("responseDTO", responseDTO);
+
+        log.info("^&^&" + responseDTO);
     }
 
 
@@ -65,9 +79,9 @@ public class MemberManagementController {
     @GetMapping("/employeeApproval")
     public void eaList(PageRequestDTO pageRequestDTO, Model model) {
 
-        log.info("테스트 ");
-
-        pageRequestDTO.setSize(10);
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
 
         PageResponseDTO<UserByAllDTO> responseDTO =
                 pageService.userByWithAll(pageRequestDTO);
@@ -86,7 +100,6 @@ public class MemberManagementController {
                                         Model model, RedirectAttributes redirectAttributes,
                                         HttpServletRequest request) throws IOException {
 
-        log.info("BBBBB " + uId);
         for (int i = 0; i < uId.size(); i++) {
             String id = uId.get(i);
             String ur = userRank.get(i);
@@ -97,10 +110,28 @@ public class MemberManagementController {
         return "redirect:/memberManagement/employeeApproval";
     }
 
+    @PostMapping("/employeeApprovalDisAgree")
+    public String employeeApprovalDisAgree(@RequestParam("uId") List<String> uId, @RequestParam("userRank") List<String> userRank,
+                                        Model model, RedirectAttributes redirectAttributes,
+                                        HttpServletRequest request) throws IOException {
+
+        for (int i = 0; i < uId.size(); i++) {
+            String id = uId.get(i);
+            String ur = userRank.get(i);
+
+            userByService.disAgreeEmployee(id, ur);
+        }
+
+        return "redirect:/memberManagement/employeeApproval";
+    }
+
 
     @GetMapping("/supplierApproval")
     public void supplierApproval(PageRequestDTO pageRequestDTO, Model model) {
-        pageRequestDTO.setSize(10);
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
 
         PageResponseDTO<SupplierAllDTO> responseDTO =
                 pageService.supplierWithAll(pageRequestDTO);
@@ -129,5 +160,17 @@ public class MemberManagementController {
     @GetMapping("/roleSet")
     public void roleSet() {
         log.info("##roleSet PAGE GET....##");
+    }
+
+    @PostMapping("/supplierApprovalDisAgree")
+    public String supplierApprovalDisAgree(@RequestParam("uId") List<String> uId,
+                                           Model model, RedirectAttributes redirectAttributes,
+                                           HttpServletRequest request) throws IOException {
+
+        for (String uid : uId){
+            userByService.disAgreeSupplier(uid);
+        }
+
+        return "redirect:/memberManagement/supplierApproval";
     }
 }

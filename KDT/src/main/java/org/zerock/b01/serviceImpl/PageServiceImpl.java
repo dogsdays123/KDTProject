@@ -88,7 +88,7 @@ public class PageServiceImpl implements PageService {
         String uName = pageRequestDTO.getUName();
         String userJob = pageRequestDTO.getUserJob();
         String userRank = pageRequestDTO.getUserRank();
-        LocalDateTime regDate = pageRequestDTO.getURegDate();
+        LocalDate regDate = pageRequestDTO.getURegDate();
         String status = pageRequestDTO.getStatus();
         String uId = pageRequestDTO.getUId();
 
@@ -111,7 +111,7 @@ public class PageServiceImpl implements PageService {
         String sName = pageRequestDTO.getUName();
         String sRegNum = pageRequestDTO.getUserJob();
         String sBusinessType = pageRequestDTO.getUserRank();
-        LocalDateTime sRegDate = pageRequestDTO.getSRegDate();
+        LocalDate sRegDate = pageRequestDTO.getSRegDate();
         String sStatus = "";
         String uId = pageRequestDTO.getUId();
         if(pageRequestDTO.getSStatus() == null){
@@ -120,11 +120,34 @@ public class PageServiceImpl implements PageService {
             sStatus = "완료";
         }
 
-        Pageable pageable = pageRequestDTO.getPageable("uId");
+        Pageable pageable = pageRequestDTO.getPageable("sId");
 
         Page<SupplierAllDTO> result = productRepository.supplierSearchWithAll(types, keyword, sName, sRegNum, sBusinessType, sRegDate, sStatus, pageable);
 
         return PageResponseDTO.<SupplierAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<UserByAllDTO> userByWithAllList(PageRequestDTO pageRequestDTO){
+        log.info(">>>> user 페이지 번호: {}", pageRequestDTO.getPage());
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String uName = pageRequestDTO.getUName();
+        String userJob = pageRequestDTO.getUserJob();
+        String userRank = pageRequestDTO.getUserRank();
+        LocalDate regDate = pageRequestDTO.getURegDate();
+        String status = pageRequestDTO.getStatus();
+        String uId = pageRequestDTO.getUId();
+
+        Pageable pageable = pageRequestDTO.getPageable("uId");
+
+        Page<UserByAllDTO> result = productRepository.userBySearchWithAllList(types, keyword, uName, userJob, userRank, regDate, status, uId, pageable);
+
+        return PageResponseDTO.<UserByAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())

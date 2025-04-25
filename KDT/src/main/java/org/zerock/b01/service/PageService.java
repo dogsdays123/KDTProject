@@ -7,5 +7,5 @@ public interface PageService {
     PageResponseDTO<ProductListAllDTO> productListWithAll(PageRequestDTO pageRequestDTO);
     PageResponseDTO<UserByAllDTO> userByWithAll(PageRequestDTO pageRequestDTO);
     PageResponseDTO<SupplierAllDTO> supplierWithAll(PageRequestDTO pageRequestDTO);
-
+    PageResponseDTO<UserByAllDTO> userByWithAllList(PageRequestDTO pageRequestDTO);
 }

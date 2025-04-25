@@ -9,12 +9,14 @@ import java.util.List;
 public interface UserByService {
     UserByDTO readOne(String uId);
     void agreeEmployee(String uId, String userRank);
+    void disAgreeEmployee(String uId, String userRank);
     UserByDTO readOneForEmail(String uEmail);
     void registerAdmin(UserBy user);
     String registerUser(UserByDTO userByDTO);
     String changeUserProfile(String email);
     void changeUser(UserByDTO userByDTO);
     void agreeSupplier(String uId);
+    void disAgreeSupplier(String uId);
 
     List<UserBy> readAllUser();
 
