@@ -33,10 +33,15 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
     const tbody = document.getElementById('deleteTableBody');
     tbody.innerHTML = ''; // 기존 내용 비우기
 
+    const pCodes = [];
+
     selectedRows.forEach(checkbox => {
         const row = checkbox.closest('tr');
         const cells = row.querySelectorAll('td');
         const newRow = document.createElement('tr');
+
+        const pCode = cells[1].textContent.trim();
+        pCodes.push(pCode);
 
         newRow.innerHTML = `
             <td>${cells[1].textContent.trim()}</td>
@@ -45,6 +50,17 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         `;
 
         tbody.appendChild(newRow);
+    });
+
+    const form = document.getElementById('purchaseOrderDelForm');
+    form.querySelectorAll('input[name="pCodes"]').forEach(input => input.remove());
+
+    pCodes.forEach(pCode => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'pCodes';
+        hiddenInput.value = pCode;
+        form.appendChild(hiddenInput);
     });
 
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));

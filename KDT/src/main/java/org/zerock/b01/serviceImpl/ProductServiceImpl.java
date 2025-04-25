@@ -5,8 +5,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Product;
+import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.ProductDTO;
+import org.zerock.b01.dto.ProductionPlanDTO;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.ProductService;
@@ -55,6 +57,7 @@ public class ProductServiceImpl implements ProductService {
 
             //이미 존재한 제품
             if(productRepository.findByProductName(product.getPName()).isPresent()){
+                productRegister.add("이미 등록된 제품입니다.");
                 errorMessage.add(product.getPName());
             }
             //존재하지 않은 제품
@@ -90,6 +93,24 @@ public class ProductServiceImpl implements ProductService {
             } else {
                 productRepository.save(product);
             }
+        }
+    }
+    @Override
+    public void modifyProduct(ProductDTO productDTO, String uName){
+        Optional<Product> result = productRepository.findByProductId(productDTO.getPCode());
+        Product product = result.orElseThrow();
+        product.change(productDTO.getPName());
+        productRepository.save(product);
+    }
+
+    @Override
+    public void removeProduct(List<String> pCodes){
+        if (pCodes == null || pCodes.isEmpty()) {
+            throw new IllegalArgumentException("삭제할 생산 계획 코드가 없습니다.");
+        }
+
+        for (String pCode : pCodes) {
+            productRepository.deleteById(pCode); // 개별적으로 삭제
         }
     }
 }

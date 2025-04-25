@@ -14,12 +14,15 @@ document.querySelectorAll('.icon-button').forEach(button => {
         const pName = row.querySelector('td:nth-child(4)').innerText;
         const pStart = row.querySelector('td:nth-child(5)').innerText;
         const pEnd = row.querySelector('td:nth-child(6)').innerText;
+        const pNum = row.querySelector('td:nth-child(7)').innerText;
+
 
         document.getElementById('planCodeInput').value = ppCode;
         document.getElementById('ppProductCode').value = pCode;
         document.getElementById('ppProductName').value = pName;
         document.getElementById('ppStartDay').value = pStart;
         document.getElementById('ppEndDay').value = pEnd;
+        document.getElementById('ppNum').value = pNum;
 
         // 모달 띄우기
         const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
@@ -38,10 +41,15 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
     const tbody = document.getElementById('deleteTableBody');
     tbody.innerHTML = ''; // 기존 내용 비우기
 
+    const ppCodes = [];
+
     selectedRows.forEach(checkbox => {
         const row = checkbox.closest('tr');
         const cells = row.querySelectorAll('td');
         const newRow = document.createElement('tr');
+
+        const ppCode = cells[1].textContent.trim();
+        ppCodes.push(ppCode);
 
         newRow.innerHTML = `
             <td>${cells[1].textContent.trim()}</td>
@@ -52,6 +60,17 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         `;
 
         tbody.appendChild(newRow);
+    });
+
+    const form = document.getElementById('purchaseOrderDelForm');
+    form.querySelectorAll('input[name="ppCodes"]').forEach(input => input.remove());
+
+    ppCodes.forEach(ppCode => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'ppCodes';
+        hiddenInput.value = ppCode;
+        form.appendChild(hiddenInput);
     });
 
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));

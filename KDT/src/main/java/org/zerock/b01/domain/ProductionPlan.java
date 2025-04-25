@@ -2,6 +2,7 @@ package org.zerock.b01.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
@@ -37,5 +38,11 @@ public class ProductionPlan extends BaseEntity {
 
     public void set(String ppCode){
         this.ppCode = ppCode;
+    }
+
+    public void change(Integer pp_num, LocalDate pp_start, LocalDate pp_end){
+        this.ppNum = pp_num;
+        this.ppStart = pp_start;
+        this.ppEnd = pp_end;
     }
 }

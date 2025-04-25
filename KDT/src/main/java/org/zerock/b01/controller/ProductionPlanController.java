@@ -1,6 +1,7 @@
 package org.zerock.b01.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -11,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -97,7 +99,9 @@ public class ProductionPlanController {
     @GetMapping("/ppList")
     public void planList(PageRequestDTO pageRequestDTO, Model model) {
 
-        pageRequestDTO.setSize(10);
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
 
         PageResponseDTO<PlanListAllDTO> responseDTO =
                 pageService.planListWithAll(pageRequestDTO);
@@ -107,7 +111,6 @@ public class ProductionPlanController {
         }
 
         log.info("테스트 ");
-
         List<ProductionPlan> planList = productionPlanService.getPlans();
         model.addAttribute("planList", planList);
         model.addAttribute("responseDTO", responseDTO);
@@ -229,5 +232,22 @@ public class ProductionPlanController {
 //                }
 //            }
         }
+    }
+
+    // 생산 계획 목록 수정
+    @PostMapping("/modify")
+    public String modify(@ModelAttribute ProductionPlanDTO productionPlanDTO, RedirectAttributes redirectAttributes, String uName) {
+        log.info("pp modify post.....#@" + productionPlanDTO);
+        productionPlanService.modifyProductionPlan(productionPlanDTO, uName);
+        redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
+        return "redirect:/productionPlan/ppList";
+    }
+
+    @PostMapping("/remove")
+    public String remove(@ModelAttribute ProductionPlanDTO productionPlanDTO, RedirectAttributes redirectAttributes, @RequestParam List<String> ppCodes) {
+        log.info("pp remove post.....#@" + productionPlanDTO);
+        productionPlanService.removeProductionPlan(ppCodes);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/productionPlan/ppList";
     }
 }

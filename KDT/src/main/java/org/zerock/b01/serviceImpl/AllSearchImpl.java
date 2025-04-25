@@ -94,33 +94,47 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     @Override
-    public Page<PlanListAllDTO> planSearchWithAll(String[] types, String keyword, String ppCode, String pCode,
-                                                  String ppNum, String pName, String uName,
-                                                  String ppState, LocalDate ppStart, LocalDate ppEnd,
-                                                  Pageable pageable) {
+    public Page<PlanListAllDTO> planSearchWithAll(String[] types, String keyword,  String pName, String ppState, LocalDate ppStart, LocalDate ppEnd, Pageable pageable) {
+
         QProductionPlan productPlan = QProductionPlan.productionPlan;
         QProduct product = QProduct.product;
         JPQLQuery<ProductionPlan> query = from(productPlan);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
+        if((types != null && types.length > 0) && keyword != null) {
+
+
+            for(String type : types) {
+                switch (type) {
+                    case "t":
+                        booleanBuilder.or(productPlan.pName.contains(keyword));
+                        break;
+                    case "c":
+                        booleanBuilder.or(productPlan.ppCode.contains(keyword));
+                        break;
+                    case "w":
+                        booleanBuilder.or(productPlan.product.pCode.contains(keyword));
+                        break;
+                }
+            }
+            query.where(booleanBuilder);
+
+        }
+
+        if (ppStart != null && ppEnd != null) {
+            booleanBuilder.and(productPlan.ppStart.goe(ppStart));
+            booleanBuilder.and(productPlan.ppEnd.loe(ppEnd));
+        } else if (ppStart != null) {
+            booleanBuilder.and(productPlan.ppStart.eq(ppStart));
+        } else if (ppEnd != null) {
+            booleanBuilder.and(productPlan.ppEnd.eq(ppEnd));
+        }
+
         if (pName != null && !pName.isEmpty()) {
             booleanBuilder.and(productPlan.pName.contains(pName));
         }
 
-        if (ppCode != null && !ppCode.isEmpty()) {
-            booleanBuilder.and(productPlan.ppCode.contains(ppCode));
-        }
-
-        //얘는 제품 나머지는 플랜
-        if (pCode != null && !pCode.isEmpty()) {
-            booleanBuilder.and(product.pCode.contains(pCode));
-        }
-
-        if (uName != null && !uName.isEmpty()) {
-            booleanBuilder.and(productPlan.userBy.uName.contains(uName));
-        }
-
-        if (ppState != null && !ppState.isEmpty()) {
+        if (ppState != null && !ppState.isEmpty() && !ppState.equals("전체")) {
             try {
                 CurrentStatus status = CurrentStatus.valueOf(ppState); // 문자열 → Enum
                 booleanBuilder.and(productPlan.ppState.eq(status));    // Querydsl 조건
@@ -129,7 +143,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 // 유효하지 않은 Enum 값 처리 (필요 시 무시하거나 예외 던질 수 있음)
             }
         }
-
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());

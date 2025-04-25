@@ -53,6 +53,15 @@
             </li>
             <hr>
             <li class="nav-item">
+                <a href="#" class="nav-link" title="제품 관리" onclick="toggleSubmenu('submenu-product')"><i class="bi bi-box2"></i>&nbsp;&nbsp;제품 관리&nbsp;&nbsp;<span>▾</span></a>
+                <ul id="submenu-product" class="submenu">
+                    <li><a href="/product/goodsRegister" class="nav-link">상품 등록</a></li>
+                    <li><a href="/product/goodsList" class="nav-link">상품 목록</a></li>
+                    <li><a href="/supply/materialRegister" class="nav-link">부품 등록</a></li>
+                    <li><a href="/supply/materialList" title="부품 정보 목록" class="nav-link">부품 목록</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
               <a href="#" class="nav-link" title="생산 계획" onclick="toggleSubmenu('submenu-production-plan')"><i class="bi bi-calendar3"></i>&nbsp;&nbsp;생산 계획&nbsp;&nbsp;<span>▾</span></a>
               <ul id="submenu-production-plan" class="submenu">
                   <li><a href="/productionPlan/ppRegister" class="nav-link">생산 계획 등록</a></li>
@@ -61,12 +70,8 @@
               </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" title="제품 관리" onclick="toggleSubmenu('submenu-product')"><i class="bi bi-box2"></i>&nbsp;&nbsp;제품 관리&nbsp;&nbsp;<span>▾</span></a>
-                <ul id="submenu-product" class="submenu">
-                    <li><a href="/product/goodsRegister" class="nav-link">상품 등록</a></li>
-                    <li><a href="/product/goodsList" class="nav-link">상품 목록</a></li>
-                    <li><a href="/supply/materialRegister" class="nav-link">부품 등록</a></li>
-                    <li><a href="/supply/materialList" title="부품 정보 목록" class="nav-link">부품 목록</a></li>
+                <a href="#" class="nav-link" title="BOM 관리" onclick="toggleSubmenu('submenu-bom')"><i class="bi bi-columns-gap"></i>&nbsp;&nbsp;BOM 관리&nbsp;&nbsp;<span>▾</span></a>
+                <ul id="submenu-bom" class="submenu">
                     <li><a href="/product/bomRegister" class="nav-link">BOM 등록</a></li>
                     <li><a href="/product/bomList" class="nav-link">BOM 목록</a></li>
                 </ul>

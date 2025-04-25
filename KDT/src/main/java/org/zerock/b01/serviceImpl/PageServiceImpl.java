@@ -28,6 +28,7 @@ public class PageServiceImpl implements PageService {
 
     @Autowired
     private final ProductRepository productRepository;
+
     @Autowired
     private ProductionPlanRepository productionPlanRepository;
 
@@ -48,8 +49,8 @@ public class PageServiceImpl implements PageService {
         Pageable pageable = pageRequestDTO.getPageable("ppId");
 
         Page<PlanListAllDTO> result = productionPlanRepository
-                .planSearchWithAll(types, keyword, ppCode, pCode, ppNum, pName,
-                        uName, ppState, ppStart, ppEnd, pageable);
+                .planSearchWithAll(types, keyword, pName,
+                       ppState, ppStart, ppEnd, pageable);
 
         return PageResponseDTO.<PlanListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

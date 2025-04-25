@@ -1,7 +1,10 @@
 package org.zerock.b01.service;
 
 import org.zerock.b01.domain.Product;
+import org.zerock.b01.dto.PageRequestDTO;
+import org.zerock.b01.dto.PageResponseDTO;
 import org.zerock.b01.dto.ProductDTO;
+import org.zerock.b01.dto.ProductionPlanDTO;
 
 import java.util.List;
 
@@ -9,4 +12,7 @@ public interface ProductService {
     List<Product> getProducts();
     String[] registerProducts(List<ProductDTO> productDTOs, String uId);
     void registerProductsEasy(List<ProductDTO> productDTOs, String uId);
+    void modifyProduct(ProductDTO productDTO, String uName);
+    void removeProduct(List<String> pCodes);
+//    PageResponseDTO<ProductionPlanDTO> list(PageRequestDTO pageRequestDTO);
 }

@@ -3,18 +3,26 @@ package org.zerock.b01.serviceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
+import org.zerock.b01.dto.PageRequestDTO;
+import org.zerock.b01.dto.PageResponseDTO;
+import org.zerock.b01.dto.PlanListAllDTO;
 import org.zerock.b01.dto.ProductionPlanDTO;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.ProductionPlanService;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -109,5 +117,45 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
         // 코드 생성
         return String.format("%s%s%03d", prefix, dateCode, nextSequence);
+    }
+
+    @Override
+    public void modifyProductionPlan(ProductionPlanDTO productionPlanDTO, String uName){
+        Optional<ProductionPlan> result = productionPlanRepository.findByProductionPlanCode(productionPlanDTO.getPpCode());
+        ProductionPlan productionPlan = result.orElseThrow();
+        productionPlan.change(productionPlanDTO.getPpNum(), productionPlanDTO.getPpStart(), productionPlanDTO.getPpEnd());
+        productionPlanRepository.save(productionPlan);
+    }
+
+    @Override
+    public void removeProductionPlan(List<String> ppCodes){
+        if (ppCodes == null || ppCodes.isEmpty()) {
+            throw new IllegalArgumentException("삭제할 생산 계획 코드가 없습니다.");
+        }
+
+        for (String ppCode : ppCodes) {
+            productionPlanRepository.deleteById(ppCode); // 개별적으로 삭제
+        }
+    }
+
+    @Override
+    public PageResponseDTO<ProductionPlanDTO> list(PageRequestDTO pageRequestDTO){
+        String[] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        LocalDate ppStart = pageRequestDTO.getPpStart();
+        LocalDate ppEnd = pageRequestDTO.getPpEnd();
+        String pName = pageRequestDTO.getPName();
+        String ppState = pageRequestDTO.getPpState();
+        Pageable pageable = pageRequestDTO.getPageable();
+
+        Page<PlanListAllDTO> result = productionPlanRepository.planSearchWithAll(types, keyword, pName, ppState, ppStart, ppEnd, pageable);
+
+        List<ProductionPlanDTO> dtoList = result.getContent().stream().map(productionPlan ->modelMapper.map(productionPlan, ProductionPlanDTO.class)).collect(Collectors.toList());
+
+        return PageResponseDTO.<ProductionPlanDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total((int)result.getTotalElements())
+                .build();
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
@@ -43,6 +44,7 @@ public class ProductController {
     private final UserByService userByService;
     private final ProductService productService;
     private final PageService pageService;
+    private final ProductionPlanRepository productionPlanRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -155,9 +157,7 @@ public class ProductController {
         String[] message = productService.registerProducts(products, uId);
         String messageString = String.join(",", message);
 
-        // 리다이렉트 시에 message를 전달
         redirectAttributes.addFlashAttribute("message", messageString);
-
         return "redirect:/product/goodsRegister";
     }
 
@@ -202,5 +202,28 @@ public class ProductController {
 
         productService.registerProductsEasy(productDTOs, uId);
         log.info("^^^^&&&&&4");
+    }
+
+    @PostMapping("/modify")
+    public String modify(@ModelAttribute ProductDTO productDTO, RedirectAttributes redirectAttributes, String uName) {
+        log.info("pp modify post.....#@" + productDTO);
+        productService.modifyProduct(productDTO, uName);
+        redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
+        return "redirect:/product/goodsList";
+    }
+
+    @PostMapping("/remove")
+    public String remove(@ModelAttribute ProductDTO productDTO, RedirectAttributes redirectAttributes, @RequestParam List<String> pCodes) {
+        log.info("pp remove post.....#@" + productDTO);
+        for (String pCode : pCodes) {
+            if (productionPlanRepository.existsByProduct_pCode(pCode)) {
+                redirectAttributes.addFlashAttribute("message", "생산 계획이 등록된 상품이 있어 삭제할 수 없습니다.");
+                return "redirect:/product/goodsList";
+            }
+        }
+
+        productService.removeProduct(pCodes);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/product/goodsList";
     }
 }

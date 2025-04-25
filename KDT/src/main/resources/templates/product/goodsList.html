@@ -124,35 +124,37 @@
             </div>
             <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
+                    <form th:action="@{/product/modify}" method="post" id="purchaseOrderForm">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="purchaseOrderModalLabel">상품 정보 수정</h5>&nbsp;&nbsp;
-                            <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
+                            <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 수정 가능한 항목입니다</small>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="purchaseOrderForm">
                                 <div class="row g-3 mb-3">
                                     <div class="col-12">
-                                        <label class="form-label"><span class="text-danger">*</span> 상품 코드</label>
-                                        <input type="text" id="ppProductCode" class="form-control form-control-sm" required>
+                                        <label class="form-label">상품 코드</label>
+                                        <input type="text" id="ppProductCode" name="pCode" class="form-control form-control-sm" readonly required>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label"><span class="text-danger">*</span> 상품명</label>
-                                        <input type="text" id="ppProductName" class="form-control form-control-sm" required>
+                                        <input type="text" id="ppProductName" name="pName" class="form-control form-control-sm" required>
                                     </div>
                                 </div>
-                            </form>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                            <button type="button" class="btn btn-primary btn-sm">수정</button>
+                            <button type="submit" class="btn btn-primary btn-sm">수정</button>
                         </div>
                     </div>
+                    </form>
                 </div>
             </div>
             <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
+                    <form th:action="@{/product/remove}" method="post" id="purchaseOrderDelForm">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="purchaseOrderModalDelLabel">상품 정보 삭제</h5>&nbsp;&nbsp;
@@ -176,12 +178,18 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                            <button type="button" class="btn btn-danger btn-sm">삭제</button>
+                            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                         </div>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
+        <script th:if="${message != null}" th:inline="javascript">
+            /*<![CDATA[*/
+            alert([[${message}]]);
+            /*]]>*/
+        </script>
         <script src="/js/product/goodLists.js" defer></script>
     </div>
 </body>

@@ -7,14 +7,18 @@ import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.service.AllSearch;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, Long>, AllSearch {
+public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, String>, AllSearch {
 
     @Query("SELECT COUNT(p) FROM ProductionPlan p WHERE p.ppCode LIKE CONCAT(:prefix, '%')")
     Long countByPrefix(String prefix);
 
+//    @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
+//    ProductionPlan findByProductionPlanCode(String ppCode);
+
     @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
-    ProductionPlan findByProductionPlanCode(String ppCode);
+    Optional<ProductionPlan> findByProductionPlanCode(String ppCode);
 
     @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
     ProductionPlan findByProductionPerDay(String ppCode);
@@ -24,4 +28,9 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
 
     @Query("select pp from ProductionPlan pp")
     List<ProductionPlan> findByPlans();
+
+    @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
+    void deleteAllById(List<String> ppCodes);
+
+    boolean existsByProduct_pCode(String pCode);
 }
