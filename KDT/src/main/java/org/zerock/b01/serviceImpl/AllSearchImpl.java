@@ -46,7 +46,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     @Override
-    public Page<ProductListAllDTO> productSearchWithAll(String[] types, String keyword, String pCode, String pName, String uName, LocalDate regDate, Pageable pageable) {
+    public Page<ProductListAllDTO> productSearchWithAll(String[] types, String keyword, String pCode, String pName, Pageable pageable) {
 
         QProduct product = QProduct.product;
         JPQLQuery<Product> query = from(product);
@@ -64,17 +64,10 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(product.pCode.contains(pCode));
         }
 
-        if (uName != null && !uName.isEmpty()) {
-            booleanBuilder.and(product.pCode.contains(uName));
-        }
-
-// 데이터 조회용 query
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
         List<Product> resultList = query.fetch();
-
-        log.info(">>> 검색 조건{}", regDate);
 
         // DTO로 변환
         List<ProductListAllDTO> dtoList = resultList.stream()

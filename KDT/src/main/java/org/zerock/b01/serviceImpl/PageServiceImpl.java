@@ -71,7 +71,7 @@ public class PageServiceImpl implements PageService {
 
         Pageable pageable = pageRequestDTO.getPageable("pId");
 
-        Page<ProductListAllDTO> result = productRepository.productSearchWithAll(types, keyword, pCode, pName, uName, regDate, pageable);
+        Page<ProductListAllDTO> result = productRepository.productSearchWithAll(types, keyword, pCode, pName, pageable);
 
         return PageResponseDTO.<ProductListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
