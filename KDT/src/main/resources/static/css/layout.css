@@ -270,3 +270,32 @@ body {
   font-size: 12px;
   transform: none;     /* transform 제거 */
 }
+
+.tooltip-wrap-mtop {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-wrap-mtop:hover .tooltip-text-mtop {
+  visibility: visible;
+}
+
+.tooltip-wrap-mtop .tooltip-text-mtop {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+
+  /* 마우스 바로 위에 위치하도록 수정 */
+  bottom: 125%;      /* 요소 위쪽으로 띄움 */
+  left: 50%;         /* 요소 중앙에 맞추기 */
+  margin-left: -50%; /* 요소의 중앙이 정확히 맞춰지도록 조정 */
+
+  white-space: nowrap;
+  font-size: 12px;
+  transform: translateX(-50%); /* 중앙 정렬을 위한 수평 이동 */
+}

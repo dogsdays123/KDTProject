@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface AllSearch {
-    Page<ProductListAllDTO> productSearchWithAll(String[] types, String keyword, String pCode, String pName, String uName, LocalDate regDate, Pageable pageable);
+    Page<ProductListAllDTO> productSearchWithAll(String[] types, String keyword, String pCode, String pName,Pageable pageable);
     Page<PlanListAllDTO> planSearchWithAll(String[] types, String keyword, String pName, String ppState, LocalDate ppStart, LocalDate ppEnd, Pageable pageable);
     Page<UserByAllDTO> userBySearchWithAll(String[] types, String keyword, String uName,
                                            String userJob, String userRank, LocalDate modDate, String status, String uId, Pageable pageable);

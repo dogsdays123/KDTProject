@@ -25,19 +25,26 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2">
                             <label for="productCode" class="form-label small">상품 코드</label>
-                            <input type="text" id="productCode" class="form-control form-control-sm" title="상품 코드">
+                            <select class="form-select form-select-sm" name="pCode" id="productCode">
+                                <option value="" th:selected="${selectedPCode == ''}">전체</option>
+                                <option th:each="dto : ${productList}"
+                                        th:value="${dto.getPCode()}"
+                                        th:text="${dto.getPCode()}"
+                                        th:selected="${dto.getPCode() == selectedPCode}"></option>
+                            </select>
                         </div>
                         <div class="col-md-2">
                             <label for="productName" class="form-label small">상품명</label>
-                            <select id="productName" name="제품명" class="form-select form-select-sm" title="상품 선택">
-                                <option value="">전체</option>
-                                <option value="전기자전거A">전기자전거A</option>
-                                <option value="전기자전거B">전기자전거B</option>
-                                <option value="전동킥보드">전동킥보드</option>
+                            <select id="productName" name="pName" class="form-select form-select-sm" title="상품 선택">
+                                <option value="" th:selected="${selectedPName == ''}">전체</option>
+                                <option th:each="dto : ${productList}"
+                                        th:value="${dto.getPName()}"
+                                        th:text="${dto.getPName()}"
+                                        th:selected="${dto.getPName() == selectedPName}"></option>
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
-                            <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                            <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
                             <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                         </div>
 
@@ -49,7 +56,7 @@
                         <div class="col-md-6">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
-                                <input type="text" class="form-control" id="keyword" placeholder="검색어 입력">
+                                <input type="text" class="form-control" name="keyword" id="keyword" th:value="${pageRequestDTO.keyword}" placeholder="검색할 항목을 입력하세요 (예: 상품 코드, 상품명)">
                             </div>
                         </div>
                     </div>
@@ -62,11 +69,11 @@
                         <div class="d-flex justify-content-end mb-2">
                             <form>
                                 <div class="col-auto">
-                                    <select class="form-select form-select-sm" title="정렬 갯수 필터">
-                                        <option selected>전체</option>
-                                        <option value="20">20개씩</option>
-                                        <option value="30">30개씩</option>
-                                        <option value="50">50개씩</option>
+                                    <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size" onchange="this.form.submit()">
+                                        <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                                        <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                                        <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                                        <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
                                     </select>
                                 </div>
                             </form>
@@ -83,6 +90,9 @@
                             </tr>
                             </thead>
                             <tbody id="goodsTable" th:with="link = ${pageRequestDTO.getLink()}">
+                            <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
+                                <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 생산 계획이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
+                            </tr>
                             <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
                                 <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
                                 <td th:text="${dto.getPCode()}"></td>

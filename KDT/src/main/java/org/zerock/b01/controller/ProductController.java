@@ -94,9 +94,11 @@ public class ProductController {
         }
 
         List<Product> productList = productService.getProducts();
-        model.addAttribute("productList", productList);
-        model.addAttribute("responseDTO", responseDTO);
 
+        model.addAttribute("productList", productList);
+        model.addAttribute("selectedPCode", pageRequestDTO.getPCode() != null ? pageRequestDTO.getPCode() : "");
+        model.addAttribute("selectedPName", pageRequestDTO.getPName() != null ? pageRequestDTO.getPName() : "");
+        model.addAttribute("responseDTO", responseDTO);
         log.info("^&^&" + responseDTO);
     }
 

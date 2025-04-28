@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
@@ -79,6 +80,8 @@ public class ProductServiceImpl implements ProductService {
 
         log.info("innerProductRegister" + productDTOs);
 
+        List<String> duplicateProducts = new ArrayList<>();
+
         for(ProductDTO productDTO : productDTOs){
 
             log.info(" UUUU " + uId);
@@ -89,12 +92,13 @@ public class ProductServiceImpl implements ProductService {
             log.info(" UUUU " + userByRepository.findByUId(productDTO.getUName()));
 
             if(productRepository.findByProductName(product.getPName()).isPresent()){
-
+                duplicateProducts.add(product.getPName());
             } else {
                 productRepository.save(product);
             }
         }
     }
+
     @Override
     public void modifyProduct(ProductDTO productDTO, String uName){
         Optional<Product> result = productRepository.findByProductId(productDTO.getPCode());

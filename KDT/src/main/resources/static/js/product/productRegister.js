@@ -55,19 +55,6 @@ function addPlan() {
     document.getElementById('pName').value = '';
 }
 
-// 전체 등록 버튼 활성화/비활성화 함수
-// function toggleSubmitButton() {
-//     const tableBody = document.querySelector("#planTable tbody");
-//     const submitBtn = document.getElementById('submitBtn');
-//
-//     // 테이블에 항목이 있으면 버튼 활성화, 없으면 비활성화
-//     if (tableBody.querySelectorAll('tr').length > 0) {
-//         submitBtn.disabled = false;
-//     } else {
-//         submitBtn.disabled = true;
-//     }
-// }
-
 // 삭제 버튼 클릭 시 해당 행 삭제
 function removeRow(button) {
     const row = button.closest('tr');
@@ -90,107 +77,162 @@ function clearPlanTable() {
     tableBody.innerHTML = ""; // 모든 row 삭제
 }
 
-$(document).ready(function () {
-    $('#excelUpload').on('click', function (e) {
-        e.preventDefault();  // 기본 폼 제출 방지
 
-        // 숨겨진 입력 필드의 값 가져오기
-        var whereValue = $('input[name="where"]').val();  // "where"라는 이름의 input 값 가져오기
-        var files = $('#excelFile')[0].files;  // 여러 파일 객체 가져오기
-        var uId = $('#uId').val();
-
-        // FormData 객체 생성
-        var formData = new FormData();
-
-        // 여러 파일을 formData에 추가
-        for (var i = 0; i < files.length; i++) {
-            formData.append('file', files[i]);  // 'file' 이름으로 여러 파일 추가
-        }
-
-        formData.append('uId', uId);
-        formData.append('where', whereValue);  // 숨겨진 필드 'where' 값 추가
+let selectedFiles = []; // 전역 변수로 따로 관리
 
 
+document.getElementById('excelFile').addEventListener('change', function(event) {
+    const files = Array.from(event.target.files); // 🔥 여기가 핵심
+    selectedFiles = files;
 
-        //--------------------------------업로드 파일 보기
-        const fileList = document.getElementById('fileList');
+    updateFileListUI();
+});
 
-        // 업로드된 파일 리스트 초기화
-        fileList.innerHTML = ''; // 기존 파일 리스트 초기화
+function updateFileListUI() {
+    const fileList = document.getElementById('fileListName');
+    fileList.innerHTML = '';
+    document.getElementById('fileListContainer').style.display = 'block';
 
-        if (files.length > 0) {
-            document.getElementById('uploadedFileList').style.display = 'block';
-        } else {
-            document.getElementById('uploadedFileList').style.display = 'none';
-        }
+    if (selectedFiles.length === 0) {
+        document.getElementById('fileListContainer').style.display = 'none';
+        document.getElementById('excelFile').value = '';
+        return;
+    }
 
-        // 여러 파일에 대해 반복
-        Array.from(files).forEach(file => {
-            const fileName = file.name;
+    selectedFiles.forEach((file, index) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.setAttribute('data-index', index);
 
-            // 항목 생성
-            const li = document.createElement('li');
-            li.className = 'list-group-item d-flex justify-content-between align-items-center';
-            li.textContent = fileName;
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'file-name';
+        nameSpan.textContent = file.name;
+        nameSpan.style.cursor = 'pointer';
 
-            fileList.appendChild(li);
+        nameSpan.addEventListener('click', () => {
+            loadFileContent(file, index);
         });
-        //------------------------업로드 파일 보기
 
+        const deleteBtnWrap = document.createElement('div');
+        deleteBtnWrap.classList.add('tooltip-wrap-mtop');
 
+        const tooltipText = document.createElement('span');
+        tooltipText.classList.add('tooltip-text-mtop');
+        tooltipText.textContent = '해당 파일 삭제';
 
-        // AJAX 요청 보내기
-        $.ajax({
-            url: '/product/addProduct',  // Controller의 URL
-            method: 'POST',
-            data: formData,  // FormData 객체를 데이터로 전송
-            processData: false,  // jQuery가 데이터를 자동으로 처리하지 않도록 설정
-            contentType: false,  // jQuery가 콘텐츠 타입을 자동으로 설정하지 않도록 설정
-            success: function(response) {
-                // 서버에서 응답이 성공적으로 왔을 때 처리
-                if (response.isAvailable) {
-                    alert("파일 업로드에 성공했습니다.(특정)");
-                } else {
-                    alert("파일 업로드에 성공했습니다.");
-                }
-            },
-            error: function(xhr, status, error) {
-                alert("파일 업로드에 실패했습니다. : " + error);
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'bi bi-x-lg deleteIcon text-danger';
+        deleteIcon.style.cursor = 'pointer';
+
+        deleteBtnWrap.appendChild(deleteIcon);
+        deleteBtnWrap.appendChild(tooltipText);
+
+        deleteIcon.addEventListener('click', () => {
+            selectedFiles.splice(index, 1);
+            updateFileListUI();
+
+            const currentTableFile = document.getElementById('fileTable').getAttribute('data-file-name');
+            if (currentTableFile === file.name) {
+                document.getElementById('fileTable').style.display = 'none';
             }
         });
+
+        li.appendChild(nameSpan);
+        li.appendChild(deleteBtnWrap);
+        fileList.appendChild(li);
+    });
+}
+
+function loadFileContent(file, index) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        const tableHeader = document.getElementById('tableHeader');
+        const tableBody = document.getElementById('tableBody');
+
+        tableHeader.innerHTML = '';
+        tableBody.innerHTML = '';
+
+        rows[0]?.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            tableHeader.appendChild(th);
+        });
+
+        rows.slice(1).forEach(row => {
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-file-name', file.name);
+            row.forEach(cell => {
+                const td = document.createElement('td');
+                td.textContent = cell;
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        });
+
+        const fileTable = document.getElementById('fileTable');
+        fileTable.setAttribute('data-file-name', file.name);
+        fileTable.style.display = 'block';
+    };
+    reader.readAsBinaryString(file);
+}
+
+$(document).on('click', '.deleteIcon', function () {
+    const fileItem = $(this).closest('li');
+    const fileName = fileItem.find('.file-name').text().trim();
+
+    selectedFiles = selectedFiles.filter(file => file.name !== fileName);
+
+    updateFileListUI();
+});
+
+$('#excelUpload').on('click', function (e) {
+    e.preventDefault();
+
+    if (selectedFiles.length === 0) {
+        alert('업로드할 파일이 없습니다.');
+        return;
+    }
+
+    const formData = new FormData();
+    const uId = $('#uId').val();
+    const whereValue = $('input[name="where"]').val();
+
+    selectedFiles.forEach(file => {
+        formData.append('file', file);
+    });
+
+    formData.append('uId', uId);
+    formData.append('where', whereValue);
+
+    // AJAX 요청 보내기
+    $.ajax({
+        url: '/product/addProduct',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.isAvailable) {
+                alert("파일 업로드에 성공했습니다.(특정)");
+            } else {
+                alert("파일 업로드에 성공했습니다.");
+            }
+            document.getElementById('fileList').innerHTML = '';
+            document.getElementById('uploadedFileList').style.display = 'none';
+            document.getElementById('fileTable').style.display = 'none';
+            $('#excelFile').val('');
+            document.getElementById('fileListContainer').style.display = 'none';
+        },
+        error: function(xhr, status, error) {
+            alert("파일 업로드에 실패했습니다. : " + error);
+        }
     });
 });
 
-// 파일 선택 이벤트 처리
-document.getElementById('excelFile').addEventListener('change', function () {
-    const fileList = this.files;  // 선택된 파일들
-    const fileCount = fileList.length;  // 파일 갯수
-    const fileListElement = document.getElementById('fileList');
-    const fileCountElement = document.getElementById('fileCount');
 
-    // 파일 목록을 초기화
-    fileListElement.innerHTML = '';
 
-    // 파일 갯수 표시
-    fileCountElement.textContent = fileCount;
-
-    // 파일 갯수가 0보다 크면 파일 목록을 표시, 그렇지 않으면 숨김 처리
-    if (fileCount > 0) {
-        document.getElementById('uploadedFileCount').style.display = 'block';
-    } else {
-        document.getElementById('uploadedFileCount').style.display = 'none';
-    }
-});
-
-// 파일 갯수 업데이트 함수
-function updateFileCount() {
-    const fileListElement = document.getElementById('fileList');
-    const fileCountElement = document.getElementById('fileCount');
-    const fileCount = fileListElement.children.length; // 현재 남아있는 파일의 갯수
-    fileCountElement.textContent = fileCount; // 갯수 업데이트
-
-    // 파일 리스트가 비었으면 갯수와 리스트 숨기기
-    if (fileCount === 0) {
-        document.getElementById('uploadedFileCount').style.display = 'none';
-    }
-}
