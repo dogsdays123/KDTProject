@@ -43,6 +43,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                         userBy.getUEmail(),
                         userBy.getUPhone(),
                         userBy.getUBirthDay(),
+                        userBy.getStatus(),
                         userBy.getRoleSet()
                                 .stream().map(memberRole ->
                                         new SimpleGrantedAuthority("ROLE_"+memberRole.name()))

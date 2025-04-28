@@ -31,8 +31,7 @@ import java.util.List;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated()")
-@RequestMapping("/supply")
+@PreAuthorize("authentication.principal.status == '승인' && (authentication.principal.userJob == '구매부서' || authentication.principal.userJob == '관리자')")
 public class SupplyController {
 
     @Value("${org.zerock.upload.readyPlanPath}")

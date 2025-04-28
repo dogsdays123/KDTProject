@@ -25,7 +25,7 @@ import java.util.Objects;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/memberManagement")
 public class MemberManagementController {
 

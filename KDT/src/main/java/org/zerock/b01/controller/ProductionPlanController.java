@@ -41,7 +41,7 @@ import java.util.List;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("authentication.principal.status == '승인' && (authentication.principal.userJob == '생산부서' || authentication.principal.userJob == '관리자')")
 @RequestMapping("/productionPlan")
 public class ProductionPlanController {
 

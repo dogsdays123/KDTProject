@@ -12,7 +12,7 @@
     <link href="/css/pagenation.css" rel="stylesheet">
 
     <!--select검색을 위한-->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <link href="/css/layout.css" rel="stylesheet">
@@ -21,39 +21,45 @@
 
 </head>
 <body>
-    <!-- sidebar 시작 -->
-    <div class="sidebar">
-        <ul class="nav flex-column">
-<!--            <a href="/mainPage/main"><img src="/image/PNS-logo.PNG"></a>-->
-            <li class="nav-item"><a href="/mainPage/beforeApproval" class="nav-link" title="시작하기"><i class="bi bi-stopwatch"></i>&nbsp;&nbsp;승인대기</a></li>
-            <li class="nav-item"><a href="/mainPage/main" class="nav-link" title="시작하기"><i class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
-            <li class="nav-item"><a href="/mainPage/guide" class="nav-link" title="실무 활용가이드"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무 활용가이드</a></li>
-            <hr>
+<!-- sidebar 시작 -->
+<div class="sidebar">
+    <ul class="nav flex-column">
+        <!--            <a href="/mainPage/main"><img src="/image/PNS-logo.PNG"></a>-->
+        <li class="nav-item"><a href="/mainPage/beforeApproval" class="nav-link" title="시작하기"><i
+                class="bi bi-stopwatch"></i>&nbsp;&nbsp;승인대기</a></li>
+        <li class="nav-item"><a href="/mainPage/main" class="nav-link" title="시작하기"><i
+                class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
+        <li class="nav-item"><a href="/mainPage/guide" class="nav-link" title="실무 활용가이드"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무
+            활용가이드</a></li>
+        <hr>
+        <th:block th:if="${userBy.userJob == '관리자'}">
             <li class="nav-item">
-                <a href="#" class="nav-link" title="가입 승인" onclick="toggleSubmenu('submenu-agree')"><i class="bi bi-person-check"></i>&nbsp;&nbsp;가입 승인&nbsp;&nbsp;<span>▾</span></a>
+                <a href="#" class="nav-link" title="가입 승인" onclick="toggleSubmenu('submenu-agree')"><i
+                        class="bi bi-person-check"></i>&nbsp;&nbsp;가입 승인&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-agree" class="submenu">
                     <li><a href="/memberManagement/employeeApproval" class="nav-link">사원 가입 승인</a></li>
                     <li><a href="/memberManagement/supplierApproval" class="nav-link">업체 가입 승인</a></li>
                 </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" title="계정 관리" onclick="toggleSubmenu('submenu-user')"><i class="bi bi-people"></i>&nbsp;&nbsp;계정 관리&nbsp;&nbsp;<span>▾</span></a>
-              <ul id="submenu-user" class="submenu">
-                  <li><a href="/memberManagement/employeeList" class="nav-link">사원 목록 조회</a></li>
-                  <li><a href="/memberManagement/supplierList" class="nav-link">업체 목록 조회</a></li>
+                <a href="#" class="nav-link" title="계정 관리" onclick="toggleSubmenu('submenu-user')"><i
+                        class="bi bi-people"></i>&nbsp;&nbsp;계정 관리&nbsp;&nbsp;<span>▾</span></a>
+                <ul id="submenu-user" class="submenu">
+                    <li><a href="/memberManagement/employeeList" class="nav-link">사원 목록 조회</a></li>
+                    <li><a href="/memberManagement/supplierList" class="nav-link">업체 목록 조회</a></li>
                     <!--                  <li><a href="#" class="nav-link">가입 상세 정보 보기</a></li>-->
-              </ul>
+                </ul>
             </li>
             <li class="nav-item">
-              <a href="/memberManagement/roleSet" class="nav-link" title="권한 관리" onclick="toggleSubmenu('submenu-dept')"><i class="bi bi-person-gear"></i>&nbsp;&nbsp;권한 관리&nbsp;&nbsp;</a>
-<!--              <ul id="submenu-dept" class="submenu">-->
-<!--                  <li><a href="" class="nav-link">권한 관리</a></li>-->
-<!--                  <li><a href="#" class="nav-link">권한 설정</a></li>-->
-<!--              </ul>-->
+                <a href="/memberManagement/roleSet" class="nav-link" title="권한 관리"
+                   onclick="toggleSubmenu('submenu-dept')"><i class="bi bi-person-gear"></i>&nbsp;&nbsp;권한 관리&nbsp;&nbsp;</a>
             </li>
             <hr>
+        </th:block>
+        <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '생산부서'}">
             <li class="nav-item">
-                <a href="#" class="nav-link" title="제품 관리" onclick="toggleSubmenu('submenu-product')"><i class="bi bi-box2"></i>&nbsp;&nbsp;제품 관리&nbsp;&nbsp;<span>▾</span></a>
+                <a href="#" class="nav-link" title="제품 관리" onclick="toggleSubmenu('submenu-product')"><i
+                        class="bi bi-box2"></i>&nbsp;&nbsp;제품 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-product" class="submenu">
                     <li><a href="/product/goodsRegister" class="nav-link">상품 등록</a></li>
                     <li><a href="/product/goodsList" class="nav-link">상품 목록</a></li>
@@ -62,32 +68,38 @@
                 </ul>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link" title="생산 계획" onclick="toggleSubmenu('submenu-production-plan')"><i class="bi bi-calendar3"></i>&nbsp;&nbsp;생산 계획&nbsp;&nbsp;<span>▾</span></a>
-              <ul id="submenu-production-plan" class="submenu">
-                  <li><a href="/productionPlan/ppRegister" class="nav-link">생산 계획 등록</a></li>
-                  <li><a href="/productionPlan/ppList" class="nav-link">생산 계획 목록</a></li>
+                <a href="#" class="nav-link" title="생산 계획" onclick="toggleSubmenu('submenu-production-plan')"><i
+                        class="bi bi-calendar3"></i>&nbsp;&nbsp;생산 계획&nbsp;&nbsp;<span>▾</span></a>
+                <ul id="submenu-production-plan" class="submenu">
+                    <li><a href="/productionPlan/ppRegister" class="nav-link">생산 계획 등록</a></li>
+                    <li><a href="/productionPlan/ppList" class="nav-link">생산 계획 목록</a></li>
 
-              </ul>
+                </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" title="BOM 관리" onclick="toggleSubmenu('submenu-bom')"><i class="bi bi-columns-gap"></i>&nbsp;&nbsp;BOM 관리&nbsp;&nbsp;<span>▾</span></a>
+                <a href="#" class="nav-link" title="BOM 관리" onclick="toggleSubmenu('submenu-bom')"><i
+                        class="bi bi-columns-gap"></i>&nbsp;&nbsp;BOM 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-bom" class="submenu">
                     <li><a href="/product/bomRegister" class="nav-link">BOM 등록</a></li>
                     <li><a href="/product/bomList" class="nav-link">BOM 목록</a></li>
                 </ul>
             </li>
+        </th:block>
+        <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '구매부서'}">
             <li class="nav-item">
-              <a href="#" class="nav-link" title="조달 관리" onclick="toggleSubmenu('submenu-procurement')"><i class="bi bi-bounding-box-circles"></i>&nbsp;&nbsp;조달 관리&nbsp;&nbsp;<span>▾</span></a>
-              <ul id="submenu-procurement" class="submenu">
-                  <li><a href="/supply/procureRegister" title="조달 계획 등록" class="nav-link">조달 계획 등록</a></li>
-                  <li><a href="/supply/procureList" title="조달 계획 목록" class="nav-link">조달 계획 목록</a></li>
-                  <li><a href="/memberManagement/supplierList" class="nav-link">공급 업체 관리</a></li>
-              </ul>
+                <a href="#" class="nav-link" title="조달 관리" onclick="toggleSubmenu('submenu-procurement')"><i
+                        class="bi bi-bounding-box-circles"></i>&nbsp;&nbsp;조달 관리&nbsp;&nbsp;<span>▾</span></a>
+                <ul id="submenu-procurement" class="submenu">
+                    <li><a href="/supply/procureRegister" title="조달 계획 등록" class="nav-link">조달 계획 등록</a></li>
+                    <li><a href="/supply/procureList" title="조달 계획 목록" class="nav-link">조달 계획 목록</a></li>
+                    <li><a href="/memberManagement/supplierList" class="nav-link">공급 업체 관리</a></li>
+                </ul>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" title="발주 관리" onclick="toggleSubmenu('submenu-ordering')"><i class="bi bi-inboxes"></i>&nbsp;&nbsp;발주 관리&nbsp;&nbsp;<span>▾</span></a>
+                <a href="#" class="nav-link" title="발주 관리" onclick="toggleSubmenu('submenu-ordering')"><i
+                        class="bi bi-inboxes"></i>&nbsp;&nbsp;발주 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-ordering" class="submenu">
-<!--                    <li><a href="/productionPlan/ppOrderPlan" class="nav-link">발주 계획 관리</a></li>-->
+                    <!--                    <li><a href="/productionPlan/ppOrderPlan" class="nav-link">발주 계획 관리</a></li>-->
                     <li><a href="/supply/purchaseOrder" title="구매 발주서 등록" class="nav-link">구매 발주서 등록</a></li>
                     <li><a href="/supply/purchaseOrderList" title="구매 발주서 목록" class="nav-link">구매 발주서 목록</a></li>
                     <li><a href="/supply/progressInspection" title="진척 검수 관리" class="nav-link">진척 검수 관리</a></li>
@@ -96,8 +108,11 @@
                     <li><a href="/supply/transactionStatement" title="거래 명세서 목록" class="nav-link">거래 명세서 목록</a></li>
                 </ul>
             </li>
+        </th:block>
+        <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '자재부서'}">
             <li class="nav-item">
-                <a href="#" class="nav-link" title="자재 관리" onclick="toggleSubmenu('submenu-materials')"><i class="bi bi-boxes"></i>&nbsp;&nbsp;자재 관리&nbsp;&nbsp;<span>▾</span></a>
+                <a href="#" class="nav-link" title="자재 관리" onclick="toggleSubmenu('submenu-materials')"><i
+                        class="bi bi-boxes"></i>&nbsp;&nbsp;자재 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-materials" class="submenu">
                     <li><a href="/material/inventoryRegister" title="자재 재고 등록" class="nav-link">자재 재고 등록</a></li>
                     <li><a href="/material/inventoryList" title="자재 재고 목록" class="nav-link">자재 재고 목록</a></li>
@@ -107,10 +122,13 @@
                     <li><a href="/material/deliveryList" title="자재 출고 목록" class="nav-link">출고 목록</a></li>
                 </ul>
             </li>
-            <hr>
-            <!-- 협력업체 메뉴 -->
+        </th:block>
+        <hr>
+        <!-- 협력업체 메뉴 -->
+        <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '협력회사'}">
             <li class="nav-item">
-                <a href="#" class="nav-link" title="거래 관리" onclick="toggleSubmenu('submenu-supplier')"><i class="bi bi-wallet2"></i>&nbsp;&nbsp;거래 관리&nbsp;&nbsp;<span>▾</span></a>
+                <a href="#" class="nav-link" title="거래 관리" onclick="toggleSubmenu('submenu-supplier')"><i
+                        class="bi bi-wallet2"></i>&nbsp;&nbsp;거래 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-supplier" class="submenu">
                     <li><a href="/supplier/purchaseOrderList" title="발주서 목록" class="nav-link">발주서 목록</a></li>
                     <li><a href="/supplier/transactionHistory" class="nav-link">거래 내역 목록</a></li>
@@ -120,98 +138,101 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a href="/supplier/inventoryList" class="nav-link" title="자재 관리" onclick="toggleSubmenu('submenu-price')"><i class="bi bi-boxes"></i>&nbsp;&nbsp;자재 관리&nbsp;&nbsp;<span>▾</span></a>
+                <a href="/supplier/inventoryList" class="nav-link" title="자재 관리"
+                   onclick="toggleSubmenu('submenu-price')"><i
+                        class="bi bi-boxes"></i>&nbsp;&nbsp;자재 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-price" class="submenu">
                     <li><a href="/supplier/inventoryRegister" class="nav-link">자재 등록</a></li>
                     <li><a href="/supplier/inventoryList" class="nav-link">자재 목록</a></li>
                 </ul>
             </li>
-        </ul>
-    </div>
-    <!-- sidebar end -->
-    <!-- header start -->
-    <div class="header">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <div class="menu-toggle tooltip-wrap" style="cursor: pointer" onclick="toggleSidebar()">
-                <i class="bi bi-list"></i> <!-- 햄버거 아이콘 -->
-                <span class="tooltip-text">클릭하면 메뉴를 숨기고 다시 클릭하면 메뉴가 나타납니다.</span>
-            </div>
-            <div th:replace="~{fragments/breadcrumb :: breadcrumb(
+        </th:block>
+    </ul>
+</div>
+<!-- sidebar end -->
+<!-- header start -->
+<div class="header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="menu-toggle tooltip-wrap" style="cursor: pointer" onclick="toggleSidebar()">
+            <i class="bi bi-list"></i> <!-- 햄버거 아이콘 -->
+            <span class="tooltip-text">클릭하면 메뉴를 숨기고 다시 클릭하면 메뉴가 나타납니다.</span>
+        </div>
+        <div th:replace="~{fragments/breadcrumb :: breadcrumb(
             breadcrumbLevel1=${breadcrumbLevel1},
             breadcrumbCurrent=${breadcrumbCurrent})}">
-            </div>
-        </div>
-        <div class="user-info">
-            <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>
-            <div class="tooltip-wrap-left">
-                <i class="bi bi-person-circle" onclick="toggleUserDropdown()"></i>
-                <span class="tooltip-text-left">마이페이지/로그아웃</span>
-            </div>
-
-            <div class="user-dropdown">
-                <a href="/mainPage/myPage">마이페이지</a>
-                <a href="/logout">로그아웃</a>
-            </div>
         </div>
     </div>
-    <!-- header end -->
-    <!-- main start  -->
-    <main class="main-content">
-        <div layout:fragment="mypage"></div>
-        <div layout:fragment="beforeApproval"></div>
-        <div layout:fragment="main"></div>
-        <div layout:fragment="guide"></div>
+    <div class="user-info">
+        <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>
+        <div class="tooltip-wrap-left">
+            <i class="bi bi-person-circle" onclick="toggleUserDropdown()"></i>
+            <span class="tooltip-text-left">마이페이지/로그아웃</span>
+        </div>
 
-        <!-- 관리자 전용 계정 관련 페이지 -->
-        <div layout:fragment="mmEmpList"></div>
-        <div layout:fragment="mmSupList"></div>
-        <div layout:fragment="mmEmpAppr"></div>
-        <div layout:fragment="mmSupAppr"></div>
-        <div layout:fragment="mmRoleSet"></div>
+        <div class="user-dropdown">
+            <a href="/mainPage/myPage">마이페이지</a>
+            <a href="/logout">로그아웃</a>
+        </div>
+    </div>
+</div>
+<!-- header end -->
+<!-- main start  -->
+<main class="main-content">
+    <div layout:fragment="mypage"></div>
+    <div layout:fragment="beforeApproval"></div>
+    <div layout:fragment="main"></div>
+    <div layout:fragment="guide"></div>
+
+    <!-- 관리자 전용 계정 관련 페이지 -->
+    <div layout:fragment="mmEmpList"></div>
+    <div layout:fragment="mmSupList"></div>
+    <div layout:fragment="mmEmpAppr"></div>
+    <div layout:fragment="mmSupAppr"></div>
+    <div layout:fragment="mmRoleSet"></div>
 
 
-        <!-- 생산 계획 페이지 -->
-        <div layout:fragment="ppList"></div>
-        <div layout:fragment="ppRegi"></div>
-        <div layout:fragment="ppOrder"></div>
+    <!-- 생산 계획 페이지 -->
+    <div layout:fragment="ppList"></div>
+    <div layout:fragment="ppRegi"></div>
+    <div layout:fragment="ppOrder"></div>
 
-        <!-- 제품 관리 페이지 -->
-        <div layout:fragment="pdList"></div>
-        <div layout:fragment="pdRegi"></div>
-        <div layout:fragment="boList"></div>
-        <div layout:fragment="boRegi"></div>
+    <!-- 제품 관리 페이지 -->
+    <div layout:fragment="pdList"></div>
+    <div layout:fragment="pdRegi"></div>
+    <div layout:fragment="boList"></div>
+    <div layout:fragment="boRegi"></div>
 
-        <!-- 조달 관리 페이지 -->
-        <div layout:fragment="spList"></div>
-        <div layout:fragment="spRegi"></div>
-        <div layout:fragment="spPcRegi"></div>
-        <div layout:fragment="spPcList"></div>
+    <!-- 조달 관리 페이지 -->
+    <div layout:fragment="spList"></div>
+    <div layout:fragment="spRegi"></div>
+    <div layout:fragment="spPcRegi"></div>
+    <div layout:fragment="spPcList"></div>
 
-        <!-- 발주 관리 페이지 -->
-        <div layout:fragment="spPorder"></div>
-        <div layout:fragment="spPList"></div>
-        <div layout:fragment="spPInsp"></div>
-        <div layout:fragment="spRDeli"></div>
-        <div layout:fragment="spPoStatus"></div>
-        <div layout:fragment="spTrState"></div>
+    <!-- 발주 관리 페이지 -->
+    <div layout:fragment="spPorder"></div>
+    <div layout:fragment="spPList"></div>
+    <div layout:fragment="spPInsp"></div>
+    <div layout:fragment="spRDeli"></div>
+    <div layout:fragment="spPoStatus"></div>
+    <div layout:fragment="spTrState"></div>
 
-        <!--  자재 관리 페이지 -->
-        <div layout:fragment="mtInRegi"></div>
-        <div layout:fragment="mtInList"></div>
-        <div layout:fragment="mtReceipt"></div>
-        <div layout:fragment="mtReList"></div>
-        <div layout:fragment="mtDelivery"></div>
-        <div layout:fragment="mtDeList"></div>
+    <!--  자재 관리 페이지 -->
+    <div layout:fragment="mtInRegi"></div>
+    <div layout:fragment="mtInList"></div>
+    <div layout:fragment="mtReceipt"></div>
+    <div layout:fragment="mtReList"></div>
+    <div layout:fragment="mtDelivery"></div>
+    <div layout:fragment="mtDeList"></div>
 
-        <!-- 협력업체 -->
-        <!-- 거래 관리 페이지 -->
-        <div layout:fragment="slPList"></div>
-        <div layout:fragment="slTHistory"></div>
-        <div layout:fragment="slPInsp"></div>
-        <div layout:fragment="slRDeli"></div>
-        <div layout:fragment="slIList"></div>
-        <div layout:fragment="slIRegi"></div>
-    </main>
+    <!-- 협력업체 -->
+    <!-- 거래 관리 페이지 -->
+    <div layout:fragment="slPList"></div>
+    <div layout:fragment="slTHistory"></div>
+    <div layout:fragment="slPInsp"></div>
+    <div layout:fragment="slRDeli"></div>
+    <div layout:fragment="slIList"></div>
+    <div layout:fragment="slIRegi"></div>
+</main>
 
 </body>
 
