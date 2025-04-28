@@ -41,28 +41,14 @@ window.addEventListener('click', function(e) {
     }
 });
 
-// const ctx = document.getElementById('productionChart').getContext('2d');
-// new Chart(ctx, {
-//     type: 'bar',
-//     data: {
-//         labels: ['4/1', '4/2', '4/3', '4/4'],
-//         datasets: [
-//             {
-//                 label: '계획',
-//                 data: [100, 120, 130, 100],
-//                 backgroundColor: '#8884d8'
-//             },
-//             {
-//                 label: '실적',
-//                 data: [90, 110, 140, 80],
-//                 backgroundColor: '#82ca9d'
-//             }
-//         ]
-//     },
-//     options: {
-//         responsive: true,
-//         scales: {
-//             y: { beginAtZero: true }
-//         }
-//     }
-// });
+function confirmSubmit(message) {
+    // 알림 창을 띄우기
+    var confirmResult = confirm(message + " 하시겠습니까?");
+
+    // 사용자가 "확인"을 클릭하면 폼 제출, 아니면 제출하지 않음
+    if (confirmResult) {
+        return true; // 폼 제출
+    } else {
+        return false; // 폼 제출을 취소
+    }
+}

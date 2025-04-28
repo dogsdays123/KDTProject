@@ -155,7 +155,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
-                        <button type="submit" class="btn btn-primary btn-sm">승인</button>
+                        <button type="submit" class="btn btn-primary btn-sm" onclick="return confirmSubmit('수정')">수정</button>
                     </div>
                 </div>
             </form>
@@ -198,7 +198,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
-                        <button type="submit" class="btn btn-danger btn-sm" id="btnBatchReject">반려</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="btnBatchReject" onclick="return confirmSubmit('삭제')">삭제</button>
                     </div>
                 </div>
             </form>
