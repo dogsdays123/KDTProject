@@ -24,7 +24,6 @@
 <!-- sidebar 시작 -->
 <div class="sidebar">
     <ul class="nav flex-column">
-        <!--            <a href="/mainPage/main"><img src="/image/PNS-logo.PNG"></a>-->
         <li class="nav-item"><a href="/mainPage/beforeApproval" class="nav-link" title="시작하기"><i
                 class="bi bi-stopwatch"></i>&nbsp;&nbsp;승인대기</a></li>
         <li class="nav-item"><a href="/mainPage/main" class="nav-link" title="시작하기"><i
@@ -32,6 +31,7 @@
         <li class="nav-item"><a href="/mainPage/guide" class="nav-link" title="실무 활용가이드"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무
             활용가이드</a></li>
         <hr>
+        <th:block th:if="${userBy.status == '승인'}">
         <th:block th:if="${userBy.userJob == '관리자'}">
             <li class="nav-item">
                 <a href="#" class="nav-link" title="가입 승인" onclick="toggleSubmenu('submenu-agree')"><i
@@ -146,6 +146,7 @@
                     <li><a href="/supplier/inventoryList" class="nav-link">자재 목록</a></li>
                 </ul>
             </li>
+        </th:block>
         </th:block>
     </ul>
 </div>
