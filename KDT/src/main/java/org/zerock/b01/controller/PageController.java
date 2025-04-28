@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -53,8 +54,19 @@ public class PageController {
     }
 
     @GetMapping("/main")
-    public void main() {
-        log.info ("layout page test...");
+    public RedirectView mainView(Authentication auth) {
+
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) auth;
+        UserBySecurityDTO principal = (UserBySecurityDTO) token.getPrincipal();
+        String status = principal.getStatus(); // MemberSecurityDTO에서 사용자 이름 가져오기
+
+        if (!"승인".equals(status)) {
+            // '승인'이 아니면 /beforeApproval로 리다이렉트
+            return new RedirectView("/mainPage/beforeApproval");
+        }
+
+        log.info("layout page test...");
+        return null; // 정상적인 flow에서는 null을 반환
     }
 
     @GetMapping("/guide")
@@ -105,6 +117,5 @@ public class PageController {
     // 관리자 가입 승인 전 메인 페이지
     @GetMapping("/beforeApproval")
     public void beforeApproval() {
-        log.info ("layout page test...");
     }
 }

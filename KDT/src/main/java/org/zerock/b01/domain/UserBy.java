@@ -57,8 +57,9 @@ public class UserBy extends BaseEntity {
         this.uEmail = uEmail;
         this.uPhone = uPhone;
     }
-    public void changeRank(String userRank, String status) {
+    public void changeETC(String userRank, String status, String userJob) {
         this.userRank = userRank;
         this.status = status;
+        this.userJob = userJob;
     }
 }

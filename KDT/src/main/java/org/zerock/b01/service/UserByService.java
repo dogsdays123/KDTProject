@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface UserByService {
     UserByDTO readOne(String uId);
-    void agreeEmployee(String uId, String userRank);
+    void agreeEmployee(String uId, String userRank, String userJob, String status);
     void disAgreeEmployee(String uId, String userRank);
     UserByDTO readOneForEmail(String uEmail);
     void registerAdmin(UserBy user);
     String registerUser(UserByDTO userByDTO);
     String changeUserProfile(String email);
     void changeUser(UserByDTO userByDTO);
-    void agreeSupplier(String uId);
+    void agreeSupplier(String uId, String sStatus);
     void disAgreeSupplier(String uId);
 
     List<UserBy> readAllUser();

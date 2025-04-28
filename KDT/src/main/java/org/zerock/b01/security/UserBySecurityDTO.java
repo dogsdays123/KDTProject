@@ -25,12 +25,13 @@ public class UserBySecurityDTO extends User implements OAuth2User {
     private String uEmail;
     private String uPhone;
     private LocalDate uBirthDay;
+    private String status;
 
     private Map<String, Object> props;
 
     public UserBySecurityDTO(String uId, String uPassword, String uName, String uAddress,
                              String userType, String userJob, String uEmail, String uPhone,
-                             LocalDate uBirthDay, Collection<? extends GrantedAuthority> authorities) {
+                             LocalDate uBirthDay, String status, Collection<? extends GrantedAuthority> authorities) {
 
         super(uId, uPassword, authorities);
 
@@ -43,6 +44,7 @@ public class UserBySecurityDTO extends User implements OAuth2User {
         this.uEmail = uEmail;
         this.uPhone = uPhone;
         this.uBirthDay = uBirthDay;
+        this.status = status;
     }
 
     @Override

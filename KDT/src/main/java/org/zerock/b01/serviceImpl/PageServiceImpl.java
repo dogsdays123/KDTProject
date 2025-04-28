@@ -133,7 +133,7 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public PageResponseDTO<SupplierAllDTO> supplierWithAll(PageRequestDTO pageRequestDTO){
+    public PageResponseDTO<SupplierAllDTO> supplierWithAll(PageRequestDTO pageRequestDTO, String pageType){
         log.info(">>>> supplier 페이지 번호: {}", pageRequestDTO.getPage());
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
@@ -141,17 +141,12 @@ public class PageServiceImpl implements PageService {
         String sRegNum = pageRequestDTO.getUserJob();
         String sBusinessType = pageRequestDTO.getUserRank();
         LocalDate sRegDate = pageRequestDTO.getSRegDate();
-        String sStatus = "";
         String uId = pageRequestDTO.getUId();
-        if(pageRequestDTO.getSStatus() == null){
-            sStatus = "대기중";
-        } else {
-            sStatus = "완료";
-        }
+        String sStatus = pageRequestDTO.getStatus();
 
         Pageable pageable = pageRequestDTO.getPageable("sId");
 
-        Page<SupplierAllDTO> result = productRepository.supplierSearchWithAll(types, keyword, sName, sRegNum, sBusinessType, sRegDate, sStatus, pageable);
+        Page<SupplierAllDTO> result = productRepository.supplierSearchWithAll(types, keyword, sName, sRegNum, sBusinessType, sRegDate, sStatus, pageType, pageable);
 
         return PageResponseDTO.<SupplierAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

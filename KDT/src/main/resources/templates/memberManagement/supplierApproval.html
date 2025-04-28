@@ -125,6 +125,7 @@
          aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <form method="post" th:action="@{/memberManagement/supplierApprovalAgree}">
+                <input type="hidden" name="pageType" value="a">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="batchApproveLabel">사원 가입 승인</h5>
@@ -168,6 +169,7 @@
          aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <form method="post" th:action="@{/memberManagement/supplierApprovalDisAgree}">
+                <input type="hidden" name="pageType" value="a">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="batchRejectLabel">사원 가입 반려</h5>
