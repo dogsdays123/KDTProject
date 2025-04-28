@@ -28,7 +28,7 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
 
         const uId = tdList[1].textContent.trim();
         const uName = tdList[2].textContent.trim();
-        const uRegNum = tdList[3].textContent.trim();
+        const userJob = tdList[3].textContent.trim();
         const userRank = tdList[4].querySelector('select') ? tdList[4].querySelector('select').value : '';
         const regDate = tdList[5].textContent.trim();
         const status = tdList[6].textContent.trim();
@@ -36,7 +36,8 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
         const fields = {
             [`uId`]: uId,
             [`status`]: status,
-            [`userRank`]: userRank
+            [`userRank`]: userRank,
+            [`userJob`]: userJob
             //[`users[${index}].status`]: status
         };
 
@@ -54,7 +55,7 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
         newRow.innerHTML = `
             <td>${uId}</td>
             <td>${uName}</td>
-            <td>${uRegNum}</td>
+            <td>${userJob}</td>
             <td>${userRank}</td>
             <td>${regDate}</td>
             <td>${status}</td>
@@ -100,8 +101,8 @@ document.getElementById('openDisAgreeModal').addEventListener('click', function 
         const fields = {
             [`uId`]: uId,
             [`status`]: status,
-            [`userRank`]: userRank
-            //[`users[${index}].status`]: status
+            [`userRank`]: userRank,
+            [`userJob`]: userJob
         };
 
         for (const [name, value] of Object.entries(fields)) {

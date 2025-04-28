@@ -22,6 +22,7 @@ import org.zerock.b01.service.AllSearch;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -238,7 +239,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     @Override
-    public Page<SupplierAllDTO> supplierSearchWithAll(String[] types, String keyword, String sName, String sRegNum, String sBusinessType, LocalDate sRegDate, String sStatus, Pageable pageable){
+    public Page<SupplierAllDTO> supplierSearchWithAll(String[] types, String keyword, String sName, String sRegNum, String sBusinessType, LocalDate sRegDate, String sStatus, String pageType, Pageable pageable){
         QSupplier supplier = QSupplier.supplier;
         JPQLQuery<Supplier> query = from(supplier);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -256,10 +257,18 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(supplier.sBusinessType.contains(sBusinessType));
         }
 
-        booleanBuilder.and(
-                supplier.sStatus.isNull()
-                        .or(supplier.sStatus.isEmpty())
-        );
+        if(pageType.equals("a")){
+            booleanBuilder.and(
+                    supplier.sStatus.isNull()
+                            .or(supplier.sStatus.isEmpty())
+                            .or(supplier.sStatus.eq("대기중"))
+            );
+        } else {
+            booleanBuilder.and(
+                    supplier.sStatus.eq("반려")
+                            .or(supplier.sStatus.eq("승인"))
+            );
+        }
 
         if (sRegDate != null) {
             booleanBuilder.and(supplier.regDate.goe(sRegDate.atStartOfDay()));
@@ -280,7 +289,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .sManager(sup.getSManager())
                         .sPhone(sup.getSPhone())
                         .regDate(sup.getRegDate())
-                        .sStatus(sStatus)
+                        .sStatus(sup.getSStatus())
                         .build())
                 .collect(Collectors.toList());
 

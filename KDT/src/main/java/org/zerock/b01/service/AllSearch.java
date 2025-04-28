@@ -17,7 +17,7 @@ public interface AllSearch {
     Page<PlanListAllDTO> planSearchWithAll(String[] types, String keyword, String pName, String ppState, LocalDate ppStart, LocalDate ppEnd, Pageable pageable);
     Page<UserByAllDTO> userBySearchWithAll(String[] types, String keyword, String uName,
                                            String userJob, String userRank, LocalDate modDate, String status, String uId, Pageable pageable);
-    Page<SupplierAllDTO> supplierSearchWithAll(String[] types, String keyword, String sName, String sRegNum, String sBusinessType, LocalDate sRegDate, String sStatus, Pageable pageable);
+    Page<SupplierAllDTO> supplierSearchWithAll(String[] types, String keyword, String sName, String sRegNum, String sBusinessType, LocalDate sRegDate, String sStatus, String pageType, Pageable pageable);
     Page<UserByAllDTO> userBySearchWithAllList(String[] types, String keyword, String uName,
                                            String userJob, String userRank, LocalDate modDate, String status, String uId, Pageable pageable);
 }

@@ -18,17 +18,7 @@
             <form>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label for="deptName" class="form-label small">업종 선택</label>
-                        <select class="form-select form-select-sm" id="deptName" title="부서 선택">
-                            <option selected>전체</option>
-                            <option value="-">제조업</option>
-                            <option value="-">도소매업</option>
-                            <option value="-"></option>
-                            <option value="-"></option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="hireDate" class="form-label small">가입 승인일</label>
+                        <label for="hireDate" class="form-label small">회원 가입일</label>
                         <input type="date" class="form-control form-control-sm" id="hireDate">
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
@@ -53,11 +43,12 @@
             <div class="d-flex justify-content-end mb-2">
                 <form>
                     <div class="col-auto">
-                        <select class="form-select form-select-sm" title="정렬 갯수 필터">
-                            <option selected>전체</option>
-                            <option value="20">20개씩</option>
-                            <option value="30">30개씩</option>
-                            <option value="50">50개씩</option>
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size"
+                                onchange="this.form.submit()">
+                            <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                            <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                            <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                            <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
                         </select>
                     </div>
                 </form>
@@ -68,142 +59,153 @@
                         <thead class="table-light small text-center">
                         <tr>
                             <th><input type="checkbox" id="selectAll" title="전체선택"></th>
+                            <th>관리자</th>
                             <th>상호</th>
                             <th>사업자등록번호</th>
                             <th>업태</th>
                             <th>매니저</th>
                             <th>전화번호</th>
-                            <th>가입 승인일</th>
-                            <th>상세 정보</th>
+                            <th>신청일</th>
+                            <th>상태</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>바이크코리아</td>
-                            <td>123-44-98754</td>
-                            <td>제조업</td>
-                            <td>홍사월</td>
-                            <td>02-123-9988</td>
-                            <td>2021-03-14</td>
-                            <td>
-                                <button type="button" class="icon-button"  title="상세 정보 보기">
-                                    <i class="bi bi-person-lines-fill"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>카인드몰</td>
-                            <td>203-12-44323</td>
-                            <td>도소매업</td>
-                            <td>최진희</td>
-                            <td>031-343-1126</td>
-                            <td>2023-07-15</td>
-                            <td>
-                                <button type="button" class="icon-button"  title="상세 정보 보기">
-                                    <i class="bi bi-person-lines-fill"></i>
-                                </button>
+                        <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
+                            <td><input type="checkbox" class="selectList" title="해당 행 선택"></td>
+                            <td th:text="${dto.getUId()}"></td>
+                            <td th:text="${dto.getSName()}"></td>
+                            <td th:text="${dto.getSRegNum()}"></td>
+                            <td th:text="${dto.getSBusinessType()}"></td>
+                            <td th:text="${dto.getSManager()}"></td>
+                            <td th:text="${dto.getSPhone()}"></td>
+                            <td th:text="${#temporals.format(dto.getRegDate(), 'yyyy-MM-dd')}"></td>
+                            <td style="width: 5rem;">
+                                <select class="form-select form-select-sm" style="width: 5rem; display: inline-block;">
+                                    <option th:value="${dto.getSStatus()}" selected>[[${dto.getSStatus()}]]</option>
+                                    <option th:if="${dto.getSStatus() != '승인'}" value="승인">승인</option>
+                                    <option th:if="${dto.getSStatus() != '반려'}" value="반려">반려</option>
+                                </select>
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <div class="text-start">
-                        <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
-                            선택 항목 삭제
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-primary btn-sm" id="modifySupplierModal">
+                            선택 회사 정보 변경
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" id="removeSupplierModal">
+                            선택 회사 영구 삭제
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true" >
-        <div class="modal-dialog modal-lg" >
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="purchaseOrderModalLabel">업체 상세 정보</h5>&nbsp;&nbsp;
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="max-height: 700px; overflow-y: auto;">
-                    <form id="purchaseOrderForm">
-                        <div class="row g-3 mb-3">
-                            <div class="col-12">
-                                <label class="form-label">상호</label>
-                                <input type="text" id="uNum" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">사업자등록번호</label>
-                                <input type="text" id="uName" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">대표자</label>
-                                <input type="text" id="uJob" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">주소</label>
-                                <input type="text" id="uPosition" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">상세주소</label>
-                                <input type="text" id="uBirthDay" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">직통번호</label>
-                                <input type="text" id="uPhone" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">팩스번호</label>
-                                <input type="text" id="uEmail" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">계약서</label>
-                                <input type="text" id="uAddress" class="form-control form-control-sm" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">가입 승인일</label>
-                                <input type="date" id="uAgreeDate" class="form-control form-control-sm" required>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
-                </div>
+            <div class="d-flex justify-content-center">
+                <ul class="pagination flex-wrap">
+                    <li class="page-item" th:if="${responseDTO.prev}">
+                        <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                    </li>
+
+                    <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                        <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                            <a th:class="page-link" th:data-num="${i}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <li class="page-item" th:if="${responseDTO.next}">
+                        <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+
+    <!--가입 승인 모달-->
+    <div class="modal fade" id="ModifyModal" tabindex="-1" aria-labelledby="modifySupplierLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="purchaseOrderModalDelLabel">업체 정보 삭제</h5>&nbsp;&nbsp;
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                        <table class="table table-sm table-bordered table-hover align-middle fs-6">
-                            <thead class="table-light small text-center">
-                            <tr>
-                                <th>사번</th>
-                                <th>이름</th>
-                                <th>부서</th>
-                                <th>직책</th>
-                                <th>신청일</th>
-                            </tr>
-                            </thead>
-                            <tbody class="selectedEmpList">
-                            <!-- JS로 선택된 사원 목록 추가 -->
-                            </tbody>
-                        </table>
+            <form method="post" th:action="@{/memberManagement/supplierApprovalAgree}">
+                <input type="hidden" name="pageType" value="b">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="batchApproveLabel">사원 가입 승인</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                <thead class="table-light small text-center">
+                                <tr>
+                                    <th>관리자</th>
+                                    <th>상호</th>
+                                    <th>사업자등록번호</th>
+                                    <th>업태</th>
+                                    <th>매니저</th>
+                                    <th>전화번호</th>
+                                    <th>신청일</th>
+                                    <th>상태</th>
+                                </tr>
+                                </thead>
+                                <tbody class="selectedSupListMo">
+                                <!-- JS로 선택된 사원 목록 추가 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-primary btn-sm">승인</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-danger btn-sm">삭제</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
+    <!--    모달-->
+
+    <!--가입 반려 모달-->
+    <div class="modal fade" id="RemoveModal" tabindex="-1" aria-labelledby="removeEmployeeLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <form method="post" th:action="@{/memberManagement/supplierApprovalDisAgree}">
+                <input type="hidden" name="pageType" value="b">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="batchRejectLabel">사원 가입 반려</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-sm table-bordered table-hover align-middle fs-6">
+                                <thead class="table-light small text-center">
+                                <tr>
+                                    <th>관리자</th>
+                                    <th>상호</th>
+                                    <th>사업자등록번호</th>
+                                    <th>업태</th>
+                                    <th>매니저</th>
+                                    <th>전화번호</th>
+                                    <th>신청일</th>
+                                    <th>상태</th>
+                                </tr>
+                                </thead>
+                                <tbody class="selectedSupListRm">
+                                <!-- JS로 선택된 사원 목록 추가 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="btnBatchReject">반려</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--    모달-->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/memberManagement/supplierList.js}"></script>
 </div>

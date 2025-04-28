@@ -20,6 +20,7 @@ import org.zerock.b01.service.UserByService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Log4j2
 @Controller
@@ -72,8 +73,20 @@ public class MemberManagementController {
 
 
     @GetMapping("/supplierList")
-    public void supplierList() {
-        log.info("##supplierList LIST PAGE GET....##");
+    public void supplierList(PageRequestDTO pageRequestDTO, Model model) {
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        //b를 준 이유는 다른 페이지에서 같은 메서드를 사용하기 위해
+        PageResponseDTO<SupplierAllDTO> responseDTO =
+                pageService.supplierWithAll(pageRequestDTO, "b");
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        model.addAttribute("responseDTO", responseDTO);
     }
 
     @GetMapping("/employeeApproval")
@@ -97,23 +110,30 @@ public class MemberManagementController {
 
     @PostMapping("/employeeApprovalAgree")
     public String employeeApprovalAgree(@RequestParam("uId") List<String> uId, @RequestParam("userRank") List<String> userRank,
+                                        @RequestParam("userJob") List<String> userJob, @RequestParam("pageType") String pageType,
+                                        @RequestParam("status") List<String> status,
                                         Model model, RedirectAttributes redirectAttributes,
                                         HttpServletRequest request) throws IOException {
 
         for (int i = 0; i < uId.size(); i++) {
             String id = uId.get(i);
             String ur = userRank.get(i);
+            String uj = userJob.get(i);
+            String st = status.get(i);
 
-            userByService.agreeEmployee(id, ur);
+            userByService.agreeEmployee(id, ur, uj, st);
         }
 
-        return "redirect:/memberManagement/employeeApproval";
+        if (pageType.equals("a"))
+            return "redirect:/memberManagement/employeeApproval";
+        else
+            return "redirect:/memberManagement/employeeList";
     }
 
     @PostMapping("/employeeApprovalDisAgree")
     public String employeeApprovalDisAgree(@RequestParam("uId") List<String> uId, @RequestParam("userRank") List<String> userRank,
-                                        Model model, RedirectAttributes redirectAttributes,
-                                        HttpServletRequest request) throws IOException {
+                                           Model model, RedirectAttributes redirectAttributes,
+                                           HttpServletRequest request) throws IOException {
 
         for (int i = 0; i < uId.size(); i++) {
             String id = uId.get(i);
@@ -133,8 +153,9 @@ public class MemberManagementController {
             pageRequestDTO.setSize(10); // 기본값 10
         }
 
+        //a를 준 이유는 다른 페이지에서 같은 메서드를 사용하기 위해
         PageResponseDTO<SupplierAllDTO> responseDTO =
-                pageService.supplierWithAll(pageRequestDTO);
+                pageService.supplierWithAll(pageRequestDTO, "a");
 
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
@@ -147,14 +168,23 @@ public class MemberManagementController {
 
     @PostMapping("/supplierApprovalAgree")
     public String supplierApprovalAgree(@RequestParam("uId") List<String> uId,
+                                        @RequestParam("sStatus") List<String> sStatus,
+                                        @RequestParam("pageType") String pageType,
                                         Model model, RedirectAttributes redirectAttributes,
                                         HttpServletRequest request) throws IOException {
 
-        for (String uid : uId){
-            userByService.agreeSupplier(uid);
+        for (int i = 0; i < uId.size(); i++) {
+            String id = uId.get(i);
+            String st = sStatus.get(i);
+
+            userByService.agreeSupplier(id, st);
         }
 
-        return "redirect:/memberManagement/supplierApproval";
+        if(pageType.equals("a")){
+            return "redirect:/memberManagement/supplierApproval";
+        } else{
+            return "redirect:/memberManagement/supplierList";
+        }
     }
 
     @GetMapping("/roleSet")
@@ -167,7 +197,7 @@ public class MemberManagementController {
                                            Model model, RedirectAttributes redirectAttributes,
                                            HttpServletRequest request) throws IOException {
 
-        for (String uid : uId){
+        for (String uid : uId) {
             userByService.disAgreeSupplier(uid);
         }
 

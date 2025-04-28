@@ -37,7 +37,8 @@ document.getElementById('openAgreeModal').addEventListener('click', function () 
         const sStatus = tdList[8].textContent.trim();
 
         const fields = {
-            [`uId`]: uId
+            [`uId`]: uId,
+            [`sStatus`]: sStatus
         };
 
         for (const [name, value] of Object.entries(fields)) {
@@ -105,7 +106,8 @@ document.getElementById('openDisAgreeModal').addEventListener('click', function 
 
         // hidden input 생성
         const fields = {
-            [`uId`]: uId
+            [`uId`]: uId,
+            [`sStatus`]: sStatus
         };
 
         for (const [name, value] of Object.entries(fields)) {
