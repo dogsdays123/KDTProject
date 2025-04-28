@@ -73,11 +73,11 @@
                 <!-- 엑셀 업로드 -->
                 <form id="excelUploadForm" method="post" enctype="multipart/form-data" th:action="@{/product/addProduct}">
                     <input type="hidden" id="uId" name="uId" th:value="${userBy.uId}">
-                    <input name="where" type="hidden" value="Plan">
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <label for="excelFile" class="custom-file-upload">
                             <i class="bi bi-paperclip me-1"></i> 파일 선택
                         </label>
+                        <input type="hidden" name="whereToGo" id="whereToGo">
                         <button type="button" id="excelUpload" class="tooltip-wrap btn btn-dark btn-sm">
                             <i class="bi bi-upload me-1"></i> 엑셀 업로드
                             <span class="tooltip-text">클릭 시 파일 정보들이 등록됩니다. 이미 등록된 정보가 있으면 등록이 제한됩니다.</span>

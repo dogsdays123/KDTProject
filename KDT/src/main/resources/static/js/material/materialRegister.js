@@ -28,20 +28,20 @@ function addPlan() {
     //<td><input type="hidden" name="supplier[${rowIndex}].supplier" value="${supplier}">${supplier}</td>
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="materials[${rowIndex}].mName" value="${mName}">${mName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mCode" value="${mCode}">${mCode}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mType" value="${mType}">${mType}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].pName" value="${pName}">${pName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mMinNum" value="${mMinNum}">${mMinNum}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mDepth" value="${depth}">${depth}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mHeight" value="${height}">${height}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mWidth" value="${width}">${width}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mWeight" value="${weight}">${weight}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].unitPrice" value="${unitPrice}">${unitPrice}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].supplier" value="${supplier}">${supplier}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mLeadTime" value="${leadTime}">${leadTime}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].uId" value="${uId}">${uId}</td> 
+        <td><input type="hidden" name="mNames[]" value="${mName}">${mName}</td>
+        <td><input type="hidden" name="mCodes[]" value="${mCode}">${mCode}</td>
+        <td><input type="hidden" name="mTypes[]" value="${mType}">${mType}</td>
+        <td><input type="hidden" name="mComponentTypes[]" value="${mComponentType}">${mComponentType}</td>
+        <td><input type="hidden" name="pNames[]" value="${pName}">${pName}</td>
+        <td><input type="hidden" name="mMinNums[]" value="${mMinNum}">${mMinNum}</td>
+        <td><input type="hidden" name="mDepths[]" value="${depth}">${depth}</td>
+        <td><input type="hidden" name="mHeights[]" value="${height}">${height}</td>
+        <td><input type="hidden" name="mWidths[]" value="${width}">${width}</td>
+        <td><input type="hidden" name="mWeights[]" value="${weight}">${weight}</td>
+        <td><input type="hidden" name="mUnitPrices[]" value="${unitPrice}">${unitPrice}</td>
+        <td><input type="hidden" name="supplier[]" value="${supplier}">${supplier}</td>
+        <td><input type="hidden" name="mLeadTime[]" value="${leadTime}">${leadTime}</td>
+        <td><input type="hidden" name="uId[]" value="${uId}">${uId}</td> 
         <td>
           <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
             <i class="bi bi-x-lg"></i>
@@ -81,8 +81,8 @@ function addPlan() {
 
     // 입력값 초기화
     document.getElementById('pName').selectedIndex = 0;
-    document.getElementById('mComponentType').selectedIndex = 0;
-    document.getElementById('mType').selectedIndex = 0;
+    document.getElementById('mComponentType').value = '';
+    document.getElementById('mType').value = '';
     document.getElementById('mName').value = '';
     document.getElementById('mCode').value = '';
     document.getElementById('supplier').value = '';

@@ -13,10 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.zerock.b01.domain.*;
-import org.zerock.b01.dto.PlanListAllDTO;
-import org.zerock.b01.dto.ProductListAllDTO;
-import org.zerock.b01.dto.SupplierAllDTO;
-import org.zerock.b01.dto.UserByAllDTO;
+import org.zerock.b01.dto.*;
 import org.zerock.b01.service.AllSearch;
 
 import java.time.LocalDate;
@@ -350,6 +347,75 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         // 전체 개수
         // 카운트용 별도 쿼리 생성
         JPQLQuery<UserBy> countQuery = from(userBy).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public Page<MaterialDTO> materialSearchWithAll(String[] types, String keyword, String pName, String componentType, String mName,
+                                                   String mCode, String mType, Pageable pageable) {
+
+        QMaterial material = QMaterial.material;
+        JPQLQuery<Material> query = from(material);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+
+            keywordBuilder.or(material.mName.contains(keyword));
+            keywordBuilder.or(material.mComponentType.contains(keyword));
+
+            booleanBuilder.and(keywordBuilder);
+        }
+
+        if (pName != null && !pName.isEmpty() && !"전체".equals(pName)) {
+            booleanBuilder.and(material.product.pName.contains(pName));
+        }
+
+        if (componentType != null && !componentType.isEmpty() && !"전체".equals(componentType)) {
+            booleanBuilder.and(material.mComponentType.contains(componentType));
+        }
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            booleanBuilder.and(material.mName.contains(mName));
+        }
+
+        if (mCode != null && !mCode.isEmpty() && !"전체".equals(mCode)) {
+            booleanBuilder.and(material.mCode.contains(mCode));
+        }
+
+        if (mType != null && !mType.isEmpty() && !"전체".equals(mType)) {
+            booleanBuilder.and(material.mType.contains(mType));
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        List<Material> resultList = query.fetch();
+
+        // DTO로 변환
+        List<MaterialDTO> dtoList = resultList.stream()
+                .map(prod -> MaterialDTO.builder()
+                        .mCode(prod.getMCode())
+                        .mName(prod.getMName())
+                        .mType(prod.getMType())
+                        .mMinNum(prod.getMMinNum())
+                        .mHeight(prod.getMHeight())
+                        .mWidth(prod.getMWidth())
+                        .mDepth(prod.getMDepth())
+                        .mWeight(prod.getMWeight())
+                        .mUnitPrice(prod.getMUnitPrice())
+                        .mComponentType(prod.getMComponentType())
+                        .mLeadTime(prod.getMLeadTime())
+                        .uId(prod.getUserBy().getUId())
+                        .pName(prod.getProduct().getPName())
+
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<Material> countQuery = from(material).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

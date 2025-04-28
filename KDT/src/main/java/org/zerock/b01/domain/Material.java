@@ -51,4 +51,18 @@ public class Material extends BaseEntity {
     public void set(String mCode) {
         this.mCode = mCode;
     }
+
+    public void change(String mComponentType, String mType, String mName, String mMinNum, String mUnitPrice,
+                       Float mDepth, Float mHeight, Float mWidth, Float mWeight, String mLeadTime) {
+        this.mComponentType = mComponentType;
+        this.mType = mType;
+        this.mName = mName;
+        this.mMinNum = mMinNum;
+        this.mDepth = mDepth;
+        this.mHeight = mHeight;
+        this.mWidth = mWidth;
+        this.mWeight = mWeight;
+        this.mUnitPrice = mUnitPrice;
+        this.mLeadTime = mLeadTime;
+    }
 }

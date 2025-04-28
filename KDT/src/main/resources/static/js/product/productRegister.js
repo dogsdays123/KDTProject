@@ -82,7 +82,7 @@ let selectedFiles = []; // 전역 변수로 따로 관리
 
 
 document.getElementById('excelFile').addEventListener('change', function(event) {
-    const files = Array.from(event.target.files); // 🔥 여기가 핵심
+    const files = Array.from(event.target.files);
     selectedFiles = files;
 
     updateFileListUI();
@@ -157,6 +157,9 @@ function loadFileContent(file, index) {
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
 
+        let pCodes = [];
+        let pNames = [];
+
         rows[0]?.forEach(header => {
             const th = document.createElement('th');
             th.textContent = header;
@@ -166,6 +169,13 @@ function loadFileContent(file, index) {
         rows.slice(1).forEach(row => {
             const tr = document.createElement('tr');
             tr.setAttribute('data-file-name', file.name);
+
+            const productCode = row[0];
+            const productName = row[1];
+
+            pCodes.push(productCode);
+            pNames.push(productName);
+
             row.forEach(cell => {
                 const td = document.createElement('td');
                 td.textContent = cell;
@@ -173,6 +183,9 @@ function loadFileContent(file, index) {
             });
             tableBody.appendChild(tr);
         });
+
+        console.log("pCodes: ", pCodes);
+        console.log("pNames: ", pNames);
 
         const fileTable = document.getElementById('fileTable');
         fileTable.setAttribute('data-file-name', file.name);
@@ -208,6 +221,7 @@ $('#excelUpload').on('click', function (e) {
 
     formData.append('uId', uId);
     formData.append('where', whereValue);
+    formData.append('whereToGo', 'register');
 
     // AJAX 요청 보내기
     $.ajax({
@@ -227,6 +241,13 @@ $('#excelUpload').on('click', function (e) {
             document.getElementById('fileTable').style.display = 'none';
             $('#excelFile').val('');
             document.getElementById('fileListContainer').style.display = 'none';
+
+            if (confirm("목록 페이지로 이동하시겠습니까?")) {
+                window.location.href = "/product/goodsList";
+            } else {
+                window.location.href = "/product/goodsRegister";
+            }
+
         },
         error: function(xhr, status, error) {
             alert("파일 업로드에 실패했습니다. : " + error);

@@ -9,13 +9,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.CurrentStatus;
+import org.zerock.b01.domain.Material;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.service.PageService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -28,6 +32,9 @@ public class PageServiceImpl implements PageService {
 
     @Autowired
     private final ProductRepository productRepository;
+
+    @Autowired
+    private final MaterialRepository materialRepository;
 
     @Autowired
     private ProductionPlanRepository productionPlanRepository;
@@ -74,6 +81,28 @@ public class PageServiceImpl implements PageService {
         Page<ProductListAllDTO> result = productRepository.productSearchWithAll(types, keyword, pCode, pName, pageable);
 
         return PageResponseDTO.<ProductListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<MaterialDTO> materialListWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String pName = pageRequestDTO.getPName();
+        String componentType = pageRequestDTO.getComponentType();
+        String mName = pageRequestDTO.getMName();
+        String mCode = pageRequestDTO.getMCode();
+        String mType = pageRequestDTO.getMType();
+
+        Pageable pageable = pageRequestDTO.getPageable("mCode");
+
+        Page<MaterialDTO> result = materialRepository.materialSearchWithAll(types, keyword, pName, componentType, mName,
+                mCode, mType, pageable);
+
+        return PageResponseDTO.<MaterialDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())

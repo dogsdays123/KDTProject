@@ -14,7 +14,7 @@
                 <h4 class="mb-0 me-2">생산 계획 등록</h4>
                 <div class="tooltip-wrap">
                     <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
-                    <span class="tooltip-text">제품의 생산 일정을 계획하고 등록할 수 있습니다.</span>
+                    <span class="tooltip-text">상품의 생산 일정을 계획하고 등록할 수 있습니다.</span>
                 </div>
             </div>
             <form method="post" th:action="@{/productionPlan/addProductPlanSelf}">
@@ -31,7 +31,7 @@
                             <input type="date" id="ppEnd" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-2">
-                            <label for="pName" class="form-label small">제품명</label>
+                            <label for="pName" class="form-label small">상품명</label>
                             <select class="form-select form-select-sm" id="pName">
                                 <option value="" selected>선택</option>
                                 <th:block th:each="product : ${productList}">
@@ -40,7 +40,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="pppCode" class="form-label small">제품 코드</label>
+                            <label for="pppCode" class="form-label small">상품 코드</label>
                             <input type="text" id="pppCode" class="form-control form-control-sm" placeholder="새로 등록하는 제품만 기입">
                         </div>
                         <div class="col-md-2">
@@ -63,8 +63,8 @@
                         <tr>
                             <th>시작 날짜</th>
                             <th>종료 날짜</th>
-                            <th>제품명</th>
-                            <th>제품 코드</th>
+                            <th>상품명</th>
+                            <th>상품 코드</th>
                             <th>생산 계획 코드</th>
                             <th>수량</th>
                             <th>등록자</th>
@@ -135,5 +135,10 @@
             </small>
         </div>
     </div>
+    <script th:if="${message != null}" th:inline="javascript">
+        /*<![CDATA[*/
+        alert([[${message}]]);
+        /*]]>*/
+    </script>
     <script th:src="@{/js/productionPlan/register.js}"></script>
 </div>

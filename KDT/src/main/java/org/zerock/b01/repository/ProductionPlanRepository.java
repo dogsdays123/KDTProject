@@ -33,4 +33,6 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
     void deleteAllById(List<String> ppCodes);
 
     boolean existsByProduct_pCode(String pCode);
+
+//    boolean existsByMaterial_mCode(String mCode);
 }

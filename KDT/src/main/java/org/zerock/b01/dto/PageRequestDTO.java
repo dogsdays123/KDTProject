@@ -50,6 +50,12 @@ public class PageRequestDTO {
     private LocalDate sRegDate;
     private String sStatus;
 
+    //자재
+    private String mCode;
+    private String componentType;
+    private String mName;
+    private String mType;
+
     //product
     private String pCode;
     private LocalDate pReg;

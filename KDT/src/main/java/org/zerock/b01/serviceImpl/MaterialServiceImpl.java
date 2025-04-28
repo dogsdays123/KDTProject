@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.MaterialDTO;
+import org.zerock.b01.dto.ProductDTO;
 import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.UserByRepository;
@@ -14,6 +15,7 @@ import org.zerock.b01.service.MaterialService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -28,6 +30,11 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Override
+    public List<Material> getMaterials() {
+        return materialRepository.findAll();
+    }
 
     @Override
     public void registerMaterial(MaterialDTO materialDTO, String uId){
@@ -76,5 +83,27 @@ public class MaterialServiceImpl implements MaterialService {
 
         // 코드 생성
         return String.format("%s%s%03d", prefix, dateCode, nextSequence);
+    }
+
+    @Override
+    public void modifyMaterial(MaterialDTO materialDTO, String uName){
+        Optional<Material> result = materialRepository.findByMaterialCode(materialDTO.getMCode());
+        Material material = result.orElseThrow();
+        material.change(materialDTO.getMComponentType(), materialDTO.getMType(), materialDTO.getMName(), materialDTO.getMMinNum(), materialDTO.getMUnitPrice(),
+                materialDTO.getMDepth(), materialDTO.getMHeight(), materialDTO.getMWidth(),
+                materialDTO.getMWeight(), materialDTO.getMLeadTime());
+
+        materialRepository.save(material);
+    }
+
+    @Override
+    public void removeMaterial(List<String> pCodes){
+        if (pCodes == null || pCodes.isEmpty()) {
+            throw new IllegalArgumentException("삭제할 생산 계획 코드가 없습니다.");
+        }
+
+        for (String pCode : pCodes) {
+            materialRepository.deleteById(pCode); // 개별적으로 삭제
+        }
     }
 }

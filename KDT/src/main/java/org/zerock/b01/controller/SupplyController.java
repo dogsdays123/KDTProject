@@ -4,29 +4,28 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Bom;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
-import org.zerock.b01.dto.MaterialDTO;
-import org.zerock.b01.dto.MaterialFormDTO;
-import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -42,6 +41,7 @@ public class SupplyController {
     private final UserByService userByService;
     private final MaterialService materialService;
     private final BomService bomService;
+    private final PageService pageService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -64,8 +64,53 @@ public class SupplyController {
     }
 
     @GetMapping("/materialList")
-    public void materialList() {
-        log.info("##MATERIAL LIST PAGE GET....##");
+    public void materialList(PageRequestDTO pageRequestDTO, Model model) {
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<MaterialDTO> responseDTO =
+                pageService.materialListWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<Material> materialList = materialService.getMaterials();
+
+        Set<String> pNameSet = materialList.stream()
+                .filter(m -> m.getProduct() != null && m.getProduct().getPName() != null)
+                .map(m -> m.getProduct().getPName())
+                .collect(Collectors.toSet());
+
+        model.addAttribute("pNameList", pNameSet);
+
+
+        Set<String> componentTypeSet = materialList.stream()
+                .filter(m -> m.getMComponentType() != null)
+                .map(Material::getMComponentType)
+                .collect(Collectors.toSet());
+
+        model.addAttribute("componentTypeList", componentTypeSet);
+
+        Set<String> mNameSet = materialList.stream()
+                .filter(m -> m.getMName() != null)
+                .map(Material::getMName)
+                .collect(Collectors.toSet());
+
+        model.addAttribute("mNameList", mNameSet);
+
+
+        model.addAttribute("materialList", materialList);
+        model.addAttribute("responseDTO", responseDTO);
+
+        model.addAttribute("selectedPName", pageRequestDTO.getPName() != null ? pageRequestDTO.getPName() : "");
+        model.addAttribute("selectedCType", pageRequestDTO.getComponentType() != null ? pageRequestDTO.getComponentType() : "");
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedMType", pageRequestDTO.getMType() != null ? pageRequestDTO.getMType() : "");
+
+        log.info("###MATERIAL LIST: " + responseDTO);
     }
 
     @GetMapping("/materialRegister")
@@ -112,16 +157,65 @@ public class SupplyController {
 
     @PostMapping("/addMaterialSelf")
     public String addMaterialSelf(@ModelAttribute MaterialFormDTO form, Model model,
+                                  @RequestParam("mNames[]") List<String> mNames,
+                                  @RequestParam("mCodes[]") List<String> mCodes,
+                                  @RequestParam("mTypes[]") List<String> mTypes,
+                                  @RequestParam("mComponentTypes[]") List<String> mComponentTypes,
+                                  @RequestParam("pNames[]") List<String> pNames,
+                                  @RequestParam("mMinNums[]") List<String> mMinNums,
+                                  @RequestParam("mDepths[]") List<Float> mDepths,
+                                  @RequestParam("mHeights[]") List<Float> mHeights,
+                                  @RequestParam("mWidths[]") List<Float> mWidths,
+                                  @RequestParam("mWeights[]") List<Float> mWeights,
+                                  @RequestParam("mUnitPrices[]") List<String> mUnitPrices,
+                                  @RequestParam("supplier[]") List<String> supplier,
+                                  @RequestParam("mLeadTime[]") List<String> mLeadTime,
+                                  @RequestParam("uId[]") List<String> uId,
                                 RedirectAttributes redirectAttributes, HttpServletRequest request) throws IOException {
 
-        List<MaterialDTO> materialDTOs = form.getMaterials();
 
+                List<MaterialDTO> materialDTOs = new ArrayList<>();
+
+                for (int i = 0; i < mCodes.size(); i++) {
+                    MaterialDTO materialDTO = new MaterialDTO();
+                    materialDTO.setMCode(mCodes.get(i)); // pCode를 설정
+                    materialDTO.setMName(mNames.get(i));
+                    materialDTO.setMType(mTypes.get(i));
+                    materialDTO.setMComponentType(mComponentTypes.get(i));
+                    materialDTO.setPName(pNames.get(i));
+                    materialDTO.setMMinNum(mMinNums.get(i));
+                    materialDTO.setMDepth(mDepths.get(i));
+                    materialDTO.setMHeight(mHeights.get(i));
+                    materialDTO.setMWidth(mWidths.get(i));
+                    materialDTO.setMWeight(mWeights.get(i));
+                    materialDTO.setMUnitPrice(mUnitPrices.get(i));
+                    materialDTO.setMLeadTime(mLeadTime.get(i));
+                    materialDTO.setUId(uId.get(i));
+                    materialDTOs.add(materialDTO);
+                }
         for(MaterialDTO materialDTO : materialDTOs) {
             materialService.registerMaterial(materialDTO, materialDTO.getUId());
         }
-
+        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/supply/materialRegister";
     }
+
+    @PostMapping("/modify")
+    public String modify(@ModelAttribute MaterialDTO materialDTO, RedirectAttributes redirectAttributes, String uName) {
+        log.info("pp modify post.....#@" + materialDTO);
+        materialService.modifyMaterial(materialDTO, uName);
+        redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
+        return "redirect:/supply/materialList";
+    }
+
+    @PostMapping("/remove")
+    public String remove(@ModelAttribute MaterialDTO materialDTO, RedirectAttributes redirectAttributes, @RequestParam List<String> pCodes) {
+        log.info("pp remove post.....#@" + materialDTO);
+        materialService.removeMaterial(pCodes);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/supply/materialList";
+    }
+
 
     @GetMapping("/purchaseOrderStatus")
     public void purchaseOrderStatus() {

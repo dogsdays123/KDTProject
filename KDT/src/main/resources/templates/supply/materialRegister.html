@@ -33,13 +33,14 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <label for="mComponentType" class="form-label small">자재 종류</label>
-                                <select id="mComponentType" name="부품명" class="form-select form-select-sm">
-                                    <option value="" selected>선택</option>
-                                    <th:block th:each="bom : ${bomList}">
-                                        <option th:value="${bom.pName}" th:text="${bom.pName}"></option>
-                                    </th:block>
-                                </select>
+                                <label for="mComponentType" class="form-label small">부품 종류</label>
+                                <input type="text" id="mComponentType" name="부품명" class="form-control form-control-sm">
+<!--                                <select id="mComponentType" name="부품명" class="form-select form-select-sm">-->
+<!--                                    <option value="" selected>선택</option>-->
+<!--                                    <th:block th:each="bom : ${bomList}">-->
+<!--                                        <option th:value="${bom.pName}" th:text="${bom.pName}"></option>-->
+<!--                                    </th:block>-->
+<!--                                </select>-->
                             </div>
                             <div class="col-md-2" style="width: 100px">
                                 <label for="mType" class="form-label small">자재 유형</label>
@@ -95,8 +96,8 @@
                                 <label for="unitPrice" class="form-label small">단가</label>
                                 <input type="text" id="unitPrice" name="단가" class="form-control form-control-sm">
                             </div>
-                            <div class="col-md-1">
-                                <label for="mMinNum" class="form-label small">수량</label>
+                            <div class="col-md-2">
+                                <label for="mMinNum" class="form-label small">최소 공급 수량</label>
                                 <input type="text" id="mMinNum" name="수량" title="최소 공급 수량" class="form-control form-control-sm">
                             </div>
                             <div class="col-md-2 d-flex gap-1">
@@ -112,9 +113,9 @@
                                     <th>자재명</th>
                                     <th>자재 코드</th>
                                     <th>자재 유형</th>
-                                    <th>자재 종류</th>
+                                    <th>부품 종류</th>
                                     <th>자재 분류 품목</th>
-                                    <th>수량</th>
+                                    <th>최소 공급 수량</th>
                                     <th>높이</th>
                                     <th>세로</th>
                                     <th>가로</th>
@@ -186,6 +187,11 @@
                 </small>
             </div>
         </div>
+        <script th:if="${message != null}" th:inline="javascript">
+            /*<![CDATA[*/
+            alert([[${message}]]);
+            /*]]>*/
+        </script>
         <script th:src="@{/js/material/materialRegister.js}"></script>
     </div>
 </body>

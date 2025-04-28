@@ -4,10 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.domain.Supplier;
-import org.zerock.b01.dto.PlanListAllDTO;
-import org.zerock.b01.dto.ProductListAllDTO;
-import org.zerock.b01.dto.SupplierAllDTO;
-import org.zerock.b01.dto.UserByAllDTO;
+import org.zerock.b01.dto.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,4 +17,7 @@ public interface AllSearch {
     Page<SupplierAllDTO> supplierSearchWithAll(String[] types, String keyword, String sName, String sRegNum, String sBusinessType, LocalDate sRegDate, String sStatus, Pageable pageable);
     Page<UserByAllDTO> userBySearchWithAllList(String[] types, String keyword, String uName,
                                            String userJob, String userRank, LocalDate modDate, String status, String uId, Pageable pageable);
+
+    Page<MaterialDTO> materialSearchWithAll(String[] types, String keyword, String pName, String componentType, String mName,
+                                            String mCode, String mType, Pageable pageable);
 }

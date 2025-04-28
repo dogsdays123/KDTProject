@@ -9,12 +9,32 @@ document.querySelectorAll('.icon-button').forEach(button => {
         const row = this.closest('tr'); // 클릭한 버튼이 속한 tr
 
         // 각 td 값을 가져오기
-        const ppCode = row.querySelector('td:nth-child(2)').innerText;
-        const pCode = row.querySelector('td:nth-child(3)').innerText;
+        const pName = row.querySelector('td:nth-child(2)').innerText;
+        const CType = row.querySelector('td:nth-child(3)').innerText;
+        const mCode = row.querySelector('td:nth-child(4)').innerText;
+        const mType = row.querySelector('td:nth-child(5)').innerText;
+        const mName = row.querySelector('td:nth-child(6)').innerText;
+        const mMinNum = row.querySelector('td:nth-child(7)').innerText;
+        const mDepth = row.querySelector('td:nth-child(8)').innerText;
+        const mHeight = row.querySelector('td:nth-child(9)').innerText;
+        const mWidth = row.querySelector('td:nth-child(10)').innerText;
+        const mWeight = row.querySelector('td:nth-child(11)').innerText;
+        const mUnitPrice = row.querySelector('td:nth-child(12)').innerText;
+        const mLeadTime = row.querySelector('td:nth-child(13)').innerText;
 
 
-        document.getElementById('ppProductCode').value = ppCode;
-        document.getElementById('ppProductName').value = pCode;
+        document.getElementById('ppProductName').value = pName;
+        document.getElementById('ppComponentType').value = CType;
+        document.getElementById('ppMCode').value = mCode;
+        document.getElementById('ppMType').value = mType;
+        document.getElementById('ppMName').value = mName;
+        document.getElementById('ppMMinNum').value = mMinNum;
+        document.getElementById('ppMDepth').value = mDepth;
+        document.getElementById('ppMHeight').value = mHeight;
+        document.getElementById('ppMWidth').value = mWidth;
+        document.getElementById('ppMWeight').value = mWeight;
+        document.getElementById('ppMUnitPrice').value = mUnitPrice;
+        document.getElementById('ppMLeadTime').value = mLeadTime;
 
         // 모달 띄우기
         const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
@@ -33,10 +53,17 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
     const tbody = document.getElementById('deleteTableBody');
     tbody.innerHTML = ''; // 기존 내용 비우기
 
+
+    const pCodes = [];
+
     selectedRows.forEach(checkbox => {
         const row = checkbox.closest('tr');
         const cells = row.querySelectorAll('td');
         const newRow = document.createElement('tr');
+
+        const pCode = cells[3].textContent.trim();
+        pCodes.push(pCode);
+
 
         newRow.innerHTML = `
             <td>${cells[1].textContent.trim()}</td>
@@ -50,6 +77,24 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         tbody.appendChild(newRow);
     });
 
+    const form = document.getElementById('purchaseOrderDelForm');
+    form.querySelectorAll('input[name="pCodes"]').forEach(input => input.remove());
+
+    pCodes.forEach(pCode => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'pCodes';
+        hiddenInput.value = pCode;
+        form.appendChild(hiddenInput);
+    });
+
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));
     modal.show();
 });
+
+document.querySelector(".clearBtn").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    self.location = '/supply/materialList'
+}, false)

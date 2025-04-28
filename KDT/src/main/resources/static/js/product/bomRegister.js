@@ -106,3 +106,9 @@ $(document).ready(function () {
         }
     });
 });
+
+document.getElementById("productName").addEventListener("change", function() {
+    var selectedOption = this.options[this.selectedIndex];  // 선택한 상품 옵션
+    var productCode = selectedOption.getAttribute("data-code");  // 상품 코드 가져오기
+    document.getElementById("productCode").value = productCode;  // 상품 코드 입력란에 설정
+});

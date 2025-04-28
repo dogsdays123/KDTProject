@@ -153,7 +153,7 @@ public class ProductionPlanController {
         for (ProductionPlanDTO productionPlanDTO : productionPlanDTOs) {
             productionPlanService.registerProductionPlan(productionPlanDTO, productionPlanDTO.getUId());
         }
-
+        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/productionPlan/ppRegister";
     }
 
@@ -197,9 +197,11 @@ public class ProductionPlanController {
 
             //날짜 형식이라 포맷을 해줘야함
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            LocalDate productionStartDate = LocalDate.parse(sdf.format(row.getCell(3).getDateCellValue()));
-            LocalDate productionEndDate = LocalDate.parse(sdf.format(row.getCell(4).getDateCellValue()));
 
+            LocalDate productionStartDate = LocalDate.parse(sdf.format(row.getCell(3).getDateCellValue()));
+            log.info("#########" + productionStartDate);
+            LocalDate productionEndDate = LocalDate.parse(sdf.format(row.getCell(4).getDateCellValue()));
+            log.info("#########" + productionEndDate);
             Integer productionQuantity = Integer.parseInt(formatter.formatCellValue(row.getCell(5)));
 
             entity.setPppCode(productCode);

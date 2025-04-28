@@ -23,13 +23,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Log4j2
 @Controller
@@ -45,6 +46,8 @@ public class ProductController {
     private final ProductService productService;
     private final PageService pageService;
     private final ProductionPlanRepository productionPlanRepository;
+    private final MaterialRepository materialRepository;
+//    private final ProductRepository productRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -84,7 +87,9 @@ public class ProductController {
     @GetMapping("/goodsList")
     public void productList(PageRequestDTO pageRequestDTO, Model model) {
 
-        pageRequestDTO.setSize(10);
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
 
         PageResponseDTO<ProductListAllDTO> responseDTO =
                 pageService.productListWithAll(pageRequestDTO);
@@ -163,23 +168,33 @@ public class ProductController {
         return "redirect:/product/goodsRegister";
     }
 
+
     //제품 자동 등록
     @PostMapping("/addProduct")
-    public String uploadProduct(String uId, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where,  Model model, RedirectAttributes redirectAttributes) throws IOException {
+    @ResponseBody
+    public Map<String, Object> uploadProduct(String uId, @RequestParam("file") MultipartFile[] files,
+                                             @RequestParam("where") String where,
+                                             @RequestParam("whereToGo") String whereToGo,
+                                             Model model, RedirectAttributes redirectAttributes) throws IOException {
+        Map<String, Object> response = new HashMap<>();
+        List<String> allMessages = new ArrayList<>();
 
-        log.info("&^&^" + uId);
-
+        // 엑셀 파일 처리
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            registerProduct(worksheet, uId);
-            log.info("%%%%" + worksheet.getSheetName());
+            String[] fileMessages = registerProduct(worksheet, uId);
+            allMessages.addAll(Arrays.asList(fileMessages));
         }
 
-        return "redirect:/product/goodsRegister";
+        String messageString = String.join(", ", allMessages);
+        response.put("message", messageString);
+        response.put("isAvailable", allMessages.isEmpty());
+
+        return response;
     }
 
-    private void registerProduct(XSSFSheet worksheet, String uId) {
+    private String[] registerProduct(XSSFSheet worksheet, String uId) {
 
         List<ProductDTO> productDTOs = new ArrayList<>();
 
@@ -201,9 +216,10 @@ public class ProductController {
             log.info("^^^^&&&&&6" + productDTO.getPName());
             productDTOs.add(productDTO);
         }
-
-        productService.registerProductsEasy(productDTOs, uId);
-        log.info("^^^^&&&&&4");
+        String[] resultMessages = productService.registerProductsEasy(productDTOs, uId);
+        log.info("Returned messages from registerProductsEasy: " + Arrays.toString(resultMessages));
+        return resultMessages;
+//        return productService.registerProductsEasy(productDTOs, uId);
     }
 
     @PostMapping("/modify")
@@ -222,7 +238,13 @@ public class ProductController {
                 redirectAttributes.addFlashAttribute("message", "생산 계획이 등록된 상품이 있어 삭제할 수 없습니다.");
                 return "redirect:/product/goodsList";
             }
+            if (materialRepository.existsByProduct_pCode(pCode)) {
+                redirectAttributes.addFlashAttribute("message", "부품 등록된 상품이 있어 삭제할 수 없습니다.");
+                return "redirect:/product/goodsList";
+            }
         }
+
+
 
         productService.removeProduct(pCodes);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
