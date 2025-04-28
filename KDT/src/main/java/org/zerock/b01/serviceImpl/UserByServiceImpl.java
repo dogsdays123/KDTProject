@@ -44,7 +44,9 @@ public class UserByServiceImpl implements UserByService {
     public void agreeEmployee(String uId, String userRank, String userJob, String status){
         UserBy user = userByRepository.findById(uId).orElseThrow();
 
-        if(status.isEmpty()){
+        log.info("%%% " + status);
+
+        if(status.isEmpty() || status.equals("대기중")){
             status = "승인";
         }
 

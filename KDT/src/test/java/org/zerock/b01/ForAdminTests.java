@@ -38,7 +38,7 @@ public class ForAdminTests {
                 .uEmail("Admin@admin.admin")
                 .roleSet(Set.of(MemberRole.ADMIN))
                 .userJob("관리자")
-                .status("승인")
+                .status("관리자")
                 .uPhone("01000000000")
                 .build();
 

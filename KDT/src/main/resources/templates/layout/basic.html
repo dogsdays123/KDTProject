@@ -31,7 +31,7 @@
         <li class="nav-item"><a href="/mainPage/guide" class="nav-link" title="실무 활용가이드"><i class="bi bi-menu-up"></i>&nbsp;&nbsp;실무
             활용가이드</a></li>
         <hr>
-        <th:block th:if="${userBy.status == '승인'}">
+        <th:block th:if="${userBy.status == '승인' || userBy.status == '관리자'}">
         <th:block th:if="${userBy.userJob == '관리자'}">
             <li class="nav-item">
                 <a href="#" class="nav-link" title="가입 승인" onclick="toggleSubmenu('submenu-agree')"><i
