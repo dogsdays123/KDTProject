@@ -1,6 +1,5 @@
-package org.zerock.b01.dto;
+package org.zerock.b01.dto.allDTO;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

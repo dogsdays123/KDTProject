@@ -2,11 +2,8 @@ package org.zerock.b01.serviceImpl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,12 +11,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.dto.allDTO.PlanListAllDTO;
+import org.zerock.b01.dto.allDTO.ProductListAllDTO;
+import org.zerock.b01.dto.allDTO.SupplierAllDTO;
+import org.zerock.b01.dto.allDTO.UserByAllDTO;
 import org.zerock.b01.service.AllSearch;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -167,7 +166,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     @Override
     public Page<UserByAllDTO> userBySearchWithAll(String[] types, String keyword, String uName,
                                                   String userJob, String userRank, LocalDate regDate,
-                                                  String status, String uId,  Pageable pageable){
+                                                  String status, String uId, Pageable pageable){
         QUserBy userBy = QUserBy.userBy;
         JPQLQuery<UserBy> query = from(userBy);
         BooleanBuilder booleanBuilder = new BooleanBuilder();

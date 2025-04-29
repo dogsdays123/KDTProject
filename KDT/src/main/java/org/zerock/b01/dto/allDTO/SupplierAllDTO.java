@@ -1,14 +1,10 @@
-package org.zerock.b01.dto;
+package org.zerock.b01.dto.allDTO;
 
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.zerock.b01.domain.Contract;
-import org.zerock.b01.domain.UserBy;
 
 import java.time.LocalDateTime;
 
