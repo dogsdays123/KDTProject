@@ -21,7 +21,7 @@ import org.zerock.b01.service.UserByService;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '협력회사')")
+@PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '협력회사'))")
 @RequestMapping("/supplier")
 public class SupplierController {
 

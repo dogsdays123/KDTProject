@@ -23,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, String>, AllSe
     @Query("select p from Product p where p.pCode =:pCode")
     Optional<Product> findByProductId(@Param("pCode") String pCode);
 
+    @Query("select p from Product p where p.pName=:pName")
+    Product findByProductNameObj(@Param("pName") String pName);
 }

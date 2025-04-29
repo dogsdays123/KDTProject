@@ -40,7 +40,7 @@ import java.util.List;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서')")
+@PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서'))")
 @RequestMapping("/productionPlan")
 public class ProductionPlanController {
 
@@ -214,27 +214,6 @@ public class ProductionPlanController {
 
             String productionPlanCode = productionPlanService.registerProductionPlan(entity, uId);
             log.info("데이터 넘겨주기 2 = " + productionPlanCode);
-
-//            //6에서부터 10까지는 일별 생산량이다.
-//            for (int j = 0; j < 30; j++) {
-//
-//                if (row.getCell(6 + j, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
-//
-//                    int quantity = Integer.parseInt(formatter.formatCellValue(row.getCell(6 + j)));
-//                    ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
-//                    productionPerDayDTO.setPpdNum(quantity);
-//                    productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
-//                    productionPerDayDTO.setPpCode(productionPlanCode);
-//                    productionPerDayService.register(productionPerDayDTO);
-//
-//                } else {
-//                    ProductionPerDayDTO productionPerDayDTO = new ProductionPerDayDTO();
-//                    productionPerDayDTO.setPpdNum(0);
-//                    productionPerDayDTO.setPpdDate(productionStartDate.plusDays(j));
-//                    productionPerDayDTO.setPpCode(productionPlanCode);
-//                    productionPerDayService.register(productionPerDayDTO);
-//                }
-//            }
         }
     }
 

@@ -41,6 +41,8 @@ window.addEventListener('click', function(e) {
     }
 });
 
+//통합 환경-------------------------------------------------------------------------
+
 function confirmSubmit(message) {
     // 알림 창을 띄우기
     var confirmResult = confirm(message + " 하시겠습니까?");
@@ -52,3 +54,24 @@ function confirmSubmit(message) {
         return false; // 폼 제출을 취소
     }
 }
+
+//이 부분에서 모든 searchSelect 클래스는 검색찾기가 가능
+$(document).ready(function () {
+    $('.searchSelect').select2({
+        placeholder: "검색 또는 직접 입력",
+        tags: true, // ← 이게 핵심! 직접 입력 허용
+        allowClear: true,
+        createTag: function (params) {
+            const term = $.trim(params.term);
+            if (term === '') {
+                return null;
+            }
+            return {
+                id: term,
+                text: term,
+                newTag: true // 사용자 입력값 구분
+            };
+        }
+    });
+});
+//통합 환경 END --------------------------------------------------------------------

@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @Setter
 public class MaterialFormDTO {
-    private List<MaterialDTO> Materials;
+    private List<MaterialDTO> materials;
 }

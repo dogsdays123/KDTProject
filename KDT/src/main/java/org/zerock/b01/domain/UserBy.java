@@ -62,4 +62,8 @@ public class UserBy extends BaseEntity {
         this.status = status;
         this.userJob = userJob;
     }
+
+    public void changeStatus(String status) {
+        this.status = status;
+    }
 }

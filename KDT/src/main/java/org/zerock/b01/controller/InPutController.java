@@ -18,7 +18,7 @@ import org.zerock.b01.service.UserByService;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '자재부서')")
+@PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '자재부서'))")
 @RequestMapping("/inPut")
 public class InPutController {
 

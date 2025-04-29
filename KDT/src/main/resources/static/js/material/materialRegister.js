@@ -1,5 +1,6 @@
-let pCodeChecks = null;
-let pNameChecks = null;
+let mCodeChecks = null;
+let errorChecks = null;
+let selectedFiles = []; // 전역 변수로 따로 관리
 
 function addPlan() {
     const pName = document.getElementById('pName').value;
@@ -7,7 +8,7 @@ function addPlan() {
     const mType = document.getElementById('mType').value;
     const mName = document.getElementById('mName').value;
     const mCode = document.getElementById('mCode').value;
-    const supplier = document.getElementById('supplier').value;
+    const sName = document.getElementById('sName').value;
     const leadTime = document.getElementById('leadTime').value;
     const depth = document.getElementById('depth').value;
     const height = document.getElementById('height').value;
@@ -19,7 +20,7 @@ function addPlan() {
     let rowIndex = 0;
     //uId는 따로 받아온다.
 
-    if (!pName || !mType || !mName || !mCode || !supplier || !leadTime
+    if (!pName || !mType || !mName || !mCode || !sName || !leadTime
         || !depth || !height || !width || !weight || !unitPrice || !mMinNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
@@ -28,23 +29,21 @@ function addPlan() {
     const tableBody = document.querySelector("#planTable tbody");
     const newRow = document.createElement('tr');
 
-    //<td><input type="hidden" name="supplier[${rowIndex}].supplier" value="${supplier}">${supplier}</td>
-
     newRow.innerHTML = `
-        <td><input type="hidden" name="pNames[]" value="${pName}">${pName}</td>
-        <td><input type="hidden" name="mComponentTypes[]" value="${mComponentType}">${mComponentType}</td>
-        <td><input type="hidden" name="mTypes[]" value="${mType}">${mType}</td>
-        <td><input type="hidden" name="mNames[]" value="${mName}">${mName}</td>
-        <td><input type="hidden" name="mCodes[]" value="${mCode}">${mCode}</td>
-        <td><input type="hidden" name="mMinNums[]" value="${mMinNum}">${mMinNum}</td>
-        <td><input type="hidden" name="mDepths[]" value="${depth}">${depth}</td>
-        <td><input type="hidden" name="mHeights[]" value="${height}">${height}</td>
-        <td><input type="hidden" name="mWidths[]" value="${width}">${width}</td>
-        <td><input type="hidden" name="mWeights[]" value="${weight}">${weight}</td>
-        <td><input type="hidden" name="mUnitPrices[]" value="${unitPrice}">${unitPrice}</td>
-        <td><input type="hidden" name="supplier[]" value="${supplier}">${supplier}</td>
-        <td><input type="hidden" name="mLeadTime[]" value="${leadTime}">${leadTime}</td>
-        <td><input type="hidden" name="uId[]" value="${uId}">${uId}</td> 
+        <td><input type="hidden" name="materials[${rowIndex}].pName" value="${pName}">${pName}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mType" value="${mType}">${mType}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mName" value="${mName}">${mName}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mCode" value="${mCode}">${mCode}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mMinNum" value="${mMinNum}">${mMinNum}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mDepth" value="${depth}">${depth}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mHeight" value="${height}">${height}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mWidth" value="${width}">${width}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mWeight" value="${weight}">${weight}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mUnitPrice" value="${unitPrice}">${unitPrice}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].sName" value="${sName}">${sName}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mLeadTime" value="${leadTime}">${leadTime}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].uId" value="${uId}">${uId}</td> 
         <td>
           <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
             <i class="bi bi-x-lg"></i>
@@ -53,6 +52,7 @@ function addPlan() {
     `;
 
     tableBody.appendChild(newRow);
+    rowIndex++;
 
     const planRows = tableBody.querySelectorAll('tr:not(#registerRow)');
     if (planRows.length === 0) {
@@ -80,15 +80,14 @@ function addPlan() {
         const registerRow = document.getElementById('registerRow');
         tableBody.appendChild(registerRow);
     }
-    ``
 
     // 입력값 초기화
-    document.getElementById('pName').selectedIndex = 0;
+    document.getElementById('pName').value = '';
     document.getElementById('mComponentType').value = '';
     document.getElementById('mType').value = '';
     document.getElementById('mName').value = '';
     document.getElementById('mCode').value = '';
-    document.getElementById('supplier').value = '';
+    document.getElementById('sName').value = '';
     document.getElementById('leadTime').value = '';
     document.getElementById('depth').value = '';
     document.getElementById('height').value = '';
@@ -96,7 +95,7 @@ function addPlan() {
     document.getElementById('weight').value = '';
     document.getElementById('unitPrice').value = '';
     document.getElementById('mMinNum').value = '';
-
+    document.getElementById("uId").value = '';
 
 }
 
@@ -122,28 +121,6 @@ function clearPlanTable() {
     tableBody.innerHTML = ""; // 모든 row 삭제
 }
 
-$(document).ready(function () {
-    $('#pName').select2({
-        placeholder: "검색 또는 직접 입력",
-        tags: true, // ← 이게 핵심! 직접 입력 허용
-        allowClear: true,
-        createTag: function (params) {
-            const term = $.trim(params.term);
-            if (term === '') {
-                return null;
-            }
-            return {
-                id: term,
-                text: term,
-                newTag: true // 사용자 입력값 구분
-            };
-        }
-    });
-});
-
-let selectedFiles = []; // 전역 변수로 따로 관리
-
-
 document.getElementById('excelFile').addEventListener('change', function(event) {
     const files = Array.from(event.target.files);
     selectedFiles = files;
@@ -161,6 +138,37 @@ function updateFileListUI() {
         document.getElementById('excelFile').value = '';
         return;
     }
+
+    //----------------------업로드된 파일 확인용
+
+    const formData = new FormData();
+    const uId = $('#uId').val();
+
+    selectedFiles.forEach(file => {
+        formData.append('file', file);
+    });
+
+    formData.append('uId', uId);
+    formData.append('check', "true");
+
+    // AJAX 요청 보내기
+    $.ajax({
+        url: '/material/addMaterial',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            mCodeChecks = response.mCodes;
+            errorChecks = response.errorCheck;
+            console.log(mCodeChecks);
+            console.log(errorChecks);
+        },
+        error: function(xhr, status, error) {
+            alert("파일 확인에 실패. : " + error);
+        }
+    });
+    //--------------------------------------
 
     selectedFiles.forEach((file, index) => {
         const li = document.createElement('li');
@@ -220,8 +228,7 @@ function loadFileContent(file, index) {
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
 
-        let pCodes = [];
-        let pNames = [];
+        let mCodes = [];
 
         rows[0]?.forEach(header => {
             const th = document.createElement('th');
@@ -233,11 +240,9 @@ function loadFileContent(file, index) {
             const tr = document.createElement('tr');
             tr.setAttribute('data-file-name', file.name);
 
-            const productCode = row[0];
-            const productName = row[1];
+            const materialCode = row[0];
 
-            pCodes.push(productCode);
-            pNames.push(productName);
+            mCodes.push(materialCode);
 
             row.forEach(cell => {
                 const td = document.createElement('td');
@@ -247,8 +252,7 @@ function loadFileContent(file, index) {
             tableBody.appendChild(tr);
         });
 
-        console.log("pCodes: ", pCodes);
-        console.log("pNames: ", pNames);
+        console.log("mCodes: ", mCodes);
 
         const fileTable = document.getElementById('fileTable');
         fileTable.setAttribute('data-file-name', file.name);
@@ -276,15 +280,13 @@ $('#excelUpload').on('click', function (e) {
 
     const formData = new FormData();
     const uId = $('#uId').val();
-    const whereValue = $('input[name="where"]').val();
 
     selectedFiles.forEach(file => {
         formData.append('file', file);
     });
 
     formData.append('uId', uId);
-    formData.append('where', whereValue);
-    formData.append('whereToGo', 'register');
+    formData.append('check', "false");
 
     // AJAX 요청 보내기
     $.ajax({
@@ -294,10 +296,10 @@ $('#excelUpload').on('click', function (e) {
         processData: false,
         contentType: false,
         success: function(response) {
-            pCodeChecks = response.pCodes;
-            pNameChecks = response.pNames;
-            console.log(pCodeChecks);
-            console.log(pNameChecks);
+            mCodeChecks = response.mCodes;
+            errorChecks = response.errorCheck;
+            console.log(mCodeChecks);
+            console.log(errorChecks);
             if (response.isAvailable) {
                 alert("파일 업로드에 성공했습니다.(특정)");
             } else {

@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서')")
+@PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서'))")
 @RequestMapping("/product")
 public class ProductController {
 
@@ -199,7 +199,7 @@ public class ProductController {
             productDTOs.add(productDTO);
         }
 
-        if(Objects.equals(check, "true")){
+        if(check.equals("true")){
             return productService.ProductCheck(productDTOs);
         } else {
             return productService.registerProductsEasy(productDTOs, uId);

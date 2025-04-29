@@ -316,7 +316,9 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         }
 
         if (userJob != null && !userJob.isEmpty()) {
-            booleanBuilder.and(userBy.userJob.contains(userJob));
+            booleanBuilder.and(userBy.userJob.contains(userJob).and(userBy.userJob.ne("협력회사")));
+        } else{
+            booleanBuilder.and(userBy.userJob.ne("협력회사"));
         }
 
         if (status != null && !status.isEmpty()) {

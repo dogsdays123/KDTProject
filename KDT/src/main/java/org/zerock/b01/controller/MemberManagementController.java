@@ -23,7 +23,7 @@ import java.util.List;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("isAuthenticated() && hasRole('ADMIN')")
 @RequestMapping("/memberManagement")
 public class MemberManagementController {
 

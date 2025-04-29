@@ -87,6 +87,7 @@ public class ForAdminTests {
                         .sName(tester[2]+i)
                         .sRegNum("12345678" + i)
                         .sManager(tester[2]+i)
+                        .sStatus("대기중")
                         .build();
 
                 userByService.join(userDTO, supplierDTO);

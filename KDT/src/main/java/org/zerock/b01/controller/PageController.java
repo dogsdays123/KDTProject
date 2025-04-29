@@ -60,7 +60,7 @@ public class PageController {
         UserBySecurityDTO principal = (UserBySecurityDTO) token.getPrincipal();
         String status = principal.getStatus(); // MemberSecurityDTO에서 사용자 이름 가져오기
 
-        if (!"승인".equals(status)) {
+        if (!("승인".equals(status) || "관리자".equals(status))) {
             // '승인'이 아니면 /beforeApproval로 리다이렉트
             return new RedirectView("/mainPage/beforeApproval");
         }

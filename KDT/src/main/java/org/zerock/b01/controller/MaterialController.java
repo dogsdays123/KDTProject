@@ -20,8 +20,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Bom;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
+import org.zerock.b01.domain.Supplier;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.formDTO.MaterialFormDTO;
+import org.zerock.b01.dto.formDTO.ProductionPlanFormDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서')")
+@PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서'))")
 @RequestMapping("/material")
 public class MaterialController {
 
@@ -42,6 +44,7 @@ public class MaterialController {
     private final UserByService userByService;
     private final BomService bomService;
     private final PageService pageService;
+    private final SupplierService supplierService;
 
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
@@ -124,133 +127,87 @@ public class MaterialController {
         List<Bom> bomList = bomService.getBoms();
         model.addAttribute("bomList", bomList);
 
+        List<Supplier> supplierList = supplierService.getSupplier();
+        model.addAttribute("supplierList", supplierList);
+
         // 반환할 뷰 이름을 명시합니다.
         return "/material/materialRegister";
     }
 
+    //부품 직접 등록
     @PostMapping("/addMaterialSelf")
-    public String addMaterialSelf(@ModelAttribute MaterialFormDTO form, Model model,
-                                  @RequestParam("mNames[]") List<String> mNames,
-                                  @RequestParam("mCodes[]") List<String> mCodes,
-                                  @RequestParam("mTypes[]") List<String> mTypes,
-                                  @RequestParam("mComponentTypes[]") List<String> mComponentTypes,
-                                  @RequestParam("pNames[]") List<String> pNames,
-                                  @RequestParam("mMinNums[]") List<String> mMinNums,
-                                  @RequestParam("mDepths[]") List<Float> mDepths,
-                                  @RequestParam("mHeights[]") List<Float> mHeights,
-                                  @RequestParam("mWidths[]") List<Float> mWidths,
-                                  @RequestParam("mWeights[]") List<Float> mWeights,
-                                  @RequestParam("mUnitPrices[]") List<String> mUnitPrices,
-                                  @RequestParam("supplier[]") List<String> supplier,
-                                  @RequestParam("mLeadTime[]") List<String> mLeadTime,
-                                  @RequestParam("uId[]") List<String> uId,
-                                  RedirectAttributes redirectAttributes, HttpServletRequest request) throws IOException {
+    public String addMaterialSelf(@ModelAttribute MaterialFormDTO form,
+                                  Model model,
+                                  RedirectAttributes redirectAttributes,
+                                  HttpServletRequest request) throws IOException {
 
 
-        List<MaterialDTO> materialDTOs = new ArrayList<>();
+        List<MaterialDTO> materialDTOs = form.getMaterials();
 
-        for (int i = 0; i < mCodes.size(); i++) {
-            MaterialDTO materialDTO = new MaterialDTO();
-            materialDTO.setMCode(mCodes.get(i)); // pCode를 설정
-            materialDTO.setMName(mNames.get(i));
-            materialDTO.setMType(mTypes.get(i));
-            materialDTO.setMComponentType(mComponentTypes.get(i));
-            materialDTO.setPName(pNames.get(i));
-            materialDTO.setMMinNum(mMinNums.get(i));
-            materialDTO.setMDepth(mDepths.get(i));
-            materialDTO.setMHeight(mHeights.get(i));
-            materialDTO.setMWidth(mWidths.get(i));
-            materialDTO.setMWeight(mWeights.get(i));
-            materialDTO.setMUnitPrice(mUnitPrices.get(i));
-            materialDTO.setMLeadTime(mLeadTime.get(i));
-            materialDTO.setUId(uId.get(i));
-            materialDTOs.add(materialDTO);
-        }
         for(MaterialDTO materialDTO : materialDTOs) {
             materialService.registerMaterial(materialDTO, materialDTO.getUId());
         }
+
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/material/materialRegister";
     }
 
-    //제품 자동 등록
+    //부품 자동 등록
     @PostMapping("/addMaterial")
     @ResponseBody
-    public Map<String, Object> uploadProduct(String uId, @RequestParam("file") MultipartFile[] files,
-                                             @RequestParam("where") String where,
-                                             @RequestParam("whereToGo") String whereToGo,
-                                             Model model, RedirectAttributes redirectAttributes) throws IOException {
+    public Map<String, Object> addMaterial(String uId, @RequestParam("file") MultipartFile[] files,
+                                             @RequestParam("check") String check,
+                                              Model model, RedirectAttributes redirectAttributes) throws IOException {
+        log.info("test ");
 
         Map<String, Object> response = new HashMap<>();
-        List<String> allMessages = new ArrayList<>();
+        Map<String, String[]> materialObj = new HashMap<>();
 
         // 엑셀 파일 처리
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            String[] fileMessages = registerProduct(worksheet, uId);
-            allMessages.addAll(Arrays.asList(fileMessages));
+            materialObj = registerMaterialForExel(worksheet, uId, check);
         }
 
-        String messageString = String.join(", ", allMessages);
-        response.put("message", messageString);
-        response.put("isAvailable", allMessages.isEmpty());
+        //materialService 에서 가져온 mCodes
+        response.put("mCodes", materialObj.get("mCodes"));
+        response.put("errorCheck", materialObj.get("error"));
 
         return response;
     }
 
-    private String[] registerProduct(XSSFSheet worksheet, String uId) {
+    private Map<String, String[]> registerMaterialForExel(XSSFSheet worksheet, String uId, String check) {
 
-        List<MaterialDTO> materialDTOS = new ArrayList<>();
+        List<MaterialDTO> materialDTOs = new ArrayList<>();
 
-        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
-
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++){
             MaterialDTO materialDTO = new MaterialDTO();
             DataFormatter formatter = new DataFormatter();
             XSSFRow row = worksheet.getRow(i);
 
-            if (row.getCell(4, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
-                String materialCode = formatter.formatCellValue(row.getCell(4));
-                materialDTO.setMCode(materialCode);
-            }
+            materialDTO.setPName(formatter.formatCellValue(row.getCell(0)));
+            materialDTO.setMComponentType(formatter.formatCellValue(row.getCell(1)));
+            materialDTO.setMType(formatter.formatCellValue(row.getCell(2)));
+            materialDTO.setMName(formatter.formatCellValue(row.getCell(3)));
+            materialDTO.setMCode(formatter.formatCellValue(row.getCell(4)));
+            materialDTO.setSName(formatter.formatCellValue(row.getCell(5)));
+            materialDTO.setMLeadTime(formatter.formatCellValue(row.getCell(6)));
+            materialDTO.setMDepth(Float.parseFloat(formatter.formatCellValue(row.getCell(7))));
+            materialDTO.setMHeight(Float.parseFloat(formatter.formatCellValue(row.getCell(8))));
+            materialDTO.setMWidth(Float.parseFloat(formatter.formatCellValue(row.getCell(9))));
+            materialDTO.setMWeight(Float.parseFloat(formatter.formatCellValue(row.getCell(10))));
+            materialDTO.setMUnitPrice(formatter.formatCellValue(row.getCell(11)));
+            materialDTO.setMMinNum(formatter.formatCellValue(row.getCell(12)));
 
-            String pName = formatter.formatCellValue(row.getCell(0));
-            materialDTO.setPName(pName);
-            String mComponentType = formatter.formatCellValue(row.getCell(1));
-            materialDTO.setMComponentType(mComponentType);
-            String mType = formatter.formatCellValue(row.getCell(2));
-            materialDTO.setMType(mType);
-            String mName = formatter.formatCellValue(row.getCell(3));
-            materialDTO.setMName(mName);
-//            String sName = formatter.formatCellValue(row.getCell(5));
-//            materialDTO.setSName(sName);
-            String mLeadTime = formatter.formatCellValue(row.getCell(6));
-            materialDTO.setMLeadTime(mLeadTime);
-            String depthStr = formatter.formatCellValue(row.getCell(7));
-            Float mDepth = (Float) Float.parseFloat(depthStr);
-            materialDTO.setMDepth(mDepth);
-            String heightStr = formatter.formatCellValue(row.getCell(8));
-            Float mHeight = (Float) Float.parseFloat(heightStr);
-            materialDTO.setMHeight(mHeight);
-            String widthStr = formatter.formatCellValue(row.getCell(9));
-            Float mWidth = (Float) Float.parseFloat(widthStr);
-            materialDTO.setMWidth(mWidth);
-            String weightStr = formatter.formatCellValue(row.getCell(10));
-            Float mWeight = (Float) Float.parseFloat(weightStr);
-            materialDTO.setMWeight(mWeight);
-            String mUnitPrice = formatter.formatCellValue(row.getCell(11));
-            materialDTO.setMUnitPrice(mUnitPrice);
-            String mMinNum = formatter.formatCellValue(row.getCell(12));
-            materialDTO.setMMinNum(mMinNum);
-
-            log.info("^^^^&&&&&5" + materialDTO.getMCode());
-            log.info("^^^^&&&&&6" + materialDTO.getPName());
-            materialDTOS.add(materialDTO);
+            materialDTOs.add(materialDTO);
         }
-//        String[] resultMessages = productService.registerProductsEasy(materialDTOS, uId);
-//        log.info("Returned messages from registerProductsEasy: " + Arrays.toString(resultMessages));
-//        return resultMessages;
-        return materialService.registerMaterialEasy(materialDTOS, uId);
+
+        if(check.equals("true")){
+            return materialService.materialCheck(materialDTOs);
+        } else {
+            return materialService.registerMaterialEasy(materialDTOs, uId);
+        }
     }
 
     @PostMapping("/modify")

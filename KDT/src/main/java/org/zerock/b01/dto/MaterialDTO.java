@@ -22,8 +22,6 @@ public class MaterialDTO {
 
     private String mMinNum;
 
-    private String mImageUrl;
-
     private Float mDepth;
 
     private Float mHeight;
@@ -39,8 +37,6 @@ public class MaterialDTO {
     private LocalDate regDate;
 
     private String pName;
-
-    private Long sId;
 
     private String sName;
 
