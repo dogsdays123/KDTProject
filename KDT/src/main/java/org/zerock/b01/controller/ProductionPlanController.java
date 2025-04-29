@@ -113,10 +113,13 @@ public class ProductionPlanController {
         log.info("테스트 ");
         List<ProductionPlan> planList = productionPlanService.getPlans();
         model.addAttribute("planList", planList);
+        model.addAttribute("selectedPPCode", pageRequestDTO.getPpCode() != null ? pageRequestDTO.getPpCode() : "");
+        model.addAttribute("selectedPName", pageRequestDTO.getPName() != null ? pageRequestDTO.getPName() : "");
         model.addAttribute("responseDTO", responseDTO);
 
         log.info("^&^&" + responseDTO);
     }
+
 
     @GetMapping("/downloadProductPlan/{isTemplate}")
     public ResponseEntity<Resource> downloadProductPlan(@PathVariable("isTemplate") boolean isTemplate) {

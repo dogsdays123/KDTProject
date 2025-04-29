@@ -24,6 +24,25 @@
                 <form>
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2">
+                            <label for="ppCode" class="form-label small">생산 계획 코드</label>
+                            <select id="ppCode" name="ppCode" class="form-select form-select-sm">
+                                <option value="" th:selected="${selectedPPCode == ''}">전체</option>
+                                <option th:each="dto : ${planList}"
+                                        th:value="${dto.getPpCode()}"
+                                        th:text="${dto.getPpCode()}"
+                                        th:selected="${dto.getPpCode() == selectedPPCode}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="productName" class="form-label small">생산 상품명</label>
+                            <select id="productName" name="pName" class="form-select form-select-sm">
+                                <option value="">전체</option>
+                                <option value="전기자전거A" th:selected="${pageRequestDTO.pName == '전기자전거A'}">전기자전거A</option>
+                                <option value="전기자전거B" th:selected="${pageRequestDTO.pName == '전기자전거B'}">전기자전거B</option>
+                                <option value="전동킥보드" th:selected="${pageRequestDTO.pName == '전동킥보드'}">전동킥보드</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                             <label for="ppStart" class="form-label small">생산 시작일</label>
                             <input type="date" th:value="${pageRequestDTO.ppStart}" class="form-control form-control-sm" name="ppStart" id="ppStart">
                         </div>
@@ -31,7 +50,7 @@
                             <label for="ppEnd" class="form-label small">생산 종료일</label>
                             <input type="date" th:value="${pageRequestDTO.ppEnd}" class="form-control form-control-sm" name="ppEnd" id="ppEnd">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <label for="status" class="form-label small">진행 상태</label>
                             <select class="form-select form-select-sm" name="ppState" id="status">
                                 <option selected>전체</option>
@@ -39,15 +58,6 @@
                                 <option value="APPROVAL">완료</option>
                                 <option value="UNDER_INSPECTION">보류</option>
                                 <option value="ON_HOLD">대기</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="productName" class="form-label small">제품명</label>
-                            <select id="productName" name="pName" class="form-select form-select-sm">
-                                <option value="">전체</option>
-                                <option value="전기자전거A" th:selected="${pageRequestDTO.pName == '전기자전거A'}">전기자전거A</option>
-                                <option value="전기자전거B" th:selected="${pageRequestDTO.pName == '전기자전거B'}">전기자전거B</option>
-                                <option value="전동킥보드" th:selected="${pageRequestDTO.pName == '전동킥보드'}">전동킥보드</option>
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
@@ -209,8 +219,8 @@
                                         <thead class="table-light small text-center">
                                         <tr>
                                             <th>생산 계획 코드</th>
-                                            <th>생산 제품 코드</th>
-                                            <th>생산 제품명</th>
+                                            <th>생산 상품 코드</th>
+                                            <th>생산 상품명</th>
                                             <th>생산 시작일</th>
                                             <th>생산 종료일</th>
                                         </tr>

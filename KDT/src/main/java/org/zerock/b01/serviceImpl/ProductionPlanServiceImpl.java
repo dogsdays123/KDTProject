@@ -144,11 +144,12 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
         String keyword = pageRequestDTO.getKeyword();
         LocalDate ppStart = pageRequestDTO.getPpStart();
         LocalDate ppEnd = pageRequestDTO.getPpEnd();
+        String ppCode = pageRequestDTO.getPpCode();
         String pName = pageRequestDTO.getPName();
         String ppState = pageRequestDTO.getPpState();
         Pageable pageable = pageRequestDTO.getPageable();
 
-        Page<PlanListAllDTO> result = productionPlanRepository.planSearchWithAll(types, keyword, pName, ppState, ppStart, ppEnd, pageable);
+        Page<PlanListAllDTO> result = productionPlanRepository.planSearchWithAll(types, keyword, ppCode, pName, ppState, ppStart, ppEnd, pageable);
 
         List<ProductionPlanDTO> dtoList = result.getContent().stream().map(productionPlan ->modelMapper.map(productionPlan, ProductionPlanDTO.class)).collect(Collectors.toList());
 

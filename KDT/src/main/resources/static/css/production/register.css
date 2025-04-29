@@ -20,6 +20,21 @@
 .custom-medium-red:hover {
     background-color: #ff4d4d;
 }
+
+th, td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+td{
+    padding: 0.4rem 0.5rem;
+    font-size: 0.85rem;
+}
+
+ul, li{
+    cursor: pointer;
+}
+
 #planTable th,
 #planTable td {
     text-align: center;
@@ -140,4 +155,36 @@
 
 .icon-button i {
     font-size: 0.9rem;
+}
+
+#excelTable {
+    width: 100%;
+    table-layout: fixed;
+}
+
+
+#fileTable {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+/* 테이블 셀의 고정 너비 및 내용 넘침 처리 */
+#excelTable th, #excelTable td {
+    word-wrap: break-word;  /* 긴 내용이 셀을 넘어가지 않도록 강제로 줄바꿈 */
+    padding: 8px;  /* 셀 내부 여백 */
+}
+
+/* 스크롤바 설정 */
+#fileTable::-webkit-scrollbar {
+    width: 10px;  /* 세로 스크롤바의 너비 설정 */
+}
+
+#fileTable::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+}
+
+#fileTable::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
 }

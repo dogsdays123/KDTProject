@@ -56,7 +56,7 @@ public class PageServiceImpl implements PageService {
         Pageable pageable = pageRequestDTO.getPageable("ppId");
 
         Page<PlanListAllDTO> result = productionPlanRepository
-                .planSearchWithAll(types, keyword, pName,
+                .planSearchWithAll(types, keyword, ppCode, pName,
                        ppState, ppStart, ppEnd, pageable);
 
         return PageResponseDTO.<PlanListAllDTO>withAll()

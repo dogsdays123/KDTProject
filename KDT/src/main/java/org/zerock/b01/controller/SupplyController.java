@@ -3,6 +3,11 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
@@ -12,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Bom;
 import org.zerock.b01.domain.Material;
@@ -22,9 +28,7 @@ import org.zerock.b01.service.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -198,6 +202,86 @@ public class SupplyController {
         }
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/supply/materialRegister";
+    }
+
+    //제품 자동 등록
+    @PostMapping("/addMaterial")
+    @ResponseBody
+    public Map<String, Object> uploadProduct(String uId, @RequestParam("file") MultipartFile[] files,
+                                             @RequestParam("where") String where,
+                                             @RequestParam("whereToGo") String whereToGo,
+                                             Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        Map<String, Object> response = new HashMap<>();
+        List<String> allMessages = new ArrayList<>();
+
+        // 엑셀 파일 처리
+        for (MultipartFile file : files) {
+            XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+            XSSFSheet worksheet = workbook.getSheetAt(0);
+            String[] fileMessages = registerProduct(worksheet, uId);
+            allMessages.addAll(Arrays.asList(fileMessages));
+        }
+
+        String messageString = String.join(", ", allMessages);
+        response.put("message", messageString);
+        response.put("isAvailable", allMessages.isEmpty());
+
+        return response;
+    }
+
+    private String[] registerProduct(XSSFSheet worksheet, String uId) {
+
+        List<MaterialDTO> materialDTOS = new ArrayList<>();
+
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+
+            MaterialDTO materialDTO = new MaterialDTO();
+            DataFormatter formatter = new DataFormatter();
+            XSSFRow row = worksheet.getRow(i);
+
+            if (row.getCell(4, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
+                String materialCode = formatter.formatCellValue(row.getCell(4));
+                materialDTO.setMCode(materialCode);
+            }
+
+            String pName = formatter.formatCellValue(row.getCell(0));
+            materialDTO.setPName(pName);
+            String mComponentType = formatter.formatCellValue(row.getCell(1));
+            materialDTO.setMComponentType(mComponentType);
+            String mType = formatter.formatCellValue(row.getCell(2));
+            materialDTO.setMType(mType);
+            String mName = formatter.formatCellValue(row.getCell(3));
+            materialDTO.setMName(mName);
+//            String mSupplier = formatter.formatCellValue(row.getCell(5));
+//            materialDTO.setMSupplier(mSupplier);
+            String mLeadTime = formatter.formatCellValue(row.getCell(6));
+            materialDTO.setMLeadTime(mLeadTime);
+            String depthStr = formatter.formatCellValue(row.getCell(7));
+            Float mDepth = (Float) Float.parseFloat(depthStr);
+            materialDTO.setMDepth(mDepth);
+            String heightStr = formatter.formatCellValue(row.getCell(8));
+            Float mHeight = (Float) Float.parseFloat(heightStr);
+            materialDTO.setMHeight(mHeight);
+            String widthStr = formatter.formatCellValue(row.getCell(9));
+            Float mWidth = (Float) Float.parseFloat(widthStr);
+            materialDTO.setMWidth(mWidth);
+            String weightStr = formatter.formatCellValue(row.getCell(10));
+            Float mWeight = (Float) Float.parseFloat(weightStr);
+            materialDTO.setMWeight(mWeight);
+            String mUnitPrice = formatter.formatCellValue(row.getCell(11));
+            materialDTO.setMUnitPrice(mUnitPrice);
+            String mMinNum = formatter.formatCellValue(row.getCell(12));
+            materialDTO.setMMinNum(mMinNum);
+
+            log.info("^^^^&&&&&5" + materialDTO.getMCode());
+            log.info("^^^^&&&&&6" + materialDTO.getPName());
+            materialDTOS.add(materialDTO);
+        }
+//        String[] resultMessages = productService.registerProductsEasy(materialDTOS, uId);
+//        log.info("Returned messages from registerProductsEasy: " + Arrays.toString(resultMessages));
+//        return resultMessages;
+        return materialService.registerMaterialEasy(materialDTOS, uId);
     }
 
     @PostMapping("/modify")

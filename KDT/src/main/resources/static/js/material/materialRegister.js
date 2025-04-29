@@ -28,11 +28,11 @@ function addPlan() {
     //<td><input type="hidden" name="supplier[${rowIndex}].supplier" value="${supplier}">${supplier}</td>
 
     newRow.innerHTML = `
+        <td><input type="hidden" name="pNames[]" value="${pName}">${pName}</td>
+        <td><input type="hidden" name="mComponentTypes[]" value="${mComponentType}">${mComponentType}</td>
+        <td><input type="hidden" name="mTypes[]" value="${mType}">${mType}</td>
         <td><input type="hidden" name="mNames[]" value="${mName}">${mName}</td>
         <td><input type="hidden" name="mCodes[]" value="${mCode}">${mCode}</td>
-        <td><input type="hidden" name="mTypes[]" value="${mType}">${mType}</td>
-        <td><input type="hidden" name="mComponentTypes[]" value="${mComponentType}">${mComponentType}</td>
-        <td><input type="hidden" name="pNames[]" value="${pName}">${pName}</td>
         <td><input type="hidden" name="mMinNums[]" value="${mMinNum}">${mMinNum}</td>
         <td><input type="hidden" name="mDepths[]" value="${depth}">${depth}</td>
         <td><input type="hidden" name="mHeights[]" value="${height}">${height}</td>
@@ -134,6 +134,183 @@ $(document).ready(function () {
                 text: term,
                 newTag: true // 사용자 입력값 구분
             };
+        }
+    });
+});
+
+let selectedFiles = []; // 전역 변수로 따로 관리
+
+
+document.getElementById('excelFile').addEventListener('change', function(event) {
+    const files = Array.from(event.target.files);
+    selectedFiles = files;
+
+    updateFileListUI();
+});
+
+function updateFileListUI() {
+    const fileList = document.getElementById('fileListName');
+    fileList.innerHTML = '';
+    document.getElementById('fileListContainer').style.display = 'block';
+
+    if (selectedFiles.length === 0) {
+        document.getElementById('fileListContainer').style.display = 'none';
+        document.getElementById('excelFile').value = '';
+        return;
+    }
+
+    selectedFiles.forEach((file, index) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.setAttribute('data-index', index);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'file-name';
+        nameSpan.textContent = file.name;
+        nameSpan.style.cursor = 'pointer';
+
+        nameSpan.addEventListener('click', () => {
+            loadFileContent(file, index);
+        });
+
+        const deleteBtnWrap = document.createElement('div');
+        deleteBtnWrap.classList.add('tooltip-wrap-mtop');
+
+        const tooltipText = document.createElement('span');
+        tooltipText.classList.add('tooltip-text-mtop');
+        tooltipText.textContent = '해당 파일 삭제';
+
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'bi bi-x-lg deleteIcon text-danger';
+        deleteIcon.style.cursor = 'pointer';
+
+        deleteBtnWrap.appendChild(deleteIcon);
+        deleteBtnWrap.appendChild(tooltipText);
+
+        deleteIcon.addEventListener('click', () => {
+            selectedFiles.splice(index, 1);
+            updateFileListUI();
+
+            const currentTableFile = document.getElementById('fileTable').getAttribute('data-file-name');
+            if (currentTableFile === file.name) {
+                document.getElementById('fileTable').style.display = 'none';
+            }
+        });
+
+        li.appendChild(nameSpan);
+        li.appendChild(deleteBtnWrap);
+        fileList.appendChild(li);
+    });
+}
+
+function loadFileContent(file, index) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        const tableHeader = document.getElementById('tableHeader');
+        const tableBody = document.getElementById('tableBody');
+
+        tableHeader.innerHTML = '';
+        tableBody.innerHTML = '';
+
+        let pCodes = [];
+        let pNames = [];
+
+        rows[0]?.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            tableHeader.appendChild(th);
+        });
+
+        rows.slice(1).forEach(row => {
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-file-name', file.name);
+
+            const productCode = row[0];
+            const productName = row[1];
+
+            pCodes.push(productCode);
+            pNames.push(productName);
+
+            row.forEach(cell => {
+                const td = document.createElement('td');
+                td.textContent = cell;
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        });
+
+        console.log("pCodes: ", pCodes);
+        console.log("pNames: ", pNames);
+
+        const fileTable = document.getElementById('fileTable');
+        fileTable.setAttribute('data-file-name', file.name);
+        fileTable.style.display = 'block';
+    };
+    reader.readAsBinaryString(file);
+}
+
+$(document).on('click', '.deleteIcon', function () {
+    const fileItem = $(this).closest('li');
+    const fileName = fileItem.find('.file-name').text().trim();
+
+    selectedFiles = selectedFiles.filter(file => file.name !== fileName);
+
+    updateFileListUI();
+});
+
+$('#excelUpload').on('click', function (e) {
+    e.preventDefault();
+
+    if (selectedFiles.length === 0) {
+        alert('업로드할 파일이 없습니다.');
+        return;
+    }
+
+    const formData = new FormData();
+    const uId = $('#uId').val();
+    const whereValue = $('input[name="where"]').val();
+
+    selectedFiles.forEach(file => {
+        formData.append('file', file);
+    });
+
+    formData.append('uId', uId);
+    formData.append('where', whereValue);
+    formData.append('whereToGo', 'register');
+
+    // AJAX 요청 보내기
+    $.ajax({
+        url: '/supply/addMaterial',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.isAvailable) {
+                alert("파일 업로드에 성공했습니다.(특정)");
+            } else {
+                alert("파일 업로드에 성공했습니다.");
+            }
+            document.getElementById('fileList').innerHTML = '';
+            document.getElementById('uploadedFileList').style.display = 'none';
+            document.getElementById('fileTable').style.display = 'none';
+            $('#excelFile').val('');
+            document.getElementById('fileListContainer').style.display = 'none';
+
+            if (confirm("목록 페이지로 이동하시겠습니까?")) {
+                window.location.href = "/supply/materialList";
+            } else {
+                window.location.href = "/supply/materialRegister";
+            }
+
+        },
+        error: function(xhr, status, error) {
+            alert("파일 업로드에 실패했습니다. : " + error);
         }
     });
 });

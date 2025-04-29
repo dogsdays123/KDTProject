@@ -86,7 +86,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     @Override
-    public Page<PlanListAllDTO> planSearchWithAll(String[] types, String keyword,  String pName, String ppState, LocalDate ppStart, LocalDate ppEnd, Pageable pageable) {
+    public Page<PlanListAllDTO> planSearchWithAll(String[] types, String keyword, String ppCode, String pName, String ppState, LocalDate ppStart, LocalDate ppEnd, Pageable pageable) {
 
         QProductionPlan productPlan = QProductionPlan.productionPlan;
         QProduct product = QProduct.product;
@@ -111,6 +111,9 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             }
             query.where(booleanBuilder);
 
+        }
+        if (ppCode != null && !ppCode.isEmpty()) {
+            booleanBuilder.and(productPlan.ppCode.contains(ppCode));
         }
 
         if (ppStart != null && ppEnd != null) {

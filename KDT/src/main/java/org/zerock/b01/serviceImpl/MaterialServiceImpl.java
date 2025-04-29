@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
+import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.MaterialDTO;
 import org.zerock.b01.dto.ProductDTO;
 import org.zerock.b01.repository.MaterialRepository;
@@ -14,6 +15,7 @@ import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.MaterialService;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,6 +106,56 @@ public class MaterialServiceImpl implements MaterialService {
 
         for (String pCode : pCodes) {
             materialRepository.deleteById(pCode); // 개별적으로 삭제
+        }
+    }
+
+    @Override
+    public String[] registerMaterialEasy(List<MaterialDTO> materialDTOS, String uId){
+        log.info("innerMaterialRegister" + materialDTOS);
+
+        List<String> errorMessage = new ArrayList<>();
+        List<String> materialRegister = new ArrayList<>();
+        materialRegister.add("부품 등록이 완료되었습니다.");
+
+        // 사용자 정보는 한 번만 가져오면 됩니다.
+        UserBy user = userByRepository.findByUId(uId);
+
+        for (MaterialDTO materialDTO : materialDTOS) {
+            log.info(" UUUU " + uId);
+
+            Material material = modelMapper.map(materialDTO, Material.class);
+            material.setUserBy(user);
+
+            Optional<Product> optionalProduct = productRepository.findByProductName(materialDTO.getPName());
+
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+                material.setProduct(product);
+            } else {
+                errorMessage.add("제품명 '" + materialDTO.getPName() + "'에 해당하는 제품 정보가 존재하지 않습니다.");
+                continue;
+            }
+
+            // 중복 제품 코드 체크
+            if (materialRepository.findByMaterialCode(material.getMCode()).isPresent()) {
+                errorMessage.add(material.getMCode() + "는 이미 존재하는 코드입니다.");
+            }
+            // 중복 제품명 체크
+            else if (materialRepository.findByMaterialCode(material.getMName()).isPresent()) {
+                errorMessage.add(material.getMName() + "는 이미 등록된 상품명입니다.");
+            }
+            // 새로운 제품은 저장
+            else {
+                materialRepository.save(material);
+            }
+        }
+
+        // 에러 메시지가 있으면 리턴
+        if (!errorMessage.isEmpty()) {
+            return errorMessage.toArray(new String[0]);
+        } else {
+            // 모든 제품이 성공적으로 등록되었으면
+            return materialRegister.toArray(new String[0]);
         }
     }
 }
