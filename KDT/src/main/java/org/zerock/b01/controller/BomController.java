@@ -3,34 +3,37 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.Product;
+import org.zerock.b01.dto.ProductDTO;
 import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
+import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.ProductService;
 import org.zerock.b01.service.UserByService;
 
-//협력사(공급업체) 컨트롤러
+import java.util.List;
+
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '협력회사')")
-@RequestMapping("/supplier")
-public class SupplierController {
-
-    private final ProductService productService;
-
-    @Value("${org.zerock.upload.readyPlanPath}")
-    private String readyPath;
+@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서')")
+@RequestMapping("/bom")
+public class BomController {
 
     private final UserByService userByService;
+    private final ProductService productService;
+    private final PageService pageService;
+    private final ProductionPlanRepository productionPlanRepository;
+    private final MaterialRepository materialRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -52,21 +55,23 @@ public class SupplierController {
         }
     }
 
-    @GetMapping("/purchaseOrderList")
-    public void purchaseOrderList() { log.info("##SUPPLIER :: PURCHASE ORDER LIST PAGE GET....##");}
+    @GetMapping("/bomList")
+    public void bomList() {
+    }
 
-    @GetMapping("/transactionHistory")
-    public void transactionHistory() { log.info("##SUPPLIER :: TRANSACTION HISTORY PAGE GET....##");}
+    @GetMapping("/bomRegister")
+    public String bomRegister(Model model) {
+        log.info("##PP REGISTER PAGE GET....##");
+        List<Product> productList = productService.getProducts();
+        model.addAttribute("productList", productList);
+        log.info("$$$$" + productList);
 
-    @GetMapping("/progressInspection")
-    public void progressInspection() { log.info("##SUPPLIER :: PROGRESS INSPECTION PAGE GET....##");}
+        // 반환할 뷰 이름을 명시합니다.
+        return "/bom/bomRegister";
+    }
 
-    @GetMapping("/requestDelivery")
-    public void requestDelivery() { log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");}
-
-    @GetMapping("/sInventoryList")
-    public void inventoryList() { log.info("##SUPPLIER :: INVENTORY PAGE GET....##");}
-
-    @GetMapping("/sInventoryRegister")
-    public void inventoryRegister() { log.info("##SUPPLIER :: REGISTER PAGE GET....##");}
+    @PostMapping("/bomRegister")
+    public String bomRegisterPost() {
+        return null;
+    }
 }

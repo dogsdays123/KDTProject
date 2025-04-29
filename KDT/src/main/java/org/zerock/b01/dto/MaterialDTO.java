@@ -38,9 +38,9 @@ public class MaterialDTO {
 
     private LocalDate regDate;
 
-    private String uId;
-
     private String pName;
 
-    private Long sId;
+    private String sName;
+
+    private String uId;
 }

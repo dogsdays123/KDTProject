@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.SupplierDTO;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -22,7 +21,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/firstView")
-public class firstViewController {
+public class FirstViewController {
 
     private final UserByService userByService;
 

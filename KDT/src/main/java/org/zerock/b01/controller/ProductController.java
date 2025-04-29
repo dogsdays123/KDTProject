@@ -24,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.repository.MaterialRepository;
-import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
@@ -67,21 +66,6 @@ public class ProductController {
 
             model.addAttribute("userBy", userByDTO);
         }
-    }
-    @GetMapping("/bomList")
-    public void bomList() {
-
-    }
-
-    @GetMapping("/bomRegister")
-    public String bomRegister(Model model) {
-        log.info("##PP REGISTER PAGE GET....##");
-        List<Product> productList = productService.getProducts();
-        model.addAttribute("productList", productList);
-        log.info("$$$$" + productList);
-
-        // 반환할 뷰 이름을 명시합니다.
-        return "/product/bomRegister";
     }
 
     @GetMapping("/goodsList")
@@ -133,11 +117,6 @@ public class ProductController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(resource);
-    }
-
-    @PostMapping("/bomRegister")
-    public String bomRegisterPost(){
-        return null;
     }
 
     //제품 직접 등록
@@ -244,8 +223,6 @@ public class ProductController {
                 return "redirect:/product/goodsList";
             }
         }
-
-
 
         productService.removeProduct(pCodes);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");

@@ -22,7 +22,7 @@
         </div>
 
         <!-- 등록 폼 -->
-        <form method="post" th:action="@{/product/bomRegister}">
+        <form method="post" th:action="@{/bom/bomRegister}">
           <input type="hidden" name="uId" th:value="${userBy.uId}">
           <div style="max-width: 1200px; margin-left: 0;">
             <div class="row g-2 mb-2">
@@ -131,6 +131,6 @@
         </small>
       </div>
     </div>
-    <script th:src="@{/js/product/bomRegister.js}"></script>
+    <script th:src="@{/js/bom/bomRegister.js}"></script>
   </div>
 </body>

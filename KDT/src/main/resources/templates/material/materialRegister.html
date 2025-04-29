@@ -19,7 +19,7 @@
                 </div>
 
                 <!-- 등록 폼 -->
-                <form method="post" th:action="@{/supply/addMaterialSelf}">
+                <form method="post" th:action="@{/material/addMaterialSelf}">
                     <input type="hidden" id="uId" name="uId" th:value="${userBy.uId}">
                     <div style="max-width: 1200px; margin-left: 0;">
                         <div class="row g-2 mb-2">
@@ -144,7 +144,7 @@
                 </h6>
 
                 <!-- 엑셀 업로드 -->
-                <form id="excelUploadForm" method="post" enctype="multipart/form-data" th:action="@{/supply/addMaterial}">
+                <form id="excelUploadForm" method="post" enctype="multipart/form-data" th:action="@{/material/addMaterial}">
                     <input type="hidden" id="uuId" name="uId" th:value="${userBy.uId}">
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <label for="excelFile" class="custom-file-upload">

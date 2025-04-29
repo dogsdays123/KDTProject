@@ -17,15 +17,13 @@ import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.ProductService;
 import org.zerock.b01.service.UserByService;
 
-//협력사(공급업체) 컨트롤러
+//자재관리 컨트롤러
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '협력회사')")
-@RequestMapping("/supplier")
-public class SupplierController {
-
-    private final ProductService productService;
+@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '자재부서')")
+@RequestMapping("/inventory")
+public class InventoryController {
 
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
@@ -52,21 +50,9 @@ public class SupplierController {
         }
     }
 
-    @GetMapping("/purchaseOrderList")
-    public void purchaseOrderList() { log.info("##SUPPLIER :: PURCHASE ORDER LIST PAGE GET....##");}
+    @GetMapping("/inventoryRegister")
+    public void inventoryRegister(){ log.info("##MATERIAL INVENTORY REGISTER PAGE GET....##"); }
 
-    @GetMapping("/transactionHistory")
-    public void transactionHistory() { log.info("##SUPPLIER :: TRANSACTION HISTORY PAGE GET....##");}
-
-    @GetMapping("/progressInspection")
-    public void progressInspection() { log.info("##SUPPLIER :: PROGRESS INSPECTION PAGE GET....##");}
-
-    @GetMapping("/requestDelivery")
-    public void requestDelivery() { log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");}
-
-    @GetMapping("/sInventoryList")
-    public void inventoryList() { log.info("##SUPPLIER :: INVENTORY PAGE GET....##");}
-
-    @GetMapping("/sInventoryRegister")
-    public void inventoryRegister() { log.info("##SUPPLIER :: REGISTER PAGE GET....##");}
+    @GetMapping("/inventoryList")
+    public void inventoryList(){ log.info("##MATERIAL INVENTORY LIST PAGE GET....##"); }
 }

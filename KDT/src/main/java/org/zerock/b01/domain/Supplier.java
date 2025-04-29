@@ -25,10 +25,6 @@ public class Supplier extends BaseEntity {
 
     private String sManager;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cId")
-    private Contract sContract;
-
     private String sBusinessType;
 
     private String sBusinessArray;
@@ -44,6 +40,10 @@ public class Supplier extends BaseEntity {
     private String sAgree;
 
     private String sStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cCode", nullable = true)
+    private Contract sContract;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uId", nullable = false)

@@ -3,7 +3,6 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,21 +13,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
-import org.zerock.b01.service.ProductService;
 import org.zerock.b01.service.UserByService;
 
-//협력사(공급업체) 컨트롤러
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '협력회사')")
-@RequestMapping("/supplier")
-public class SupplierController {
-
-    private final ProductService productService;
-
-    @Value("${org.zerock.upload.readyPlanPath}")
-    private String readyPath;
+@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '자재부서')")
+@RequestMapping("/inPut")
+public class InPutController {
 
     private final UserByService userByService;
 
@@ -52,21 +44,9 @@ public class SupplierController {
         }
     }
 
-    @GetMapping("/purchaseOrderList")
-    public void purchaseOrderList() { log.info("##SUPPLIER :: PURCHASE ORDER LIST PAGE GET....##");}
+    @GetMapping("/inPutManage")
+    public void inPut(){ log.info("##MATERIAL RECEIPT PAGE GET....##"); }
 
-    @GetMapping("/transactionHistory")
-    public void transactionHistory() { log.info("##SUPPLIER :: TRANSACTION HISTORY PAGE GET....##");}
-
-    @GetMapping("/progressInspection")
-    public void progressInspection() { log.info("##SUPPLIER :: PROGRESS INSPECTION PAGE GET....##");}
-
-    @GetMapping("/requestDelivery")
-    public void requestDelivery() { log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");}
-
-    @GetMapping("/sInventoryList")
-    public void inventoryList() { log.info("##SUPPLIER :: INVENTORY PAGE GET....##");}
-
-    @GetMapping("/sInventoryRegister")
-    public void inventoryRegister() { log.info("##SUPPLIER :: REGISTER PAGE GET....##");}
+    @GetMapping("/inPutList")
+    public void inPutList(){ log.info("##MATERIAL RECEIPT LIST PAGE GET....##"); }
 }

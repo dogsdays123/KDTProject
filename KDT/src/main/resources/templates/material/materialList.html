@@ -169,7 +169,7 @@
                 </div>
                 <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
-                        <form th:action="@{/supply/modify}" method="post">
+                        <form th:action="@{/material/modify}" method="post">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="purchaseOrderModalLabel">부품 정보 수정</h5>&nbsp;&nbsp;
@@ -253,7 +253,7 @@
                 </div>
                 <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
-                        <form th:action="@{/supply/remove}" method="post" id="purchaseOrderDelForm">
+                        <form th:action="@{/material/remove}" method="post" id="purchaseOrderDelForm">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="purchaseOrderModalDelLabel">부품 정보 삭제</h5>&nbsp;&nbsp;
@@ -294,6 +294,6 @@
             /*]]>*/
         </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script th:src="@{/js/supply/materialList.js}"></script>
+        <script th:src="@{/js/material/materialList.js}"></script>
     </div>
 </body>

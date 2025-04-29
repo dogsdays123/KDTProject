@@ -2,17 +2,20 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/basic.html}"
-      th:with="breadcrumbLevel1='자재 관리', breadcrumbCurrent='자재 재고 등록'">
+      th:with="breadcrumbLevel1='자재 관리', breadcrumbCurrent='자재 등록'">
 <head>
     <link href="/css/supply/register.css" rel="stylesheet">
 </head>
 <body>
-<div layout:fragment="mtInRegi">
+<div layout:fragment="slIRegi">
     <div class="container-fluid">
         <div class="container" style="max-width: 1000px; margin-left: 0;">
             <div class="d-flex align-items-center mb-3">
                 <h4 class="mb-0 me-2">자재 재고 등록</h4>
-                <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="자재 재고 등록"></i>
+                <div class="tooltip-wrap">
+                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                    <span class="tooltip-text">취급하는 자재(품목)의 항목을 조회하고 관리할 수 있습니다.</span>
+                </div>
             </div>
 
             <!-- 등록 폼 -->
@@ -177,6 +180,6 @@
             </small>
         </div>
     </div>
-    <script th:src="@{/js/material/inventoryRegister.js}"></script>
+    <script th:src="@{/js/inventory/inventoryRegister.js}"></script>
 </div>
 </body>
