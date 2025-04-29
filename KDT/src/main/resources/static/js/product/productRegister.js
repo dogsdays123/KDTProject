@@ -1,3 +1,7 @@
+let selectedFiles = []; // 전역 변수로 따로 관리
+let pCodeChecks = null;
+let pNameChecks = null;
+
 function addPlan() {
     const productCode = document.getElementById('pCode').value;
     const productName = document.getElementById('pName').value;
@@ -77,10 +81,6 @@ function clearPlanTable() {
     tableBody.innerHTML = ""; // 모든 row 삭제
 }
 
-
-let selectedFiles = []; // 전역 변수로 따로 관리
-
-
 document.getElementById('excelFile').addEventListener('change', function(event) {
     const files = Array.from(event.target.files);
     selectedFiles = files;
@@ -98,6 +98,37 @@ function updateFileListUI() {
         document.getElementById('excelFile').value = '';
         return;
     }
+
+    //----------------------업로드된 파일 확인용
+
+    const formData = new FormData();
+    const uId = $('#uId').val();
+
+    selectedFiles.forEach(file => {
+        formData.append('file', file);
+    });
+
+    formData.append('uId', uId);
+    formData.append('check', "true");
+
+    // AJAX 요청 보내기
+    $.ajax({
+        url: '/product/addProduct',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            pCodeChecks = response.pCodes;
+            pNameChecks = response.pNames;
+            console.log(pCodeChecks);
+            console.log(pNameChecks);
+        },
+        error: function(xhr, status, error) {
+            alert("파일 확인에 실패. : " + error);
+        }
+    });
+    //--------------------------------------
 
     selectedFiles.forEach((file, index) => {
         const li = document.createElement('li');
@@ -213,15 +244,13 @@ $('#excelUpload').on('click', function (e) {
 
     const formData = new FormData();
     const uId = $('#uId').val();
-    const whereValue = $('input[name="where"]').val();
 
     selectedFiles.forEach(file => {
         formData.append('file', file);
     });
 
     formData.append('uId', uId);
-    formData.append('where', whereValue);
-    formData.append('whereToGo', 'register');
+    formData.append('check', "false");
 
     // AJAX 요청 보내기
     $.ajax({
@@ -231,6 +260,7 @@ $('#excelUpload').on('click', function (e) {
         processData: false,
         contentType: false,
         success: function(response) {
+
             if (response.isAvailable) {
                 alert("파일 업로드에 성공했습니다.(특정)");
             } else {

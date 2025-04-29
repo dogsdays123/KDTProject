@@ -21,7 +21,7 @@ import org.zerock.b01.service.UserByService;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("authentication.principal.status == '승인' && (authentication.principal.userJob == '자재부서' || hasRole('ADMIN'))")
+@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '자재부서')")
 @RequestMapping("/material")
 public class MaterialController {
     private final ProductService productService;

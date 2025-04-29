@@ -35,7 +35,7 @@ import java.util.*;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("authentication.principal.status == '승인' && (authentication.principal.userJob == '생산부서' || hasRole('ADMIN'))")
+@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서')")
 @RequestMapping("/product")
 public class ProductController {
 
@@ -173,28 +173,27 @@ public class ProductController {
     @PostMapping("/addProduct")
     @ResponseBody
     public Map<String, Object> uploadProduct(String uId, @RequestParam("file") MultipartFile[] files,
-                                             @RequestParam("where") String where,
-                                             @RequestParam("whereToGo") String whereToGo,
+                                             @RequestParam("check") String check,
                                              Model model, RedirectAttributes redirectAttributes) throws IOException {
         Map<String, Object> response = new HashMap<>();
-        List<String> allMessages = new ArrayList<>();
+        Map<String, String[]> duplicationProducts = new HashMap<>();
 
         // 엑셀 파일 처리
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            String[] fileMessages = registerProduct(worksheet, uId);
-            allMessages.addAll(Arrays.asList(fileMessages));
+            duplicationProducts = registerProduct(worksheet, uId, check);
         }
 
-        String messageString = String.join(", ", allMessages);
-        response.put("message", messageString);
-        response.put("isAvailable", allMessages.isEmpty());
+        response.put("isAvailable", duplicationProducts.isEmpty());
+        response.put("pCodes", duplicationProducts.get("pCodes"));
+        response.put("pNames", duplicationProducts.get("pNames"));
+        log.info("$$$ " + Arrays.toString(duplicationProducts.get("pCodes")));
 
         return response;
     }
 
-    private String[] registerProduct(XSSFSheet worksheet, String uId) {
+    private Map<String, String[]> registerProduct(XSSFSheet worksheet, String uId, String check) {
 
         List<ProductDTO> productDTOs = new ArrayList<>();
 
@@ -216,10 +215,12 @@ public class ProductController {
             log.info("^^^^&&&&&6" + productDTO.getPName());
             productDTOs.add(productDTO);
         }
-        String[] resultMessages = productService.registerProductsEasy(productDTOs, uId);
-        log.info("Returned messages from registerProductsEasy: " + Arrays.toString(resultMessages));
-        return resultMessages;
-//        return productService.registerProductsEasy(productDTOs, uId);
+
+        if(Objects.equals(check, "true")){
+            return productService.ProductCheck(productDTOs);
+        } else {
+            return productService.registerProductsEasy(productDTOs, uId);
+        }
     }
 
     @PostMapping("/modify")
