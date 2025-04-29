@@ -50,10 +50,13 @@
                     <!--                  <li><a href="#" class="nav-link">가입 상세 정보 보기</a></li>-->
                 </ul>
             </li>
+
 <!--            <li class="nav-item">-->
 <!--                <a href="/memberManagement/roleSet" class="nav-link" title="권한 관리"-->
 <!--                   onclick="toggleSubmenu('submenu-dept')"><i class="bi bi-person-gear"></i>&nbsp;&nbsp;권한 관리&nbsp;&nbsp;</a>-->
 <!--            </li>-->
+
+
             <hr>
         </th:block>
         <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '생산부서'}">
@@ -189,7 +192,6 @@
     <div layout:fragment="mmSupList"></div>
     <div layout:fragment="mmEmpAppr"></div>
     <div layout:fragment="mmSupAppr"></div>
-    <div layout:fragment="mmRoleSet"></div>
 
 
     <!-- 생산 계획 페이지 -->

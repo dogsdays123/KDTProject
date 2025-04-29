@@ -147,7 +147,7 @@
                                     <th>상태</th>
                                 </tr>
                                 </thead>
-                                <tbody class="selectedSupListArg">
+                                <tbody class="selectedSupListAgr">
                                 <!-- JS로 선택된 사원 목록 추가 -->
                                 </tbody>
                             </table>
@@ -156,7 +156,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
-                        <button type="submit" class="btn btn-primary btn-sm">승인</button>
+                        <button type="submit" class="btn btn-primary btn-sm" onclick="return confirmSubmit('승인')">승인</button>
                     </div>
                 </div>
             </form>
@@ -180,11 +180,14 @@
                             <table class="table table-sm table-bordered table-hover align-middle fs-6">
                                 <thead class="table-light small text-center">
                                 <tr>
-                                    <th>사번</th>
-                                    <th>이름</th>
-                                    <th>부서</th>
-                                    <th>직책</th>
+                                    <th>관리자</th>
+                                    <th>상호</th>
+                                    <th>사업자등록번호</th>
+                                    <th>업태</th>
+                                    <th>매니저</th>
+                                    <th>전화번호</th>
                                     <th>신청일</th>
+                                    <th>상태</th>
                                 </tr>
                                 </thead>
                                 <tbody class="selectedEmpListDis">
@@ -196,7 +199,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
-                        <button type="submit" class="btn btn-danger btn-sm" id="btnBatchReject">반려</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="btnBatchReject" onclick="return confirmSubmit('반려')">반려</button>
                     </div>
                 </div>
             </form>

@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("authentication.principal.status == '승인' && (authentication.principal.userJob == '생산부서' || authentication.principal.userJob == '구매부서' || authentication.principal.userJob == '관리자')")
+@PreAuthorize("hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '구매부서')")
 @RequestMapping("/supply")
 public class SupplyController {
 

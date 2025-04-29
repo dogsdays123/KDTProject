@@ -1,5 +1,5 @@
 document.getElementById('selectAll').addEventListener('change', function () {
-    document.querySelectorAll('.selectSupplier').forEach(cb => {
+    document.querySelectorAll('.selectApproval').forEach(cb => {
         cb.checked = this.checked;
     });
 });

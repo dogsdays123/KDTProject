@@ -187,11 +187,6 @@ public class MemberManagementController {
         }
     }
 
-    @GetMapping("/roleSet")
-    public void roleSet() {
-        log.info("##roleSet PAGE GET....##");
-    }
-
     @PostMapping("/supplierApprovalDisAgree")
     public String supplierApprovalDisAgree(@RequestParam("uId") List<String> uId,
                                            Model model, RedirectAttributes redirectAttributes,

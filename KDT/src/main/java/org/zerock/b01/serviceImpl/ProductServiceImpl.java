@@ -15,9 +15,7 @@ import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.ProductService;
 import org.zerock.b01.service.UserByService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -76,44 +74,76 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String[] registerProductsEasy(List<ProductDTO> productDTOs, String uId) {
+    public Map<String, String[]> registerProductsEasy(List<ProductDTO> productDTOs, String uId) {
 
         log.info("innerProductRegister" + productDTOs);
 
-        List<String> errorMessage = new ArrayList<>();
-        List<String> productRegister = new ArrayList<>();
-        productRegister.add("상품 등록이 완료되었습니다.");
+        List<String> duplicatedCodes = new ArrayList<>();
+        List<String> duplicatedNames = new ArrayList<>();
 
-        // 사용자 정보는 한 번만 가져오면 됩니다.
         UserBy user = userByRepository.findByUId(uId);
 
         for (ProductDTO productDTO : productDTOs) {
-            log.info(" UUUU " + uId);
-
             Product product = modelMapper.map(productDTO, Product.class);
             product.setUserBy(user);
 
-            // 중복 제품 코드 체크
-            if (productRepository.findByProductId(product.getPCode()).isPresent()) {
-                errorMessage.add(product.getPCode() + "는 이미 존재하는 코드입니다.");
+            String pCode = product.getPCode();
+            String pName = product.getPName();
+
+            boolean isDuplicated = false;
+
+            if (productRepository.findByProductId(pCode).isPresent()) {
+                isDuplicated = true;
+            } else if (productRepository.findByProductName(pName).isPresent()) {
+                isDuplicated = true;
             }
-            // 중복 제품명 체크
-            else if (productRepository.findByProductName(product.getPName()).isPresent()) {
-                errorMessage.add(product.getPName() + "는 이미 등록된 상품명입니다.");
-            }
-            // 새로운 제품은 저장
-            else {
+
+            if (isDuplicated) {
+                duplicatedCodes.add(pCode);
+                duplicatedNames.add(pName);
+            } else {
                 productRepository.save(product);
             }
         }
 
-        // 에러 메시지가 있으면 리턴
-        if (!errorMessage.isEmpty()) {
-            return errorMessage.toArray(new String[0]);
-        } else {
-            // 모든 제품이 성공적으로 등록되었으면
-            return productRegister.toArray(new String[0]);
+        Map<String, String[]> result = new HashMap<>();
+        result.put("pCodes", duplicatedCodes.toArray(new String[0]));
+        result.put("pNames", duplicatedNames.toArray(new String[0]));
+
+        return result;
+    }
+
+    @Override
+    public Map<String, String[]> ProductCheck(List<ProductDTO> productDTOs) {
+
+        List<String> duplicatedCodes = new ArrayList<>();
+        List<String> duplicatedNames = new ArrayList<>();
+
+        for (ProductDTO productDTO : productDTOs) {
+            Product product = modelMapper.map(productDTO, Product.class);
+
+            String pCode = product.getPCode();
+            String pName = product.getPName();
+
+            boolean isDuplicated = false;
+
+            if (productRepository.findByProductId(pCode).isPresent()) {
+                isDuplicated = true;
+            } else if (productRepository.findByProductName(pName).isPresent()) {
+                isDuplicated = true;
+            }
+
+            if (isDuplicated) {
+                duplicatedCodes.add(pCode);
+                duplicatedNames.add(pName);
+            }
         }
+
+        Map<String, String[]> result = new HashMap<>();
+        result.put("pCodes", duplicatedCodes.toArray(new String[0]));
+        result.put("pNames", duplicatedNames.toArray(new String[0]));
+
+        return result;
     }
 
     @Override
