@@ -12,9 +12,12 @@ import java.util.List;
 
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
-    @Query("select s from Supplier s")
-    List<Supplier> findAllSupplier();
+    @Query("select s from Supplier s where s.sName=:sName")
+    Supplier findSupplierBySName(String sName);
 
     @Query("select s from Supplier s where s.userBy=:userBy")
     Supplier findSupplierByUser(@Param("userBy") UserBy userBy);
+
+    @Query("select s from Supplier s where s.sStatus = '승인'")
+    List<Supplier> findSupWithOutDisAgree();
 }

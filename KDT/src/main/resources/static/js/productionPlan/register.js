@@ -60,7 +60,8 @@ function addPlan() {
         // 항상 버튼을 마지막으로 이동
         const registerRow = document.getElementById('registerRow');
         tableBody.appendChild(registerRow);
-    }``
+    }
+
     // 입력값 초기화
     document.getElementById('ppStart').value = '';
     document.getElementById('ppEnd').value = '';

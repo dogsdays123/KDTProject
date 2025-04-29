@@ -63,10 +63,16 @@ public class UserByServiceImpl implements UserByService {
     @Override
     public void agreeSupplier(String uId, String sStatus){
         Supplier sup = supplierRepository.findSupplierByUser(userByRepository.findById(uId).orElseThrow());
+        UserBy user = userByRepository.findById(uId).orElseThrow();
 
-        if(sStatus.isEmpty()){
+        if(sStatus.equals("대기중") || sStatus.equals("승인")){
+            user.changeStatus("승인");
             sStatus = "승인";
+        } else if(sStatus.equals("반려")) {
+            user.changeStatus("반려");
+            sStatus = "반려";
         }
+
         sup.changeStatus(sStatus);
     }
 
@@ -111,7 +117,7 @@ public class UserByServiceImpl implements UserByService {
         if(userBy.getUserType().equals("other") && userByRepository.findById(userBy.getUId()).isPresent()){
             Supplier supplier = modelMapper.map(supplierDTO, Supplier.class);
             supplier.setUserBy(userBy);
-            log.info("-^-^-" + supplier.getUserBy());
+            supplier.setSStatus("대기중");
             supplierRepository.save(supplier);
         }
     }

@@ -6,13 +6,15 @@ import org.zerock.b01.dto.MaterialDTO;
 import org.zerock.b01.dto.ProductDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MaterialService {
     List<Material> getMaterials();
     void registerMaterial(MaterialDTO materialDTO, String uId);
     void modifyMaterial(MaterialDTO materialDTO, String uName);
     void removeMaterial(List<String> mCodes);
-    String[] registerMaterialEasy(List<MaterialDTO> materialDTOS, String uId);
+    Map<String, String[]> registerMaterialEasy(List<MaterialDTO> materialDTOs, String uId);
+    Map<String, String[]> materialCheck(List<MaterialDTO> materialDTOs);
     List<Material> getMaterialByPName(String pCode);
     List<String> getComponentTypesByProductCode(String pCode);
     List<Material> getMaterialByComponentType(String componentType);

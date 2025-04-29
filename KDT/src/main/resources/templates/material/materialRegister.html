@@ -23,9 +23,9 @@
                     <input type="hidden" id="uId" name="uId" th:value="${userBy.uId}">
                     <div style="max-width: 1200px; margin-left: 0;">
                         <div class="row g-2 mb-2">
-                            <div class="col-md-3" style="width: 200px">
+                            <div class="col-md-2" style="width: 150px">
                                 <label for="pName" class="form-label small">상품</label>
-                                <select id="pName" class="form-select form-select-sm">
+                                <select id="pName" class="form-select form-select-sm searchSelect">
                                     <option value="" selected>선택</option>
                                     <th:block th:each="product : ${productList}">
                                         <option th:value="${product.pName}" th:text="${product.pName}"></option>
@@ -35,12 +35,6 @@
                             <div class="col-md-2">
                                 <label for="mComponentType" class="form-label small">부품 종류</label>
                                 <input type="text" id="mComponentType" name="부품명" class="form-control form-control-sm">
-<!--                                <select id="mComponentType" name="부품명" class="form-select form-select-sm">-->
-<!--                                    <option value="" selected>선택</option>-->
-<!--                                    <th:block th:each="bom : ${bomList}">-->
-<!--                                        <option th:value="${bom.pName}" th:text="${bom.pName}"></option>-->
-<!--                                    </th:block>-->
-<!--                                </select>-->
                             </div>
                             <div class="col-md-2" style="width: 100px">
                                 <label for="mType" class="form-label small">자재 유형</label>
@@ -60,11 +54,17 @@
                                 <label for="mCode" class="form-label small">자재 코드</label>
                                 <input type="text" id="mCode" name="자재코드" class="form-control form-control-sm">
                             </div>
-                            <div class="col-md-2">
-                                <label for="supplier" class="form-label small">공급 업체</label>
-                                <input type="text" id="supplier" name="공급사" class="form-control form-control-sm">
+                            <div class="col-md-2" style="width: 150px">
+                                <label for="sName" class="form-label small">공급 업체</label>
+                                <select id="sName" class="form-select form-select-sm searchSelect">
+                                    <option value="" selected>선택</option>
+                                    <th:block th:each="supplier : ${supplierList}">
+                                        <option th:value="${supplier.sName}" th:text="${supplier.sName}"></option>
+                                    </th:block>
+                                </select>
                             </div>
                         </div>
+
                         <div class="row g-2 mb-2 align-items-end">
                             <div class="col-md-1">
                                 <label for="leadTime" class="form-label small">리드 타임</label>
@@ -115,7 +115,7 @@
                                     <th>자재 유형</th>
                                     <th>자재명</th>
                                     <th>자재 코드</th>
-                                    <th>최소 공급 수량</th>
+                                    <th style="width: 8rem;">최소 공급 수량</th>
                                     <th>높이</th>
                                     <th>세로</th>
                                     <th>가로</th>
@@ -150,7 +150,6 @@
                         <label for="excelFile" class="custom-file-upload">
                             <i class="bi bi-paperclip me-1"></i> 파일 선택
                         </label>
-                        <input type="hidden" name="whereToGo" id="whereToGo">
                         <button type="button" id="excelUpload" class="tooltip-wrap btn btn-dark btn-sm">
                             <i class="bi bi-upload me-1"></i> 엑셀 업로드
                             <span class="tooltip-text">클릭 시 파일의 정보가 등록되며, 기존에 등록된 항목은 중복 등록이 방지됩니다.</span>
