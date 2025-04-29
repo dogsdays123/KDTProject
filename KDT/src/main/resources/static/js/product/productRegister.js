@@ -207,9 +207,16 @@ function loadFileContent(file, index) {
             pCodes.push(productCode);
             pNames.push(productName);
 
-            row.forEach(cell => {
+            row.forEach((cell, colIndex) => {
                 const td = document.createElement('td');
                 td.textContent = cell;
+
+                if ((colIndex === 0 && pCodeChecks.includes(cell)) ||
+                    (colIndex === 1 && pNameChecks.includes(cell))) {
+                    td.style.color = 'red';
+                    td.style.fontWeight = 'bold';
+                }
+
                 tr.appendChild(td);
             });
             tableBody.appendChild(tr);
@@ -260,7 +267,10 @@ $('#excelUpload').on('click', function (e) {
         processData: false,
         contentType: false,
         success: function(response) {
-
+            pCodeChecks = response.pCodes;
+            pNameChecks = response.pNames;
+            console.log(pCodeChecks);
+            console.log(pNameChecks);
             if (response.isAvailable) {
                 alert("파일 업로드에 성공했습니다.(특정)");
             } else {

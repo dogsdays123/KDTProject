@@ -1,3 +1,6 @@
+let pCodeChecks = null;
+let pNameChecks = null;
+
 function addPlan() {
     const pName = document.getElementById('pName').value;
     const mComponentType = document.getElementById('mComponentType').value;
@@ -291,6 +294,10 @@ $('#excelUpload').on('click', function (e) {
         processData: false,
         contentType: false,
         success: function(response) {
+            pCodeChecks = response.pCodes;
+            pNameChecks = response.pNames;
+            console.log(pCodeChecks);
+            console.log(pNameChecks);
             if (response.isAvailable) {
                 alert("파일 업로드에 성공했습니다.(특정)");
             } else {

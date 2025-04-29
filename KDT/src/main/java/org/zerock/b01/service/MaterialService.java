@@ -13,4 +13,7 @@ public interface MaterialService {
     void modifyMaterial(MaterialDTO materialDTO, String uName);
     void removeMaterial(List<String> mCodes);
     String[] registerMaterialEasy(List<MaterialDTO> materialDTOS, String uId);
+    List<Material> getMaterialByPName(String pCode);
+    List<String> getComponentTypesByProductCode(String pCode);
+    List<Material> getMaterialByComponentType(String componentType);
 }

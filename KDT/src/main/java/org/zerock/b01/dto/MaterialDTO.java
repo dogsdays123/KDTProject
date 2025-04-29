@@ -43,4 +43,10 @@ public class MaterialDTO {
     private String pName;
 
     private Long sId;
+
+    public MaterialDTO(String mCode, String mName) {
+        this.mCode = mCode;
+        this.mName = mName;
+    }
+
 }

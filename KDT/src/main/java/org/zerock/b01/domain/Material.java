@@ -41,7 +41,7 @@ public class Material extends BaseEntity {
     private UserBy userBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pCode", nullable = false)
+    @JoinColumn(name = "pCode", referencedColumnName = "pCode", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)

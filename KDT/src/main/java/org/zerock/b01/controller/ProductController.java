@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.repository.MaterialRepository;
@@ -31,6 +32,7 @@ import org.zerock.b01.service.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -39,12 +41,14 @@ import java.util.*;
 @RequestMapping("/product")
 public class ProductController {
 
+
     @Value("${org.zerock.upload.readyProductPath}")
     private String readyPath;
 
     private final UserByService userByService;
     private final ProductService productService;
     private final PageService pageService;
+    private final MaterialService materialService;
     private final ProductionPlanRepository productionPlanRepository;
     private final MaterialRepository materialRepository;
 //    private final ProductRepository productRepository;
@@ -73,10 +77,29 @@ public class ProductController {
 
     }
 
+    @GetMapping("/api/products/{pCode}/component-types")
+    @ResponseBody
+    public List<String> getComponentTypesByProductCode(@PathVariable String pCode) {
+        List<String> componentTypes = materialRepository.findComponentTypesByProductCode(pCode);
+        return componentTypes != null ? componentTypes : Collections.emptyList();
+    }
+
+    // 부품명을 선택하면 자재 목록을 반환
+    @GetMapping("/api/materials")
+    @ResponseBody
+    public List<MaterialDTO> getMaterialsByComponentType(@RequestParam String componentType) {
+        List<Material> materials = materialService.getMaterialByComponentType(componentType);
+        return materials.stream()
+                .map(material -> new MaterialDTO(material.getMCode(), material.getMName())) // Material -> MaterialDTO 변환
+                .collect(Collectors.toList());
+    }
+
     @GetMapping("/bomRegister")
     public String bomRegister(Model model) {
         log.info("##PP REGISTER PAGE GET....##");
         List<Product> productList = productService.getProducts();
+        model.addAttribute("productList", productList);
+        List<Material> materialList = materialService.getMaterials();
         model.addAttribute("productList", productList);
         log.info("$$$$" + productList);
 

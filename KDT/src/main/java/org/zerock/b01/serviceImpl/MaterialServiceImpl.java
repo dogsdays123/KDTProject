@@ -39,6 +39,21 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
+    public List<Material> getMaterialByPName(String pCode){
+        return materialRepository.findByProductCode(pCode);
+    }
+
+    @Override
+    public List<String> getComponentTypesByProductCode(String pCode) {
+        return materialRepository.findComponentTypesByProductCode(pCode);
+    }
+
+    @Override
+    public List<Material> getMaterialByComponentType(String componentType) {
+        return materialRepository.findByComponentType(componentType);
+    }
+
+    @Override
     public void registerMaterial(MaterialDTO materialDTO, String uId){
         Material material = modelMapper.map(materialDTO, Material.class);
         Product product = materialRepository.findByProduct(materialDTO.getPName());

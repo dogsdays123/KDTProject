@@ -110,5 +110,48 @@ $(document).ready(function () {
 document.getElementById("productName").addEventListener("change", function() {
     var selectedOption = this.options[this.selectedIndex];  // 선택한 상품 옵션
     var productCode = selectedOption.getAttribute("data-code");  // 상품 코드 가져오기
-    document.getElementById("productCode").value = productCode;  // 상품 코드 입력란에 설정
+    document.getElementById("productCode").value = productCode;
+
+    if (productCode) {
+        // 상품코드에 맞는 부품명 목록을 가져옵니다.
+        fetch(`/product/api/products/${productCode}/component-types`)
+            .then(response => response.json())
+            .then(componentTypes => {
+                const componentSelect = document.getElementById("componentType");
+                componentSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
+                componentTypes.forEach(type => {
+                    let option = document.createElement("option");
+                    option.value = type;
+                    option.textContent = type;
+                    componentSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching component types:', error));
+    }// 상품 코드 입력란에 설정
+});
+
+
+document.getElementById("componentType").addEventListener("change", function() {
+    let componentType = this.value;
+    if (componentType) {
+        // 부품명에 맞는 자재 목록을 가져옵니다.
+        fetch(`/product/api/materials?componentType=${componentType}`)
+            .then(response => response.json())
+            .then(materials => {
+                console.log(materials);  // 응답 데이터 확인
+                const materialSelect = document.getElementById("materialList");
+                materialSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
+                if (Array.isArray(materials)) {
+                    materials.forEach(material => {
+                        let option = document.createElement("option");
+                        option.value = material.id; // 자재 ID로 설정
+                        option.textContent = material.name; // 자재 이름을 표시
+                        materialSelect.appendChild(option);
+                    });
+                } else {
+                    console.error("Returned data is not an array:", materials);
+                }
+            })
+            .catch(error => console.error('Error fetching materials:', error));
+    }
 });
