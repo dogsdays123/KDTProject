@@ -35,7 +35,7 @@ import java.util.*;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("authentication.principal.status == '승인' && (authentication.principal.userJob == '생산부서' || authentication.principal.userJob == '관리자')")
+@PreAuthorize("authentication.principal.status == '승인' && (authentication.principal.userJob == '생산부서' || hasRole('ADMIN'))")
 @RequestMapping("/product")
 public class ProductController {
 

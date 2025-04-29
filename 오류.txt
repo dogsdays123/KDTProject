@@ -10,3 +10,7 @@ js에서도 동일하게 materials로 controller에 보내줘야 controller에�
 
 제품관리 = 제품 부분의 엑셀 정보 들어올 때, 중복체크 / 중복알림
 porductRegister.js 의 loadFileContent메서드 확인요망
+
+
+---------------------
+memberManagement 페이지랑 하위 product등의 페이지의 승인대기, 시작하기 크기 안맞음
