@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Setter
 @Getter
 @Builder
 @NoArgsConstructor
@@ -11,6 +12,7 @@ import lombok.*;
 public class Bom extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bId;
 
     private String bRequireNum;
@@ -24,4 +26,8 @@ public class Bom extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pCode", nullable = false)
     private Product product; // 제품 외래키
+
+    public void change(String bRequireNum){
+        this.bRequireNum = bRequireNum;
+    }
 }

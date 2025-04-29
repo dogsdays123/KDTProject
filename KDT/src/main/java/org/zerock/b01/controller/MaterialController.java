@@ -121,7 +121,7 @@ public class MaterialController {
         List<Product> productList = productService.getProducts();
         model.addAttribute("productList", productList);
 
-        List<Bom> bomList = bomService.getBoms();
+        List<BomDTO> bomList = bomService.getBoms();
         model.addAttribute("bomList", bomList);
 
         // 반환할 뷰 이름을 명시합니다.

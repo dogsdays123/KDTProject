@@ -21,4 +21,6 @@ public interface AllSearch {
 
     Page<MaterialDTO> materialSearchWithAll(String[] types, String keyword, String pName, String componentType, String mName,
                                             String mCode, String mType, Pageable pageable);
+
+    Page<BomDTO> bomSearchWithAll(String[] types, String keyword, String componentType, String mName, String pName, String uId, Pageable pageable);
 }

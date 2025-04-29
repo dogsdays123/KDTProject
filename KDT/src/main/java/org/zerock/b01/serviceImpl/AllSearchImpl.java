@@ -431,4 +431,54 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
         return new PageImpl<>(dtoList, pageable, total);
     }
+
+    @Override
+    public Page<BomDTO> bomSearchWithAll(String[] types, String keyword, String componentType, String mName, String pName, String uId, Pageable pageable) {
+
+        QBom bom = QBom.bom;
+        JPQLQuery<Bom> query = from(bom);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(bom.product.pName.contains(keyword));
+            keywordBuilder.or(bom.material.mName.contains(keyword));
+            keywordBuilder.or(bom.bComponentType.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+        if (componentType != null && !componentType.isEmpty() && !"전체".equals(componentType)) {
+            booleanBuilder.and(bom.bComponentType.contains(componentType));
+        }
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            booleanBuilder.and(bom.material.mName.contains(mName));
+        }
+
+        if (pName != null && !pName.isEmpty() && !"전체".equals(pName)) {
+            booleanBuilder.and(bom.product.pName.contains(pName));
+        }
+
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        List<Bom> resultList = query.fetch();
+        // DTO로 변환
+        List<BomDTO> dtoList = resultList.stream()
+                .map(prod -> BomDTO.builder()
+                        .bId(prod.getBId())
+                        .mCode(prod.getMaterial().getMCode())
+                        .bComponentType(prod.getBComponentType())
+                        .bRequireNum(prod.getBRequireNum())
+                        .pCode(prod.getProduct().getPCode())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<Bom> countQuery = from(bom).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
 }

@@ -46,4 +46,9 @@ public class MaterialDTO {
 
     private String uId;
 
+    public MaterialDTO(String mCode, String mName) {
+        this.mCode = mCode;
+        this.mName = mName;
+    }
+
 }

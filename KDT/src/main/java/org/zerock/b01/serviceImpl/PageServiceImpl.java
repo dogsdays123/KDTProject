@@ -8,16 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.zerock.b01.domain.Material;
+import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.allDTO.PlanListAllDTO;
 import org.zerock.b01.dto.allDTO.ProductListAllDTO;
 import org.zerock.b01.dto.allDTO.SupplierAllDTO;
 import org.zerock.b01.dto.allDTO.UserByAllDTO;
+import org.zerock.b01.repository.BomRepository;
 import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.service.PageService;
 
+import javax.sql.CommonDataSource;
 import java.time.LocalDate;
 
 @Service
@@ -37,6 +41,11 @@ public class PageServiceImpl implements PageService {
 
     @Autowired
     private ProductionPlanRepository productionPlanRepository;
+
+    @Autowired
+    private final BomRepository bomRepository;
+    @Autowired
+    private CommonDataSource commonDataSource;
 
     @Override
     public PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO){
@@ -171,6 +180,36 @@ public class PageServiceImpl implements PageService {
         Page<UserByAllDTO> result = productRepository.userBySearchWithAllList(types, keyword, uName, userJob, userRank, regDate, status, uId, pageable);
 
         return PageResponseDTO.<UserByAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<BomDTO> bomListWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String componentType = pageRequestDTO.getComponentType();
+        String mName = pageRequestDTO.getMName();
+        String pName = pageRequestDTO.getPName();
+        String uId = pageRequestDTO.getUId();
+
+        Pageable pageable = pageRequestDTO.getPageable("uId");
+
+        Page<BomDTO> result = bomRepository.bomSearchWithAll(types, keyword, componentType, mName, pName, uId, pageable);
+
+        for (BomDTO bomDTO : result.getContent()) {
+            Product product = productRepository.findByProductId(bomDTO.getPCode())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            bomDTO.setPName(product.getPName());
+
+            Material material = materialRepository.findByMaterialCode(bomDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            bomDTO.setMName(material.getMName()); //
+        }
+
+        return PageResponseDTO.<BomDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
