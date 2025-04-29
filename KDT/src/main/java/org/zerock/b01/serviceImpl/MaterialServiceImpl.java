@@ -78,7 +78,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public Map<String, String[]> registerMaterialEasy(List<MaterialDTO> materialDTOs, String uId){
         List<String> duplicatedCodes = new ArrayList<>();
-        List<String> error = new ArrayList<>();
+        List<String> errorCheck = new ArrayList<>();
 
         UserBy user = userByRepository.findByUId(uId);
 
@@ -86,7 +86,7 @@ public class MaterialServiceImpl implements MaterialService {
         for (MaterialDTO materialDTO : materialDTOs) {
             //만약 엑셀에 들어온 제품이 등록되지 않은 제품이라면 error로 저장
             if(productRepository.findByProductNameObj(materialDTO.getPName()) == null){
-                error.add(materialDTO.getPName());
+                errorCheck.add(materialDTO.getPName());
                 continue;
             }
             //그게 아니면 정상영업합니다.
@@ -110,7 +110,7 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         Map<String, String[]> result = new HashMap<>();
-        result.put("error", error.toArray(new String[0]));
+        result.put("errorCheck", errorCheck.toArray(new String[0]));
         result.put("mCodes", duplicatedCodes.toArray(new String[0]));
 
         return result;
@@ -119,13 +119,13 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public Map<String, String[]> materialCheck(List<MaterialDTO> materialDTOs) {
         List<String> duplicatedCodes = new ArrayList<>();
-        List<String> error = new ArrayList<>();
+        List<String> errorCheck = new ArrayList<>();
 
         //돌아라돌아라
         for (MaterialDTO materialDTO : materialDTOs) {
             //만약 엑셀에 들어온 제품이 등록되지 않은 제품이라면 error로 저장
             if(productRepository.findByProductNameObj(materialDTO.getPName()) == null){
-                error.add(materialDTO.getPName());
+                errorCheck.add(materialDTO.getPName());
                 continue;
             }
             //그게 아니면 정상영업합니다.
@@ -145,7 +145,7 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         Map<String, String[]> result = new HashMap<>();
-        result.put("error", error.toArray(new String[0]));
+        result.put("errorCheck", errorCheck.toArray(new String[0]));
         result.put("mCodes", duplicatedCodes.toArray(new String[0]));
 
         return result;

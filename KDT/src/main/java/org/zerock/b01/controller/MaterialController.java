@@ -172,7 +172,7 @@ public class MaterialController {
 
         //materialService 에서 가져온 mCodes
         response.put("mCodes", materialObj.get("mCodes"));
-        response.put("errorCheck", materialObj.get("error"));
+        response.put("errorCheck", materialObj.get("errorCheck"));
 
         return response;
     }
