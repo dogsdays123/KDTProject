@@ -1,6 +1,10 @@
 package org.zerock.b01.service;
 
 import org.zerock.b01.dto.*;
+import org.zerock.b01.dto.allDTO.PlanListAllDTO;
+import org.zerock.b01.dto.allDTO.ProductListAllDTO;
+import org.zerock.b01.dto.allDTO.SupplierAllDTO;
+import org.zerock.b01.dto.allDTO.UserByAllDTO;
 
 public interface PageService {
     PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO);

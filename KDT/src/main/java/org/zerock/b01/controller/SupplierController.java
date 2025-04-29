@@ -64,9 +64,9 @@ public class SupplierController {
     @GetMapping("/requestDelivery")
     public void requestDelivery() { log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");}
 
-    @GetMapping("/inventoryList")
+    @GetMapping("/sInventoryList")
     public void inventoryList() { log.info("##SUPPLIER :: INVENTORY PAGE GET....##");}
 
-    @GetMapping("/inventoryRegister")
+    @GetMapping("/sInventoryRegister")
     public void inventoryRegister() { log.info("##SUPPLIER :: REGISTER PAGE GET....##");}
 }

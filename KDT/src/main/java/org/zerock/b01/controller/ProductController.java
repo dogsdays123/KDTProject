@@ -24,8 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.dto.allDTO.ProductListAllDTO;
 import org.zerock.b01.repository.MaterialRepository;
-import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
@@ -72,41 +72,6 @@ public class ProductController {
             model.addAttribute("userBy", userByDTO);
         }
     }
-    @GetMapping("/bomList")
-    public void bomList() {
-
-    }
-
-    @GetMapping("/api/products/{pCode}/component-types")
-    @ResponseBody
-    public List<String> getComponentTypesByProductCode(@PathVariable String pCode) {
-        List<String> componentTypes = materialRepository.findComponentTypesByProductCode(pCode);
-        return componentTypes != null ? componentTypes : Collections.emptyList();
-    }
-
-    // 부품명을 선택하면 자재 목록을 반환
-    @GetMapping("/api/materials")
-    @ResponseBody
-    public List<MaterialDTO> getMaterialsByComponentType(@RequestParam String componentType) {
-        List<Material> materials = materialService.getMaterialByComponentType(componentType);
-        return materials.stream()
-                .map(material -> new MaterialDTO(material.getMCode(), material.getMName())) // Material -> MaterialDTO 변환
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/bomRegister")
-    public String bomRegister(Model model) {
-        log.info("##PP REGISTER PAGE GET....##");
-        List<Product> productList = productService.getProducts();
-        model.addAttribute("productList", productList);
-        List<Material> materialList = materialService.getMaterials();
-        model.addAttribute("productList", productList);
-        log.info("$$$$" + productList);
-
-        // 반환할 뷰 이름을 명시합니다.
-        return "/product/bomRegister";
-    }
-
     @GetMapping("/goodsList")
     public void productList(PageRequestDTO pageRequestDTO, Model model) {
 
@@ -156,11 +121,6 @@ public class ProductController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(resource);
-    }
-
-    @PostMapping("/bomRegister")
-    public String bomRegisterPost(){
-        return null;
     }
 
     //제품 직접 등록
@@ -267,8 +227,6 @@ public class ProductController {
                 return "redirect:/product/goodsList";
             }
         }
-
-
 
         productService.removeProduct(pCodes);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");

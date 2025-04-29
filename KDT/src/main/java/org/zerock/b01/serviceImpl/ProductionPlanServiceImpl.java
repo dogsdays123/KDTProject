@@ -11,7 +11,7 @@ import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.dto.PageRequestDTO;
 import org.zerock.b01.dto.PageResponseDTO;
-import org.zerock.b01.dto.PlanListAllDTO;
+import org.zerock.b01.dto.allDTO.PlanListAllDTO;
 import org.zerock.b01.dto.ProductionPlanDTO;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;

@@ -8,18 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.zerock.b01.domain.CurrentStatus;
-import org.zerock.b01.domain.Material;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.dto.allDTO.PlanListAllDTO;
+import org.zerock.b01.dto.allDTO.ProductListAllDTO;
+import org.zerock.b01.dto.allDTO.SupplierAllDTO;
+import org.zerock.b01.dto.allDTO.UserByAllDTO;
 import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.service.PageService;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2

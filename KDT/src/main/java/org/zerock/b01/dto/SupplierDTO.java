@@ -22,6 +22,6 @@ public class SupplierDTO {
     private String sPhoneDirect;
     private String sExponent;
     private String sAgree;
-    private Long cid;
-    private String userId;
+    private Long cCode;
+    private String uId;
 }

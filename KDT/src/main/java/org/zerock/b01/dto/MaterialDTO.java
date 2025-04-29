@@ -38,15 +38,12 @@ public class MaterialDTO {
 
     private LocalDate regDate;
 
-    private String uId;
-
     private String pName;
 
     private Long sId;
 
-    public MaterialDTO(String mCode, String mName) {
-        this.mCode = mCode;
-        this.mName = mName;
-    }
+    private String sName;
+
+    private String uId;
 
 }

@@ -288,7 +288,7 @@ $('#excelUpload').on('click', function (e) {
 
     // AJAX 요청 보내기
     $.ajax({
-        url: '/supply/addMaterial',
+        url: '/material/addMaterial',
         method: 'POST',
         data: formData,
         processData: false,
@@ -310,9 +310,9 @@ $('#excelUpload').on('click', function (e) {
             document.getElementById('fileListContainer').style.display = 'none';
 
             if (confirm("목록 페이지로 이동하시겠습니까?")) {
-                window.location.href = "/supply/materialList";
+                window.location.href = "/material/materialList";
             } else {
-                window.location.href = "/supply/materialRegister";
+                window.location.href = "/material/materialRegister";
             }
 
         },
