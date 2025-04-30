@@ -441,7 +441,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         JPQLQuery<Bom> query = from(bom);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-
         if (keyword != null && !keyword.isEmpty()) {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
             keywordBuilder.or(bom.product.pName.contains(keyword));
@@ -479,6 +478,65 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<Bom> countQuery = from(bom).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public Page<InventoryStockDTO> inventoryStockSearchWithAll(String[] types, String keyword,
+                                                               String pName, String componentType, String mName, String isLocation, String uId, Pageable pageable) {
+
+        QInventoryStock inventoryStock = QInventoryStock.inventoryStock;
+        JPQLQuery<InventoryStock> query = from(inventoryStock);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(inventoryStock.material.mName.contains(keyword));
+            keywordBuilder.or(inventoryStock.material.mComponentType.contains(keyword));
+            keywordBuilder.or(inventoryStock.material.product.pName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+        if (pName != null && !pName.isEmpty() && !"전체".equals(pName)) {
+            log.info("Received pName: " + pName);
+            booleanBuilder.and(inventoryStock.material.product.pName.contains(pName));
+        }
+
+        if (componentType != null && !componentType.isEmpty() && !"전체".equals(componentType)) {
+            log.info("Received pName: " + componentType);
+            booleanBuilder.and(inventoryStock.material.mComponentType.contains(componentType));
+        }
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(inventoryStock.material.mName.contains(mName));
+        }
+
+        if (isLocation != null && !isLocation.isEmpty() && !"전체".equals(isLocation)) {
+            log.info("Received pName: " + isLocation);
+            booleanBuilder.and(inventoryStock.isLocation.contains(isLocation));
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+
+        List<InventoryStock> resultList = query.fetch();
+
+        List<InventoryStockDTO> dtoList = resultList.stream()
+                .map(prod -> InventoryStockDTO.builder()
+                        .isId(prod.getIsId())
+                        .mCode(prod.getMaterial().getMCode())
+                        .isAvailable(prod.getIsAvailable())
+                        .isNum(prod.getIsNum())
+                        .isLocation(prod.getIsLocation())
+                        .pCode(prod.getMaterial().getProduct().getPCode())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<InventoryStock> countQuery = from(inventoryStock).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

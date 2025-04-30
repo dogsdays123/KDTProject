@@ -56,6 +56,9 @@ public class PageRequestDTO {
     private String mName;
     private String mType;
 
+    //창고
+    private String isLocation;
+
     //product
     private String pCode;
     private LocalDate pReg;

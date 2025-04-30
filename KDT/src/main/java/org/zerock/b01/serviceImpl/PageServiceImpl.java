@@ -15,10 +15,7 @@ import org.zerock.b01.dto.allDTO.PlanListAllDTO;
 import org.zerock.b01.dto.allDTO.ProductListAllDTO;
 import org.zerock.b01.dto.allDTO.SupplierAllDTO;
 import org.zerock.b01.dto.allDTO.UserByAllDTO;
-import org.zerock.b01.repository.BomRepository;
-import org.zerock.b01.repository.MaterialRepository;
-import org.zerock.b01.repository.ProductRepository;
-import org.zerock.b01.repository.ProductionPlanRepository;
+import org.zerock.b01.repository.*;
 import org.zerock.b01.service.PageService;
 
 import javax.sql.CommonDataSource;
@@ -44,6 +41,10 @@ public class PageServiceImpl implements PageService {
 
     @Autowired
     private final BomRepository bomRepository;
+
+    @Autowired
+    private final InventoryStockRepository inventoryStockRepository;
+
     @Autowired
     private CommonDataSource commonDataSource;
 
@@ -210,6 +211,40 @@ public class PageServiceImpl implements PageService {
         }
 
         return PageResponseDTO.<BomDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<InventoryStockDTO> inventoryStockWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String pName = pageRequestDTO.getPName();
+        String componentType = pageRequestDTO.getComponentType();
+        String mName = pageRequestDTO.getMName();
+        String isLocation = pageRequestDTO.getIsLocation();
+        String uId = pageRequestDTO.getUId();
+
+        Pageable pageable = pageRequestDTO.getPageable("uId");
+
+        Page<InventoryStockDTO> result = inventoryStockRepository.inventoryStockSearchWithAll(types, keyword,
+                pName, componentType, mName, isLocation, uId, pageable);
+
+        for (InventoryStockDTO inventoryStockDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(inventoryStockDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            inventoryStockDTO.setMName(material.getMName()); //
+
+            if (material.getProduct() != null) {
+                inventoryStockDTO.setPCode(material.getProduct().getPCode());
+                inventoryStockDTO.setPName(material.getProduct().getPName());
+                inventoryStockDTO.setIsComponentType(material.getMComponentType());
+            }
+        }
+
+        return PageResponseDTO.<InventoryStockDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())

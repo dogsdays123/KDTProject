@@ -23,4 +23,7 @@ public interface AllSearch {
                                             String mCode, String mType, Pageable pageable);
 
     Page<BomDTO> bomSearchWithAll(String[] types, String keyword, String componentType, String mName, String pName, String uId, Pageable pageable);
+
+    Page<InventoryStockDTO> inventoryStockSearchWithAll(String[] types, String keyword,
+                                                        String pName, String componentType, String mName, String isLocation, String uId, Pageable pageable);
 }
