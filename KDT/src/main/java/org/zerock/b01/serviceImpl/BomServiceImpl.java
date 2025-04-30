@@ -1,5 +1,6 @@
 package org.zerock.b01.serviceImpl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,10 @@ public class BomServiceImpl implements BomService {
     public void modifyBOM(BomDTO bomDTO, Long bId){
         Optional<Bom> result = bomRepository.findById(bId);
         Bom bom = result.orElseThrow();
-        bom.change(bomDTO.getBRequireNum());
+
+        Optional<Material> materialOptional = materialRepository.findById(bomDTO.getMCode());
+        Material material = materialOptional.orElseThrow(() -> new EntityNotFoundException("Material not found"));
+        bom.change(bomDTO.getBComponentType(), bomDTO.getBRequireNum(), material);
         bomRepository.save(bom);
     }
 

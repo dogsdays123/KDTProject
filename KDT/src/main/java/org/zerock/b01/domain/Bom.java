@@ -27,7 +27,9 @@ public class Bom extends BaseEntity {
     @JoinColumn(name = "pCode", nullable = false)
     private Product product; // 제품 외래키
 
-    public void change(String bRequireNum){
+    public void change(String bComponentType, String bRequireNum, Material material){
+        this.bComponentType = bComponentType;
         this.bRequireNum = bRequireNum;
+        this.material = material;
     }
 }

@@ -170,16 +170,20 @@
                                         <input type="text" id="pName" name="pName" class="form-control form-control-sm" readonly required>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">부품</label>
-                                        <input type="text" id="cType" name="bComponentType" class="form-control form-control-sm" readonly required>
+                                        <label class="form-label"><span class="text-danger">*</span> 부품 선택</label>
+                                        <select id="cType" name="bComponentType" class="form-select form-select-sm" >
+                                            <option value="" selected>선택</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label"><span class="text-danger">*</span> 자재 선택</label>
+                                        <select name="mName" id="mName" class="form-select form-select-sm">
+                                            <option value="" selected>선택</option>
+                                        </select>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">자재 코드</label>
                                         <input type="text" id="mCode" name="mCode" class="form-control form-control-sm" readonly required>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">자재명</label>
-                                        <input type="text" id="mName" name="mName" class="form-control form-control-sm" readonly required>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label"><span class="text-danger">*</span> 수량</label>
