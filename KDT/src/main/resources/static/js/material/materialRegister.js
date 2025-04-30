@@ -96,7 +96,6 @@ function addPlan() {
     document.getElementById('unitPrice').value = '';
     document.getElementById('mMinNum').value = '';
     document.getElementById("uId").value = '';
-
 }
 
 // 삭제 버튼 클릭 시 해당 행 삭제

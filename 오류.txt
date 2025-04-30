@@ -10,6 +10,7 @@ js에서도 동일하게 materials로 controller에 보내줘야 controller에�
 ----
 4.30
 부품등록시 제품에 없는 부품이면 오류알람
+dpp js 부분 참조 넣어놨으니까 보고 수정합시다. input테이블 생성해서 controller에 값 넣어줄겁니다.
 
 
 ---------------------
