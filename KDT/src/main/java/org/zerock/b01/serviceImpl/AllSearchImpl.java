@@ -145,7 +145,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         List<PlanListAllDTO> dtoList = resultList.stream()
                 .map(plan -> PlanListAllDTO.builder()
                         .ppCode(plan.getPpCode())
-                        .pCode(plan.getProduct().getPCode())
                         .pName(plan.getPName())
                         .ppNum(plan.getPpNum())
                         .ppState(plan.getPpState().toString())

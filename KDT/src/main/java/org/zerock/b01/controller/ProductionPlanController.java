@@ -26,6 +26,8 @@ import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.allDTO.PlanListAllDTO;
 import org.zerock.b01.dto.formDTO.ProductionPlanFormDTO;
+import org.zerock.b01.repository.ProductRepository;
+import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.ProductService;
@@ -35,7 +37,10 @@ import org.zerock.b01.service.UserByService;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @Controller
@@ -46,6 +51,8 @@ public class ProductionPlanController {
 
     private final ProductService productService;
     private final PageService pageService;
+    private final ProductionPlanRepository productionPlanRepository;
+    private final ProductRepository productRepository;
 
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
@@ -161,27 +168,25 @@ public class ProductionPlanController {
 
     //생산계획 자동 등록
     @PostMapping("/addProductPlan")
-    public String uploadProductPlan(String uId, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
+    @ResponseBody
+    public Map<String, Object> uploadProductPlan(String uId, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        Map<String, Object> response = new HashMap<>();
+        String mg = "";
 
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            registerProductPlanOnController(uId, worksheet);
-            log.info("%%%%" + worksheet.getSheetName());
+            mg = registerProductPlanOnController(uId, worksheet);
         }
 
-        if (where.equals("dataUpload")) {
-            redirectAttributes.addFlashAttribute("successMessage", "(특정)데이터 업로드가 성공적으로 완료되었습니다.");
-            return "redirect:/productionPlan/ppRegister";
-        } else {
-            log.info("데이터넘겨주기");
-            redirectAttributes.addFlashAttribute("successMessage", "데이터 업로드가 성공적으로 완료되었습니다.");
-            return "redirect:/productionPlan/ppRegister";
-        }
+        response.put("mg", mg);
+
+        return response;
     }
 
 
-    private void registerProductPlanOnController(String uId, XSSFSheet worksheet) {
+    private String registerProductPlanOnController(String uId, XSSFSheet worksheet) {
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
 
             ProductionPlanDTO entity = new ProductionPlanDTO();
@@ -190,23 +195,25 @@ public class ProductionPlanController {
 
             if (row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
                 String productionPlanCode = formatter.formatCellValue(row.getCell(0));
-                log.info("^^^^" + productionPlanCode);
                 entity.setPpCode(productionPlanCode);
             }
 
-            String productCode = formatter.formatCellValue(row.getCell(1));
-            String productName = formatter.formatCellValue(row.getCell(2));
+            String productName = formatter.formatCellValue(row.getCell(1));
 
             //날짜 형식이라 포맷을 해줘야함
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-            LocalDate productionStartDate = LocalDate.parse(sdf.format(row.getCell(3).getDateCellValue()));
-            log.info("#########" + productionStartDate);
-            LocalDate productionEndDate = LocalDate.parse(sdf.format(row.getCell(4).getDateCellValue()));
-            log.info("#########" + productionEndDate);
-            Integer productionQuantity = Integer.parseInt(formatter.formatCellValue(row.getCell(5)));
+            LocalDate productionStartDate = LocalDate.parse(sdf.format(row.getCell(2).getDateCellValue()));
+            LocalDate productionEndDate = LocalDate.parse(sdf.format(row.getCell(3).getDateCellValue()));
+            Integer productionQuantity = Integer.parseInt(formatter.formatCellValue(row.getCell(4)));
 
-            entity.setPppCode(productCode);
+            String pCode = productRepository.findPCodeByPName(productName).orElse(null);
+
+            if(pCode == null) {
+                return productName + "은(는) 등록되지 않은 상품입니다.";
+            }
+
+            entity.setPppCode(pCode);
             entity.setPName(productName);
             entity.setPpStart(productionStartDate);
             entity.setPpEnd(productionEndDate);
@@ -215,6 +222,7 @@ public class ProductionPlanController {
             String productionPlanCode = productionPlanService.registerProductionPlan(entity, uId);
             log.info("데이터 넘겨주기 2 = " + productionPlanCode);
         }
+        return "성공";
     }
 
     // 생산 계획 목록 수정

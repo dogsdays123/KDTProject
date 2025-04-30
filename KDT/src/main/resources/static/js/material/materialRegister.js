@@ -121,7 +121,7 @@ function clearPlanTable() {
     tableBody.innerHTML = ""; // 모든 row 삭제
 }
 
-document.getElementById('excelFile').addEventListener('change', function(event) {
+document.getElementById('excelFile').addEventListener('change', function (event) {
     const files = Array.from(event.target.files);
     selectedFiles = files;
 
@@ -158,13 +158,13 @@ function updateFileListUI() {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(response) {
+        success: function (response) {
             mCodeChecks = response.mCodes;
             errorChecks = response.errorCheck;
             console.log(mCodeChecks);
             console.log(errorChecks);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             alert("파일 확인에 실패. : " + error);
         }
     });
@@ -216,11 +216,11 @@ function updateFileListUI() {
 
 function loadFileContent(file, index) {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         const data = e.target.result;
-        const workbook = XLSX.read(data, { type: 'binary' });
+        const workbook = XLSX.read(data, {type: 'binary'});
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        const rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
 
         const tableHeader = document.getElementById('tableHeader');
         const tableBody = document.getElementById('tableBody');
@@ -295,7 +295,7 @@ $('#excelUpload').on('click', function (e) {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(response) {
+        success: function (response) {
             mCodeChecks = response.mCodes;
             errorChecks = response.errorCheck;
             console.log(mCodeChecks);
@@ -318,8 +318,54 @@ $('#excelUpload').on('click', function (e) {
             }
 
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             alert("파일 업로드에 실패했습니다. : " + error);
+        }
+    });
+});
+
+
+$(document).ready(function () {
+// 상품 선택 시 동적으로 부품 목록 업데이트
+    $('#pName').on('change', function () {
+        const pName = $(this).val();  // 선택된 상품 값
+
+        // 상품 선택 시 부품 목록을 업데이트
+        console.log('선택된 상품:', pName);
+
+        if (pName) {
+            // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+            const pNameEncode = encodeURIComponent(pName);
+
+            // AJAX를 사용하여 부품 목록을 가져오는 코드
+            $.ajax({
+                url: `/material/${pNameEncode}/cType`,  // URL 인코딩 적용
+                method: 'GET',  // HTTP GET 요청
+                success: function(componentTypes) {
+                    // 부품명 선택 요소 초기화
+                    const componentSelect = $('#mComponentType');
+                    componentSelect.empty();  // 기존 옵션 제거
+
+                    // "선택" 옵션 추가
+                    componentSelect.append('<option value="" selected>선택</option>');
+
+                    // 받아온 부품 목록을 옵션으로 추가
+                    componentTypes.forEach(type => {
+                        componentSelect.append(`<option value="${type}">${type}</option>`);
+                    });
+
+                    // select2 업데이트
+                    componentSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+                },
+                error: function(error) {
+                    console.error('부품 목록을 가져오는 중 오류 발생:', error);
+                }
+            });
+        } else {
+            // 상품이 선택되지 않은 경우
+            $('#mComponentType').empty();  // 부품 목록 초기화
+            $('#mComponentType').append('<option value="" selected>선택</option>');
+            $('#mComponentType').trigger('change');
         }
     });
 });

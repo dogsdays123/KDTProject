@@ -2,7 +2,6 @@ function addPlan() {
     const ppStart = document.getElementById('ppStart').value;
     const ppEnd = document.getElementById('ppEnd').value;
     const pName = document.getElementById('pName').value;
-    const pppCode = document.getElementById('pppCode').value;
     const ppCode = document.getElementById('ppCode').value;
     const ppNum = document.getElementById('ppNum').value;
     const uId = document.getElementById("uId").value;
@@ -19,7 +18,6 @@ function addPlan() {
     newRow.innerHTML = `
         <td><input type="hidden" name="plans[${rowIndex}].ppCode" value="${ppCode}">${ppCode}</td>
         <td><input type="hidden" name="plans[${rowIndex}].pName" value="${pName}">${pName}</td>
-        <td><input type="hidden" name="plans[${rowIndex}].pppCode" value="${pppCode}">${pppCode}</td>
         <td><input type="hidden" name="plans[${rowIndex}].ppStart" value="${ppStart}">${ppStart}</td>
         <td><input type="hidden" name="plans[${rowIndex}].ppEnd" value="${ppEnd}">${ppEnd}</td>
         <td><input type="hidden" name="plans[${rowIndex}].ppNum" value="${ppNum}">${ppNum}</td>   
@@ -66,7 +64,6 @@ function addPlan() {
     document.getElementById('ppStart').value = '';
     document.getElementById('ppEnd').value = '';
     document.getElementById('pName').value = '';
-    document.getElementById('pppCode').value = '';
     document.getElementById('ppCode').value = '';
     document.getElementById('ppNum').value = '';
     document.getElementById('uId').value = '';
@@ -259,11 +256,7 @@ $('#excelUpload').on('click', function (e) {
         processData: false,
         contentType: false,
         success: function(response) {
-            if (response.isAvailable) {
-                alert("파일 업로드에 성공했습니다.(특정)");
-            } else {
-                alert("파일 업로드에 성공했습니다.");
-            }
+            alert("파일 업로드에 성공했습니다. " + response.mg);
             document.getElementById('fileList').innerHTML = '';
             document.getElementById('uploadedFileList').style.display = 'none';
             document.getElementById('fileTable').style.display = 'none';

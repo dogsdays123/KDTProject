@@ -13,12 +13,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PlanListAllDTO {
     private String ppCode;
-    private String pCode;
     private String pName;
     private Integer ppNum;
     private LocalDate ppStart;
     private LocalDate ppEnd;
     private String ppState;
     private String uName;
-
 }
