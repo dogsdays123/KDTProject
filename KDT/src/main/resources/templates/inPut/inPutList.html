@@ -21,42 +21,6 @@
             <form>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label class="form-label small">입고 코드</label>
-                        <select class="form-select form-select-sm" title="입고번호">
-                            <option selected>전체</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small">발주 코드</label>
-                        <select class="form-select form-select-sm" title="발주번호">
-                            <option selected>전체</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1" style="width: 150px">
-                        <label class="form-label small">공급 업체</label>
-                        <select class="form-select form-select-sm" title="업체명">
-                            <option selected>전체</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2" style="width: 110px">
-                        <label class="form-label small">부품</label>
-                        <select class="form-select form-select-sm" title="업체명">
-                            <option selected>전체</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
                         <label class="form-label small">자재명</label>
                         <select class="form-select form-select-sm" title="자재명">
                             <option selected>전체</option>
@@ -68,6 +32,15 @@
                     <div class="col-md-1">
                         <label class="form-label small">검수 결과</label>
                         <select class="form-select form-select-sm" title="검수결과">
+                            <option selected>전체</option>
+                            <option value="-">통과</option>
+                            <option value="-">불량</option>
+                            <option value="-">-</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label small">입고 상태</label>
+                        <select class="form-select form-select-sm" title="입고 상태">
                             <option selected>전체</option>
                             <option value="-">통과</option>
                             <option value="-">불량</option>
@@ -86,7 +59,7 @@
                     <div class="col-md-6">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
-                            <input type="text" class="form-control" id="keyword" title="검색어 입력" placeholder="검색어 입력">
+                            <input type="text" class="form-control" name="keyword" id="keyword" th:value="${pageRequestDTO.keyword}" placeholder="검색할 항목을 입력하세요 (예: 상품명, 부품명, 자재명)">
                         </div>
                     </div>
                 </div>
@@ -96,11 +69,11 @@
             <div class="d-flex justify-content-end mb-2">
                 <form>
                     <div class="col-auto">
-                        <select class="form-select form-select-sm" title="정렬 갯수 필터">
-                            <option selected>전체</option>
-                            <option value="20">20개씩</option>
-                            <option value="30">30개씩</option>
-                            <option value="50">50개씩</option>
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size" onchange="this.form.submit()">
+                            <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                            <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                            <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                            <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
                         </select>
                     </div>
                 </form>
@@ -139,8 +112,10 @@
                             <td th:text="${dto.ipTrueNum}"></td>
                             <td th:text="${dto.ipFalseNum}"></td>
                             <td th:text="${dto.regDate}"></td>
-                            <td th:text="${dto.drState}"></td>
-                            <td th:text="${dto.ipState}"></td>
+                            <td class="CheckState" th:data-state="${dto.getDrState() != null ? dto.getDrState() : 'UNKNOWN'}"></td>
+<!--                            <td th:text="${dto.drState}"></td>-->
+                            <td class="CheckState" th:data-state="${dto.getIpState() != null ? dto.getIpState() : 'UNKNOWN'}"></td>
+<!--                            <td th:text="${dto.ipState}"></td>-->
                         </tr>
                         </tbody>
                     </table>

@@ -22,24 +22,30 @@
         <div class="row g-2 align-items-end">
           <div class="col-md-2">
             <label class="form-label small">자재명</label>
-            <select class="form-select form-select-sm" title="업체명">
-              <option selected>전체</option>
-              <option value="-">-</option>
-              <option value="-">-</option>
-              <option value="-">-</option>
+            <select name="mName" class="form-select form-select-sm" title="자재명">
+              <option value="" th:selected="${selectedMName == ''}">전체</option>
+              <option th:each="dto : ${filteredDeliveryRequestList}"
+                      th:value="${dto.mName}"
+                      th:text="${dto.mName}"
+                      th:selected="${dto.mName == selectedMName}">
+              </option>
             </select>
           </div>
           <div class="col-md-2">
-            <label class="form-label small">공급 업체명</label>
-            <select class="form-select form-select-sm" title="업체명">
-              <option selected>전체</option>
-              <option value="-">-</option>
-              <option value="-">-</option>
-              <option value="-">-</option>
+            <label class="form-label small">입고 상태</label>
+            <select name="drState" class="form-select form-select-sm" title="입고상태">
+              <option value="" th:selected="${selectedDRState == ''}">전체</option>
+              <option th:each="state : ${drStateSet}"
+                      th:value="${state}"
+                      th:text="${state}"
+                      th:selected="${state.name() == selectedDRState}"
+                      th:class="'state-' + ${state.name()}"
+                      th:attr="data-state=${state.name()}">
+              </option>
             </select>
           </div>
           <div class="col-md-2 d-flex align-items-end gap-2">
-            <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+            <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
             <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
           </div>
         </div>
@@ -60,11 +66,11 @@
       <div class="d-flex justify-content-end mb-2">
         <form>
           <div class="col-auto">
-            <select class="form-select form-select-sm" title="정렬 갯수 필터">
-              <option selected>전체</option>
-              <option value="20">20개씩</option>
-              <option value="30">30개씩</option>
-              <option value="50">50개씩</option>
+            <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size" onchange="this.form.submit()">
+              <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+              <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+              <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+              <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
             </select>
           </div>
         </form>
@@ -139,18 +145,18 @@
         </div>
         <div class="modal-body">
             <div class="row g-3 mb-3">
-              <input type="text" class="form-control form-control-sm" name="oCode" id="hiddenOCode" required>
+              <input type="text" class="form-control form-control-sm" name="oCode" id="hiddenOCode" hidden="hidden" required>
               <p class="text-muted small mb-2">
                 선택된 납품 코드 : <strong><span id="drCode"></span></strong>&nbsp;&nbsp;
-                <input type="text" class="form-control form-control-sm" name="drCode" id="hiddenDrCode" required>
+                <input type="text" class="form-control form-control-sm" name="drCode" id="hiddenDrCode" hidden="hidden" required>
               </p>
               <p class="text-muted small mb-2">
                 자재명 : <strong><span id="mName"></span></strong>&nbsp;&nbsp;
-                <input type="text" class="form-control form-control-sm" name="mName" id="hiddenMName" required>
+                <input type="text" class="form-control form-control-sm" name="mName" id="hiddenMName" hidden="hidden" required>
                 공급 업체 : <strong><span id="sName"></span></strong>&nbsp;&nbsp;
-                <input type="text" class="form-control form-control-sm" name="sName" id="hiddenSName" required>
+                <input type="text" class="form-control form-control-sm" name="sName" id="hiddenSName" hidden="hidden" required>
                 납품 수량 : <strong><span id="drNum"></span></strong>&nbsp;&nbsp;
-                <input type="text" class="form-control form-control-sm" name="drNum" id="hiddenDrNum" required>
+                <input type="text" class="form-control form-control-sm" name="drNum" id="hiddenDrNum" hidden="hidden" required>
               </p>
               <div class="col-12">
                 <label class="form-label"><span class="text-danger">*</span> 입고 수량</label>
