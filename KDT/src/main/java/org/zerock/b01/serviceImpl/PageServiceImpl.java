@@ -293,6 +293,29 @@ public class PageServiceImpl implements PageService {
                 .build();
     }
 
+    @Override
+    public PageResponseDTO<InputDTO> inputWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+        String ipState = pageRequestDTO.getIpState();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<InputDTO> result = inputRepository.inputSearchWithAll(types, keyword, mName, ipState, pageable);
+
+        for(InputDTO inputDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(inputDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            inputDTO.setMName(material.getMName()); //
+        }
+        return PageResponseDTO.<InputDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
     public PageResponseDTO<DppListAllDTO> dppListWithAll(PageRequestDTO pageRequestDTO){
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
