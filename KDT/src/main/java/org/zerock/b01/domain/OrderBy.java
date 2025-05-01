@@ -31,7 +31,7 @@ public class OrderBy extends BaseEntity {
     private Material material; // 자재 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sId", nullable = false)
+    @JoinColumn(name = "sId")
     private Supplier supplier; // 공급업체 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)

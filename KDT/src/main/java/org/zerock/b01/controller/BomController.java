@@ -211,6 +211,7 @@ public class BomController {
             bomService.registerBOM(entity);
         }
     }
+
     @PostMapping("/modify")
     public String modify(@ModelAttribute BomDTO bomDTO, RedirectAttributes redirectAttributes, Long bId) {
         log.info("pp modify post.....#@" + bomDTO);

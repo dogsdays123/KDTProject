@@ -102,53 +102,30 @@
             <thead class="table-light small text-center">
             <tr>
               <th><input type="checkbox" id="selectAll" disabled></th>
+              <th>납품 코드</th>
               <th>발주 코드</th>
-              <th>공급 업체</th>
               <th>자재 코드</th>
-              <th style="width: 300px;">자재명</th>
-              <th>자재 유형</th>
-              <th>자재 분류 품목</th>
-              <th>수량</th>
-              <th>입고 예정일</th>
-              <th>상태</th>
+              <th>자재명</th>
+              <th>공급업체</th>
+              <th>납품 수량</th>
+              <th>납품 예정일</th>
+              <th>입고 상태</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-              <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-              <td>BA-20250401</td>
-              <td>SAMSON</td>
-              <td>MATB3MAT001</td>
-              <td style="width: 300px;">안장B</td>
-              <td>완제품</td>
-              <td>(전기자전거)안장</td>
-              <td>500</td>
-              <td>2024-04-13</td>
-              <td>도착전</td>
+            <tbody th:with="link = ${pageRequestDTO.getLink()}">
+            <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
+              <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 입고 대기 항목이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
             </tr>
-            <tr>
+            <tr th:each="dto:${responseDTO.dtoList}" th:if="${dto.drNum != 0}">
               <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-              <td>BA-20250401</td>
-              <td>카인드몰</td>
-              <td>MATB3MAT001</td>
-              <td style="width: 300px;">안장B</td>
-              <td>완제품</td>
-              <td>(전기자전거)안장</td>
-              <td>500</td>
-              <td>2024-04-13</td>
-              <td>도착</td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-              <td>BA-20250401</td>
-              <td>바이크제철</td>
-              <td>MATB3MAT001</td>
-              <td style="width: 300px;">안장B</td>
-              <td>완제품</td>
-              <td>(전기자전거)안장</td>
-              <td>500</td>
-              <td>2024-04-13</td>
-              <td>도착전</td>
+              <td th:text="${dto.drCode}"></td>
+              <td th:text="${dto.oCode}"></td>
+              <td th:text="${dto.mCode}"></td>
+              <td th:text="${dto.mName}"></td>
+              <td th:text="${dto.sName}"></td>
+              <td th:text="${dto.drNum}"></td>
+              <td th:text="${dto.drDate}"></td>
+              <td class="CheckState" th:data-state="${dto.getDrState() != null ? dto.getDrState() : 'UNKNOWN'}"></td>
             </tr>
             </tbody>
           </table>
@@ -163,6 +140,7 @@
   </div>
   <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
+      <form method="post" th:action="@{/inPut/inputRegister}">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="purchaseOrderModalLabel">입고 검수</h5>&nbsp;&nbsp;
@@ -170,51 +148,64 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="purchaseOrderForm">
             <div class="row g-3 mb-3">
+              <input type="text" class="form-control form-control-sm" name="oCode" id="hiddenOCode" required>
               <p class="text-muted small mb-2">
-                선택된 발주 코드 : <strong><span id="planCodeInput"></span></strong>&nbsp;&nbsp;
+                선택된 납품 코드 : <strong><span id="drCode"></span></strong>&nbsp;&nbsp;
+                <input type="text" class="form-control form-control-sm" name="drCode" id="hiddenDrCode" required>
               </p>
               <p class="text-muted small mb-2">
-                공급업체 : <strong><span id="supplier"></span></strong>&nbsp;&nbsp;
-                자재명 : <strong><span id="productNameInput"></span></strong>&nbsp;&nbsp;
-                발주 수량 : <strong><span id="productQuantity"></span></strong>&nbsp;&nbsp;
+                자재명 : <strong><span id="mName"></span></strong>&nbsp;&nbsp;
+                <input type="text" class="form-control form-control-sm" name="mName" id="hiddenMName" required>
+                공급 업체 : <strong><span id="sName"></span></strong>&nbsp;&nbsp;
+                <input type="text" class="form-control form-control-sm" name="sName" id="hiddenSName" required>
+                납품 수량 : <strong><span id="drNum"></span></strong>&nbsp;&nbsp;
+                <input type="text" class="form-control form-control-sm" name="drNum" id="hiddenDrNum" required>
               </p>
               <div class="col-12">
-                <label class="form-label">실제 도착 수량</label>
-                <input type="text" class="form-control form-control-sm" readonly required>
+                <label class="form-label"><span class="text-danger">*</span> 입고 수량</label>
+                <input type="text" class="form-control form-control-sm" id="ipNum" name="ipNum" required>
               </div>
               <div class="col-12">
-                <label class="form-label"><span class="text-danger">*</span> 검수 수량</label>
-                <input type="text" class="form-control form-control-sm" required>
+                <label class="form-label"><span class="text-danger">*</span> 합격 수량</label>
+                <input type="text" class="form-control form-control-sm" id="ipTrueNum" name="ipTrueNum" required>
               </div>
               <div class="col-12">
                 <label class="form-label"><span class="text-danger">*</span> 불량 수량</label>
-                <input type="text"  class="form-control form-control-sm" required>
+                <input type="text"  class="form-control form-control-sm" id="ipFalseNum" name="ipFalseNum" required>
               </div>
-              <div class="col-12">
-                <label class="form-label"><span class="text-danger">*</span> 검수 결과</label>
-                <input type="text"  class="form-control form-control-sm" required>
-              </div>
-              <div class="col-12">
-                <label class="form-label"><span class="text-danger">*</span> 검수자</label>
-                <input type="text"  class="form-control form-control-sm" required>
-              </div>
+<!--              <div class="col-12">-->
+<!--                <label class="form-label"><span class="text-danger">*</span> 검수 결과</label>-->
+<!--                <select class="form-select form-select-sm" name="ipState" title="검수 결과">-->
+<!--                  <option value="ON_HOLD">대기</option>-->
+<!--                  <option value="APPROVAL">승인</option>-->
+<!--                  <option value="PARTIAL_APPROVAL">일부 승인</option>-->
+<!--                  <option value="RETURNED">반품</option>-->
+<!--                  <option value="REJECT">거절</option>-->
+<!--                  <option value="IN_PROGRESS">진행중</option>-->
+<!--                  <option value="UNDER_INSPECTION">검수중</option>-->
+<!--                </select>-->
+<!--              </div>-->
               <div class="col-12">
                 <label class="form-label"><span class="text-danger">*</span> 검수일</label>
-                <input type="date" id="deliveryDate" class="form-control form-control-sm" required>
+                <input type="date" id="regDate" class="form-control form-control-sm" required>
               </div>
             </div>
-          </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-          <button type="button" class="btn btn-primary btn-sm">검수 완료</button>
+          <button type="submit" class="btn btn-primary btn-sm">검수 완료</button>
         </div>
       </div>
+      </form>
     </div>
   </div>
+  <script th:if="${message != null}" th:inline="javascript">
+    /*<![CDATA[*/
+    alert([[${message}]]);
+    /*]]>*/
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script th:src="@{/js/outPut/outPutManage.js}"></script>
+  <script th:src="@{/js/input/inPutManage.js}"></script>
 </div>
 </body>

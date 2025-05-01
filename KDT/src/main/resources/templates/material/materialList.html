@@ -92,7 +92,7 @@
                     </form>
                 </div>
                 <div class="bg-white rounded">
-                    <div style="max-height: 550px; overflow-y: auto;">
+                    <div style="max-height: 397px; overflow-y: auto;">
                         <table class="table table-sm table-bordered table-hover align-middle fs-6" style="table-layout: fixed;">
                             <thead class="table-light small text-center">
                             <tr>
@@ -103,9 +103,10 @@
                                 <th style="width: 50px;">자재 유형</th>
                                 <th style="width: 190px;">자재명</th>
                                 <th style="width: 70px;">최소 공급 수량</th>
-                                <th style="width: 40px;">높이</th>
-                                <th style="width: 40px;">세로</th>
-                                <th style="width: 40px;">가로</th>
+                                <th style="width: 100px;">규격</th>
+<!--                                <th style="width: 40px;">높이</th>-->
+<!--                                <th style="width: 40px;">세로</th>-->
+<!--                                <th style="width: 40px;">가로</th>-->
                                 <th style="width: 40px;">무게</th>
                                 <th style="width: 40px;">단가</th>
                                 <th style="width: 40px;">리드타임</th>
@@ -127,9 +128,10 @@
                                 <td th:text="${dto.getMType()}"></td>
                                 <td th:text="${dto.getMName()}"></td>
                                 <td th:text="${dto.getMMinNum()}"></td>
-                                <td th:text="${dto.getMDepth()}"></td>
-                                <td th:text="${dto.getMHeight()}"></td>
-                                <td th:text="${dto.getMWidth()}"></td>
+                                <td th:text="${dto.mDepth + ' x ' + dto.mHeight + ' x ' + dto.mWidth}"></td>
+                                <td th:text="${dto.getMDepth()}" style="display: none"></td>
+                                <td th:text="${dto.getMHeight()}" style="display: none"></td>
+                                <td th:text="${dto.getMWidth()}" style="display: none"></td>
                                 <td th:text="${dto.getMWeight()}"></td>
                                 <td th:text="${dto.getMUnitPrice()}"></td>
                                 <td th:text="${dto.getMLeadTime()}"></td>

@@ -47,6 +47,11 @@ public class PageServiceImpl implements PageService {
 
     @Autowired
     private CommonDataSource commonDataSource;
+    @Autowired
+    private DeliveryRequestRepository deliveryRequestRepository;
+
+    @Autowired
+    private InputRepository inputRepository;
 
     @Override
     public PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO){
@@ -61,8 +66,9 @@ public class PageServiceImpl implements PageService {
         String ppState = pageRequestDTO.getPpState();
         LocalDate ppStart = pageRequestDTO.getPpStart();
         LocalDate ppEnd = pageRequestDTO.getPpEnd();
+        LocalDate regDate = pageRequestDTO.getPpRegDate();
 
-        Pageable pageable = pageRequestDTO.getPageable("ppId");
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
 
         Page<PlanListAllDTO> result = productionPlanRepository
                 .planSearchWithAll(types, keyword, ppCode, pName,
@@ -85,7 +91,7 @@ public class PageServiceImpl implements PageService {
         String uName = pageRequestDTO.getUName();
         LocalDate regDate = pageRequestDTO.getPReg();
 
-        Pageable pageable = pageRequestDTO.getPageable("pId");
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
 
         Page<ProductListAllDTO> result = productRepository.productSearchWithAll(types, keyword, pCode, pName, pageable);
 
@@ -225,12 +231,13 @@ public class PageServiceImpl implements PageService {
         String componentType = pageRequestDTO.getComponentType();
         String mName = pageRequestDTO.getMName();
         String isLocation = pageRequestDTO.getIsLocation();
+        LocalDate regDate = pageRequestDTO.getIsRegDate();
         String uId = pageRequestDTO.getUId();
 
-        Pageable pageable = pageRequestDTO.getPageable("uId");
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
 
         Page<InventoryStockDTO> result = inventoryStockRepository.inventoryStockSearchWithAll(types, keyword,
-                pName, componentType, mName, isLocation, uId, pageable);
+                pName, componentType, mName, isLocation, regDate, uId, pageable);
 
         for (InventoryStockDTO inventoryStockDTO : result.getContent()) {
             Material material = materialRepository.findByMaterialCode(inventoryStockDTO.getMCode())
@@ -245,6 +252,57 @@ public class PageServiceImpl implements PageService {
         }
 
         return PageResponseDTO.<InventoryStockDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<DeliveryRequestDTO> deliveryRequestWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+        String sName = pageRequestDTO.getSName();
+        String drState = pageRequestDTO.getDrState();
+        LocalDate regDate = pageRequestDTO.getIsRegDate();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<DeliveryRequestDTO> result = deliveryRequestRepository.deliveryRequestSearchWithAll(types, keyword,
+                mName, sName, drState, pageable);
+
+        for (DeliveryRequestDTO deliveryRequestDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(deliveryRequestDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            deliveryRequestDTO.setMName(material.getMName()); //
+
+        }
+
+        return PageResponseDTO.<DeliveryRequestDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<InputDTO> inputWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+        String ipState = pageRequestDTO.getIpState();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<InputDTO> result = inputRepository.inputSearchWithAll(types, keyword, mName, ipState, pageable);
+
+        for(InputDTO inputDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(inputDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            inputDTO.setMName(material.getMName()); //
+        }
+        return PageResponseDTO.<InputDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())

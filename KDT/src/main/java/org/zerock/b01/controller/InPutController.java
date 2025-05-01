@@ -8,12 +8,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.zerock.b01.dto.UserByDTO;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
+import org.zerock.b01.service.InputService;
+import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.UserByService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 @Controller
@@ -23,6 +27,8 @@ import org.zerock.b01.service.UserByService;
 public class InPutController {
 
     private final UserByService userByService;
+    private final PageService pageService;
+    private final InputService inputService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -45,8 +51,58 @@ public class InPutController {
     }
 
     @GetMapping("/inPutManage")
-    public void inPut(){ log.info("##MATERIAL RECEIPT PAGE GET....##"); }
+    public void inPut(PageRequestDTO pageRequestDTO, Model model){
+        log.info("##MATERIAL RECEIPT PAGE GET....##");
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<DeliveryRequestDTO> responseDTO = pageService.deliveryRequestWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<DeliveryRequestDTO> deliveryRequestList = inputService.getDeliveryRequest();
+        model.addAttribute("deliveryRequestList", deliveryRequestList);
+        model.addAttribute("responseDTO", responseDTO);
+
+        log.info("## deliveryRequestList : " + deliveryRequestList);
+        log.info("## DR responseDTO : " + responseDTO);
+
+    }
+
+    @PostMapping("/inputRegister")
+    public String inventoryRegisterPost(String uId, InputDTO inputDTO, Model model, RedirectAttributes redirectAttributes){
+
+        log.info(" ^^^^ " + uId);
+
+        inputService.registerInput(inputDTO);
+        redirectAttributes.addFlashAttribute("message", "입고 처리가 완료되었습니다.");
+        return "redirect:/inPut/inPutManage";
+    }
 
     @GetMapping("/inPutList")
-    public void inPutList(){ log.info("##MATERIAL RECEIPT LIST PAGE GET....##"); }
+    public void inPutList(PageRequestDTO pageRequestDTO, Model model){
+
+        log.info("##MATERIAL RECEIPT LIST PAGE GET....##");
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<InputDTO> responseDTO = pageService.inputWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<InputDTO> inputDTOList = inputService.getInputs();
+        model.addAttribute("inputDTOList", inputDTOList);
+        model.addAttribute("responseDTO", responseDTO);
+
+        log.info("## inputDTOList : " + inputDTOList);
+        log.info("## IP responseDTO : " + responseDTO);
+    }
 }

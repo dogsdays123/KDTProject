@@ -15,12 +15,12 @@ document.querySelectorAll('.icon-button').forEach(button => {
         const mType = row.querySelector('td:nth-child(5)').innerText;
         const mName = row.querySelector('td:nth-child(6)').innerText;
         const mMinNum = row.querySelector('td:nth-child(7)').innerText;
-        const mDepth = row.querySelector('td:nth-child(8)').innerText;
-        const mHeight = row.querySelector('td:nth-child(9)').innerText;
-        const mWidth = row.querySelector('td:nth-child(10)').innerText;
-        const mWeight = row.querySelector('td:nth-child(11)').innerText;
-        const mUnitPrice = row.querySelector('td:nth-child(12)').innerText;
-        const mLeadTime = row.querySelector('td:nth-child(13)').innerText;
+        const mDepth = row.querySelector('td:nth-child(9)').innerText;
+        const mHeight = row.querySelector('td:nth-child(10)').innerText;
+        const mWidth = row.querySelector('td:nth-child(11)').innerText;
+        const mWeight = row.querySelector('td:nth-child(12)').innerText;
+        const mUnitPrice = row.querySelector('td:nth-child(13)').innerText;
+        const mLeadTime = row.querySelector('td:nth-child(14)').innerText;
 
 
         document.getElementById('ppProductName').value = pName;
@@ -97,4 +97,23 @@ document.querySelector(".clearBtn").addEventListener("click", function (e) {
     e.stopPropagation()
 
     self.location = '/supply/materialList'
+}, false)
+
+document.querySelector(".pagination").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const target = e.target
+
+    if (target.tagName !== 'A') {
+        return
+    }
+
+    const num = target.getAttribute("data-num")
+
+    const formObj = document.querySelector("form")
+
+    formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+    formObj.submit()
 }, false)

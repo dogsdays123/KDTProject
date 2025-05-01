@@ -84,8 +84,8 @@
                                 <th><input type="checkbox" id="selectAll" title="전체선택"></th>
                                 <th>상품 코드</th>
                                 <th>상품명</th>
-                                <th>상품 등록 일자</th>
                                 <th>등록자</th>
+                                <th>등록일</th>
                                 <th>수정</th>
                             </tr>
                             </thead>
@@ -97,8 +97,8 @@
                                 <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
                                 <td th:text="${dto.getPCode()}"></td>
                                 <td th:text="${dto.getPName()}"></td>
-                                <td th:text="${#temporals.format(dto.getPReg(), 'yyyy-MM-dd')}"></td>
                                 <td th:text="${dto.getUName()}"></td>
+                                <td th:text="${#temporals.format(dto.getPReg(), 'yyyy-MM-dd')}"></td>
                                 <td>
                                     <button type="button" class="icon-button" id="openPurchaseModal" title="생산 계획 수정">
                                         <i class="bi bi-pencil fs-6"></i>

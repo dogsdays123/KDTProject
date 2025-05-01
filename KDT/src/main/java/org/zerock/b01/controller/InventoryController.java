@@ -3,6 +3,10 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,13 +14,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +39,8 @@ public class InventoryController {
 
     private final MaterialService materialService;
     private final PageService pageService;
+    private final MaterialRepository materialRepository;
+    private final ProductRepository productRepository;
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
@@ -143,6 +153,68 @@ public class InventoryController {
         model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
         model.addAttribute("selectedCType", pageRequestDTO.getComponentType() != null ? pageRequestDTO.getComponentType() : "");
 
+    }
+
+    @PostMapping("/addInventory")
+    public String uploadProductPlan(String uId, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        for (MultipartFile file : files) {
+            XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+            XSSFSheet worksheet = workbook.getSheetAt(0);
+            registerInventoryStockOnController(uId, worksheet);
+            log.info("%%%%" + worksheet.getSheetName());
+        }
+
+        if (where.equals("dataUpload")) {
+            redirectAttributes.addFlashAttribute("successMessage", "(특정)데이터 업로드가 성공적으로 완료되었습니다.");
+            return "redirect:/inventory/inventoryRegister";
+        } else {
+            log.info("데이터넘겨주기");
+            redirectAttributes.addFlashAttribute("successMessage", "데이터 업로드가 성공적으로 완료되었습니다.");
+            return "redirect:/inventory/inventoryRegister";
+        }
+    }
+
+
+    private void registerInventoryStockOnController(String uId, XSSFSheet worksheet) {
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+
+            InventoryStockDTO entity = new InventoryStockDTO();
+            DataFormatter formatter = new DataFormatter();
+            XSSFRow row = worksheet.getRow(i);
+
+//            if (row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
+//                String productionPlanCode = formatter.formatCellValue(row.getCell(0));
+//                log.info("^^^^" + productionPlanCode);
+//                entity.setPpCode(productionPlanCode);
+//            }
+            String productName = formatter.formatCellValue(row.getCell(0));
+            String componentType = formatter.formatCellValue(row.getCell(1));
+            String materialName = formatter.formatCellValue(row.getCell(2));
+            String isNum = formatter.formatCellValue(row.getCell(3));
+            String isAvailable = formatter.formatCellValue(row.getCell(4));
+            String isLocation = formatter.formatCellValue(row.getCell(5));
+
+            Optional<String> optionalPCode = productRepository.findPCodeByPName(productName);
+
+            String mCode = materialRepository.findMCodeByMName(materialName)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 자재명을 가진 자재 코드가 없습니다: " + materialName));
+            entity.setMCode(mCode);
+
+            if (optionalPCode.isPresent()) {
+                entity.setPCode(optionalPCode.get());
+            } else {
+                throw new IllegalArgumentException("해당 제품명을 가진 제품 코드가 없습니다: " + productName);
+            }
+
+            entity.setPName(productName);
+            entity.setIsComponentType(componentType);
+            entity.setIsNum(isNum);
+            entity.setIsAvailable(isAvailable);
+            entity.setIsLocation(isLocation);
+
+            inventoryStockService.registerIS(entity);
+        }
     }
 
     @PostMapping("/modify")

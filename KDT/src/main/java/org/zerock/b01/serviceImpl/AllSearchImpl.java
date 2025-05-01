@@ -64,6 +64,9 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(product.regDate.desc());
+
+
         List<Product> resultList = query.fetch();
 
         // DTO로 변환
@@ -140,6 +143,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(productPlan.regDate.desc());
         List<ProductionPlan> resultList = query.fetch();
 
         List<PlanListAllDTO> dtoList = resultList.stream()
@@ -152,6 +156,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .ppStart(plan.getPpStart())
                         .ppEnd(plan.getPpEnd())
                         .uName(plan.getUserBy().getUName())
+                        .regDate(plan.getRegDate().toLocalDate())
                         .build())
                 .collect(Collectors.toList());
 
@@ -406,6 +411,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(material.regDate.desc());
         List<Material> resultList = query.fetch();
 
         // DTO로 변환
@@ -424,7 +430,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .mLeadTime(prod.getMLeadTime())
                         .uId(prod.getUserBy().getUId())
                         .pName(prod.getProduct().getPName())
-
+                        .regDate(prod.getRegDate().toLocalDate())
                         .build())
                 .collect(Collectors.toList());
 
@@ -465,6 +471,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(bom.regDate.desc());
         List<Bom> resultList = query.fetch();
         // DTO로 변환
         List<BomDTO> dtoList = resultList.stream()
@@ -474,6 +481,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .bComponentType(prod.getBComponentType())
                         .bRequireNum(prod.getBRequireNum())
                         .pCode(prod.getProduct().getPCode())
+                        .regDate(prod.getRegDate().toLocalDate())
                         .build())
                 .collect(Collectors.toList());
 
@@ -485,7 +493,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
     @Override
     public Page<InventoryStockDTO> inventoryStockSearchWithAll(String[] types, String keyword,
-                                                               String pName, String componentType, String mName, String isLocation, String uId, Pageable pageable) {
+                                                               String pName, String componentType, String mName, String isLocation, LocalDate isRegDate, String uId, Pageable pageable) {
 
         QInventoryStock inventoryStock = QInventoryStock.inventoryStock;
         JPQLQuery<InventoryStock> query = from(inventoryStock);
@@ -522,6 +530,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(inventoryStock.regDate.desc());
 
         List<InventoryStock> resultList = query.fetch();
 
@@ -533,10 +542,130 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .isNum(prod.getIsNum())
                         .isLocation(prod.getIsLocation())
                         .pCode(prod.getMaterial().getProduct().getPCode())
+                        .regDate(prod.getRegDate().toLocalDate())
                         .build())
                 .collect(Collectors.toList());
 
         JPQLQuery<InventoryStock> countQuery = from(inventoryStock).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public  Page<DeliveryRequestDTO> deliveryRequestSearchWithAll(String[] types, String keyword,
+                                                                  String mName, String sName, String drState, Pageable pageable){
+
+        QDeliveryRequest deliveryRequest = QDeliveryRequest.deliveryRequest;
+        JPQLQuery<DeliveryRequest> query = from(deliveryRequest);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(deliveryRequest.material.mName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(deliveryRequest.material.mName.contains(mName));
+        }
+
+        if (drState != null && !drState.isEmpty() && !"전체".equals(drState)) {
+            log.info("Received pName: " + drState);
+            try {
+                CurrentStatus status = CurrentStatus.valueOf(drState); // 문자열을 enum 값으로 변환
+                booleanBuilder.and(deliveryRequest.drState.eq(status)); // enum 값을 비교
+            } catch (IllegalArgumentException e) {
+                log.error("Invalid drState value: " + drState);
+            }
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(deliveryRequest.regDate.desc());
+
+        List<DeliveryRequest> resultList = query.fetch();
+
+        List<DeliveryRequestDTO> dtoList = resultList.stream()
+                .map(prod -> DeliveryRequestDTO.builder()
+                        .drCode(prod.getDrCode())
+                        .drNum(Integer.parseInt(prod.getDrNum()))
+                        .drDate(prod.getDrDate())
+                        .drState(prod.getDrState())
+                        .oCode(prod.getOrderBy().getOCode())
+                        .oNum(prod.getOrderBy().getONum())
+                        .sId(prod.getSupplier().getSId())
+                        .sName(prod.getSupplier().getSName())
+                        .mCode(prod.getMaterial().getMCode())
+                        .mName(prod.getMaterial().getMName())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<DeliveryRequest> countQuery = from(deliveryRequest).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public  Page<InputDTO> inputSearchWithAll(String[] types, String keyword, String mName, String ipState, Pageable pageable){
+
+        QInPut inPut = QInPut.inPut;
+        JPQLQuery<InPut> query = from(inPut);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(inPut.deliveryRequest.material.mName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(inPut.deliveryRequest.material.mName.contains(mName));
+        }
+
+        if (ipState != null && !ipState.isEmpty() && !"전체".equals(ipState)) {
+            log.info("Received pName: " + ipState);
+            try {
+                CurrentStatus status = CurrentStatus.valueOf(ipState); // 문자열을 enum 값으로 변환
+                booleanBuilder.and(inPut.ipState.eq(status)); // enum 값을 비교
+            } catch (IllegalArgumentException e) {
+                log.error("Invalid drState value: " + ipState);
+            }
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(inPut.regDate.desc());
+
+        List<InPut> resultList = query.fetch();
+
+        List<InputDTO> dtoList = resultList.stream()
+                .map(prod -> InputDTO.builder()
+                        .ipNum(prod.getIpNum())
+                        .ipCode(prod.getIpCode())
+                        .ipFalseNum(prod.getIpFalseNum())
+                        .ipTrueNum(prod.getIpTrueNum())
+                        .ipState(prod.getIpState())
+                        .drNum(prod.getDeliveryRequest().getDrNum())
+                        .drCode(prod.getDeliveryRequest().getDrCode())
+                        .drState(prod.getDeliveryRequest().getDrState())
+                        .drDate(prod.getDeliveryRequest().getDrDate())
+                        .oCode(prod.getOrderBy().getOCode())
+                        .oNum(prod.getOrderBy().getONum())
+                        .regDate(prod.getRegDate().toLocalDate())
+                        .mCode(prod.getDeliveryRequest().getMaterial().getMCode())
+                        .mName(prod.getDeliveryRequest().getMaterial().getMName())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<InPut> countQuery = from(inPut).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

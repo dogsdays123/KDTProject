@@ -244,9 +244,17 @@ function loadFileContent(file, index) {
 
             mCodes.push(materialCode);
 
-            row.forEach(cell => {
+            row.forEach((cell, colIndex) => {
                 const td = document.createElement('td');
                 td.textContent = cell;
+
+                if (colIndex === 4 && mCodeChecks.includes(cell)) {
+                    td.style.color = 'red';
+                    td.style.fontWeight = 'bold';
+                }
+            // row.forEach(cell => {
+            //     const td = document.createElement('td');
+            //     td.textContent = cell;
                 tr.appendChild(td);
             });
             tableBody.appendChild(tr);

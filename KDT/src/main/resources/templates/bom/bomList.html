@@ -97,6 +97,7 @@
                                 <th>자재 코드</th>
                                 <th>자재명</th>
                                 <th>필요 수량</th>
+                                <th>등록일</th>
                                 <th>수정</th>
                             </tr>
                             </thead>
@@ -112,7 +113,8 @@
                                 <td th:text="${dto.bComponentType}"></td>
                                 <td th:text="${dto.mCode}"></td>
                                 <td th:text="${dto.mName}"></td>
-                                <td th:text="${dto.bRequireNum}"></td> <!-- bRequireNum 출력 -->
+                                <td th:text="${dto.bRequireNum}"></td>
+                                <td th:text="${dto.regDate}"></td>
                                 <td>
                                     <button type="button" class="icon-button" id="openPurchaseModal" title="BOM 정보 수정">
                                         <i class="bi bi-pencil fs-6"></i>
