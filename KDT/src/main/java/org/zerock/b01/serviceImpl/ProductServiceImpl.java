@@ -8,6 +8,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
+import org.zerock.b01.dto.DeliveryProcurementPlanDTO;
 import org.zerock.b01.dto.ProductDTO;
 import org.zerock.b01.dto.ProductionPlanDTO;
 import org.zerock.b01.repository.ProductRepository;
@@ -74,46 +75,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Map<String, String[]> registerProductsEasy(List<ProductDTO> productDTOs, String uId) {
-
-        log.info("innerProductRegister" + productDTOs);
-
-        List<String> duplicatedCodes = new ArrayList<>();
-        List<String> duplicatedNames = new ArrayList<>();
-
-        UserBy user = userByRepository.findByUId(uId);
-
-        for (ProductDTO productDTO : productDTOs) {
-            Product product = modelMapper.map(productDTO, Product.class);
-            product.setUserBy(user);
-
-            String pCode = product.getPCode();
-            String pName = product.getPName();
-
-            boolean isDuplicated = false;
-
-            if (productRepository.findByProductId(pCode).isPresent()) {
-                isDuplicated = true;
-            } else if (productRepository.findByProductName(pName).isPresent()) {
-                isDuplicated = true;
-            }
-
-            if (isDuplicated) {
-                duplicatedCodes.add(pCode);
-                duplicatedNames.add(pName);
-            } else {
-                productRepository.save(product);
-            }
-        }
-
-        Map<String, String[]> result = new HashMap<>();
-        result.put("pCodes", duplicatedCodes.toArray(new String[0]));
-        result.put("pNames", duplicatedNames.toArray(new String[0]));
-
-        return result;
-    }
-
-    @Override
     public Map<String, String[]> ProductCheck(List<ProductDTO> productDTOs) {
 
         List<String> duplicatedCodes = new ArrayList<>();
@@ -147,6 +108,53 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Map<String, String[]> registerProductsEasy(List<ProductDTO> productDTOs, String uId) {
+
+        UserBy user = userByRepository.findByUId(uId);
+        String[] generateCodes = new String[productDTOs.size()];
+        List<String[]> checksList = new ArrayList<>();
+        Set<String> seenPCodeNames = new HashSet<>();
+        Map<String, String[]> result = new HashMap<>();
+
+        int index = 0;
+
+        for (ProductDTO productDTO : productDTOs) {
+
+            String[] checkAll = duplicationCheck(productDTO);
+
+            // 중복이 있을 경우, 중복 값을 확인하고 계속해서 리스트에 추가
+            if (checkAll[0].equals("true")) {
+                // 중복된 값이 이미 checksList에 존재하지 않으면 추가
+                for (int i = 1; i < checkAll.length; i++) {
+                    // 이미 존재하는 값은 추가하지 않도록 set을 사용해 방지
+                    if (!seenPCodeNames.contains(checkAll[i])) {
+                        checksList.add(new String[]{checkAll[i]});  // 중복 값을 배열로 추가
+                        seenPCodeNames.add(checkAll[i]); // 중복된 값은 Set에 추가
+                    }
+                }
+            } else {
+                // 중복이 없으면 PCode 생성 및 저장
+                if (productDTO.getPCode().isEmpty()) {
+                    generateCodes[index] = generatePCode(productDTO);
+                    productDTO.setPCode(generateCodes[index]);
+                    index++;
+                }
+
+                // Product 객체로 변환 후 저장
+                Product product = modelMapper.map(productDTO, Product.class);
+                product.setUserBy(user);
+                productRepository.save(product);
+            }
+        }
+
+        // generateCodes 배열을 결과에 추가
+        result.put("checks", checksList.stream().flatMap(Arrays::stream).toArray(String[]::new));
+        result.put("generateCodes", generateCodes);
+        return result;
+    }
+
+
+    @Override
     public void modifyProduct(ProductDTO productDTO, String uName){
         Optional<Product> result = productRepository.findByProductId(productDTO.getPCode());
         Product product = result.orElseThrow();
@@ -164,4 +172,50 @@ public class ProductServiceImpl implements ProductService {
             productRepository.deleteById(pCode); // 개별적으로 삭제
         }
     }
+
+    public String generatePCode(ProductDTO dto) {
+        List<Product> products = productRepository.findByProducts();
+
+        // 제품명에 따른 접두어 설정
+        String prefix = "";
+
+        for (Product product : products) {
+            if(product.getPCode().equals(dto.getPCode()))
+            {prefix = product.getPName();}
+            else {
+                prefix = "DEFAULT";
+            }
+        }
+
+        // 동일 접두어 코드의 다음 번호
+        Long nextSequence = productRepository.countByPrefix(prefix) + 1;
+
+        // 코드 생성
+        return String.format("%s%03d", prefix, nextSequence);
+    }
+
+    public String[] duplicationCheck(ProductDTO dto) {
+        List<Product> products = productRepository.findByProducts();
+        List<String> checkList = new ArrayList<>();  // 중복된 값을 저장할 리스트
+        checkList.add("false");  // 중복이 없으면 "false"로 시작
+
+        for (Product product : products) {
+            // PCode가 중복되는 경우
+            if (product.getPCode().equals(dto.getPCode())) {
+                checkList.add(product.getPCode());
+            }
+            // PName이 중복되는 경우
+            else if (product.getPName().equals(dto.getPName())) {
+                checkList.add(product.getPName());
+            }
+        }
+
+        if (!checkList.isEmpty()) {
+            checkList.set(0, "true");
+        }
+
+        // List<String>을 String[]로 변환하여 반환
+        return checkList.toArray(new String[0]);
+    }
+
 }

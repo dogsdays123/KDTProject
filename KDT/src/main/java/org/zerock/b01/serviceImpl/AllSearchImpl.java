@@ -11,10 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.*;
-import org.zerock.b01.dto.allDTO.PlanListAllDTO;
-import org.zerock.b01.dto.allDTO.ProductListAllDTO;
-import org.zerock.b01.dto.allDTO.SupplierAllDTO;
-import org.zerock.b01.dto.allDTO.UserByAllDTO;
+import org.zerock.b01.dto.DppListAllDTO;
+import org.zerock.b01.dto.allDTO.*;
 import org.zerock.b01.service.AllSearch;
 
 import java.time.LocalDate;
@@ -478,6 +476,84 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<Bom> countQuery = from(bom).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public Page<DppListAllDTO> dppSearchWithAll(String[] types, String keyword, String dppCode, String ppCode, String mName, String mCode, LocalDate dppRegDate, String dppState, String uId, Pageable pageable){
+
+        QDeliveryProcurementPlan dpp = QDeliveryProcurementPlan.deliveryProcurementPlan;
+        JPQLQuery<DeliveryProcurementPlan> query = from(dpp);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(dpp.dppCode.contains(keyword));
+            keywordBuilder.or(dpp.productionPlan.ppCode.contains(keyword));
+            keywordBuilder.or(dpp.material.mName.contains(keyword));
+            keywordBuilder.or(dpp.material.mCode.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+        if (dppCode != null && !dppCode.isEmpty() && !"전체".equals(dppCode)) {
+            booleanBuilder.and(dpp.dppCode.contains(dppCode));
+        }
+
+        if (ppCode != null && !ppCode.isEmpty() && !"전체".equals(ppCode)) {
+            booleanBuilder.and(dpp.productionPlan.ppCode.contains(ppCode));
+        }
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            booleanBuilder.and(dpp.material.mName.contains(mName));
+        }
+
+        if (mCode != null && !mCode.isEmpty() && !"전체".equals(mCode)) {
+            booleanBuilder.and(dpp.material.mCode.contains(mCode));
+        }
+
+        if (dppState != null && !dppState.isEmpty() && !"전체".equals(dppState)) {
+            switch (dppState){
+                case "대기": booleanBuilder.and(dpp.dppState.in(CurrentStatus.ON_HOLD));
+                    break;
+                case "진행": booleanBuilder.and(dpp.dppState.in(CurrentStatus.IN_PROGRESS));
+                    break;
+                case "종료": booleanBuilder.and(dpp.dppState.in(CurrentStatus.FINISHED));
+                    break;
+                case "거절": booleanBuilder.and(dpp.dppState.in(CurrentStatus.REJECT));
+                    break;
+            }
+        }
+
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        List<DeliveryProcurementPlan> resultList = query.fetch();
+        // DTO로 변환
+        List<DppListAllDTO> dtoList = resultList.stream()
+                .map(prod -> DppListAllDTO.builder()
+                        .dppCode(prod.getDppCode())
+                        .dppRequireNum(prod.getDppRequireNum())
+                        .dppNum(prod.getDppNum())
+                        .dppDate(prod.getDppDate())
+                        .dppRegDate(prod.getRegDate())
+                        .dppState(prod.getDppState().toString())
+                        .ppCode(prod.getProductionPlan().getPpCode())
+                        .mName(prod.getMaterial().getMName())
+                        .sName(
+                                (prod.getMaterial() != null && prod.getMaterial().getSupplier() != null && prod.getMaterial().getSupplier().getSName() != null)
+                                        ? prod.getMaterial().getSupplier().getSName()
+                                        : "배치중"
+                        )
+                        .mCode(prod.getMaterial().getMCode())
+                        .uId(prod.getUserBy().getUId())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<DeliveryProcurementPlan> countQuery = from(dpp).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

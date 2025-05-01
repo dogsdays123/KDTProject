@@ -67,6 +67,11 @@ public class PageRequestDTO {
     private LocalDate ppEnd;
     private String ppState;
 
+    //dpp
+    private String dppCode;
+    private LocalDate dppDate;
+    private String dppState;
+
     public String[] getTypes() {
         if(type == null || type.isEmpty()) {
             return null;

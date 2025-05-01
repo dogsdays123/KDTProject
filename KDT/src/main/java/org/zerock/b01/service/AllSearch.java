@@ -3,10 +3,8 @@ package org.zerock.b01.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.zerock.b01.dto.*;
-import org.zerock.b01.dto.allDTO.PlanListAllDTO;
-import org.zerock.b01.dto.allDTO.ProductListAllDTO;
-import org.zerock.b01.dto.allDTO.SupplierAllDTO;
-import org.zerock.b01.dto.allDTO.UserByAllDTO;
+import org.zerock.b01.dto.DppListAllDTO;
+import org.zerock.b01.dto.allDTO.*;
 
 import java.time.LocalDate;
 
@@ -23,4 +21,5 @@ public interface AllSearch {
                                             String mCode, String mType, Pageable pageable);
 
     Page<BomDTO> bomSearchWithAll(String[] types, String keyword, String componentType, String mName, String pName, String uId, Pageable pageable);
+    Page<DppListAllDTO> dppSearchWithAll(String[] types, String keyword, String dppCode, String ppCode, String mName, String mCode, LocalDate dppRegDate, String dppState, String uId, Pageable pageable);
 }

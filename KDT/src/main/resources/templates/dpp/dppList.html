@@ -18,83 +18,101 @@
                         <span class="tooltip-text">등록된 조달 계획 내역을 조회하고 관리할 수 있습니다.</span>
                     </div>
                 </div>
-                <form>
+                <form th:action="@{/dpp/dppList}" method="get">
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2">
-                            <label for="materialCodes" class="form-label small">생산 계획 코드</label>
-                            <select class="form-select form-select-sm" id="materialCodes" title="자재 코드">
-                                <option selected>전체</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
+                            <label for="ppCode" class="form-label small">생산 계획 코드</label>
+                            <select class="form-select form-select-sm" id="ppCode" name="ppCode">
+                                <option value="" selected>전체</option>
+                                <th:block th:each="pp : ${ppList}">
+                                    <option th:value="${pp.ppCode}" th:text="${pp.ppCode}"></option>
+                                </th:block>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="materials" class="form-label small">조달 계획 코드</label>
-                            <select class="form-select form-select-sm" id="materials" title="자재 선택">
-                                <option selected>전체</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
+                            <label for="dppCode" class="form-label small">조달 계획 코드</label>
+                            <select class="form-select form-select-sm" id="dppCode" name="dppCode">
+                                <option value="" selected>전체</option>
+                                <th:block th:each="dpp : ${dppList}">
+                                    <option th:value="${dpp.dppCode}" th:text="${dpp.dppCode}"></option>
+                                </th:block>
+                            </select>
+                            <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
+                            <div id="dppCodeHTML" style="display: none;">
+                                <option value="" selected>전체</option>
+                                <th:block th:each="dpp : ${dppList}">
+                                    <option th:value="${dpp.dppCode}" th:text="${dpp.dppCode}"
+                                            th:data-code="${dpp.dppCode}"></option>
+                                </th:block>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="mName" class="form-label small">자재명</label>
+                            <select class="form-select form-select-sm" id="mName" name="mName">
+                                <option value="" selected>전체</option>
+                                <th:block th:each="m : ${materialList}">
+                                    <option th:value="${m.mName}" th:text="${m.mName}"></option>
+                                </th:block>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="materialTypes" class="form-label small">자재 코드</label>
-                            <select class="form-select form-select-sm" id="materialTypes" title="자재 유형">
-                                <option selected>전체</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
+                            <label for="mCode" class="form-label small">자재코드</label>
+                            <select class="form-select form-select-sm" id="mCode" name="mCode">
+                                <option value="" selected>전체</option>
+                                <th:block th:each="m : ${materialList}">
+                                    <option th:value="${m.mCode}" th:text="${m.mCode}"></option>
+                                </th:block>
                             </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="materialNames" class="form-label small">자재명</label>
-                            <select class="form-select form-select-sm" id="materialNames" title="자재 유형">
-                                <option selected>전체</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
-                            </select>
+                            <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
+                            <div id="mCodeHTML" style="display: none;">
+                                <option value="" selected>전체</option>
+                                <th:block th:each="m : ${materialList}">
+                                    <option th:value="${m.mCode}" th:text="${m.mCode}"
+                                            th:data-code="${m.mCode}"></option>
+                                </th:block>
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <label for="pruocureDate" class="form-label small">조달 납기일</label>
                             <input type="date" class="form-control form-control-sm" id="pruocureDate">
                         </div>
                         <div class="col-md-1">
-                            <label for="state" class="form-label small">상태</label>
-                            <select class="form-select form-select-sm" id="state" title="상태">
+                            <label for="dppState" class="form-label small">상태</label>
+                            <select class="form-select form-select-sm" id="dppState" name="dppState" title="상태">
                                 <option selected>전체</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
+                                <option value="대기">대기중</option>
+                                <option value="진행">진행</option>
+                                <option value="종료">종료</option>
+                                <option value="거절">거절</option>
                             </select>
                         </div>
+                        <div class="row g-2 mt-2">
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
+                                    <input type="text" class="form-control" id="keyword" name="keyword" title="검색어 입력" placeholder="검색어 입력">
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
-                            <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                            <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
                             <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                         </div>
                     </div>
                 </form>
-                <!-- 2줄: 검색어 입력 -->
-                <form>
-                    <div class="row g-2 mt-2">
-                        <div class="col-md-6">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
-                                <input type="text" class="form-control" id="keyword" title="검색어 입력" placeholder="검색어 입력">
-                            </div>
-                        </div>
-                    </div>
-                </form>
+
             </div>
             <div class="container" style="max-width: 1600px; margin-left: 0;">
                 <div class="d-flex justify-content-end mb-2">
                     <form>
                         <div class="col-auto">
-                            <select class="form-select form-select-sm" title="정렬 갯수 필터">
-                                <option selected>전체</option>
-                                <option value="20">20개씩</option>
-                                <option value="30">30개씩</option>
-                                <option value="50">50개씩</option>
+                            <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size"
+                                    onchange="this.form.submit()">
+                                <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                                <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                                <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                                <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
                             </select>
                         </div>
                     </form>
@@ -109,45 +127,37 @@
                                 <th>조달 계획 코드</th>
                                 <th>자재 코드</th>
                                 <th>자재명</th>
+                                <th>필요 수량</th>
                                 <th>조달 수량</th>
                                 <th>조달 납기일</th>
                                 <th>공급 업체</th>
+                                <th>등록자</th>
                                 <th>등록일</th>
                                 <th>상태</th>
                                 <th>수정</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>SSGHCD001</td>
-                                <td>MATB3MAT001</td>
-                                <td>JJAN001</td>
-                                <td>(전기자전거)안장</td>
-                                <td>100</td>
-                                <td>2025-04-10</td>
-                                <td>SAMSON</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
-                                <td>
-                                    <button type="button" class="icon-button" id="openPurchaseRegiModal" title="BOM 정보 수정">
-                                        <i class="bi bi-pencil fs-6"></i>
-                                    </button>
+                            <tr th:if="${responseDTO.dtoList == null or #lists.isEmpty(responseDTO.dtoList)}">
+                                <td colspan="15" class="text-center" style="padding: 20px 0;">
+                                    등록된 생산 계획이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
                                 </td>
                             </tr>
-                            <tr>
-                                <td><input type="checkbox" class="selectPlan" value="MATB3MAT001"></td>
-                                <td>DIFF001</td>
-                                <td>AA1-20250402</td>
-                                <td>BB112</td>
-                                <td>(전동킥보드)바퀴</td>
-                                <td>150</td>
-                                <td>2025-04-22</td>
-                                <td>카인드몰</td>
-                                <td>2025-04-02</td>
-                                <td>진행중</td>
+                            <tr th:each="dto:${responseDTO.dtoList}">
+                                <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
+                                <td th:text="${dto.getPpCode()}"></td>
+                                <td th:text="${dto.getDppCode()}"></td>
+                                <td th:text="${dto.getMCode()}"></td>
+                                <td th:text="${dto.getMName()}"></td>
+                                <td th:text="${dto.getDppRequireNum()}"></td>
+                                <td th:text="${dto.getDppNum()}"></td>
+                                <td th:text="${#temporals.format(dto.getDppDate(), 'yyyy-MM-dd')}"></td>
+                                <td th:text="${dto.getSName()}"></td>
+                                <td th:text="${dto.getUId()}"></td>
+                                <td th:text="${#temporals.format(dto.getDppRegDate(), 'yyyy-MM-dd')}"></td>
+                                <td th:text="${dto.getDppState()}"></td>
                                 <td>
-                                    <button type="button" class="icon-button" id="openPurchaseRegiModal1" title="BOM 정보 수정">
+                                    <button type="button" class="icon-button" id="openPurchaseModal" title="부품 정보 수정">
                                         <i class="bi bi-pencil fs-6"></i>
                                     </button>
                                 </td>
@@ -159,12 +169,26 @@
                 <div>
                     <div class="text-start">
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
-                                선택 항목 구매 요청 등록
-                            </button>
                             <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
                                 선택 항목 삭제
                             </button>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <ul class="pagination flex-wrap">
+                                <li class="page-item" th:if="${responseDTO.prev}">
+                                    <a class="page-link" th:data-num="${responseDTO.start -1}"><</a>
+                                </li>
+
+                                <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                                    <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                        <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                    </li>
+                                </th:block>
+
+                                <li class="page-item" th:if="${responseDTO.next}">
+                                    <a class="page-link" th:data-num="${responseDTO.end +1}">></a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -271,3 +295,30 @@
         <script th:src="@{/js/dpp/dppList.js}"></script>
     </div>
 </body>
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if (target.tagName !== 'A') {
+            return
+        }
+
+        const num = target.getAttribute("data-num")
+
+        const formObj = document.querySelector("form")
+
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+        formObj.submit()
+    }, false)
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location = '/dpp/dppList'
+    }, false)
+</script>

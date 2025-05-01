@@ -1,22 +1,23 @@
 let dppList = [];
-
+let ppCode;
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('dppForm');
     const buttons = document.querySelectorAll('.openDppModal');
 
-
     buttons.forEach(function (button) {
         button.addEventListener('click', function () {
+
             // 클릭된 버튼의 부모 <tr>을 찾음
             const row = button.closest('tr');
-
-            const ppCode = row.children[0].textContent.trim();
+            const ppCode1 = row.children[0].textContent.trim();
             const pName = row.children[1].textContent.trim();
             const ppNum = row.children[4].textContent.trim();
 
+            ppCode = ppCode1;
+
             // 모달에 값 주입
-            document.getElementById('planCodeInput').textContent = ppCode;
+            document.getElementById('planCodeInput').textContent = ppCode1;
             document.getElementById('productNameInput').textContent = pName;
             document.getElementById('productQtyInput').textContent = ppNum;
 
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     form.addEventListener('submit', function (event) {
-        event.preventDefault();
+        //event.preventDefault();
 
         alert(`조달 계획이 등록되었습니다`);
 
@@ -80,8 +81,11 @@ function addProcurement(button) {
         mCode,
         needQty,
         supplyQty,
+        ppCode,
         dueDate
     };
+
+    console.log(item);
 
     dppList.push(item);
 
@@ -90,6 +94,7 @@ function addProcurement(button) {
 
 
 function renderProcurementTable() {
+    const uId = document.getElementById('uId').value;
     const tbody = document.getElementById('dppListBody');
     tbody.innerHTML = ''; // 초기화
     let rowIndex = 0;
@@ -99,13 +104,14 @@ function renderProcurementTable() {
         //이런식으로 input값 넣어줄거임
         row.innerHTML = `
       <td><input type="hidden" name="dpps[${rowIndex}].dppCode" value="${item.dppCode}">${item.dppCode}</td>
-      <td>${item.supplier}</td>
-      <td>${item.mName}</td>
-      <td>${item.mCode}</td>
-      <td class="text-end">${item.needQty}</td>
-      <td class="text-end">${item.supplyQty}</td>
-      <td class="text-center">${item.dueDate}</td>
+      <td><input type="hidden" name="dpps[${rowIndex}].supplier" value="${item.supplier}">${item.supplier}</td>
+      <td><input type="hidden" name="dpps[${rowIndex}].mName" value="${item.mName}">${item.mName}</td>
+      <td><input type="hidden" name="dpps[${rowIndex}].mCode" value="${item.mCode}">${item.mCode}</td>
+      <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppRequireNum" value="${item.needQty}">${item.needQty}</td>
+      <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppNum" value="${item.supplyQty}">${item.supplyQty}</td>
+      <td class="text-center"><input type="hidden" name="dpps[${rowIndex}].dppDate" value="${item.dueDate}">${item.dueDate}</td>
       <td class="text-center">
+        <input type="hidden" name="dpps[${rowIndex}].ppCode" value="${item.ppCode}">
         <button class="btn btn-sm btn-outline-danger" onclick="removeProcurement(${index})">삭제</button>
       </td>
     `;

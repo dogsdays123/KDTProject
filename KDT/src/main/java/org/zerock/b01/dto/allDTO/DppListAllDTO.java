@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeliveryProcurementPlanDTO {
+public class DppListAllDTO {
     private String dppCode;
 
     private String dppRequireNum;
@@ -29,6 +29,10 @@ public class DeliveryProcurementPlanDTO {
     private String dppState;
 
     private String ppCode; // 생산계획코드 외래키
+
+    private String mName;
+
+    private String sName;
 
     private String mCode; // 자재 외래키
 

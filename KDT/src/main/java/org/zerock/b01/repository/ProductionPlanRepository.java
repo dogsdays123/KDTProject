@@ -14,8 +14,8 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
     @Query("SELECT COUNT(p) FROM ProductionPlan p WHERE p.ppCode LIKE CONCAT(:prefix, '%')")
     Long countByPrefix(String prefix);
 
-//    @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
-//    ProductionPlan findByProductionPlanCode(String ppCode);
+    @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
+    ProductionPlan findByProductionPlanCodeObj(String ppCode);
 
     @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
     Optional<ProductionPlan> findByProductionPlanCode(String ppCode);
@@ -29,10 +29,12 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
     @Query("select pp from ProductionPlan pp")
     List<ProductionPlan> findByPlans();
 
+    @Query("select dpp.dppCode from DeliveryProcurementPlan dpp where dpp.productionPlan=:ppObj")
+    List<String> findDppCodeByPpCode(ProductionPlan ppObj);
+
     @Query("select pp from ProductionPlan pp where pp.ppCode=:ppCode")
     void deleteAllById(List<String> ppCodes);
 
     boolean existsByProduct_pCode(String pCode);
 
-//    boolean existsByMaterial_mCode(String mCode);
 }
