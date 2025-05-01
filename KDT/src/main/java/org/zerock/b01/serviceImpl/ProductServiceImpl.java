@@ -124,6 +124,7 @@ public class ProductServiceImpl implements ProductService {
 
             // 중복이 있을 경우, 중복 값을 확인하고 계속해서 리스트에 추가
             if (checkAll[0].equals("true")) {
+                log.info("testF " + productDTO);
                 // 중복된 값이 이미 checksList에 존재하지 않으면 추가
                 for (int i = 1; i < checkAll.length; i++) {
                     // 이미 존재하는 값은 추가하지 않도록 set을 사용해 방지
@@ -139,6 +140,7 @@ public class ProductServiceImpl implements ProductService {
                     productDTO.setPCode(generateCodes[index]);
                     index++;
                 }
+                log.info("testT " + productDTO);
 
                 // Product 객체로 변환 후 저장
                 Product product = modelMapper.map(productDTO, Product.class);
@@ -197,24 +199,21 @@ public class ProductServiceImpl implements ProductService {
     public String[] duplicationCheck(ProductDTO dto) {
         List<Product> products = productRepository.findByProducts();
         List<String> checkList = new ArrayList<>();  // 중복된 값을 저장할 리스트
-        checkList.add("false");  // 중복이 없으면 "false"로 시작
+        boolean hasDuplicate = false; // 중복 여부를 추적
 
         for (Product product : products) {
-            // PCode가 중복되는 경우
             if (product.getPCode().equals(dto.getPCode())) {
                 checkList.add(product.getPCode());
-            }
-            // PName이 중복되는 경우
-            else if (product.getPName().equals(dto.getPName())) {
+                hasDuplicate = true;
+            } else if (product.getPName().equals(dto.getPName())) {
                 checkList.add(product.getPName());
+                hasDuplicate = true;
             }
         }
 
-        if (!checkList.isEmpty()) {
-            checkList.set(0, "true");
-        }
+        // 맨 앞에 중복 여부 추가
+        checkList.add(0, hasDuplicate ? "true" : "false");
 
-        // List<String>을 String[]로 변환하여 반환
         return checkList.toArray(new String[0]);
     }
 
