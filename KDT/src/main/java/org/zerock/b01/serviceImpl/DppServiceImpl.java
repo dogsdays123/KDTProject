@@ -38,6 +38,8 @@ public class DppServiceImpl implements DppService {
     public void registerDpp(DeliveryProcurementPlanDTO dppDTO) {
         DeliveryProcurementPlan dpp = modelMapper.map(dppDTO, DeliveryProcurementPlan.class);
 
+        log.info("test$$ " + dppDTO.getMCode());
+
         Material m = materialRepository.findByMaterialCode(dppDTO.getMCode()).orElseThrow();
         ProductionPlan pp = productionPlanRepository.findByProductionPlanCode(dppDTO.getPpCode()).orElseThrow();
 

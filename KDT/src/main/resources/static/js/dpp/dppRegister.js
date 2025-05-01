@@ -116,6 +116,7 @@ function renderProcurementTable() {
       </td>
     `;
         tbody.appendChild(row);
+        rowIndex++;
     });
 }
 
