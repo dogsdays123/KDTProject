@@ -95,6 +95,14 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+document.querySelector(".clearBtn").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    self.location = '/inPut/inPutManage'
+}, false)
+
+
 // document.getElementById('openPurchaseModal').addEventListener('click', function () {
 //     const selectedRows = Array.from(document.querySelectorAll('.selectPlan:checked'))
 //         .map(cb => cb.closest('tr')); // 체크된 체크박스의 행 가져오기

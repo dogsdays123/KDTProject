@@ -664,10 +664,9 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<InPut> countQuery = from(inPut).where(booleanBuilder);
-                        .pageRequestDTO(pageRequestDTO)
-                .dtoList(result.getContent())
-                .total((int)result.getTotalElements())
-                .build();
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
     }
 
     public Page<DppListAllDTO> dppSearchWithAll(String[] types, String keyword, String dppCode, String ppCode, String mName, String mCode, LocalDate dppRegDate, String dppState, String uId, Pageable pageable){
