@@ -24,6 +24,7 @@ import org.zerock.b01.domain.Supplier;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.formDTO.MaterialFormDTO;
 import org.zerock.b01.dto.formDTO.ProductionPlanFormDTO;
+import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
@@ -45,6 +46,7 @@ public class MaterialController {
     private final BomService bomService;
     private final PageService pageService;
     private final SupplierService supplierService;
+    private final MaterialRepository materialRepository;
 
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
@@ -71,6 +73,13 @@ public class MaterialController {
 
     @GetMapping("/materialList")
     public void materialList(PageRequestDTO pageRequestDTO, Model model) {
+
+        List<Product> productList = productService.getProducts();
+        model.addAttribute("productList", productList);
+
+        List<Supplier> supplierList = supplierService.getSupplier();
+        model.addAttribute("supplierList", supplierList);
+
 
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
@@ -224,5 +233,12 @@ public class MaterialController {
         materialService.removeMaterial(pCodes);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
         return "redirect:/material/materialList";
+    }
+
+    @GetMapping("/{pName}/cType")
+    @ResponseBody
+    public List<String> getComponentTypesByProductCode(@PathVariable String pName) {
+        List<String> componentTypes = materialRepository.findComponentTypesByProductName(pName);
+        return componentTypes != null ? componentTypes : Collections.emptyList();
     }
 }

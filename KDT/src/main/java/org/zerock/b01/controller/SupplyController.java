@@ -41,11 +41,7 @@ public class SupplyController {
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
-    private final ProductService productService;
     private final UserByService userByService;
-    private final MaterialService materialService;
-    private final BomService bomService;
-    private final PageService pageService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -65,16 +61,6 @@ public class SupplyController {
 
             model.addAttribute("userBy", userByDTO);
         }
-    }
-
-    @GetMapping("/procureRegister")
-    public void procureRegister() {
-        log.info("##PROCURE REGISTER PAGE GET....##");
-    }
-
-    @GetMapping("/procureList")
-    public void procureList() {
-        log.info("##PROCURE LIST PAGE GET....##");
     }
 
     @GetMapping("/purchaseOrder")

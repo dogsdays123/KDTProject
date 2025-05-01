@@ -50,7 +50,7 @@ public class Material extends BaseEntity {
     @JoinColumn(name = "sId", nullable = true)
     private Supplier supplier;
 
-    public void set(String mCode) {
+    public void setOneCode(String mCode) {
         this.mCode = mCode;
     }
 

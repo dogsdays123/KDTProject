@@ -25,16 +25,18 @@
                         <div class="row g-2 mb-2">
                             <div class="col-md-2" style="width: 150px">
                                 <label for="pName" class="form-label small">상품</label>
-                                <select id="pName" class="form-select form-select-sm searchSelect">
+                                <select id="pName" class="form-select form-select-sm">
                                     <option value="" selected>선택</option>
                                     <th:block th:each="product : ${productList}">
-                                        <option th:value="${product.pName}" th:text="${product.pName}"></option>
+                                        <option th:value="${product.pName}" th:text="${product.pName}" th:data-code="${product.pName}"></option>
                                     </th:block>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2" style="width: 150px">
                                 <label for="mComponentType" class="form-label small">부품 종류</label>
-                                <input type="text" id="mComponentType" name="부품명" class="form-control form-control-sm">
+                                <select id="mComponentType" class="form-select form-select-sm searchSelect">
+                                    <option value="" selected>선택</option>
+                                </select>
                             </div>
                             <div class="col-md-2" style="width: 100px">
                                 <label for="mType" class="form-label small">자재 유형</label>

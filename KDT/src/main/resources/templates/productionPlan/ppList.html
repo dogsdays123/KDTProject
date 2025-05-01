@@ -101,7 +101,6 @@
                             <tr>
                                 <th><input type="checkbox" id="selectAll" title="전체선택"></th>
                                 <th>생산 계획 코드</th>
-                                <th>생산 상품 코드</th>
                                 <th>생산 상품명</th>
                                 <th>생산 시작일</th>
                                 <th>생산 종료일</th>
@@ -119,7 +118,6 @@
                                 <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
                                     <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
                                     <td th:text="${dto.getPpCode()}"></td>
-                                    <td th:text="${dto.getPCode()}"></td>
                                     <td th:text="${dto.getPName()}"></td>
                                     <td th:text="${#temporals.format(dto.getPpStart(), 'yyyy-MM-dd')}"></td>
                                     <td th:text="${#temporals.format(dto.getPpEnd(), 'yyyy-MM-dd')}"></td>

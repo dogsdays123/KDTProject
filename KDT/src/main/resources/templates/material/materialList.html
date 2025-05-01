@@ -21,35 +21,44 @@
                 <!-- 검색 필터 -->
                 <form>
                     <div class="row g-2 align-items-end">
-                        <div class="col-md-2">
+                        <div class="col-md-2" style="width: 150px">
                             <label for="pName" class="form-label small">상품 선택</label>
-                            <select class="form-select form-select-sm" name="pName" id="pName">
-                                <option value="" th:selected="${selectedPName == ''}">전체</option>
-                                <option th:each="pName : ${pNameList}"
-                                        th:value="${pName}"
-                                        th:text="${pName}"
-                                        th:selected="${pName == selectedPName}"></option>
+                            <select id="pName" name="pName" class="form-select form-select-sm">
+                                <option value="" selected>선택</option>
+                                <th:block th:each="product : ${productList}">
+                                    <option th:value="${product.pName}" th:text="${product.pName}" th:data-code="${product.pName}"></option>
+                                </th:block>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label for="componentType" class="form-label small">부품 선택</label>
-                            <select class="form-select form-select-sm" name="componentType" id="componentType" title="부품 선택">
-                                <option value="" th:selected="${selectedCType == ''}">전체</option>
-                                <option th:each="cType : ${componentTypeList}"
-                                        th:value="${cType}"
-                                        th:text="${cType}"
-                                        th:selected="${cType == selectedCType}"></option>
+                        <div class="col-md-2" style="width: 150px">
+                            <label for="mComponentType" class="form-label small">부품 선택</label>
+                            <select id="mComponentType" name="componentType" class="form-select form-select-sm searchSelect">
+                                <option value="" selected>선택</option>
+                                <th:block th:each="mTypes : ${componentTypeList}">
+                                    <option th:value="${mTypes}" th:text="${mTypes}" th:data-code="${mTypes}"></option>
+                                </th:block>
                             </select>
+                            <!-- 서버에서 렌더링된 mComponentListHTML HTML을 숨겨두는 div -->
+                            <div id="mComponentListHTML" style="display: none;">
+                                <th:block th:each="mTypes : ${componentTypeList}">
+                                    <option th:value="${mTypes}" th:text="${mTypes}" th:data-code="${mTypes}"></option>
+                                </th:block>
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <label for="mName" class="form-label small">자재명</label>
-                            <select class="form-select form-select-sm" name="mName" id="mName" title="자재명">
-                                <option value="" th:selected="${selectedMName == ''}">전체</option>
-                                <option th:each="name : ${mNameList}"
-                                        th:value="${name}"
-                                        th:text="${name}"
-                                        th:selected="${name == selectedMName}"></option>
+                            <select class="form-select form-select-sm searchSelect" name="mName" id="mName" title="자재명">
+                                <th:block th:each="mNames : ${mNameList}">
+                                    <option value="" selected>선택</option>
+                                    <option th:value="${mNames}" th:text="${mNames}" th:data-code="${mNames}"></option>
+                                </th:block>
                             </select>
+                            <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
+                            <div id="mNameListHTML" style="display: none;">
+                                <th:block th:each="mTypes : ${componentTypeList}">
+                                    <option th:value="${mTypes}" th:text="${mTypes}" th:data-code="${mTypes}"></option>
+                                </th:block>
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <label for="materialTypes" class="form-label small">자재 유형</label>
@@ -169,6 +178,7 @@
                         </ul>
                     </div>
                 </div>
+
                 <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <form th:action="@{/material/modify}" method="post">
@@ -299,3 +309,35 @@
         <script th:src="@{/js/material/materialList.js}"></script>
     </div>
 </body>
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = e.target;
+        if (target.tagName !== 'A') {
+            return;
+        }
+
+        const num = target.getAttribute("data-num");
+
+        // 검색 조건을 URL에서 가져오기
+        const searchParams = new URLSearchParams(window.location.search);
+
+        // 페이지 번호를 변경
+        searchParams.set('page', num);
+
+        // 페이지 전환을 위한 새로운 URL 생성
+        const newUrl = window.location.pathname + '?' + searchParams.toString();
+
+        // 페이지 리디렉션
+        window.location.href = newUrl;
+    }, false);
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location = '/material/materialList'
+    }, false)
+</script>

@@ -99,6 +99,7 @@ document.querySelector(".clearBtn").addEventListener("click", function (e) {
     self.location = '/supply/materialList'
 }, false)
 
+
 document.querySelector(".pagination").addEventListener("click", function (e) {
     e.preventDefault()
     e.stopPropagation()
@@ -117,3 +118,47 @@ document.querySelector(".pagination").addEventListener("click", function (e) {
 
     formObj.submit()
 }, false)
+
+
+$(document).ready(function () {
+    // 상품 선택 시 동적으로 부품 목록 업데이트
+    $('#pName').on('change', function () {
+        const pName = $(this).val();  // 선택된 상품 값
+
+        if (pName) {
+            // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+            const pNameEncode = encodeURIComponent(pName);
+
+            // AJAX를 사용하여 부품 목록을 가져오는 코드
+            $.ajax({
+                url: `/material/${pNameEncode}/cType`,  // URL 인코딩 적용
+                method: 'GET',  // HTTP GET 요청
+                success: function (componentTypes) {
+                    // 부품명 선택 요소 초기화
+                    const componentSelect = $('#mComponentType');
+                    componentSelect.empty();  // 기존 옵션 제거
+
+                    // "선택" 옵션 추가
+                    componentSelect.append('<option value="" selected>선택</option>');
+
+                    // 받아온 부품 목록을 옵션으로 추가
+                    componentTypes.forEach(type => {
+                        componentSelect.append(`<option value="${type}">${type}</option>`);
+                    });
+
+                    // select2 업데이트
+                    componentSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+                },
+                error: function (error) {
+                    console.error('부품 목록을 가져오는 중 오류 발생:', error);
+                }
+            });
+        } else {
+            $('#mComponentType').empty();  // 부품 목록 초기화
+            var mComponentListHTML = $('#mComponentListHTML').html();  // 서버에서 렌더링된 HTML 가져오기
+            $('#mComponentType').append(mComponentListHTML);  // mNameList의 option을 append
+            $('#mComponentType').trigger('change');  // 변경 이벤트 트리거
+        }
+    });
+});
+

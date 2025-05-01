@@ -16,6 +16,7 @@ public class Product extends BaseEntity {
     @Id
     private String pCode;
 
+    @Column(nullable = false, unique = true)
     private String pName;
 
     @ManyToOne(fetch = FetchType.LAZY)

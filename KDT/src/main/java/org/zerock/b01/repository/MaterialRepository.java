@@ -30,9 +30,15 @@ public interface MaterialRepository extends JpaRepository<Material, String>, All
     @Query("SELECT DISTINCT m.mComponentType FROM Material m WHERE m.product.pCode = :pCode")
     List<String> findComponentTypesByProductCode(@Param("pCode") String pCode);
 
+    @Query("SELECT DISTINCT m.mComponentType FROM Material m WHERE m.product.pName = :pName")
+    List<String> findComponentTypesByProductName(@Param("pName") String pName);
+
     @Query("SELECT m FROM Material m WHERE m.mComponentType = :componentType")
     List<Material> findByComponentType(@Param("componentType") String componentType);
 
     @Query("select m.mCode from Material m where m.mName = :mName")
     Optional<String> findMCodeByMName(@Param("mName") String mName);
+
+    @Query("select m.mCode from Material m where m.mName = :mName")
+    List<String> findMCodeByMNameDomain(@Param("mName") String mName);
 }

@@ -68,7 +68,7 @@ public class MaterialServiceImpl implements MaterialService {
         if(materialDTO.getMCode() == null){
             log.info("NewNoHave " + material.getMCode());
             String productionPlanCode = generateProductionPlanCode(materialDTO);
-            material.set(productionPlanCode);
+            material.setOneCode(productionPlanCode);
         }
         else if(materialRepository.findByMaterialCode(materialDTO.getMCode()).isEmpty()){
             log.info("NewHave " + material.getMCode());

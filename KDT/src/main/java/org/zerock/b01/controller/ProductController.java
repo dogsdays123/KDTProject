@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -168,6 +169,8 @@ public class ProductController {
             duplicationProducts = registerProduct(worksheet, uId, check);
         }
 
+        log.info("test " + Arrays.toString(duplicationProducts.get("checks")));
+
         response.put("isAvailable", duplicationProducts.isEmpty());
         response.put("pCodes", duplicationProducts.get("pCodes"));
         response.put("pNames", duplicationProducts.get("pNames"));
@@ -179,32 +182,45 @@ public class ProductController {
     private Map<String, String[]> registerProduct(XSSFSheet worksheet, String uId, String check) {
 
         List<ProductDTO> productDTOs = new ArrayList<>();
+        DataFormatter formatter = new DataFormatter();
 
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            XSSFRow row = worksheet.getRow(i);
+            if (row == null) continue; // 빈 행 방지
 
             ProductDTO productDTO = new ProductDTO();
-            DataFormatter formatter = new DataFormatter();
-            XSSFRow row = worksheet.getRow(i);
 
-            if (row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
-                String productCode = formatter.formatCellValue(row.getCell(0));
-                productDTO.setPCode(productCode);
+            // 0번 셀: 상품 코드 (PCode)
+            String productCode = "";
+            XSSFCell cell0 = row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            if (cell0 != null) {
+                productCode = formatter.formatCellValue(cell0);
             }
+            productDTO.setPCode(productCode);
 
-            String productName = formatter.formatCellValue(row.getCell(1));
+            // 1번 셀: 상품 이름 (PName)
+            String productName = "";
+            XSSFCell cell1 = row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            if (cell1 != null) {
+                productName = formatter.formatCellValue(cell1);
+            }
             productDTO.setPName(productName);
 
-            log.info("^^^^&&&&&5" + productDTO.getPCode());
-            log.info("^^^^&&&&&6" + productDTO.getPName());
+            // 로그로 확인
+            log.info("상품 코드: {}", productDTO.getPCode());
+            log.info("상품 이름: {}", productDTO.getPName());
+
             productDTOs.add(productDTO);
         }
 
-        if(check.equals("true")){
+        // 검증 여부에 따라 서비스 분기 처리
+        if ("true".equals(check)) {
             return productService.ProductCheck(productDTOs);
         } else {
             return productService.registerProductsEasy(productDTOs, uId);
         }
     }
+
 
     @PostMapping("/modify")
     public String modify(@ModelAttribute ProductDTO productDTO, RedirectAttributes redirectAttributes, String uName) {

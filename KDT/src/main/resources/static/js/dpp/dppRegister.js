@@ -1,0 +1,176 @@
+let dppList = [];
+let ppCode;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('dppForm');
+    const buttons = document.querySelectorAll('.openDppModal');
+
+    buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+
+            // 클릭된 버튼의 부모 <tr>을 찾음
+            const row = button.closest('tr');
+            const ppCode1 = row.children[0].textContent.trim();
+            const pName = row.children[1].textContent.trim();
+            const ppNum = row.children[4].textContent.trim();
+
+            ppCode = ppCode1;
+
+            // 모달에 값 주입
+            document.getElementById('planCodeInput').textContent = ppCode1;
+            document.getElementById('productNameInput').textContent = pName;
+            document.getElementById('productQtyInput').textContent = ppNum;
+
+            // 모달 열기
+            const modal = new bootstrap.Modal(document.getElementById('procurementModal'));
+            modal.show();
+        });
+    });
+
+
+    form.addEventListener('submit', function (event) {
+        //event.preventDefault();
+
+        alert(`조달 계획이 등록되었습니다`);
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('procurementModal'));
+        if (modal) modal.hide();
+
+        // 초기화 필요 시 여기에 추가
+        const tbody = document.getElementById('dppListBOdy');
+        if (tbody) tbody.innerHTML = '';
+
+        dppList.length = 0;
+    });
+});
+
+function addProcurement(button) {
+    const container = button.closest('.tab-pane'); // 현재 탭 안
+
+    const textInputs = container.querySelectorAll('input[type="text"]');
+    const numberInputs = container.querySelectorAll('input[type="number"]');
+    const selectElements = container.querySelectorAll('select');
+    const dateInput = container.querySelector('input[type="date"]');
+
+// 조달계획코드
+    const dppCode = textInputs.length > 0 ? textInputs[0].value.trim() : '';
+
+// 공급업체, 자재명, 자재코드
+    const supplier = selectElements.length > 0 ? selectElements[0].value : '';
+    const mName    = selectElements.length > 1 ? selectElements[1].value : '';
+    const mCode    = selectElements.length > 2 ? selectElements[2].value : '';
+
+// 수량
+    const needQty   = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
+    const supplyQty = numberInputs.length > 1 ? numberInputs[1].value.trim() : '';
+
+// 납기일
+    const dueDate = dateInput ? dateInput.value.trim() : '';
+
+    // 유효성 체크 (선택)
+    if (!dppCode || !supplier|| !mName || !mCode || !needQty || !supplyQty || !dueDate) {
+        alert('필수 정보를 입력해주세요');
+        return;
+    }
+
+    // 데이터 객체 생성
+    const item = {
+        dppCode,
+        supplier,
+        mName,
+        mCode,
+        needQty,
+        supplyQty,
+        ppCode,
+        dueDate
+    };
+
+    console.log(item);
+
+    dppList.push(item);
+
+    renderProcurementTable();
+}
+
+
+function renderProcurementTable() {
+    const uId = document.getElementById('uId').value;
+    const tbody = document.getElementById('dppListBody');
+    tbody.innerHTML = ''; // 초기화
+    let rowIndex = 0;
+
+    dppList.forEach((item, index) => {
+        const row = document.createElement('tr');
+        //이런식으로 input값 넣어줄거임
+        row.innerHTML = `
+      <td><input type="hidden" name="dpps[${rowIndex}].dppCode" value="${item.dppCode}">${item.dppCode}</td>
+      <td><input type="hidden" name="dpps[${rowIndex}].supplier" value="${item.supplier}">${item.supplier}</td>
+      <td><input type="hidden" name="dpps[${rowIndex}].mName" value="${item.mName}">${item.mName}</td>
+      <td><input type="hidden" name="dpps[${rowIndex}].mCode" value="${item.mCode}">${item.mCode}</td>
+      <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppRequireNum" value="${item.needQty}">${item.needQty}</td>
+      <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppNum" value="${item.supplyQty}">${item.supplyQty}</td>
+      <td class="text-center"><input type="hidden" name="dpps[${rowIndex}].dppDate" value="${item.dueDate}">${item.dueDate}</td>
+      <td class="text-center">
+        <input type="hidden" name="dpps[${rowIndex}].ppCode" value="${item.ppCode}">
+        <button class="btn btn-sm btn-outline-danger" onclick="removeProcurement(${index})">삭제</button>
+      </td>
+    `;
+        tbody.appendChild(row);
+    });
+}
+
+function removeProcurement(index) {
+    dppList.splice(index, 1);
+    renderProcurementTable();
+}
+
+$(document).ready(function () {
+    // 상품 선택 시 동적으로 부품 목록 업데이트
+    $('#mName').on('change', function () {
+        const mName = $(this).val();  // 선택된 상품 값
+
+        if (mName) {
+            // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+            const mNameEncode = encodeURIComponent(mName);
+
+            // AJAX를 사용하여 부품 목록을 가져오는 코드
+            $.ajax({
+                url: `/dpp/${mNameEncode}/mName`,  // URL 인코딩 적용
+                method: 'GET',  // HTTP GET 요청
+                success: function (mCodes) {
+                    // 부품명 선택 요소 초기화
+                    const mCodesSelect = $('#mCode');
+                    mCodesSelect.empty();  // 기존 옵션 제거
+
+                    // "선택" 옵션 추가
+                    mCodesSelect.append('<option value="" selected>선택</option>');
+
+                    // 받아온 부품 목록을 옵션으로 추가
+                    mCodes.forEach(type => {
+                        mCodesSelect.append(`<option value="${type}">${type}</option>`);
+                    });
+
+                    // select2 업데이트
+                    mCodesSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+                },
+                error: function (error) {
+                    console.error('부품 목록을 가져오는 중 오류 발생:', error);
+                }
+            });
+        } else {
+            $('#mCode').empty();  // 부품 목록 초기화
+            $('#mCode').append('<option value="" selected>선택</option>');
+            $('#mCode').trigger('change');
+        }
+    });
+});
+
+function resetView() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('procurementModal'));
+
+    const tbody = document.getElementById('dppListBOdy');
+    if (tbody) tbody.innerHTML = '';
+    dppList.length = 0;
+
+    if (modal) modal.hide();
+}

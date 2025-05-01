@@ -3,8 +3,11 @@ package org.zerock.b01.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +20,7 @@ public class DeliveryProcurementPlan extends BaseEntity {
 
     private String dppNum;
 
-    private String dppDate;
+    private LocalDate dppDate;
 
     @Enumerated(EnumType.STRING)
     private CurrentStatus dppState;
@@ -29,4 +32,12 @@ public class DeliveryProcurementPlan extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mCode", nullable = false)
     private Material material; // 자재 외래키
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uId", nullable = false)
+    private UserBy userBy;
+
+    public void setOneCode(String dppCode){
+        this.dppCode = dppCode;
+    }
 }

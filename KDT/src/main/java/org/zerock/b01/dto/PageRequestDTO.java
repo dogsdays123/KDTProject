@@ -89,6 +89,11 @@ public class PageRequestDTO {
     //입고
     private String ipState;
 
+    //dpp
+    private String dppCode;
+    private LocalDate dppDate;
+    private String dppState;
+
     public String[] getTypes() {
         if(type == null || type.isEmpty()) {
             return null;
