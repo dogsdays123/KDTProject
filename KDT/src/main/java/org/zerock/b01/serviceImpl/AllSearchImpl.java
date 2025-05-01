@@ -522,7 +522,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
         if (isLocation != null && !isLocation.isEmpty() && !"전체".equals(isLocation)) {
             log.info("Received pName: " + isLocation);
-            booleanBuilder.and(inventoryStock.isLocation.contains(isLocation));
+//            booleanBuilder.and(inventoryStock.isLocation.contains(isLocation));
         }
 
         query.where(booleanBuilder);
@@ -664,10 +664,9 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<InPut> countQuery = from(inPut).where(booleanBuilder);
-                        .pageRequestDTO(pageRequestDTO)
-                .dtoList(result.getContent())
-                .total((int)result.getTotalElements())
-                .build();
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
     }
 
     public Page<DppListAllDTO> dppSearchWithAll(String[] types, String keyword, String dppCode, String ppCode, String mName, String mCode, LocalDate dppRegDate, String dppState, String uId, Pageable pageable){
