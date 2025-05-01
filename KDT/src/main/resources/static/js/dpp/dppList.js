@@ -15,7 +15,7 @@ document.getElementById('openModifyModal').addEventListener('click', function ()
     document.getElementById('ppProductName').value = pCode;
 
     // 모달 띄우기
-    const modal = new bootstrap.Modal(document.getElementById('purchaseOrderRegiModal'));
+    const modal = new bootstrap.Modal(document.getElementById('ModifyModal'));
     modal.show();
 });
 
@@ -48,7 +48,7 @@ document.getElementById('openRemoveModal').addEventListener('click', function ()
     });
 
 
-    const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
+    const modal = new bootstrap.Modal(document.getElementById('RemoveModal'));
     modal.show();
 });
 

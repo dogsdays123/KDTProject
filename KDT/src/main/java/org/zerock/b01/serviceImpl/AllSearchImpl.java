@@ -522,7 +522,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
         if (isLocation != null && !isLocation.isEmpty() && !"전체".equals(isLocation)) {
             log.info("Received pName: " + isLocation);
-            booleanBuilder.and(inventoryStock.isLocation.contains(isLocation));
+//            booleanBuilder.and(inventoryStock.isLocation.contains(isLocation));
         }
 
         query.where(booleanBuilder);
