@@ -79,3 +79,48 @@ input::placeholder {
 .icon-button i {
     font-size: 0.9rem;
 }
+
+
+#pName + .select2-container {
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 0.75rem;
+    box-sizing: border-box;
+}
+
+#pName + .select2-container {
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 0.75rem;
+    box-sizing: border-box;
+}
+
+/* 내부 selection 박스 완전 리셋 */
+#pName + .select2-container .select2-selection--single {
+    height: 28px !important;                 /* 최종 줄이기 */
+    line-height: 28px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 4px !important;
+    padding-right: 20px !important;          /* 드롭다운 여유 */
+    font-size: 0.75rem !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 0.25rem !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;          /* 수직 정렬 강제 */
+}
+
+#pName + .select2-container .select2-selection__rendered {
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+    font-size: 0.75rem !important;
+}
+
+/* 드롭다운 화살표 맞춤 */
+#pName + .select2-container .select2-selection__arrow {
+    height: 100% !important;
+    top: 0 !important;
+    right: 4px !important;
+}

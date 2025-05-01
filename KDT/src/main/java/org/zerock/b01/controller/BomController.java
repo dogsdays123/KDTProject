@@ -110,6 +110,7 @@ public class BomController {
                 .collect(Collectors.toList());
     }
 
+
     @GetMapping("/bomRegister")
     public String bomRegister(Model model) {
         log.info("##PP REGISTER PAGE GET....##");
@@ -210,6 +211,7 @@ public class BomController {
             bomService.registerBOM(entity);
         }
     }
+
     @PostMapping("/modify")
     public String modify(@ModelAttribute BomDTO bomDTO, RedirectAttributes redirectAttributes, Long bId) {
         log.info("pp modify post.....#@" + bomDTO);

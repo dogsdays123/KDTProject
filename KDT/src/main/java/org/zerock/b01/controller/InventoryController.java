@@ -3,19 +3,30 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.zerock.b01.dto.UserByDTO;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.Material;
+import org.zerock.b01.domain.Product;
+import org.zerock.b01.dto.*;
+import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
-import org.zerock.b01.service.ProductService;
-import org.zerock.b01.service.UserByService;
+import org.zerock.b01.service.*;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 //자재관리 컨트롤러
 @Log4j2
@@ -25,10 +36,17 @@ import org.zerock.b01.service.UserByService;
 @RequestMapping("/inventory")
 public class InventoryController {
 
+
+    private final MaterialService materialService;
+    private final PageService pageService;
+    private final MaterialRepository materialRepository;
+    private final ProductRepository productRepository;
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
     private final UserByService userByService;
+    private final ProductService productService;
+    private final InventoryStockService inventoryStockService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -51,8 +69,169 @@ public class InventoryController {
     }
 
     @GetMapping("/inventoryRegister")
-    public void inventoryRegister(){ log.info("##MATERIAL INVENTORY REGISTER PAGE GET....##"); }
+    public String inventoryRegister(Model model){
+        log.info("##MATERIAL INVENTORY REGISTER PAGE GET....##");
+
+        List<Product> productList = productService.getProducts();
+        model.addAttribute("productList", productList);
+        List<Material> materialList = materialService.getMaterials();
+        model.addAttribute("materialList", materialList);
+        return "/inventory/inventoryRegister";
+
+    }
+
+    @PostMapping("/inventoryRegister")
+    public String inventoryRegisterPost(String uId,
+                                        @RequestParam("pNames[]") List<String> pNames,
+                                        @RequestParam("pCodes[]") List<String> pCodes,
+                                        @RequestParam("cTypes[]") List<String> cTypes,
+                                        @RequestParam("mNames[]") List<String> mNames,
+                                        @RequestParam("mCodes[]") List<String> mCodes,
+                                        @RequestParam("isNums[]") List<String> isNums,
+                                        @RequestParam("isLoca[]") List<String> isLoca,
+                                        Model model, RedirectAttributes redirectAttributes,
+                                        HttpServletRequest request){
+
+        log.info(" ^^^^ " + uId);
+
+        List<InventoryStockDTO> inventoryStockDTOS = new ArrayList<>();
+
+        for (int i = 0; i < mCodes.size(); i++) {
+            InventoryStockDTO inventoryStockDTO = new InventoryStockDTO();
+            inventoryStockDTO.setMCode(mCodes.get(i));
+            inventoryStockDTO.setIsNum(isNums.get(i));
+            inventoryStockDTO.setIsAvailable(isNums.get(i));
+            inventoryStockDTO.setIsLocation(isLoca.get(i));
+            inventoryStockDTOS.add(inventoryStockDTO);
+
+        }
+
+        for(InventoryStockDTO inventoryStockDTO : inventoryStockDTOS){
+            inventoryStockService.registerIS(inventoryStockDTO);
+        }
+        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
+        return "redirect:/inventory/inventoryRegister";
+    }
+
+
 
     @GetMapping("/inventoryList")
-    public void inventoryList(){ log.info("##MATERIAL INVENTORY LIST PAGE GET....##"); }
+    public void inventoryList(PageRequestDTO pageRequestDTO, Model model){
+        log.info("##MATERIAL INVENTORY LIST PAGE GET....##");
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<InventoryStockDTO> responseDTO = pageService.inventoryStockWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<InventoryStockDTO> inventoryStockList = inventoryStockService.getInventoryStockList();
+        model.addAttribute("inventoryStockList", inventoryStockList);
+        model.addAttribute("responseDTO", responseDTO);
+
+        log.info("IS List : " + inventoryStockList);
+        log.info("IS ResponseDTO : " + responseDTO);
+
+        Set<String> uniquePNames = inventoryStockList.stream()
+                .map(InventoryStockDTO::getPName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("pNameList", uniquePNames);
+
+        Set<String> uniqueIsLocation = inventoryStockList.stream()
+                        .map(InventoryStockDTO::getIsLocation)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("isLocationList", uniqueIsLocation);
+
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedCType", pageRequestDTO.getComponentType() != null ? pageRequestDTO.getComponentType() : "");
+
+    }
+
+    @PostMapping("/addInventory")
+    public String uploadProductPlan(String uId, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        for (MultipartFile file : files) {
+            XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+            XSSFSheet worksheet = workbook.getSheetAt(0);
+            registerInventoryStockOnController(uId, worksheet);
+            log.info("%%%%" + worksheet.getSheetName());
+        }
+
+        if (where.equals("dataUpload")) {
+            redirectAttributes.addFlashAttribute("successMessage", "(특정)데이터 업로드가 성공적으로 완료되었습니다.");
+            return "redirect:/inventory/inventoryRegister";
+        } else {
+            log.info("데이터넘겨주기");
+            redirectAttributes.addFlashAttribute("successMessage", "데이터 업로드가 성공적으로 완료되었습니다.");
+            return "redirect:/inventory/inventoryRegister";
+        }
+    }
+
+
+    private void registerInventoryStockOnController(String uId, XSSFSheet worksheet) {
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+
+            InventoryStockDTO entity = new InventoryStockDTO();
+            DataFormatter formatter = new DataFormatter();
+            XSSFRow row = worksheet.getRow(i);
+
+//            if (row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
+//                String productionPlanCode = formatter.formatCellValue(row.getCell(0));
+//                log.info("^^^^" + productionPlanCode);
+//                entity.setPpCode(productionPlanCode);
+//            }
+            String productName = formatter.formatCellValue(row.getCell(0));
+            String componentType = formatter.formatCellValue(row.getCell(1));
+            String materialName = formatter.formatCellValue(row.getCell(2));
+            String isNum = formatter.formatCellValue(row.getCell(3));
+            String isAvailable = formatter.formatCellValue(row.getCell(4));
+            String isLocation = formatter.formatCellValue(row.getCell(5));
+
+            Optional<String> optionalPCode = productRepository.findPCodeByPName(productName);
+
+            String mCode = materialRepository.findMCodeByMName(materialName)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 자재명을 가진 자재 코드가 없습니다: " + materialName));
+            entity.setMCode(mCode);
+
+            if (optionalPCode.isPresent()) {
+                entity.setPCode(optionalPCode.get());
+            } else {
+                throw new IllegalArgumentException("해당 제품명을 가진 제품 코드가 없습니다: " + productName);
+            }
+
+            entity.setPName(productName);
+            entity.setIsComponentType(componentType);
+            entity.setIsNum(isNum);
+            entity.setIsAvailable(isAvailable);
+            entity.setIsLocation(isLocation);
+
+            inventoryStockService.registerIS(entity);
+        }
+    }
+
+    @PostMapping("/modify")
+    public String modify(@ModelAttribute InventoryStockDTO inventoryStockDTO, RedirectAttributes redirectAttributes, Long isId) {
+        log.info("pp modify post.....#@" + inventoryStockDTO);
+        inventoryStockService.modifyIS(inventoryStockDTO, isId);
+        redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
+        return "redirect:/inventory/inventoryList";
+    }
+
+    @PostMapping("/remove")
+    public String remove(@ModelAttribute InventoryStockDTO inventoryStockDTO, RedirectAttributes redirectAttributes, @RequestParam List<Long> isIds) {
+        log.info("pp remove post.....#@" + inventoryStockDTO);
+        inventoryStockService.removeIS(isIds);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/inventory/inventoryList";
+    }
+
+
 }

@@ -75,7 +75,7 @@
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                        <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
                         <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                     </div>
                 </div>
@@ -112,52 +112,35 @@
                         <tr>
                             <th><input type="checkbox" id="selectAll" title="전체선택"></th>
                             <th>입고 코드</th>
+                            <th>납품 코드</th>
                             <th>발주 코드</th>
-                            <th>공급 업체</th>
                             <th>자재 코드</th>
                             <th>자재명</th>
-                            <th>수량</th>
+                            <th>입고 수량</th>
+                            <th>합격 수량</th>
+                            <th>불량 수량</th>
+                            <th>입고 일자</th>
                             <th>검수 결과</th>
-                            <th>입고일</th>
-                            <th>창고 위치</th>
+                            <th>입고 상태</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>IPGO-20250402</td>
-                            <td>BA-20250401</td>
-                            <td>SAMSON</td>
-                            <td>MATB3MAT001</td>
-                            <td>타이어-17인치 메탈</td>
-                            <td>500</td>
-                            <td>불량</td>
-                            <td>2024-04-15</td>
-                            <td>A-2</td>
+                        <tbody th:with="link = ${pageRequestDTO.getLink()}">
+                        <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
+                            <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 입고 검수가 완료된 항목이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
-                        <tr>
+                        <tr th:each="dto:${responseDTO.dtoList}">
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>SDX-0402</td>
-                            <td>ZS-20250401</td>
-                            <td>카인드몰</td>
-                            <td>AAA-1201</td>
-                            <td>고품질 안장(BLACK-S)</td>
-                            <td>250</td>
-                            <td>불량</td>
-                            <td>2024-04-15</td>
-                            <td>A-2</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                            <td>CHEK-20250402</td>
-                            <td>PLAN-20250401</td>
-                            <td>해당제철</td>
-                            <td>TITLE001</td>
-                            <td>경량 메탈 프레임(실버)</td>
-                            <td>300</td>
-                            <td>통과</td>
-                            <td>2024-04-15</td>
-                            <td>A-2</td>
+                            <td th:text="${dto.ipCode}"></td>
+                            <td th:text="${dto.drCode}"></td>
+                            <td th:text="${dto.oCode}"></td>
+                            <td th:text="${dto.mCode}"></td>
+                            <td th:text="${dto.mName}"></td>
+                            <td th:text="${dto.ipNum}"></td>
+                            <td th:text="${dto.ipTrueNum}"></td>
+                            <td th:text="${dto.ipFalseNum}"></td>
+                            <td th:text="${dto.regDate}"></td>
+                            <td th:text="${dto.drState}"></td>
+                            <td th:text="${dto.ipState}"></td>
                         </tr>
                         </tbody>
                     </table>

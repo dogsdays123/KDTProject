@@ -5,6 +5,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +19,7 @@ public class DeliveryRequest extends BaseEntity {
     private String drDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "dr_state")
     private CurrentStatus drState;
 
     @ManyToOne(fetch = FetchType.LAZY)

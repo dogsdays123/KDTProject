@@ -56,6 +56,10 @@ public class PageRequestDTO {
     private String mName;
     private String mType;
 
+    //창고
+    private String isLocation;
+    private LocalDate isRegDate;
+
     //product
     private String pCode;
     private LocalDate pReg;
@@ -66,6 +70,24 @@ public class PageRequestDTO {
     private LocalDate ppStart;
     private LocalDate ppEnd;
     private String ppState;
+    private LocalDate ppRegDate;
+
+    //납품
+    private String drCode;
+    private String drNum;
+    private String drDate;
+    private String drState;
+
+    //발주서
+    private String oCode;
+    private String oNum;
+    private String oDate;
+    private String oTotalPrice;
+    private String oExpectDate;
+    private String oState;
+
+    //입고
+    private String ipState;
 
     //dpp
     private String dppCode;

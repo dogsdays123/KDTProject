@@ -11,11 +11,19 @@ import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
+
+import org.zerock.b01.dto.allDTO.PlanListAllDTO;
+import org.zerock.b01.dto.allDTO.ProductListAllDTO;
+import org.zerock.b01.dto.allDTO.SupplierAllDTO;
+import org.zerock.b01.dto.allDTO.UserByAllDTO;
+
 import org.zerock.b01.dto.DppListAllDTO;
 import org.zerock.b01.dto.allDTO.*;
+
 import org.zerock.b01.repository.*;
 import org.zerock.b01.service.PageService;
 
+import javax.sql.CommonDataSource;
 import java.time.LocalDate;
 
 @Service
@@ -40,8 +48,17 @@ public class PageServiceImpl implements PageService {
     private final BomRepository bomRepository;
 
     @Autowired
-    private final DeliveryProcurementPlanRepository dppRepository;
+    private final InventoryStockRepository inventoryStockRepository;
 
+    @Autowired
+    private CommonDataSource commonDataSource;
+    @Autowired
+    private DeliveryRequestRepository deliveryRequestRepository;
+
+    @Autowired
+    private InputRepository inputRepository;
+    @Autowired
+    private final DeliveryProcurementPlanRepository dppRepository;
 
     @Override
     public PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO){
@@ -56,8 +73,9 @@ public class PageServiceImpl implements PageService {
         String ppState = pageRequestDTO.getPpState();
         LocalDate ppStart = pageRequestDTO.getPpStart();
         LocalDate ppEnd = pageRequestDTO.getPpEnd();
+        LocalDate regDate = pageRequestDTO.getPpRegDate();
 
-        Pageable pageable = pageRequestDTO.getPageable("ppId");
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
 
         Page<PlanListAllDTO> result = productionPlanRepository
                 .planSearchWithAll(types, keyword, ppCode, pName,
@@ -80,7 +98,7 @@ public class PageServiceImpl implements PageService {
         String uName = pageRequestDTO.getUName();
         LocalDate regDate = pageRequestDTO.getPReg();
 
-        Pageable pageable = pageRequestDTO.getPageable("pId");
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
 
         Page<ProductListAllDTO> result = productRepository.productSearchWithAll(types, keyword, pCode, pName, pageable);
 
@@ -213,6 +231,68 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
+    public PageResponseDTO<InventoryStockDTO> inventoryStockWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String pName = pageRequestDTO.getPName();
+        String componentType = pageRequestDTO.getComponentType();
+        String mName = pageRequestDTO.getMName();
+        String isLocation = pageRequestDTO.getIsLocation();
+        LocalDate regDate = pageRequestDTO.getIsRegDate();
+        String uId = pageRequestDTO.getUId();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<InventoryStockDTO> result = inventoryStockRepository.inventoryStockSearchWithAll(types, keyword,
+                pName, componentType, mName, isLocation, regDate, uId, pageable);
+
+        for (InventoryStockDTO inventoryStockDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(inventoryStockDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            inventoryStockDTO.setMName(material.getMName()); //
+
+            if (material.getProduct() != null) {
+                inventoryStockDTO.setPCode(material.getProduct().getPCode());
+                inventoryStockDTO.setPName(material.getProduct().getPName());
+                inventoryStockDTO.setIsComponentType(material.getMComponentType());
+            }
+        }
+
+        return PageResponseDTO.<InventoryStockDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<DeliveryRequestDTO> deliveryRequestWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+        String sName = pageRequestDTO.getSName();
+        String drState = pageRequestDTO.getDrState();
+        LocalDate regDate = pageRequestDTO.getIsRegDate();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<DeliveryRequestDTO> result = deliveryRequestRepository.deliveryRequestSearchWithAll(types, keyword,
+                mName, sName, drState, pageable);
+
+        for (DeliveryRequestDTO deliveryRequestDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(deliveryRequestDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            deliveryRequestDTO.setMName(material.getMName()); //
+
+        }
+
+        return PageResponseDTO.<DeliveryRequestDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
     public PageResponseDTO<DppListAllDTO> dppListWithAll(PageRequestDTO pageRequestDTO){
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();

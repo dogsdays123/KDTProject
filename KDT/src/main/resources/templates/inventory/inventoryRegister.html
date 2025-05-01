@@ -5,6 +5,7 @@
       th:with="breadcrumbLevel1='자재 관리', breadcrumbCurrent='자재 재고 등록'">
 <head>
     <link href="/css/supply/register.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.0.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
 </head>
 <body>
 <div layout:fragment="mtInRegi">
@@ -12,87 +13,65 @@
         <div class="container" style="max-width: 1000px; margin-left: 0;">
             <div class="d-flex align-items-center mb-3">
                 <h4 class="mb-0 me-2">자재 재고 등록</h4>
-                <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="자재 재고 등록"></i>
+                <div class="tooltip-wrap">
+                    <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                    <span class="tooltip-text">자재 재고 등록은 원자재, 부품, 혹은 자주 사용되는 자재들의 재고 상태와 관련된 정보를 관리합니다.</span>
+                </div>
             </div>
 
             <!-- 등록 폼 -->
-            <form>
+            <form method="post" th:action="@{/inventory/inventoryRegister}">
                 <div style="max-width: 1200px; margin-left: 0;">
                     <div class="row g-2 mb-2">
                         <div class="col-md-3" style="width: 200px">
-                            <label for="pName" class="form-label small">자재 분류 품목</label>
-                            <select id="pName" class="form-select form-select-sm">
+                            <label for="productName" class="form-label small">상품</label>
+                            <select id="productName" class="form-select form-select-sm">
                                 <option value="" selected>선택</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="mComponentType" class="form-label small">자재 종류</label>
-                            <select id="mComponentType" name="부품명" class="form-select form-select-sm">
-                                <option value="" selected>선택</option>
-                                <th:block th:each="bom : ${bomList}">
-                                    <option th:value="${bom.pName}" th:text="${bom.pName}"></option>
+                                <th:block th:each="product : ${productList}">
+                                    <option th:value="${product.pName}" th:text="${product.pName}" th:data-code="${product.pCode}"></option>
                                 </th:block>
                             </select>
                         </div>
-                        <div class="col-md-1" style="width: 100px">
-                            <label for="mType" class="form-label small">자재 유형</label>
-                            <select id="mType" name="자재 유형" class="form-select form-select-sm">
+                        <div class="col-md-2" style="display: none;">
+                            <label for="productCode" class="form-label small">상품 코드</label>
+                            <input type="text" id="productCode" name="상품코드" class="form-control form-control-sm" readonly>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="componentType" class="form-label small">부품 선택</label>
+                            <select id="componentType" name="부품명" class="form-select form-select-sm">
                                 <option value="" selected>선택</option>
-                                <option value="구매품">구매품</option>
-                                <option value="제조품">제조품</option>
-                                <option value="조립품">조립품</option>
-                                <option value="완제품">완제품</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label for="mName" class="form-label small">자재명</label>
-                            <input type="text" id="mName" name="자재이름" class="form-control form-control-sm">
+                        <div class="col-md-3">
+                            <label for="materialList" class="form-label small">자재 선택</label>
+                            <select id="materialList" class="form-select form-select-sm">
+                                <option value="" selected>선택</option>
+                            </select>
                         </div>
-                        <div class="col-md-2">
-                            <label for="mCode" class="form-label small">자재 코드</label>
-                            <input type="text" id="mCode" name="자재코드" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="supplier" class="form-label small">공급 업체</label>
-                            <input type="text" id="supplier" name="공급사" class="form-control form-control-sm">
-                        </div>
-                    </div>
-                    <div class="row g-2 mb-2 align-items-end">
-                        <div class="col-md-1">
-                            <label for="leadTime" class="form-label small">리드 타임</label>
-                            <input type="text" id="leadTime" name="리드타임" class="form-control form-control-sm">
+                        <div class="col-md-3" style="display: none;">
+                            <label for="materialCode" class="form-label small">자재 코드</label>
+                            <input type="text" id="materialCode" class="form-control form-control-sm" readonly>
                         </div>
                         <div class="col-md-1">
-                            <label for="depth" class="form-label small">규격</label>
-                            <input type="text" id="depth" name="높이" placeholder="높이(cm)" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto d-flex align-items-end">
-                            <span class="mx-1">x</span>
+                            <label class="form-label small">수량</label>
+                            <input type="number" id="isNum" class="form-control form-control-sm" name="수량">
                         </div>
                         <div class="col-md-1">
-                            <label for="height" class="form-label small">&nbsp;</label>
-                            <input type="text" id="height" name="세로" placeholder="세로(cm)" class="form-control form-control-sm">
+                            <label class="form-label small">창고 위치</label>
+                            <select id="isLocation" class="form-select form-select-sm">
+                                <option value="" selected>선택</option>
+                                <option value="A-1">A-1</option>
+                                <option value="A-2">A-2</option>
+                                <option value="A-3">A-3</option>
+                                <option value="B-1">B-1</option>
+                                <option value="B-2">B-2</option>
+                                <option value="B-3">B-3</option>
+                                <option value="C-1">C-1</option>
+                                <option value="C-2">C-2</option>
+                                <option value="C-3">C-3</option>
+                            </select>
                         </div>
-                        <div class="col-auto d-flex align-items-end">
-                            <span class="mx-1">x</span>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="width" class="form-label small">&nbsp;</label>
-                            <input type="text" id="width" name="가로" placeholder="가로(cm)" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-1">
-                            <label for="weight" class="form-label small">무게</label>
-                            <input type="text" id="weight" name="무게" placeholder="kg" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="unitPrice" class="form-label small">단가</label>
-                            <input type="text" id="unitPrice" name="단가" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-1">
-                            <label for="mMinNum" class="form-label small">수량</label>
-                            <input type="text" id="mMinNum" name="수량" title="최소 공급 수량" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-2 d-flex gap-1">
+                        <div class="col-md-2 d-flex align-items-end">
                             <button type="button" class="btn btn-dark btn-sm w-50" onclick="addPlan()">+ 추가</button>
                         </div>
                     </div>
@@ -102,19 +81,13 @@
                         <table class="table table-bordered table-hover table-sm align-middle" id="planTable">
                             <thead class="table-light small text-center">
                             <tr>
+                                <th>상품</th>
+                                <th>상품 코드</th>
+                                <th>부품</th>
                                 <th>자재명</th>
                                 <th>자재 코드</th>
-                                <th>자재 유형</th>
-                                <th>자재 종류</th>
-                                <th>자재 분류 품목</th>
                                 <th>수량</th>
-                                <th>높이</th>
-                                <th>세로</th>
-                                <th>가로</th>
-                                <th>무게</th>
-                                <th>단가</th>
-                                <th>공급 업체</th>
-                                <th>리드타임</th>
+                                <th>창고 위치</th>
                                 <th>삭제</th>
                             </tr>
                             </thead>
@@ -133,25 +106,55 @@
                 <i class="bi bi-file-earmark-excel-fill text-success"></i> 엑셀 파일 간편 등록
             </h6>
 
-            <!-- 엑셀 업로드 -->
-            <form id="excelUploadForm" method="post" enctype="multipart/form-data">
+            <form id="excelUploadForm" method="post" enctype="multipart/form-data" th:action="@{/inventory/addInventory}">
+                <input type="hidden" name="uId" th:value="${userBy.uId}">
                 <input name="where" type="hidden" value="Plan">
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <label for="excelFile" class="custom-file-upload">
                         <i class="bi bi-paperclip me-1"></i> 파일 선택
                     </label>
-                    <button type="button" id="excelUpload" class="btn btn-dark btn-sm">
+                    <input type="hidden" name="whereToGo" id="whereToGo">
+                    <button type="button" id="excelUpload" class="tooltip-wrap btn btn-dark btn-sm">
                         <i class="bi bi-upload me-1"></i> 엑셀 업로드
+                        <span class="tooltip-text">클릭 시 파일 정보들이 등록됩니다. 이미 등록된 정보가 있으면 등록이 제한됩니다.</span>
                     </button>
+
                 </div>
                 <input type="file" id="excelFile" name="file" accept=".xlsx,.xls" multiple>
             </form>
             <small class="text-muted mt-2 d-block">※ .xlsx 또는 .xls 형식의 파일만 업로드 가능합니다.</small>
-
-            <!-- 업로드된 파일명 출력 -->
-            <div id="uploadedFileList" class="mt-3" style="display: none;">
-                <h6 class="mb-2">📂 업로드된 파일</h6>
-                <ul class="list-group list-group-sm" id="fileList" style="font-size: 0.9rem;"></ul>
+            <div id="selectFileInfo">
+                <div id="fileListContainer" class="mt-3" style="display: none;">
+                    <div class="d-flex align-items-center mb-3">
+                        <h6 class="mb-0 me-2">선택된 파일명</h6>
+                        <div class="tooltip-wrap">
+                            <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                            <span class="tooltip-text">파일명을 클릭하면 해당 파일의 상세 내용을 확인할 수 있습니다.</span>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-sm" id="fileListName" style="font-size: 0.9rem;"></ul>
+                </div>
+                <div id="fileTable" class="mt-3" style="display: none;">
+                    <div class="d-flex align-items-center mb-3">
+                        <h6 class="mb-0 me-2">선택된 파일 내용</h6>
+                        <div class="tooltip-wrap">
+                            <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button"></i>
+                            <span class="tooltip-text">등록된 정보는 빨간색으로 표시되며, 중복된 항목은 자동으로 제외하고 등록이 진행됩니다.</span>
+                        </div>
+                    </div>
+                    <small class="text-muted mt-2 mb-1 d-block">※ 이미 등록된 정보는 빨간색으로 표시됩니다.</small>
+                    <table id="excelTable" class="table table-striped table-bordered" style="font-size: 0.9rem;">
+                        <thead>
+                        <tr id="tableHeader"></tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+                <!-- 업로드된 파일명 출력 -->
+                <div id="uploadedFileList" class="mt-3" style="display: none;">
+                    <h6 class="mb-2">업로드된 파일</h6>
+                    <ul class="list-group list-group-sm" id="fileList" style="font-size: 0.9rem;"></ul>
+                </div>
             </div>
         </div>
 
@@ -177,6 +180,12 @@
             </small>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+    <script th:if="${message != null}" th:inline="javascript">
+        /*<![CDATA[*/
+        alert([[${message}]]);
+        /*]]>*/
+    </script>
     <script th:src="@{/js/inventory/inventoryRegister.js}"></script>
 </div>
 </body>

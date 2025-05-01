@@ -1,22 +1,17 @@
 function addPlan() {
-    const pName = document.getElementById('pName').value;
-    const mComponentType = document.getElementById('mComponentType').value;
-    const mType = document.getElementById('mType').value;
-    const mName = document.getElementById('mName').value;
-    const mCode = document.getElementById('mCode').value;
-    const supplier = document.getElementById('supplier').value;
-    const leadTime = document.getElementById('leadTime').value;
-    const depth = document.getElementById('depth').value;
-    const height = document.getElementById('height').value;
-    const width = document.getElementById('width').value;
-    const weight = document.getElementById('weight').value;
-    const unitPrice = document.getElementById('unitPrice').value;
-    const mMinNum = document.getElementById('mMinNum').value;
-    let rowIndex = 0;
-    //uId는 따로 받아온다.
+    const productName = document.getElementById('productName').value;
+    const productCode = document.getElementById('productCode').value;
+    const componentType = document.getElementById('componentType').value;
+    const materialList = document.getElementById('materialList');
+    const materialCode = document.getElementById('materialCode').value;
+    const isNum = document.getElementById('isNum').value;
+    const isLocation = document.getElementById('isLocation').value;
 
-    if (!pName || !mType || !mName || !mCode || !supplier || !leadTime
-        || !depth || !height || !width || !weight || !unitPrice || !mMinNum) {
+    const materialName = materialList.options[materialList.selectedIndex].text;
+
+
+    if (!productName || !productCode || !componentType || !materialList || !materialCode || !isNum
+        || !isLocation) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -24,22 +19,14 @@ function addPlan() {
     const tableBody = document.querySelector("#planTable tbody");
     const newRow = document.createElement('tr');
 
-    //<td><input type="hidden" name="supplier[${rowIndex}].supplier" value="${supplier}">${supplier}</td>
-
     newRow.innerHTML = `
-        <td><input type="hidden" name="materials[${rowIndex}].mName" value="${mName}">${mName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mCode" value="${mCode}">${mCode}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mType" value="${mType}">${mType}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].pName" value="${pName}">${pName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mMinNum" value="${mMinNum}">${mMinNum}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mDepth" value="${depth}">${depth}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mHeight" value="${height}">${height}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mWidth" value="${width}">${width}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mWeight" value="${weight}">${weight}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].unitPrice" value="${unitPrice}">${unitPrice}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].supplier" value="${supplier}">${supplier}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mLeadTime" value="${leadTime}">${leadTime}</td>
+        <td><input type="hidden" name="pNames[]" value="${productName}">${productName}</td> 
+        <td><input type="hidden" name="pCodes[]" value="${productCode}">${productCode}</td> 
+        <td><input type="hidden" name="cTypes[]" value="${componentType}">${componentType}</td> 
+        <td><input type="hidden" name="mNames[]" value="${materialName}">${materialName}</td> 
+        <td><input type="hidden" name="mCodes[]" value="${materialCode}">${materialCode}</td> 
+        <td><input type="hidden" name="isNums[]" value="${isNum}">${isNum}</td> 
+        <td><input type="hidden" name="isLoca[]" value="${isLocation}">${isLocation}</td> 
         <td>
           <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
             <i class="bi bi-x-lg"></i>
@@ -78,19 +65,13 @@ function addPlan() {
     ``
 
     // 입력값 초기화
-    document.getElementById('pName').selectedIndex = 0;
-    document.getElementById('mComponentType').selectedIndex = 0;
-    document.getElementById('mType').selectedIndex = 0;
-    document.getElementById('mName').value = '';
-    document.getElementById('mCode').value = '';
-    document.getElementById('supplier').value = '';
-    document.getElementById('leadTime').value = '';
-    document.getElementById('depth').value = '';
-    document.getElementById('height').value = '';
-    document.getElementById('width').value = '';
-    document.getElementById('weight').value = '';
-    document.getElementById('unitPrice').value = '';
-    document.getElementById('mMinNum').value = '';
+    document.getElementById('productName').selectedIndex = 0;
+    document.getElementById('productCode').value = '';
+    document.getElementById('componentType').selectedIndex = 0;
+    document.getElementById('materialList').selectedIndex = 0;
+    document.getElementById('materialCode').value = '';
+    document.getElementById('isNum').value = '';
+    document.getElementById('isLocation').value = '';
 
 
 }
@@ -132,6 +113,260 @@ $(document).ready(function () {
                 text: term,
                 newTag: true // 사용자 입력값 구분
             };
+        },
+        theme: 'bootstrap-5' // 부트스트랩 5 테마 적용
+    });
+});
+
+document.getElementById("productName").addEventListener("change", function() {
+    var selectedOption = this.options[this.selectedIndex];  // 선택한 상품 옵션
+    var productCode = selectedOption.getAttribute("data-code");  // 상품 코드 가져오기
+    document.getElementById("productCode").value = productCode;
+
+    if (productCode) {
+        // 상품코드에 맞는 부품명 목록을 가져옵니다.
+        fetch(`/bom/api/products/${productCode}/component-types`)
+            .then(response => response.json())
+            .then(componentTypes => {
+                const componentSelect = document.getElementById("componentType");
+                componentSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
+                componentTypes.forEach(type => {
+                    let option = document.createElement("option");
+                    option.value = type;
+                    option.textContent = type;
+                    componentSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching component types:', error));
+    }// 상품 코드 입력란에 설정
+});
+
+
+document.getElementById("componentType").addEventListener("change", function() {
+    let componentType = this.value;
+    if (componentType) {
+        // 부품명에 맞는 자재 목록을 가져옵니다.
+        fetch(`/bom/api/materials?componentType=${componentType}`)
+            .then(response => response.json())
+            .then(materials => {
+                console.log(materials);  // 응답 데이터 확인
+                const materialSelect = document.getElementById("materialList");
+                materialSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
+
+                if (Array.isArray(materials) && materials.length > 0) {
+                    materials.forEach(material => {
+                        console.log(material);  // 각 material 객체 출력하여 mCode, mName 확인
+                        let option = document.createElement("option");
+                        option.value = material.mcode; // 자재 코드
+                        option.textContent = material.mname; // 자재 이름
+                        option.setAttribute("data-name", material.mname); // 자재 이름 저장
+                        option.setAttribute("data-code", material.mcode);
+
+                        materialSelect.appendChild(option);
+                    });
+                } else {
+                    console.error("Returned data is not an array or is empty:", materials);
+                }
+            })
+            .catch(error => console.error('Error fetching materials:', error));
+    }
+});
+
+document.getElementById("materialList").addEventListener("change", function() {
+    let selectedMaterial = this.options[this.selectedIndex];
+    let materialCode = selectedMaterial.getAttribute("data-code");  // 자재 코드
+    let materialName = selectedMaterial.getAttribute("data-name");  // 자재 이름
+
+    // 자재 코드 입력 필드에 자재 코드 자동 입력
+    document.getElementById("materialCode").value = materialCode;
+    document.getElementById("materialList").options[this.selectedIndex].text = materialName;
+
+});
+
+let selectedFiles = []; // 전역 변수로 따로 관리
+
+
+document.getElementById('excelFile').addEventListener('change', function(event) {
+    const files = Array.from(event.target.files);
+    selectedFiles = files;
+
+    updateFileListUI();
+});
+
+function updateFileListUI() {
+    const fileList = document.getElementById('fileListName');
+    fileList.innerHTML = '';
+    document.getElementById('fileListContainer').style.display = 'block';
+
+    if (selectedFiles.length === 0) {
+        document.getElementById('fileListContainer').style.display = 'none';
+        document.getElementById('excelFile').value = '';
+        return;
+    }
+
+    selectedFiles.forEach((file, index) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.setAttribute('data-index', index);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'file-name';
+        nameSpan.textContent = file.name;
+        nameSpan.style.cursor = 'pointer';
+
+        nameSpan.addEventListener('click', () => {
+            loadFileContent(file, index);
+        });
+
+        const deleteBtnWrap = document.createElement('div');
+        deleteBtnWrap.classList.add('tooltip-wrap-mtop');
+
+        const tooltipText = document.createElement('span');
+        tooltipText.classList.add('tooltip-text-mtop');
+        tooltipText.textContent = '해당 파일 삭제';
+
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'bi bi-x-lg deleteIcon text-danger';
+        deleteIcon.style.cursor = 'pointer';
+
+        deleteBtnWrap.appendChild(deleteIcon);
+        deleteBtnWrap.appendChild(tooltipText);
+
+        deleteIcon.addEventListener('click', () => {
+            selectedFiles.splice(index, 1);
+            updateFileListUI();
+
+            const currentTableFile = document.getElementById('fileTable').getAttribute('data-file-name');
+            if (currentTableFile === file.name) {
+                document.getElementById('fileTable').style.display = 'none';
+            }
+        });
+
+        li.appendChild(nameSpan);
+        li.appendChild(deleteBtnWrap);
+        fileList.appendChild(li);
+    });
+}
+
+function loadFileContent(file, index) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: 'binary', cellDates: true }); // cellDates: true 추가
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        // 날짜 변환: rows 에 직접 적용
+        rows.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                if (colIndex === 3 || colIndex === 4) { // 3, 4번 컬럼
+                    if (cell instanceof Date) {
+                        row[colIndex] = cell.toISOString().split('T')[0]; // yyyy-mm-dd 형태로 변환
+                    }
+                }
+            });
+        });
+
+        const tableHeader = document.getElementById('tableHeader');
+        const tableBody = document.getElementById('tableBody');
+
+        tableHeader.innerHTML = '';
+        tableBody.innerHTML = '';
+
+        let pCodes = [];
+        let pNames = [];
+
+        rows[0]?.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            tableHeader.appendChild(th);
+        });
+
+        rows.slice(1).forEach(row => {
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-file-name', file.name);
+
+            const productCode = row[0];
+            const productName = row[1];
+
+            pCodes.push(productCode);
+            pNames.push(productName);
+
+            row.forEach(cell => {
+                const td = document.createElement('td');
+                td.textContent = cell;
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        });
+
+        console.log("pCodes: ", pCodes);
+        console.log("pNames: ", pNames);
+
+        const fileTable = document.getElementById('fileTable');
+        fileTable.setAttribute('data-file-name', file.name);
+        fileTable.style.display = 'block';
+    };
+    reader.readAsBinaryString(file);
+}
+
+$(document).on('click', '.deleteIcon', function () {
+    const fileItem = $(this).closest('li');
+    const fileName = fileItem.find('.file-name').text().trim();
+
+    selectedFiles = selectedFiles.filter(file => file.name !== fileName);
+
+    updateFileListUI();
+});
+
+$('#excelUpload').on('click', function (e) {
+    e.preventDefault();
+
+    if (selectedFiles.length === 0) {
+        alert('업로드할 파일이 없습니다.');
+        return;
+    }
+
+    const formData = new FormData();
+    const uId = $('#uId').val();
+    const whereValue = $('input[name="where"]').val();
+
+    selectedFiles.forEach(file => {
+        formData.append('file', file);
+    });
+
+    formData.append('uId', uId);
+    formData.append('where', whereValue);
+    formData.append('whereToGo', 'register');
+
+    // AJAX 요청 보내기
+    $.ajax({
+        url: '/inventory/addInventory',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.isAvailable) {
+                alert("파일 업로드에 성공했습니다.(특정)");
+            } else {
+                alert("파일 업로드에 성공했습니다.");
+            }
+            document.getElementById('fileList').innerHTML = '';
+            document.getElementById('uploadedFileList').style.display = 'none';
+            document.getElementById('fileTable').style.display = 'none';
+            $('#excelFile').val('');
+            document.getElementById('fileListContainer').style.display = 'none';
+
+            if (confirm("목록 페이지로 이동하시겠습니까?")) {
+                window.location.href = "/inventory/inventoryList";
+            } else {
+                window.location.href = "/inventory/inventoryRegister";
+            }
+
+        },
+        error: function(xhr, status, error) {
+            alert("파일 업로드에 실패했습니다. : " + error);
         }
     });
 });

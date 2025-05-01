@@ -19,4 +19,7 @@ public class PlanListAllDTO {
     private LocalDate ppEnd;
     private String ppState;
     private String uName;
+    private LocalDate regDate;
+
+
 }

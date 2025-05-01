@@ -97,6 +97,7 @@
                                 <th>자재 코드</th>
                                 <th>자재명</th>
                                 <th>필요 수량</th>
+                                <th>등록일</th>
                                 <th>수정</th>
                             </tr>
                             </thead>
@@ -112,7 +113,8 @@
                                 <td th:text="${dto.bComponentType}"></td>
                                 <td th:text="${dto.mCode}"></td>
                                 <td th:text="${dto.mName}"></td>
-                                <td th:text="${dto.bRequireNum}"></td> <!-- bRequireNum 출력 -->
+                                <td th:text="${dto.bRequireNum}"></td>
+                                <td th:text="${dto.regDate}"></td>
                                 <td>
                                     <button type="button" class="icon-button" id="openPurchaseModal" title="BOM 정보 수정">
                                         <i class="bi bi-pencil fs-6"></i>
@@ -170,16 +172,20 @@
                                         <input type="text" id="pName" name="pName" class="form-control form-control-sm" readonly required>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">부품</label>
-                                        <input type="text" id="cType" name="bComponentType" class="form-control form-control-sm" readonly required>
+                                        <label class="form-label"><span class="text-danger">*</span> 부품 선택</label>
+                                        <select id="cType" name="bComponentType" class="form-select form-select-sm" >
+                                            <option value="" selected>선택</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label"><span class="text-danger">*</span> 자재 선택</label>
+                                        <select name="mName" id="mName" class="form-select form-select-sm">
+                                            <option value="" selected>선택</option>
+                                        </select>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">자재 코드</label>
                                         <input type="text" id="mCode" name="mCode" class="form-control form-control-sm" readonly required>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">자재명</label>
-                                        <input type="text" id="mName" name="mName" class="form-control form-control-sm" readonly required>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label"><span class="text-danger">*</span> 수량</label>
