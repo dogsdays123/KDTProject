@@ -91,7 +91,7 @@
                             <th>생산 수량</th>
                             <th>작성자</th>
                             <th>상태</th>
-                            <th>수정</th>
+                            <th>신규 등록</th>
                         </tr>
                         </thead>
                         <tbody id="plansTable" th:with="link = ${pageRequestDTO.getLink()}">
@@ -110,7 +110,7 @@
                             <td class="CheckState"
                                 th:data-state="${dto.getPpState() != null ? dto.getPpState() : 'UNKNOWN'}"></td>
                             <td>
-                                <button type="button" class="icon-button openDppModal" title="생산 계획 수정">
+                                <button type="button" class="icon-button openDppModal">
                                     <i class="bi bi-pencil fs-6"></i>
                                 </button>
                             </td>
