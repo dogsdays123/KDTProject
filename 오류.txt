@@ -12,6 +12,10 @@ js에서도 동일하게 materials로 controller에 보내줘야 controller에�
 부품등록시 제품에 없는 부품이면 오류알람
 dpp js 부분 참조 넣어놨으니까 보고 수정합시다. input테이블 생성해서 controller에 값 넣어줄겁니다.
 
+5.02
+모든 코드생성 자동으로 하게
+가끔 admin계정으로 회원승인시 리스트에 안보일때가 있음
+조달등록 부분에서 특정 mName들 탑다운불러올 때, mCode오류 남
 
 ---------------------
 memberManagement 페이지랑 하위 product등의 페이지의 승인대기, 시작하기 크기 안맞음
