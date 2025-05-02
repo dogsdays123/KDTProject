@@ -213,16 +213,6 @@ public class PageServiceImpl implements PageService {
 
         Page<BomDTO> result = bomRepository.bomSearchWithAll(types, keyword, componentType, mName, pName, uId, pageable);
 
-        for (BomDTO bomDTO : result.getContent()) {
-            Product product = productRepository.findByProductId(bomDTO.getPCode())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
-            bomDTO.setPName(product.getPName());
-
-            Material material = materialRepository.findByMaterialCode(bomDTO.getMCode())
-                    .orElseThrow(() -> new RuntimeException("Material not found"));
-            bomDTO.setMName(material.getMName()); //
-        }
-
         return PageResponseDTO.<BomDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())

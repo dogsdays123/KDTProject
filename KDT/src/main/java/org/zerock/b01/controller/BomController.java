@@ -20,6 +20,8 @@ import org.zerock.b01.domain.Bom;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.dto.formDTO.BomFormDTO;
+import org.zerock.b01.dto.formDTO.MaterialFormDTO;
 import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.ProductionPlanRepository;
@@ -29,10 +31,7 @@ import org.zerock.b01.service.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -84,6 +83,11 @@ public class BomController {
         }
 
         List<BomDTO> bomList = bomService.getBoms();
+        List<Product> productList = productRepository.findAll();
+        List<Material> materialList = materialRepository.findAll();
+
+        model.addAttribute("productList", productList);
+        model.addAttribute("materialList", materialList);
         model.addAttribute("bomList", bomList);
         log.info("BOM bomList" + bomList);
         model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
@@ -93,11 +97,25 @@ public class BomController {
         log.info("BOM ResponseDTO" + responseDTO);
     }
 
-    @GetMapping("/api/products/{pCode}/component-types")
+    @GetMapping("/{pName}/forComponentType")
     @ResponseBody
-    public List<String> getComponentTypesByProductCode(@PathVariable String pCode) {
-        List<String> componentTypes = materialRepository.findComponentTypesByProductCode(pCode);
+    public List<String> getComponentTypesByProductCode(@PathVariable String pName) {
+        List<String> componentTypes = materialRepository.findComponentTypesByProductName(pName);
         return componentTypes != null ? componentTypes : Collections.emptyList();
+    }
+
+    @GetMapping("/{mType}/forMName")
+    @ResponseBody
+    public List<String> getMNameProductCode(@PathVariable String mType) {
+        List<String> mNames = materialRepository.findMNameByType(mType);
+        return mNames != null ? mNames : Collections.emptyList();
+    }
+
+    @GetMapping("/{pName}/{mType}")
+    @ResponseBody
+    public List<String> getMNames(@PathVariable String pName, @PathVariable String mType) {
+        List<String> mNames = materialRepository.findMNameByETC(pName, mType);
+        return mNames != null ? mNames : Collections.emptyList();
     }
 
     // 부품명을 선택하면 자재 목록을 반환
@@ -123,92 +141,72 @@ public class BomController {
         return "/bom/bomRegister";
     }
 
+    //붐 직접 등록
     @PostMapping("/bomRegister")
-    public String bomRegisterPost(String uId,
-                                  @RequestParam("pNames[]") List<String> pNames,
-                                  @RequestParam("pCodes[]") List<String> pCodes,
-                                  @RequestParam("cTypes[]") List<String> cTypes,
-                                  @RequestParam("mNames[]") List<String> mNames,
-                                  @RequestParam("mCodes[]") List<String> mCodes,
-                                  @RequestParam("pQuant[]") List<String> pQuant,
-                                  Model model, RedirectAttributes redirectAttributes,
-                                  HttpServletRequest request) {
-        log.info(" ^^^^ " + uId);
+    @ResponseBody
+    public String bomRegisterPost(@ModelAttribute BomFormDTO form,
+                                  Model model,
+                                  RedirectAttributes redirectAttributes,
+                                  HttpServletRequest request) throws IOException {
 
-        List<BomDTO> bomDTOS = new ArrayList<>();
+        Map<String, String[]> bomObj = new HashMap<>();
+        List<BomDTO> bomDTOs = form.getBoms();
+        bomObj = bomService.registerBOM(bomDTOs, bomDTOs.get(0).getUId());
 
-        for (int i = 0; i < pCodes.size(); i++) {
-            BomDTO bomDTO = new BomDTO();
-            bomDTO.setPCode(pCodes.get(i)); // pCode를 설정
-            bomDTO.setMCode(mCodes.get(i));
-            bomDTO.setBComponentType(cTypes.get(i));
-            bomDTO.setBRequireNum(pQuant.get(i));
-            bomDTOS.add(bomDTO);
-        }
-
-        for(BomDTO bomDTO : bomDTOS) {
-            bomService.registerBOM(bomDTO);
-        }
-        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
-        return "redirect:/bom/bomRegister";
+        redirectAttributes.addFlashAttribute("errorCheck", bomObj.get("errorCheck"));
+        return "redirect:/material/materialRegister";
     }
 
-
+    //붐 자동 등록
     @PostMapping("/addBom")
-    public String uploadProductPlan(String uId, @RequestParam("file") MultipartFile[] files, @RequestParam("where") String where, Model model, RedirectAttributes redirectAttributes) throws IOException {
+    @ResponseBody
+    public Map<String, Object> BomRegisterAuto(String uId, String check, @RequestParam("file") MultipartFile[] files,  Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        log.info("uuuu " + uId);
+
+        Map<String, Object> response = new HashMap<>();
+        Map<String, String[]> bomObj = new HashMap<>();
 
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            registerProductPlanOnController(uId, worksheet);
-            log.info("%%%%" + worksheet.getSheetName());
+            bomObj = registerBomOnController(uId, worksheet, check);
         }
 
-        if (where.equals("dataUpload")) {
-            redirectAttributes.addFlashAttribute("successMessage", "(특정)데이터 업로드가 성공적으로 완료되었습니다.");
-            return "redirect:/productionPlan/ppRegister";
+        //materialService 에서 가져온 mCodes
+        if(check.equals("true")){
+            response.put("pNames", bomObj.get("pNames"));
+            response.put("mCodes", bomObj.get("mCodes"));
         } else {
-            log.info("데이터넘겨주기");
-            redirectAttributes.addFlashAttribute("successMessage", "데이터 업로드가 성공적으로 완료되었습니다.");
-            return "redirect:/productionPlan/ppRegister";
+            response.put("errorCheck", bomObj.get("errorCheck"));
         }
+
+        return response;
     }
 
 
-    private void registerProductPlanOnController(String uId, XSSFSheet worksheet) {
-        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+    private Map<String, String[]> registerBomOnController(String uId, XSSFSheet worksheet, String check) {
+        List<BomDTO> bomDTOs = new ArrayList<>();
 
-            BomDTO entity = new BomDTO();
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            BomDTO bomDTO = new BomDTO();
             DataFormatter formatter = new DataFormatter();
             XSSFRow row = worksheet.getRow(i);
 
-//            if (row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
-//                String productionPlanCode = formatter.formatCellValue(row.getCell(0));
-//                log.info("^^^^" + productionPlanCode);
-//                entity.setPpCode(productionPlanCode);
-//            }
+            bomDTO.setPCode(formatter.formatCellValue(row.getCell(0)));
+            bomDTO.setPName(formatter.formatCellValue(row.getCell(1)));
+            bomDTO.setMCode(formatter.formatCellValue(row.getCell(2)));
+            bomDTO.setMName(formatter.formatCellValue(row.getCell(3)));
+            bomDTO.setMComponentType(formatter.formatCellValue(row.getCell(4)));
+            bomDTO.setBRequireNum(formatter.formatCellValue(row.getCell(5)));
 
-            String productName = formatter.formatCellValue(row.getCell(0));
-            String componentType = formatter.formatCellValue(row.getCell(1));
-            String materialName = formatter.formatCellValue(row.getCell(2));
-            String requireNum = formatter.formatCellValue(row.getCell(3));
+            bomDTOs.add(bomDTO);
+        }
 
-            Optional<String> optionalPCode = productRepository.findPCodeByPName(productName);
-
-            String mCode = materialRepository.findMCodeByMName(materialName)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 자재명을 가진 자재 코드가 없습니다: " + materialName));
-            entity.setMCode(mCode);
-
-            if (optionalPCode.isPresent()) {
-                entity.setPCode(optionalPCode.get());
-            } else {
-                throw new IllegalArgumentException("해당 제품명을 가진 제품 코드가 없습니다: " + productName);
-            }
-
-            entity.setBComponentType(componentType);
-            entity.setBRequireNum(requireNum);
-
-            bomService.registerBOM(entity);
+        if(check.equals("true")){
+            return bomService.checkBOM(bomDTOs);
+        } else{
+            return bomService.registerBOM(bomDTOs, uId);
         }
     }
 

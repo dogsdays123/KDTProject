@@ -127,10 +127,17 @@ public class DeliveryProcurementPlanController {
         model.addAttribute("responseDTO", responseDTO);
     }
 
-    @GetMapping("/{mName}/mName")
+    @GetMapping("/{pName}/mName")
     @ResponseBody
-    public List<String> getMCodesByMName(@PathVariable String mName) {
-        List<String> mCodes = materialRepository.findMCodeByMNameDomain(mName);
+    public List<String> getMNameByPName(@PathVariable String pName) {
+        List<String> mNames = materialRepository.findMNameByPName(pName);
+        return mNames != null ? mNames : Collections.emptyList();
+    }
+
+    @GetMapping("/{mName}/mCode")
+    @ResponseBody
+    public List<String> getMCodeByMName(@PathVariable String mName) {
+        List<String> mCodes = materialRepository.findMCodeByMNameList(mName);
         return mCodes != null ? mCodes : Collections.emptyList();
     }
 

@@ -448,12 +448,12 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             BooleanBuilder keywordBuilder = new BooleanBuilder();
             keywordBuilder.or(bom.product.pName.contains(keyword));
             keywordBuilder.or(bom.material.mName.contains(keyword));
-            keywordBuilder.or(bom.bComponentType.contains(keyword));
+            keywordBuilder.or(bom.material.mComponentType.contains(keyword));
             booleanBuilder.and(keywordBuilder);
         }
 
         if (componentType != null && !componentType.isEmpty() && !"전체".equals(componentType)) {
-            booleanBuilder.and(bom.bComponentType.contains(componentType));
+            booleanBuilder.and(bom.material.mComponentType.contains(componentType));
         }
 
         if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
@@ -474,11 +474,12 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         List<BomDTO> dtoList = resultList.stream()
                 .map(prod -> BomDTO.builder()
                         .bId(prod.getBId())
-                        .mCode(prod.getMaterial().getMCode())
-                        .bComponentType(prod.getBComponentType())
+                        .pName(prod.getProduct().getPName())
+                        .mComponentType(prod.getMaterial().getMComponentType())
+                        .mName(prod.getMaterial().getMName())
                         .bRequireNum(prod.getBRequireNum())
-                        .pCode(prod.getProduct().getPCode())
                         .regDate(prod.getRegDate().toLocalDate())
+                        .uId(prod.getUserBy().getUId())
                         .build())
                 .collect(Collectors.toList());
 

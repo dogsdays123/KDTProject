@@ -1,133 +1,42 @@
+let worlds = [];
+
 document.getElementById('selectAll').addEventListener('change', function () {
     document.querySelectorAll('.selectPlan').forEach(cb => {
         cb.checked = this.checked;
     });
 });
 
-
 document.querySelectorAll('.icon-button').forEach(button => {
     button.addEventListener('click', function () {
         const row = this.closest('tr');
 
         const bId = row.querySelector('td:nth-child(2)').innerText;
-        const pCode = row.querySelector('td:nth-child(3)').innerText;
-        const pName = row.querySelector('td:nth-child(4)').innerText;
-        const cType = row.querySelector('td:nth-child(5)').innerText;
-        const mCode = row.querySelector('td:nth-child(6)').innerText;
-        const mName = row.querySelector('td:nth-child(7)').innerText;
-        const reNum = row.querySelector('td:nth-child(8)').innerText;
+        const pName = row.querySelector('td:nth-child(3)').innerText;
+        const mType = row.querySelector('td:nth-child(4)').innerText;
+        const mName = row.querySelector('td:nth-child(5)').innerText;
+        const require = row.querySelector('td:nth-child(6)').innerText;
+        const uId = row.querySelector('td:nth-child(8)').innerText;
 
 
         document.getElementById('bId').value = bId;
-        document.getElementById('pCode').value = pCode;
         document.getElementById('pName').value = pName;
-        document.getElementById('reNum').value = reNum;
-        document.getElementById('mCode').value = mCode;
+        document.getElementById('mType').value = mType;
+        document.getElementById('mName').value = mName;
+        document.getElementById('require').value = require;
+        document.getElementById('uId').value = uId;
 
+        worlds[0] = pName;
+        worlds[1] = mType;
+        loadComponentTypes(pName);
 
-        fetch(`/bom/api/products/${pCode}/component-types`)
-            .then(res => res.json())
-            .then(componentTypes => {
-                const cTypeSelect = document.getElementById("cType");
-                cTypeSelect.innerHTML = '<option value="">선택</option>';
-                componentTypes.forEach(type => {
-                    let option = document.createElement("option");
-                    option.value = type;
-                    option.textContent = type;
-                    cTypeSelect.appendChild(option);
-                });
-
-
-                cTypeSelect.value = cType;
-
-                // cType 변경 시 자재 목록 불러오기
-                cTypeSelect.addEventListener("change", function() {
-                    const selectedCType = this.value;
-                    document.getElementById('mCode').value = '';
-                    if (selectedCType) {
-                        fetch(`/bom/api/materials?componentType=${selectedCType}`)
-                            .then(res => res.json())
-                            .then(materials => {
-                                const mNameSelect = document.getElementById('mName');
-                                mNameSelect.innerHTML = '<option value="">선택</option>';
-
-                                materials.forEach(material => {
-                                    console.log(material);
-                                    const option = document.createElement('option');
-                                    option.value = material.mcode;
-                                    option.textContent = material.mname;
-                                    option.setAttribute("data-name", material.mname);
-                                    option.setAttribute("data-code", material.mcode);
-                                    mNameSelect.appendChild(option);
-                                });
-
-                                mNameSelect.replaceWith(mNameSelect.cloneNode(true));
-                                const freshSelect = document.getElementById("mName");
-
-                                freshSelect.addEventListener("change", function () {
-                                    const selectedMaterial = this.options[this.selectedIndex];
-                                    const materialCode = selectedMaterial.getAttribute("data-code");
-                                    console.log("선택된 mcode:", materialCode);
-                                    document.getElementById("mCode").value = materialCode;
-                                });
-
-                                const selectedOption = Array.from(mNameSelect.options).find(option => option.textContent === mName);
-                                if (selectedOption) {
-                                    mNameSelect.value = selectedOption.value;
-                                } else {
-                                    mNameSelect.value = materials.length > 0 ? materials[0].mcode : '';
-                                }
-                            })
-                            .catch(error => console.error('Error fetching materials:', error));
-                    }
-                });
-
-                // 최초 로드시, cType에 맞는 자재 목록 불러오기
-                if (cType) {
-                    fetch(`/bom/api/materials?componentType=${cType}`)
-                        .then(res => res.json())
-                        .then(materials => {
-                            const mNameSelect = document.getElementById('mName');
-                            mNameSelect.innerHTML = '<option value="">선택</option>';
-
-                            materials.forEach(material => {
-                                console.log(materials);
-                                const option = document.createElement('option');
-                                option.value = material.mcode;
-                                option.textContent = material.mname;
-                                option.setAttribute("data-name", material.mname);
-                                option.setAttribute("data-code", material.mcode);
-                                mNameSelect.appendChild(option);
-                            });
-
-                            const selectedOption = Array.from(mNameSelect.options).find(option => option.textContent === mName);
-                            if (selectedOption) {
-                                mNameSelect.value = selectedOption.value;
-                                document.getElementById("mCode").value = selectedOption.getAttribute("data-code");
-                            } else {
-                                mNameSelect.value = materials.length > 0 ? materials[0].mcode : '';
-                                document.getElementById("mCode").value = materials.length > 0 ? materials[0].mcode : '';
-                            }
-
-                            mNameSelect.addEventListener('change', function () {
-                                const selectedMaterial = this.options[this.selectedIndex];
-                                const materialCode = selectedMaterial.getAttribute("data-code");
-                                document.getElementById("mCode").value = materialCode;
-                            });
-
-                        })
-                        .catch(error => console.error('Error fetching materials:', error));
-                }
-            })
-            .catch(error => console.error('Error fetching component types:', error));
-
-        const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
+        // 모달 띄우기
+        const modal = new bootstrap.Modal(document.getElementById('bomModify'));
         modal.show();
     });
 });
 
 
-document.getElementById('openPurchaseDelModal').addEventListener('click', function () {
+document.getElementById('bomRemoveButton').addEventListener('click', function () {
 
     const selectedRows = document.querySelectorAll('.selectPlan:checked');
     if (selectedRows.length === 0) {
@@ -161,7 +70,7 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         tbody.appendChild(newRow);
     });
 
-    const form = document.getElementById('purchaseOrderDelForm');
+    const form = document.getElementById('bomRemoveModal');
     form.querySelectorAll('input[name="bIds"]').forEach(input => input.remove());
 
     bIds.forEach(bId => {
@@ -172,7 +81,7 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         form.appendChild(hiddenInput);
     });
 
-    const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));
+    const modal = new bootstrap.Modal(document.getElementById('bomRemove'));
     modal.show();
 });
 
@@ -183,3 +92,94 @@ document.querySelector(".clearBtn").addEventListener("click", function (e) {
     self.location = '/bom/bomList'
 }, false)
 
+$(document).ready(function () {
+
+    // 선택 변경 시에도 동작
+    $('[name="pName"]').on('change', function () {
+        const input = $(this).val();
+        worlds[1] = input;
+        loadComponentTypes(input, "out");
+    });
+
+    $('[name="componentType"]').on('change', function () {
+        const input = $(this).val();
+        loadMName(worlds[1], input, "out");
+    });
+
+    // 선택 변경 시에도 동작
+    $('#pName').on('change', function () {
+        const input = $(this).val();
+        worlds[0] = input;
+        loadComponentTypes(input, "in");
+    });
+
+    $('#mType').on('change', function () {
+        const input = $(this).val();
+        loadMName(worlds[0], input, "in");
+    });
+});
+
+function loadComponentTypes(pName, position) {
+
+    if (!pName) return;
+
+    let innerValue;
+
+    switch (position){
+        case "out": innerValue = "[name=\"componentType\"]"; break;
+        case "in" : innerValue = "#mType"; break;
+    }
+
+    const pNameEncode = encodeURIComponent(pName);
+
+    $.ajax({
+        url: `/bom/${pNameEncode}/forComponentType`,
+        method: 'GET',
+        success: function (componentTypes) {
+
+            const cType = $(`${innerValue}`);
+            cType.empty();
+            cType.append('<option value="" selected>전체</option>');
+            componentTypes.forEach(type => {
+                cType.append(`<option value="${type}">${type}</option>`);
+            });
+            cType.trigger('change');
+        },
+        error: function (error) {
+            console.error('부품 목록을 가져오는 중 오류 발생:', error);
+        }
+    });
+}
+
+function loadMName(pName, mType, position) {
+    if (!mType || !pName) return;
+
+    let innerValue;
+
+    switch (position){
+        case "out": innerValue = "[name=\"mName\"]"; break;
+        case "in" : innerValue = "#mName"; break;
+    }
+
+    const encode = [];
+    encode[0] = encodeURIComponent(pName);
+    encode[1] = encodeURIComponent(mType);
+
+    $.ajax({
+        url: `/bom/${encode[0]}/${encode[1]}`,
+        method: 'GET',
+        success: function (mNames) {
+
+            const mName = $(`${innerValue}`);
+            mName.empty();
+            mName.append('<option value="" selected>전체</option>');
+            mNames.forEach(type => {
+                mName.append(`<option value="${type}">${type}</option>`);
+            });
+            mName.trigger('change');
+        },
+        error: function (error) {
+            console.error('부품 목록을 가져오는 중 오류 발생:', error);
+        }
+    });
+}

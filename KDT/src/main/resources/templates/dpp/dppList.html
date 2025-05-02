@@ -21,8 +21,17 @@
                 <form th:action="@{/dpp/dppList}" method="get">
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2">
-                            <label for="ppCode" class="form-label small">생산 계획 코드</label>
-                            <select class="form-select form-select-sm" id="ppCode" name="ppCode">
+                            <label class="form-label small">상품명</label>
+                            <select class="form-select form-select-sm" name="pName">
+                                <option value="" selected>전체</option>
+                                <th:block th:each="pp : ${ppList}">
+                                    <option th:value="${pp.pName}" th:text="${pp.pName}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small">생산 계획 코드</label>
+                            <select class="form-select form-select-sm"  name="ppCode">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="pp : ${ppList}">
                                     <option th:value="${pp.ppCode}" th:text="${pp.ppCode}"></option>
@@ -30,7 +39,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="dppCode" class="form-label small">조달 계획 코드</label>
+                            <label class="form-label small">조달 계획 코드</label>
                             <select class="form-select form-select-sm" id="dppCode" name="dppCode">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="dpp : ${dppList}">

@@ -17,7 +17,9 @@ public class Bom extends BaseEntity {
 
     private String bRequireNum;
 
-    private String bComponentType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uId", nullable = false)
+    private UserBy userBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mCode", nullable = false)
@@ -27,8 +29,7 @@ public class Bom extends BaseEntity {
     @JoinColumn(name = "pCode", nullable = false)
     private Product product; // 제품 외래키
 
-    public void change(String bComponentType, String bRequireNum, Material material){
-        this.bComponentType = bComponentType;
+    public void change(String bRequireNum, Material material){
         this.bRequireNum = bRequireNum;
         this.material = material;
     }

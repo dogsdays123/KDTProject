@@ -1,38 +1,42 @@
+let pNameChecks = null;
+let mCodeChecks = null;
+let errorChecks = null;
+let selectedFiles = []; // 전역 변수로 따로 관리
+let worlds = [];
+
 function addPlan() {
-    const productName = document.getElementById('productName').value;
-    const productCode = document.getElementById('productCode').value;
-    const componentType = document.getElementById('componentType').value;
-    const materialList = document.getElementById('materialList');
-    const productQuantity = document.getElementById('productQuantity').value;
-    const materialCode = document.getElementById('materialCode').value;
 
-    const materialName = materialList.options[materialList.selectedIndex].text;
+    const pName = document.getElementById('productName').value;
+    const mComponentType = document.getElementById('componentType').value;
+    const mName = document.getElementById('materialName').value;
+    const bomNeed = document.getElementById('productQuantity').value;
+    const uId = document.getElementById("uId").value;
+    let rowIndex = 0;
+    //uId는 따로 받아온다.
 
-
-    if (!productName || !productCode || !componentType || !materialList || !productQuantity) {
+    if (!pName || !mComponentType || !mName || !bomNeed) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
 
     const tableBody = document.querySelector("#planTable tbody");
-
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="pNames[]" value="${productName}">${productName}</td> 
-        <td><input type="hidden" name="pCodes[]" value="${productCode}">${productCode}</td> 
-        <td><input type="hidden" name="cTypes[]" value="${componentType}">${componentType}</td> 
-        <td><input type="hidden" name="mNames[]" value="${materialName}">${materialName}</td> 
-        <td><input type="hidden" name="mCodes[]" value="${materialCode}">${materialCode}</td> 
-        <td><input type="hidden" name="pQuant[]" value="${productQuantity}">${productQuantity}</td> 
+        <td><input type="hidden" name="materials[${rowIndex}].pName" value="${pName}">${pName}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mName" value="${mName}">${mName}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].mType" value="${bomNeed}">${bomNeed}</td>
+        <td><input type="hidden" name="materials[${rowIndex}].uId" value="${uId}">${uId}</td> 
         <td>
-              <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
-                <i class="bi bi-x-lg"></i>
-              </button>
+          <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
+            <i class="bi bi-x-lg"></i>
+          </button>
         </td>
     `;
 
     tableBody.appendChild(newRow);
+    rowIndex++;
 
     const planRows = tableBody.querySelectorAll('tr:not(#registerRow)');
     if (planRows.length === 0) {
@@ -111,74 +115,6 @@ $(document).ready(function () {
     });
 });
 
-document.getElementById("productName").addEventListener("change", function() {
-    var selectedOption = this.options[this.selectedIndex];  // 선택한 상품 옵션
-    var productCode = selectedOption.getAttribute("data-code");  // 상품 코드 가져오기
-    document.getElementById("productCode").value = productCode;
-
-    if (productCode) {
-        // 상품코드에 맞는 부품명 목록을 가져옵니다.
-        fetch(`/bom/api/products/${productCode}/component-types`)
-            .then(response => response.json())
-            .then(componentTypes => {
-                const componentSelect = document.getElementById("componentType");
-                componentSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
-                componentTypes.forEach(type => {
-                    let option = document.createElement("option");
-                    option.value = type;
-                    option.textContent = type;
-                    componentSelect.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Error fetching component types:', error));
-    }// 상품 코드 입력란에 설정
-});
-
-
-document.getElementById("componentType").addEventListener("change", function() {
-    let componentType = this.value;
-    if (componentType) {
-        // 부품명에 맞는 자재 목록을 가져옵니다.
-        fetch(`/bom/api/materials?componentType=${componentType}`)
-            .then(response => response.json())
-            .then(materials => {
-                console.log(materials);  // 응답 데이터 확인
-                const materialSelect = document.getElementById("materialList");
-                materialSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
-
-                if (Array.isArray(materials) && materials.length > 0) {
-                    materials.forEach(material => {
-                        console.log(material);  // 각 material 객체 출력하여 mCode, mName 확인
-                        let option = document.createElement("option");
-                        option.value = material.mcode; // 자재 코드
-                        option.textContent = material.mname; // 자재 이름
-                        option.setAttribute("data-name", material.mname); // 자재 이름 저장
-                        option.setAttribute("data-code", material.mcode);
-
-                        materialSelect.appendChild(option);
-                    });
-                } else {
-                    console.error("Returned data is not an array or is empty:", materials);
-                }
-            })
-            .catch(error => console.error('Error fetching materials:', error));
-    }
-});
-
-document.getElementById("materialList").addEventListener("change", function() {
-    let selectedMaterial = this.options[this.selectedIndex];
-    let materialCode = selectedMaterial.getAttribute("data-code");  // 자재 코드
-    let materialName = selectedMaterial.getAttribute("data-name");  // 자재 이름
-
-    // 자재 코드 입력 필드에 자재 코드 자동 입력
-    document.getElementById("materialCode").value = materialCode;
-    document.getElementById("materialList").options[this.selectedIndex].text = materialName;
-
-});
-
-let selectedFiles = []; // 전역 변수로 따로 관리
-
-
 document.getElementById('excelFile').addEventListener('change', function(event) {
     const files = Array.from(event.target.files);
     selectedFiles = files;
@@ -196,6 +132,38 @@ function updateFileListUI() {
         document.getElementById('excelFile').value = '';
         return;
     }
+
+    //----------------------업로드된 파일 확인용
+
+    const formData = new FormData();
+    const uId = $('#uId').val();
+    console.log(uId);
+
+    selectedFiles.forEach(file => {
+        formData.append('file', file);
+    });
+
+    formData.append('uId', uId);
+    formData.append('check', "true");
+
+    // AJAX 요청 보내기
+    $.ajax({
+        url: '/bom/addBom',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            mCodeChecks = response.mCodes;
+            pNameChecks = response.pNames;
+            console.log(mCodeChecks);
+            console.log(pNameChecks);
+        },
+        error: function(xhr, status, error) {
+            alert("파일 읽기에 실패했습니다. : " + error);
+        }
+    });
+    //--------------------------------------
 
     selectedFiles.forEach((file, index) => {
         const li = document.createElement('li');
@@ -293,9 +261,6 @@ function loadFileContent(file, index) {
             tableBody.appendChild(tr);
         });
 
-        console.log("pCodes: ", pCodes);
-        console.log("pNames: ", pNames);
-
         const fileTable = document.getElementById('fileTable');
         fileTable.setAttribute('data-file-name', file.name);
         fileTable.style.display = 'block';
@@ -322,15 +287,14 @@ $('#excelUpload').on('click', function (e) {
 
     const formData = new FormData();
     const uId = $('#uId').val();
-    const whereValue = $('input[name="where"]').val();
 
     selectedFiles.forEach(file => {
         formData.append('file', file);
     });
 
     formData.append('uId', uId);
-    formData.append('where', whereValue);
-    formData.append('whereToGo', 'register');
+    console.log(uId);
+    formData.append('check', "false");
 
     // AJAX 요청 보내기
     $.ajax({
@@ -340,11 +304,9 @@ $('#excelUpload').on('click', function (e) {
         processData: false,
         contentType: false,
         success: function(response) {
-            if (response.isAvailable) {
-                alert("파일 업로드에 성공했습니다.(특정)");
-            } else {
-                alert("파일 업로드에 성공했습니다.");
-            }
+            errorChecks = response.errorCheck;
+            console.log(errorChecks);
+
             document.getElementById('fileList').innerHTML = '';
             document.getElementById('uploadedFileList').style.display = 'none';
             document.getElementById('fileTable').style.display = 'none';
@@ -360,6 +322,86 @@ $('#excelUpload').on('click', function (e) {
         },
         error: function(xhr, status, error) {
             alert("파일 업로드에 실패했습니다. : " + error);
+        }
+    });
+});
+
+
+$(document).ready(function () {
+    // 상품 선택 시 동적으로 부품 목록 업데이트
+    $('#productName').on('change', function () {
+        const pName = $(this).val();  // 선택된 상품 값
+         worlds[0] = pName;
+
+        if (pName) {
+            // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+            const pNameEncode = encodeURIComponent(pName);
+
+            // AJAX를 사용하여 부품 목록을 가져오는 코드
+            $.ajax({
+                url: `/bom/${pNameEncode}/forComponentType`,  // URL 인코딩 적용
+                method: 'GET',  // HTTP GET 요청
+                success: function (componentTypes) {
+                    // 부품명 선택 요소 초기화
+                    const cType = $('#componentType');
+                    cType.empty();  // 기존 옵션 제거
+
+                    // "선택" 옵션 추가
+                    cType.append('<option value="" selected>전체</option>');
+
+                    // 받아온 부품 목록을 옵션으로 추가
+                    componentTypes.forEach(type => {
+                        cType.append(`<option value="${type}">${type}</option>`);
+                    });
+
+                    // select2 업데이트
+                    cType.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+                },
+                error: function (error) {
+                    console.error('부품 목록을 가져오는 중 오류 발생:', error);
+                }
+            });
+        } else {
+            $('#componentType').empty();  // 부품 목록 초기화
+            var typeHTML = $('#typeHTML').html();  // 서버에서 렌더링된 HTML 가져오기
+            $('#componentType').append(typeHTML);  // mNameList의 option을 append
+            $('#componentType').trigger('change');  // 변경 이벤트 트리거
+        }
+    });
+});
+
+
+$(document).ready(function () {
+    $('#componentType').on('change', function () {
+        const type = $(this).val();  // 선택된 상품 값
+
+        if (type) {
+            const encodes = [];
+            encodes[0] = encodeURIComponent(worlds[0]);
+            encodes[1] = encodeURIComponent(type);
+
+            $.ajax({
+                url: `/bom/${encodes[0]}/${encodes[1]}`,  // URL 인코딩 적용
+                method: 'GET',  // HTTP GET 요청
+                success: function (mNames) {
+
+                    const mName = $('#materialName');
+                    mName.empty();  // 기존 옵션 제거
+                    mName.append('<option value="" selected>전체</option>');
+                    mNames.forEach(type => {
+                        mName.append(`<option value="${type}">${type}</option>`);
+                    });
+                    mName.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+                },
+                error: function (error) {
+                    console.error('부품 목록을 가져오는 중 오류 발생:', error);
+                }
+            });
+        } else {
+            $('#materialName').empty();  // 부품 목록 초기화
+            var mNameHTML = $('#mNameHTML').html();  // 서버에서 렌더링된 HTML 가져오기
+            $('#materialName').append(mNameHTML);  // mNameList의 option을 append
+            $('#materialName').trigger('change');  // 변경 이벤트 트리거
         }
     });
 });
