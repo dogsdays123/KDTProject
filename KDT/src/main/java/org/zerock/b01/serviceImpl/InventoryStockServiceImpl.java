@@ -41,8 +41,8 @@ public class InventoryStockServiceImpl implements InventoryStockService {
             inventoryStockDTO.setMCode(inventoryStock.getMaterial().getMCode());
             inventoryStockDTO.setMName(inventoryStock.getMaterial().getMName());
             inventoryStockDTO.setIsLocation(inventoryStock.getIsLocation());
-            inventoryStockDTO.setIsNum(inventoryStock.getIsNum());
-            inventoryStockDTO.setIsAvailable(inventoryStock.getIsAvailable());
+            inventoryStockDTO.setIsNum(Integer.parseInt(inventoryStock.getIsNum()));
+            inventoryStockDTO.setIsAvailable(Integer.parseInt(inventoryStock.getIsAvailable()));
             inventoryStockDTO.setPCode(inventoryStock.getMaterial().getProduct().getPCode());
             inventoryStockDTO.setPName(inventoryStock.getMaterial().getProduct().getPName());
             inventoryStockDTO.setIsComponentType(inventoryStock.getMaterial().getMComponentType());
@@ -71,7 +71,7 @@ public class InventoryStockServiceImpl implements InventoryStockService {
 
         Optional<Material> materialOptional = materialRepository.findById(inventoryStockDTO.getMCode());
         Material material = materialOptional.orElseThrow(() -> new EntityNotFoundException("Material not found"));
-        inventoryStock.change(inventoryStockDTO.getIsNum(), inventoryStockDTO.getIsAvailable(), inventoryStockDTO.getIsLocation(), material);
+        inventoryStock.change(String.valueOf(inventoryStockDTO.getIsNum()), String.valueOf(inventoryStockDTO.getIsAvailable()), inventoryStockDTO.getIsLocation(), material);
         inventoryStockRepository.save(inventoryStock);
     }
 

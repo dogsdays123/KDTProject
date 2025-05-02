@@ -1,5 +1,6 @@
 package org.zerock.b01.dto;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -14,9 +15,9 @@ public class InventoryStockDTO {
 
     private Long isId;
 
-    private String isNum; // 자재수량
+    private Integer isNum; // 자재수량
 
-    private String isAvailable; // 자재가용수량
+    private Integer isAvailable; // 자재가용수량
 
     private String isLocation; // 창고 위치
 
@@ -29,6 +30,8 @@ public class InventoryStockDTO {
     private String pCode;
 
     private String pName;
+
+    private String ppCode;
 
     private LocalDate regDate;
 

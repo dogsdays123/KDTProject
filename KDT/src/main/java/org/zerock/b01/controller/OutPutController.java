@@ -11,9 +11,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.zerock.b01.dto.InventoryStockDTO;
+import org.zerock.b01.dto.PageRequestDTO;
+import org.zerock.b01.dto.PageResponseDTO;
 import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
-import org.zerock.b01.service.UserByService;
+import org.zerock.b01.service.*;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -23,6 +34,10 @@ import org.zerock.b01.service.UserByService;
 public class OutPutController {
 
     private final UserByService userByService;
+
+    private final InventoryStockService inventoryStockService;
+
+    private final PageService pageService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -45,7 +60,43 @@ public class OutPutController {
     }
 
     @GetMapping("/outPutManage")
-    public void delivery(){ log.info("##MATERIAL DELIVERY PAGE GET....##"); }
+    public void outPutInventoryList(PageRequestDTO pageRequestDTO, Model model){
+        log.info("##OUTPUT INVENTORY LIST PAGE GET....##");
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<InventoryStockDTO> responseDTO = pageService.inventoryStockWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<InventoryStockDTO> inventoryStockList = inventoryStockService.getInventoryStockList();
+        model.addAttribute("inventoryStockList", inventoryStockList);
+        model.addAttribute("responseDTO", responseDTO);
+
+        log.info("IS List : " + inventoryStockList);
+        log.info("IS ResponseDTO : " + responseDTO);
+
+        Set<String> uniquePNames = inventoryStockList.stream()
+                .map(InventoryStockDTO::getPName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("pNameList", uniquePNames);
+
+        Set<String> uniqueIsLocation = inventoryStockList.stream()
+                .map(InventoryStockDTO::getIsLocation)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("isLocationList", uniqueIsLocation);
+
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedCType", pageRequestDTO.getComponentType() != null ? pageRequestDTO.getComponentType() : "");
+    }
 
     @GetMapping("/outPutList")
     public void deliveryList(){ log.info("##MATERIAL DELIVERY LIST PAGE GET....##"); }

@@ -4,7 +4,7 @@ document.getElementById('selectAll').addEventListener('change', function () {
     });
 });
 
-document.querySelectorAll('.icon-button').forEach(button => {
+document.querySelectorAll('.openPurchaseModal').forEach(button => {
     button.addEventListener('click', function () {
         const row = this.closest('tr'); // 클릭한 버튼이 속한 tr
 
@@ -38,10 +38,15 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
     const tbody = document.getElementById('deleteTableBody');
     tbody.innerHTML = ''; // 기존 내용 비우기
 
+    const ipIds = [];
+
     selectedRows.forEach(checkbox => {
         const row = checkbox.closest('tr');
         const cells = row.querySelectorAll('td');
         const newRow = document.createElement('tr');
+
+        const ipId = cells[1].textContent.trim();
+        ipIds.push(ipId);
 
         newRow.innerHTML = `
             <td>${cells[1].textContent.trim()}</td>
@@ -57,6 +62,17 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         tbody.appendChild(newRow);
     });
 
+    const form = document.getElementById('purchaseOrderDelForm');
+    form.querySelectorAll('input[name="ipIds"]').forEach(input => input.remove());
+
+    ipIds.forEach(ipId => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'ipIds';
+        hiddenInput.value = ipId;
+        form.appendChild(hiddenInput);
+    });
+
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));
     modal.show();
 });
@@ -65,7 +81,7 @@ document.querySelector(".clearBtn").addEventListener("click", function (e) {
     e.preventDefault()
     e.stopPropagation()
 
-    self.location = '/inventory/inventoryList'
+    self.location = '/inPut/inPutList'
 }, false)
 
 document.querySelector(".pagination").addEventListener("click", function (e) {

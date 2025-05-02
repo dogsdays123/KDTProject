@@ -58,9 +58,6 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
             return false;
         }
 
-        if (document.activeElement === ipTrueNumInput && ipNum >= ipTrueNum) {
-            ipFalseNumInput.value = ipNum - ipTrueNum;
-        }
 
         if (ipTrueNum + ipFalseNum > ipNum) {
             alert("합격 수량과 불량 수량의 합은 입고 수량을 초과할 수 없습니다.");
@@ -75,6 +72,20 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
     ipNumInput.addEventListener("input", validateInputs);
     ipTrueNumInput.addEventListener("input", validateInputs);
     ipFalseNumInput.addEventListener("input", validateInputs);
+
+    ipTrueNumInput.addEventListener("blur", () => {
+        const ipNum = parseInt(ipNumInput.value) || 0;
+        const ipTrueNum = parseInt(ipTrueNumInput.value) || 0;
+
+        if (ipTrueNum > ipNum) {
+            alert("합격 수량은 입고 수량보다 많을 수 없습니다.");
+            ipTrueNumInput.value = '';
+            ipFalseNumInput.value = '';
+            return;
+        }
+
+        ipFalseNumInput.value = ipNum - ipTrueNum;
+    });
 });
 
 document.addEventListener("DOMContentLoaded", function() {

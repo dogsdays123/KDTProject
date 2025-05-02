@@ -164,4 +164,15 @@ public class InputServiceImpl implements InputService {
 
         inventoryStockRepository.save(inventoryStock);
     }
+
+    @Override
+    public void removeInput(List<String> ipIds){
+        if (ipIds == null || ipIds.isEmpty()) {
+            throw new IllegalArgumentException("삭제할 입고 정보가 없습니다.");
+        }
+
+        for (String ipId : ipIds) {
+            inputRepository.deleteById(ipId);// 개별적으로 삭제
+        }
+    }
 }

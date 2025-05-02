@@ -99,8 +99,10 @@ public class InventoryController {
         for (int i = 0; i < mCodes.size(); i++) {
             InventoryStockDTO inventoryStockDTO = new InventoryStockDTO();
             inventoryStockDTO.setMCode(mCodes.get(i));
-            inventoryStockDTO.setIsNum(isNums.get(i));
-            inventoryStockDTO.setIsAvailable(isNums.get(i));
+
+            int parsedNum = Integer.parseInt(isNums.get(i)); // 문자열 → 숫자
+            inventoryStockDTO.setIsNum(parsedNum);
+            inventoryStockDTO.setIsAvailable(parsedNum);
             inventoryStockDTO.setIsLocation(isLoca.get(i));
             inventoryStockDTOS.add(inventoryStockDTO);
 
@@ -209,8 +211,10 @@ public class InventoryController {
 
             entity.setPName(productName);
             entity.setIsComponentType(componentType);
-            entity.setIsNum(isNum);
-            entity.setIsAvailable(isAvailable);
+            int parsedNum = Integer.parseInt(isNum);
+            entity.setIsNum(parsedNum);
+            int parsedAva = Integer.parseInt(isAvailable);
+            entity.setIsAvailable(parsedAva);
             entity.setIsLocation(isLocation);
 
             inventoryStockService.registerIS(entity);

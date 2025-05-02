@@ -81,6 +81,7 @@ public class InPutController {
                 .filter(dto -> dto.getDrNum() != null && dto.getDrNum() != 0)
                 .collect(Collectors.toList());
 
+        log.info("## drStateSet : " + drStateSet);
         model.addAttribute("filteredDeliveryRequestList", filteredList);
         model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
         model.addAttribute("selectedDRState", pageRequestDTO.getDrState() != null ? pageRequestDTO.getDrState() : "");
@@ -119,5 +120,38 @@ public class InPutController {
 
         log.info("## inputDTOList : " + inputDTOList);
         log.info("## IP responseDTO : " + responseDTO);
+
+        List<DeliveryRequestDTO> deliveryRequestList = inputService.getDeliveryRequest();
+
+        Set<CurrentStatus> drStateSet = deliveryRequestList.stream()
+                .map(DeliveryRequestDTO::getDrState)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        List<DeliveryRequestDTO> filteredList = deliveryRequestList.stream()
+                .filter(dto -> dto.getDrNum() != null && dto.getDrNum() != 0)
+                .collect(Collectors.toList());
+
+        Set<CurrentStatus> ipStateSet = inputDTOList.stream()
+                .map(InputDTO::getIpState)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        log.info("## ipStateSet : " + ipStateSet);
+        log.info("## drStateSet : " + drStateSet);
+        model.addAttribute("filteredDeliveryRequestList", filteredList);
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedDRState", pageRequestDTO.getDrState() != null ? pageRequestDTO.getDrState() : "");
+        model.addAttribute("selectedIPState", pageRequestDTO.getIpState() != null ? pageRequestDTO.getIpState() : "");
+        model.addAttribute("drStateSet", drStateSet);
+        model.addAttribute("ipStateSet", ipStateSet);
+    }
+
+    @PostMapping("/remove")
+    public String remove(@ModelAttribute InputDTO inputDTO, RedirectAttributes redirectAttributes, @RequestParam List<String> ipIds) {
+        log.info("pp remove post.....#@" + inputDTO);
+        inputService.removeInput(ipIds);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/inPut/inPutList";
     }
 }

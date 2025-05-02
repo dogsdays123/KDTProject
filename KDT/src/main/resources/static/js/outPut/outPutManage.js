@@ -19,15 +19,14 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
 
     const firstRow = selectedRows[0].children;
 
-    const planCodeInput = firstRow[1].innerText;
-    const supplier = firstRow[2].innerText;
-    const productNameInput = firstRow[4].innerText;
-    const productQuantity = firstRow[7].innerText;
+    const mCode = firstRow[5].innerText;
+    const mName = firstRow[4].innerText;
+    const isAvailable = firstRow[7].innerText;
 
-    document.getElementById('planCodeInput').innerText = planCodeInput;
-    document.getElementById('supplier').innerText = supplier;
-    document.getElementById('productNameInput').innerText = productNameInput;
-    document.getElementById('productQuantity').innerText = productQuantity;
+    document.getElementById('mCode').innerText = mCode;
+    document.getElementById('mName').innerText = mName;
+    document.getElementById('isAvailable').innerText = isAvailable;
+
 
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
     modal.show();
