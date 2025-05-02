@@ -119,11 +119,34 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="text-start">
+                </div>
+                <br>
+                <div class="text-start">
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-primary btn-sm" id="openReturnModal">
+                            선택 항목 반품 요청
+                        </button>
                         <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
                             선택 항목 삭제
                         </button>
                     </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <ul class="pagination flex-wrap">
+                        <li class="page-item" th:if="${responseDTO.prev}">
+                            <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                        </li>
+
+                        <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                            </li>
+                        </th:block>
+
+                        <li class="page-item" th:if="${responseDTO.next}">
+                            <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -165,6 +188,6 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/outPut/outPutList.js}"></script>
+    <script th:src="@{/js/inPut/inPutList.js}"></script>
 </div>
 </body>

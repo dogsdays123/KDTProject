@@ -231,7 +231,7 @@
         </div>
     </div>
     <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <form th:action="@{/inventory/remove}" method="post" id="purchaseOrderDelForm">
             <div class="modal-content">
                 <div class="modal-header">
@@ -243,7 +243,7 @@
                             <table class="table table-sm table-bordered table-hover align-middle fs-6">
                                 <thead class="table-light small text-center">
                                 <tr>
-                                    <th>상품 코드</th>
+                                    <th style="display:none;">상품 코드</th>
                                     <th>상품</th>
                                     <th>부품</th>
                                     <th>자재 코드</th>

@@ -58,6 +58,10 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
             return false;
         }
 
+        if (document.activeElement === ipTrueNumInput && ipNum >= ipTrueNum) {
+            ipFalseNumInput.value = ipNum - ipTrueNum;
+        }
+
         if (ipTrueNum + ipFalseNum > ipNum) {
             alert("합격 수량과 불량 수량의 합은 입고 수량을 초과할 수 없습니다.");
             ipTrueNumInput.value = '';
