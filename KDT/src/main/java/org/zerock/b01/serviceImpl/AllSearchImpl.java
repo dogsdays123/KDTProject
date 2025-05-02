@@ -1,6 +1,7 @@
 package org.zerock.b01.serviceImpl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -494,9 +495,20 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     public Page<InventoryStockDTO> inventoryStockSearchWithAll(String[] types, String keyword,
                                                                String pName, String componentType, String mName, String isLocation, LocalDate isRegDate, String uId, Pageable pageable) {
 
-        QInventoryStock inventoryStock = QInventoryStock.inventoryStock;
-        JPQLQuery<InventoryStock> query = from(inventoryStock);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QInventoryStock inventoryStock = QInventoryStock.inventoryStock;
+        QMaterial material = QMaterial.material;
+        QDeliveryProcurementPlan dpp = QDeliveryProcurementPlan.deliveryProcurementPlan;
+//        JPQLQuery<InventoryStock> query = from(inventoryStock);
+
+        JPQLQuery<Tuple> query = from(inventoryStock)
+                .join(inventoryStock.material, material)
+                .leftJoin(dpp).on(inventoryStock.material.mCode.eq(dpp.productionPlan.ppCode)) // 조인 조건 수정
+                .select(inventoryStock, dpp)
+                .where(booleanBuilder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(inventoryStock.regDate.desc());
 
         if (keyword != null && !keyword.isEmpty()) {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
@@ -531,18 +543,24 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.limit(pageable.getPageSize());
         query.orderBy(inventoryStock.regDate.desc());
 
-        List<InventoryStock> resultList = query.fetch();
+        List<Tuple> resultList = query.fetch();
 
         List<InventoryStockDTO> dtoList = resultList.stream()
-                .map(prod -> InventoryStockDTO.builder()
-                        .isId(prod.getIsId())
-                        .mCode(prod.getMaterial().getMCode())
-                        .isAvailable(prod.getIsAvailable())
-                        .isNum(prod.getIsNum())
-                        .isLocation(prod.getIsLocation())
-                        .pCode(prod.getMaterial().getProduct().getPCode())
-                        .regDate(prod.getRegDate().toLocalDate())
-                        .build())
+                .map(tuple -> {
+                    InventoryStock stock = tuple.get(inventoryStock);
+                    DeliveryProcurementPlan plan = tuple.get(dpp);
+
+                    return InventoryStockDTO.builder()
+                            .isId(stock.getIsId())
+                            .mCode(stock.getMaterial().getMCode())
+                            .isAvailable(Integer.parseInt(stock.getIsAvailable()))
+                            .isNum(Integer.parseInt(stock.getIsNum()))
+                            .isLocation(stock.getIsLocation())
+                            .pCode(stock.getMaterial().getProduct().getPCode())
+                            .regDate(stock.getRegDate().toLocalDate())
+                            .ppCode(plan != null ? plan.getProductionPlan().getPpCode() : null) // 필요시 추가
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         JPQLQuery<InventoryStock> countQuery = from(inventoryStock).where(booleanBuilder);

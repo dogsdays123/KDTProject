@@ -12,4 +12,5 @@ public interface InputService {
     List<DeliveryRequestDTO> getDeliveryRequest();
     void registerInput(InputDTO inputDTO);
     List<InputDTO> getInputs();
+    void removeInput(List<String> ipIds);
 }

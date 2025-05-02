@@ -58,6 +58,7 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
             return false;
         }
 
+
         if (ipTrueNum + ipFalseNum > ipNum) {
             alert("합격 수량과 불량 수량의 합은 입고 수량을 초과할 수 없습니다.");
             ipTrueNumInput.value = '';
@@ -71,6 +72,20 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
     ipNumInput.addEventListener("input", validateInputs);
     ipTrueNumInput.addEventListener("input", validateInputs);
     ipFalseNumInput.addEventListener("input", validateInputs);
+
+    ipTrueNumInput.addEventListener("blur", () => {
+        const ipNum = parseInt(ipNumInput.value) || 0;
+        const ipTrueNum = parseInt(ipTrueNumInput.value) || 0;
+
+        if (ipTrueNum > ipNum) {
+            alert("합격 수량은 입고 수량보다 많을 수 없습니다.");
+            ipTrueNumInput.value = '';
+            ipFalseNumInput.value = '';
+            return;
+        }
+
+        ipFalseNumInput.value = ipNum - ipTrueNum;
+    });
 });
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -102,7 +117,24 @@ document.querySelector(".clearBtn").addEventListener("click", function (e) {
     self.location = '/inPut/inPutManage'
 }, false)
 
+document.querySelector(".pagination").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
 
+    const target = e.target
+
+    if (target.tagName !== 'A') {
+        return
+    }
+
+    const num = target.getAttribute("data-num")
+
+    const formObj = document.querySelector("form")
+
+    formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+    formObj.submit()
+}, false)
 // document.getElementById('openPurchaseModal').addEventListener('click', function () {
 //     const selectedRows = Array.from(document.querySelectorAll('.selectPlan:checked'))
 //         .map(cb => cb.closest('tr')); // 체크된 체크박스의 행 가져오기

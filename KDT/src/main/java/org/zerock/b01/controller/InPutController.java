@@ -10,14 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.InputService;
 import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.UserByService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Controller
@@ -71,6 +72,21 @@ public class InPutController {
         log.info("## deliveryRequestList : " + deliveryRequestList);
         log.info("## DR responseDTO : " + responseDTO);
 
+        Set<CurrentStatus> drStateSet = deliveryRequestList.stream()
+                .map(DeliveryRequestDTO::getDrState)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new)); // 순서 유지
+
+        List<DeliveryRequestDTO> filteredList = deliveryRequestList.stream()
+                .filter(dto -> dto.getDrNum() != null && dto.getDrNum() != 0)
+                .collect(Collectors.toList());
+
+        log.info("## drStateSet : " + drStateSet);
+        model.addAttribute("filteredDeliveryRequestList", filteredList);
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedDRState", pageRequestDTO.getDrState() != null ? pageRequestDTO.getDrState() : "");
+        model.addAttribute("drStateSet", drStateSet);
+
     }
 
     @PostMapping("/inputRegister")
@@ -104,5 +120,38 @@ public class InPutController {
 
         log.info("## inputDTOList : " + inputDTOList);
         log.info("## IP responseDTO : " + responseDTO);
+
+        List<DeliveryRequestDTO> deliveryRequestList = inputService.getDeliveryRequest();
+
+        Set<CurrentStatus> drStateSet = deliveryRequestList.stream()
+                .map(DeliveryRequestDTO::getDrState)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        List<DeliveryRequestDTO> filteredList = deliveryRequestList.stream()
+                .filter(dto -> dto.getDrNum() != null && dto.getDrNum() != 0)
+                .collect(Collectors.toList());
+
+        Set<CurrentStatus> ipStateSet = inputDTOList.stream()
+                .map(InputDTO::getIpState)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        log.info("## ipStateSet : " + ipStateSet);
+        log.info("## drStateSet : " + drStateSet);
+        model.addAttribute("filteredDeliveryRequestList", filteredList);
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedDRState", pageRequestDTO.getDrState() != null ? pageRequestDTO.getDrState() : "");
+        model.addAttribute("selectedIPState", pageRequestDTO.getIpState() != null ? pageRequestDTO.getIpState() : "");
+        model.addAttribute("drStateSet", drStateSet);
+        model.addAttribute("ipStateSet", ipStateSet);
+    }
+
+    @PostMapping("/remove")
+    public String remove(@ModelAttribute InputDTO inputDTO, RedirectAttributes redirectAttributes, @RequestParam List<String> ipIds) {
+        log.info("pp remove post.....#@" + inputDTO);
+        inputService.removeInput(ipIds);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/inPut/inPutList";
     }
 }

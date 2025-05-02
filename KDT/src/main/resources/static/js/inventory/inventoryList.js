@@ -152,7 +152,7 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         isIds.push(isId);
 
         newRow.innerHTML = `
-            <td>${cells[2].textContent.trim()}</td>
+            <td style="display: none">${cells[2].textContent.trim()}</td>
             <td>${cells[3].textContent.trim()}</td>
             <td>${cells[4].textContent.trim()}</td>
             <td>${cells[5].textContent.trim()}</td>
@@ -185,4 +185,23 @@ document.querySelector(".clearBtn").addEventListener("click", function (e) {
     e.stopPropagation()
 
     self.location = '/inventory/inventoryList'
+}, false)
+
+document.querySelector(".pagination").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const target = e.target
+
+    if (target.tagName !== 'A') {
+        return
+    }
+
+    const num = target.getAttribute("data-num")
+
+    const formObj = document.querySelector("form")
+
+    formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+    formObj.submit()
 }, false)

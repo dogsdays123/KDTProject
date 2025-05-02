@@ -32,6 +32,9 @@ public class InputServiceImpl implements InputService {
     @Autowired
     private OrderByRepository orderByRepository;
 
+    @Autowired
+    private InventoryStockRepository inventoryStockRepository;
+
     @Override
     public List<InputDTO> getInputs() {
         List<InPut> inputList = inputRepository.findAll();
@@ -83,12 +86,12 @@ public class InputServiceImpl implements InputService {
         return deliveryRequestDTOList;
     }
 
+    // Input 코드 생성
     private String generateNextIpCode(String latestIpCode) {
-        // "IP-" 뒤의 숫자 부분을 추출하여 증가시킴
-        String numberPart = latestIpCode.substring(3);  // "IP-" 이후 부분 추출
-        int nextNumber = Integer.parseInt(numberPart) + 1; // 숫자 부분 증가
 
-        // 새로운 ipCode 생성 (예: IP-001, IP-002 등)
+        String numberPart = latestIpCode.substring(3);
+        int nextNumber = Integer.parseInt(numberPart) + 1;
+
         return String.format("IP-%03d", nextNumber);
     }
 
@@ -113,12 +116,13 @@ public class InputServiceImpl implements InputService {
         int ipNum = Integer.parseInt(input.getIpNum());
 
         if (ipNum < drNum) {
-            input.setIpState(CurrentStatus.IN_PROGRESS); // 진행중
+            input.setIpState(CurrentStatus.IN_PROGRESS);
         } else {
-            input.setIpState(CurrentStatus.APPROVAL); // 승인
+            input.setIpState(CurrentStatus.APPROVAL);
         }
 
         inputRepository.save(input);
+        updateInventoryStock(deliveryRequest, inputDTO);
         updateDeliveryRequestState(deliveryRequest, String.valueOf(ipNum), String.valueOf(drNum));
     }
 
@@ -128,18 +132,47 @@ public class InputServiceImpl implements InputService {
             int drNumber = Integer.parseInt(drNum);
             int remainingQuantity = drNumber - ipNumber;
             if (ipNumber >= drNumber) {
-                deliveryRequest.setDrState(CurrentStatus.APPROVAL); // 승인 상태
+                deliveryRequest.setDrState(CurrentStatus.APPROVAL);
             } else {
-                deliveryRequest.setDrState(CurrentStatus.IN_PROGRESS); // 진행 중 상태
+                deliveryRequest.setDrState(CurrentStatus.IN_PROGRESS);
             }
             updateRemainingStock(deliveryRequest, remainingQuantity);
         } catch (NumberFormatException e) {
-            // 문자열이 숫자로 변환 불가능할 때 처리
             throw new IllegalArgumentException("입고 수량과 납품 수량은 숫자여야 합니다.");
         }
     }
     private void updateRemainingStock(DeliveryRequest deliveryRequest, int remainingQuantity) {
         deliveryRequest.setDrNum(String.valueOf(remainingQuantity));
         deliveryRequestRepository.save(deliveryRequest);
+    }
+
+    private void updateInventoryStock(DeliveryRequest deliveryRequest, InputDTO inputDTO) {
+        int ipTrueNum = Integer.parseInt(inputDTO.getIpTrueNum());
+
+        String materialCode = deliveryRequest.getMaterial().getMCode();
+
+        InventoryStock inventoryStock = inventoryStockRepository.findByMaterialCode(materialCode)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("재고 정보를 찾을 수 없습니다."));
+
+        int currentStock = Integer.parseInt(inventoryStock.getIsNum());
+        inventoryStock.setIsNum(String.valueOf(currentStock + ipTrueNum));
+
+        int currentAvailable = Integer.parseInt(inventoryStock.getIsAvailable());
+        inventoryStock.setIsAvailable(String.valueOf(currentAvailable + ipTrueNum));
+
+        inventoryStockRepository.save(inventoryStock);
+    }
+
+    @Override
+    public void removeInput(List<String> ipIds){
+        if (ipIds == null || ipIds.isEmpty()) {
+            throw new IllegalArgumentException("삭제할 입고 정보가 없습니다.");
+        }
+
+        for (String ipId : ipIds) {
+            inputRepository.deleteById(ipId);// 개별적으로 삭제
+        }
     }
 }
