@@ -38,8 +38,6 @@ public class MaterialDTO {
 
     private String pName;
 
-    private String sName;
-
     private String uId;
 
     public MaterialDTO(String mCode, String mName) {

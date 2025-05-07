@@ -63,16 +63,6 @@ public class SupplyController {
         }
     }
 
-    @GetMapping("/purchaseOrder")
-    public void purchaseOrder() {
-        log.info("##PURCHASE ORDER PAGE GET....##");
-    }
-
-    @GetMapping("/purchaseOrderList")
-    public void purchaseOrderList() {
-        log.info("##PURCHASE OREDER LIST PAGE GET....##");
-    }
-
     @GetMapping("/progressInspection")
     public void progressInspection() {
         log.info("##PROGRESS INSPECTION PAGE GET....##");

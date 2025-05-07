@@ -56,15 +56,6 @@
                                 <label for="mCode" class="form-label small">자재 코드</label>
                                 <input type="text" id="mCode" name="자재코드" class="form-control form-control-sm">
                             </div>
-                            <div class="col-md-2" style="width: 150px">
-                                <label for="sName" class="form-label small">공급 업체</label>
-                                <select id="sName" class="form-select form-select-sm searchSelect">
-                                    <option value="" selected>선택</option>
-                                    <th:block th:each="supplier : ${supplierList}">
-                                        <option th:value="${supplier.sName}" th:text="${supplier.sName}"></option>
-                                    </th:block>
-                                </select>
-                            </div>
                         </div>
 
                         <div class="row g-2 mb-2 align-items-end">

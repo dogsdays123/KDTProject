@@ -3,8 +3,11 @@ package org.zerock.b01.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,11 +18,9 @@ public class OrderBy extends BaseEntity {
 
     private String oNum;
 
-    private String oDate;
-
     private String oTotalPrice;
 
-    private String oExpectDate;
+    private LocalDate oExpectDate;
 
     @Enumerated(EnumType.STRING)
     private CurrentStatus oState;
@@ -27,12 +28,8 @@ public class OrderBy extends BaseEntity {
     private String oRemarks;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mCode", nullable = false)
-    private Material material; // 자재 외래키
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sId")
-    private Supplier supplier; // 공급업체 외래키
+    @JoinColumn(name = "uId", nullable = false)
+    private UserBy userBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dppCode", nullable = false)

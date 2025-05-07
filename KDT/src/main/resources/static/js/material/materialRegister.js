@@ -8,7 +8,6 @@ function addPlan() {
     const mType = document.getElementById('mType').value;
     const mName = document.getElementById('mName').value;
     const mCode = document.getElementById('mCode').value;
-    const sName = document.getElementById('sName').value;
     const leadTime = document.getElementById('leadTime').value;
     const depth = document.getElementById('depth').value;
     const height = document.getElementById('height').value;
@@ -20,7 +19,7 @@ function addPlan() {
     let rowIndex = 0;
     //uId는 따로 받아온다.
 
-    if (!pName || !mType || !mName || !mCode || !sName || !leadTime
+    if (!pName || !mType || !mName || !mCode || !leadTime
         || !depth || !height || !width || !weight || !unitPrice || !mMinNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
@@ -41,7 +40,6 @@ function addPlan() {
         <td><input type="hidden" name="materials[${rowIndex}].mWidth" value="${width}">${width}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mWeight" value="${weight}">${weight}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mUnitPrice" value="${unitPrice}">${unitPrice}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].sName" value="${sName}">${sName}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mLeadTime" value="${leadTime}">${leadTime}</td>
         <td><input type="hidden" name="materials[${rowIndex}].uId" value="${uId}">${uId}</td> 
         <td>
@@ -87,7 +85,6 @@ function addPlan() {
     document.getElementById('mType').value = '';
     document.getElementById('mName').value = '';
     document.getElementById('mCode').value = '';
-    document.getElementById('sName').value = '';
     document.getElementById('leadTime').value = '';
     document.getElementById('depth').value = '';
     document.getElementById('height').value = '';

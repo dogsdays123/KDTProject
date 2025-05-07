@@ -33,6 +33,8 @@ public class DppServiceImpl implements DppService {
 
     @Autowired
     MaterialRepository materialRepository;
+    @Autowired
+    private SupplierRepository supplierRepository;
 
     @Override
     public void registerDpp(DeliveryProcurementPlanDTO dppDTO) {
@@ -47,6 +49,7 @@ public class DppServiceImpl implements DppService {
         dpp.setMaterial(m);
         dpp.setProductionPlan(pp);
         dpp.setDppState(CurrentStatus.ON_HOLD);
+        dpp.setSupplier(supplierRepository.findSupplierBySName(dppDTO.getSName()));
 
         if (dppDTO.getMCode() == null) {
             String dppCode = generateDppCode(dppDTO);

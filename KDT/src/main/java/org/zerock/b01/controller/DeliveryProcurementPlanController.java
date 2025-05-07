@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.*;
-import org.zerock.b01.dto.DppListAllDTO;
-import org.zerock.b01.dto.allDTO.PlanListAllDTO;
+import org.zerock.b01.dto.allDTO.*;
 import org.zerock.b01.dto.formDTO.DppFormDTO;
 import org.zerock.b01.repository.*;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -35,11 +34,9 @@ public class DeliveryProcurementPlanController {
     private final DppService dppService;
     private final ProductionPlanService productionPlanService;
     private final PageService pageService;
-    private final MaterialService materialService;
     private final MaterialRepository materialRepository;
     private final UserByRepository userByRepository;
     private final DeliveryProcurementPlanRepository deliveryProcurementPlanRepository;
-    private final ProductRepository productRepository;
     private final ProductionPlanRepository productionPlanRepository;
 
     @ModelAttribute

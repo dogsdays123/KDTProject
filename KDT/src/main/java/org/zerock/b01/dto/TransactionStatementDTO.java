@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-// 공급업체 거래명세서 발급 pdf -> supplier/purchaseOrderList.html
+// 공급업체 거래명세서 발급 pdf -> supplier/orderByList.html
 @Data
 @Builder
 @AllArgsConstructor

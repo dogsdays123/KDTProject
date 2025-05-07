@@ -1,30 +1,38 @@
-let dppList = [];
-let ppCode;
+let orderByList = [];
+let worldValue = [];
+let dppCode;
 
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('dppForm');
-    const buttons = document.querySelectorAll('.openDppModal');
+    const form = document.getElementById('orderByForm');
+    const buttons = document.querySelectorAll('.openOrderByModal');
+    const modalElement = document.getElementById('orderByModal');
+    const tbody = document.getElementById('orderByBody');
 
     buttons.forEach(function (button) {
         button.addEventListener('click', function () {
 
             // 클릭된 버튼의 부모 <tr>을 찾음
             const row = button.closest('tr');
-            const ppCode1 = row.children[0].textContent.trim();
+            const dppCode1 = row.children[0].textContent.trim();
             const pName = row.children[1].textContent.trim();
-            const ppNum = row.children[4].textContent.trim();
+            const mName = row.children[3].textContent.trim();
+            const dppNum = row.children[4].textContent.trim();
+            const rqNum = row.children[5].textContent.trim();
 
-            ppCode = ppCode1;
+            dppCode = dppCode1;
 
             // 모달에 값 주입
-            document.getElementById('planCodeInput').textContent = ppCode1;
-            document.getElementById('productNameInput').textContent = pName;
-            document.getElementById('productQtyInput').textContent = ppNum;
+            document.getElementById('dppCodeInput').textContent = dppCode1;
+            document.getElementById('pNameInput').textContent = pName;
+            document.getElementById('mNameInput').textContent = mName;
+            document.querySelector('.dppNumInput').value = dppNum;
+            document.querySelector('.rqNumInput').value = rqNum;
+            document.querySelector('.mPerPrice').value = document.querySelector('.mPerPriceHidden').value;
 
             loadMName(pName);
 
             // 모달 열기
-            const modal = new bootstrap.Modal(document.getElementById('procurementModal'));
+            const modal = new bootstrap.Modal(document.getElementById('orderByModal'));
             modal.show();
         });
     });
@@ -32,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // 기본 제출 막기
 
-        alert(`조달 계획이 등록되었습니다`);
+        alert(`구매 발주가 등록되었습니다`);
 
         // 폼을 서버에 전송하는 로직
         form.submit(); // 수동으로 다시 제출
@@ -45,75 +53,71 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function addProcurement(button) {
+function addOrderBy(button) {
     const container = button.closest('.tab-pane'); // 현재 탭 안
 
     const textInputs = container.querySelectorAll('input[type="text"]');
     const numberInputs = container.querySelectorAll('input[type="number"]');
     const selectElements = container.querySelectorAll('select');
     const dateInput = container.querySelector('input[type="date"]');
+    const oRemarks = document.getElementById('oRemarks').value;
+    console.log(oRemarks);
 
-// 조달계획코드
-    const dppCode = textInputs.length > 0 ? textInputs[0].value.trim() : '';
+// 발주서 코드(이제는 자동생성으로 돌릴거임)
+    //const dppCode = textInputs.length > 0 ? textInputs[0].value.trim() : '';
 
 // 공급업체, 자재명, 자재코드
-    const supplier = selectElements.length > 0 ? selectElements[0].value : '';
-    const mName = selectElements.length > 1 ? selectElements[1].value : '';
-    const mCode = selectElements.length > 2 ? selectElements[2].value : '';
+    //const supplier = selectElements.length > 0 ? selectElements[0].value : '';
 
 // 수량
-    const needQty = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
-    const supplyQty = numberInputs.length > 1 ? numberInputs[1].value.trim() : '';
+    const oNum = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
+    const oTotalPrice = numberInputs.length > 1 ? numberInputs[1].value.trim() : '';
 
 // 납기일
-    const dueDate = dateInput ? dateInput.value.trim() : '';
+    const oExpectDate = dateInput ? dateInput.value.trim() : '';
 
     // 유효성 체크 (선택)
-    if (!dppCode || !supplier || !mName || !mCode || !needQty || !supplyQty || !dueDate) {
+    if (!oNum || !oTotalPrice || !oExpectDate) {
         alert('필수 정보를 입력해주세요');
         return;
     }
 
     // 데이터 객체 생성
     const item = {
-        dppCode,
-        supplier,
-        mName,
-        mCode,
-        needQty,
-        supplyQty,
-        ppCode,
-        dueDate
+        oNum,
+        oTotalPrice,
+        oExpectDate,
+        oRemarks
     };
 
     console.log(item);
 
-    dppList.push(item);
+    orderByList.push(item);
 
-    renderProcurementTable();
+    renderOrderByTable();
 }
 
 
-function renderProcurementTable() {
-    const uId = document.getElementById('uId').value;
-    const tbody = document.getElementById('dppListBody');
+function renderOrderByTable() {
+    const tbody = document.getElementById('orderByBody');
     tbody.innerHTML = ''; // 초기화
     let rowIndex = 0;
 
-    dppList.forEach((item, index) => {
+    orderByList.forEach((item, index) => {
         const row = document.createElement('tr');
         //이런식으로 input값 넣어줄거임
         row.innerHTML = `
-      <td><input type="hidden" name="dpps[${rowIndex}].dppCode" value="${item.dppCode}">${item.dppCode}</td>
-      <td><input type="hidden" name="dpps[${rowIndex}].sName" value="${item.supplier}">${item.supplier}</td>
-      <td><input type="hidden" name="dpps[${rowIndex}].mName" value="${item.mName}">${item.mName}</td>
-      <td><input type="hidden" name="dpps[${rowIndex}].mCode" value="${item.mCode}">${item.mCode}</td>
-      <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppRequireNum" value="${item.needQty}">${item.needQty}</td>
-      <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppNum" value="${item.supplyQty}">${item.supplyQty}</td>
-      <td class="text-center"><input type="hidden" name="dpps[${rowIndex}].dppDate" value="${item.dueDate}">${item.dueDate}</td>
+      <td>
+      <input type="hidden" name="orders[${rowIndex}].oCode" value="0">
+      <input type="hidden" name="orders[${rowIndex}].dppCode" value="${dppCode}">
+      <input type="hidden" name="orders[${rowIndex}].oNum" value="${item.oNum}">
+        ${item.oNum}
+        </td>
+      <td><input type="hidden" name="orders[${rowIndex}].oTotalPrice" value="${item.oTotalPrice}">${item.oTotalPrice}</td>
+      <td><input type="hidden" name="orders[${rowIndex}].oExpectDate" value="${item.oExpectDate}">${item.oExpectDate}</td>
+      <td><input type="hidden" name="orders[${rowIndex}].oRemarks" value="${item.oRemarks}">${item.oRemarks}</td>
       <td class="text-center">
-        <input type="hidden" name="dpps[${rowIndex}].ppCode" value="${item.ppCode}">
-        <button class="btn btn-sm btn-outline-danger" onclick="removeProcurement(${index})">삭제</button>
+        <button class="btn btn-sm btn-outline-danger" onclick="removeOrderBy(${index})">삭제</button>
       </td>
     `;
         tbody.appendChild(row);
@@ -121,9 +125,9 @@ function renderProcurementTable() {
     });
 }
 
-function removeProcurement(index) {
-    dppList.splice(index, 1);
-    renderProcurementTable();
+function removeOrderBy(index) {
+    orderByList.splice(index, 1);
+    renderOrderByTable();
 }
 
 $(document).ready(function () {
@@ -146,7 +150,6 @@ function loadMName(pName) {
         url: `/dpp/${encodes}/mName`,  // URL 인코딩 적용
         method: 'GET',  // HTTP GET 요청
         success: function (mNames) {
-            console.log(mNames);
             // 부품명 선택 요소 초기화
             const mNameSelect = $('#mName');
             mNameSelect.empty();  // 기존 옵션 제거
@@ -173,7 +176,6 @@ function loadMCode(mName) {
         url: `/dpp/${encodes}/mCode`,  // URL 인코딩 적용
         method: 'GET',  // HTTP GET 요청
         success: function (mCodes) {
-            console.log(mCodes);
             // 부품명 선택 요소 초기화
             const mCodeSelect = $('#mCode');
             mCodeSelect.empty();  // 기존 옵션 제거
@@ -191,11 +193,11 @@ function loadMCode(mName) {
 
 
 function resetView() {
-    const modal = bootstrap.Modal.getInstance(document.getElementById('procurementModal'));
+    const modal = bootstrap.Modal.getInstance(document.getElementById('orderByModal'));
 
-    const tbody = document.getElementById('dppListBOdy');
+    const tbody = document.getElementById('orderByBody');
     if (tbody) tbody.innerHTML = '';
-    dppList.length = 0;
+    orderByList.length = 0;
 
     if (modal) modal.hide();
 }

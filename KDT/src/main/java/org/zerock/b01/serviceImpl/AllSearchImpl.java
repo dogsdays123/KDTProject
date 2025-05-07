@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.*;
-import org.zerock.b01.dto.DppListAllDTO;
 import org.zerock.b01.dto.allDTO.*;
 import org.zerock.b01.service.AllSearch;
 
@@ -212,6 +211,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(userBy.regDate.desc());
         List<UserBy> resultList = query.fetch();
 
         List<UserByAllDTO> dtoList = resultList.stream()
@@ -273,6 +273,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(supplier.regDate.desc());
         List<Supplier> resultList = query.fetch();
 
         List<SupplierAllDTO> dtoList = resultList.stream()
@@ -347,6 +348,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(userBy.regDate.desc());
         List<UserBy> resultList = query.fetch();
 
         List<UserByAllDTO> dtoList = resultList.stream()
@@ -688,7 +690,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         return new PageImpl<>(dtoList, pageable, total);
     }
 
-    public Page<DppListAllDTO> dppSearchWithAll(String[] types, String keyword, String dppCode, String ppCode, String mName, String mCode, LocalDate dppRegDate, String dppState, String uId, Pageable pageable){
+    public Page<DppListAllDTO> dppSearchWithAll(String[] types, String keyword, String dppCode, String ppCode, String mName, String mCode, String sName, Long dppNum, String pName, LocalDate dppRegDate, String dppState, String uId, Pageable pageable){
 
         QDeliveryProcurementPlan dpp = QDeliveryProcurementPlan.deliveryProcurementPlan;
         JPQLQuery<DeliveryProcurementPlan> query = from(dpp);
@@ -737,21 +739,24 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
+        query.orderBy(dpp.regDate.desc());
         List<DeliveryProcurementPlan> resultList = query.fetch();
         // DTO로 변환
         List<DppListAllDTO> dtoList = resultList.stream()
                 .map(prod -> DppListAllDTO.builder()
                         .dppCode(prod.getDppCode())
                         .dppRequireNum(prod.getDppRequireNum())
+                        .pName(prod.getProductionPlan().getPName())
                         .dppNum(prod.getDppNum())
                         .dppDate(prod.getDppDate())
                         .dppRegDate(prod.getRegDate())
                         .dppState(prod.getDppState().toString())
                         .ppCode(prod.getProductionPlan().getPpCode())
                         .mName(prod.getMaterial().getMName())
+                        .mPerPrice(prod.getMaterial().getMUnitPrice())
                         .sName(
-                                (prod.getMaterial() != null && prod.getMaterial().getSupplier() != null && prod.getMaterial().getSupplier().getSName() != null)
-                                        ? prod.getMaterial().getSupplier().getSName()
+                                (prod.getMaterial() != null && prod.getSupplier() != null && prod.getSupplier().getSName() != null)
+                                        ? prod.getSupplier().getSName()
                                         : "배치중"
                         )
                         .mCode(prod.getMaterial().getMCode())
@@ -760,6 +765,73 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<DeliveryProcurementPlan> countQuery = from(dpp).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    public Page<OrderByListAllDTO> orderBySearchWithAll
+            (String[] types, String keyword, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, String uId, Pageable pageable){
+
+        QOrderBy orderBy = QOrderBy.orderBy;
+        JPQLQuery<OrderBy> query = from(orderBy);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(orderBy.oCode.contains(keyword));
+            keywordBuilder.or(orderBy.deliveryProcurementPlan.supplier.sName.contains(keyword));
+            keywordBuilder.or(orderBy.deliveryProcurementPlan.material.mName.contains(keyword));
+            keywordBuilder.or(orderBy.deliveryProcurementPlan.userBy.uId.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+        if (sName != null && !sName.isEmpty() && !"전체".equals(sName)) {
+            booleanBuilder.and(orderBy.deliveryProcurementPlan.supplier.sName.contains(sName));
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            booleanBuilder.and(orderBy.deliveryProcurementPlan.material.mName.contains(mName));
+        }
+
+        if (oState != null && !oState.isEmpty() && !"전체".equals(oState)) {
+            switch (oState){
+                case "대기": booleanBuilder.and(orderBy.oState.in(CurrentStatus.ON_HOLD));
+                    break;
+                case "진행": booleanBuilder.and(orderBy.oState.in(CurrentStatus.IN_PROGRESS));
+                    break;
+                case "종료": booleanBuilder.and(orderBy.oState.in(CurrentStatus.FINISHED));
+                    break;
+                case "거절": booleanBuilder.and(orderBy.oState.in(CurrentStatus.REJECT));
+                    break;
+            }
+        }
+
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(orderBy.regDate.desc());
+        List<OrderBy> resultList = query.fetch();
+        // DTO로 변환
+        List<OrderByListAllDTO> dtoList = resultList.stream()
+                .map(ob -> OrderByListAllDTO.builder()
+                        .oCode(ob.getOCode())
+                        .dppDate(ob.getDeliveryProcurementPlan().getDppDate())
+                        .oNum(ob.getONum())
+                        .oTotalPrice(ob.getOTotalPrice())
+                        .oRegDate(ob.getRegDate())
+                        .sName(ob.getDeliveryProcurementPlan().getSupplier().getSName())
+                        .mName(ob.getDeliveryProcurementPlan().getMaterial().getMName())
+                        .oExpectDate(ob.getOExpectDate())
+                        .oState(ob.getOState().toString())
+                        .uId(ob.getUserBy().getUId())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<OrderBy> countQuery = from(orderBy).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

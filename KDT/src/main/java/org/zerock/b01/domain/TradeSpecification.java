@@ -13,7 +13,7 @@ public class TradeSpecification extends BaseEntity {
     @Id
     private Long tsId;
 
-    private String tsNum;
+    private Long tsNum;
 
     private String tsTotalPrice;
 
