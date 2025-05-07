@@ -65,7 +65,12 @@ public class InPutController {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
 
+        List<DeliveryRequestDTO> filteredList = responseDTO.getDtoList().stream()
+                .filter(dto -> dto.getDrNum() != 0)
+                .collect(Collectors.toList());
+
         List<DeliveryRequestDTO> deliveryRequestList = inputService.getDeliveryRequest();
+
         model.addAttribute("deliveryRequestList", deliveryRequestList);
         model.addAttribute("responseDTO", responseDTO);
 
@@ -76,10 +81,6 @@ public class InPutController {
                 .map(DeliveryRequestDTO::getDrState)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedHashSet::new)); // 순서 유지
-
-        List<DeliveryRequestDTO> filteredList = deliveryRequestList.stream()
-                .filter(dto -> dto.getDrNum() != null && dto.getDrNum() != 0)
-                .collect(Collectors.toList());
 
         log.info("## drStateSet : " + drStateSet);
         model.addAttribute("filteredDeliveryRequestList", filteredList);
@@ -94,8 +95,13 @@ public class InPutController {
 
         log.info(" ^^^^ " + uId);
 
-        inputService.registerInput(inputDTO);
-        redirectAttributes.addFlashAttribute("message", "입고 처리가 완료되었습니다.");
+        try {
+            inputService.registerInput(inputDTO);
+            redirectAttributes.addFlashAttribute("message", "입고 처리가 완료되었습니다.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
+
         return "redirect:/inPut/inPutManage";
     }
 
@@ -105,7 +111,7 @@ public class InPutController {
         log.info("##MATERIAL RECEIPT LIST PAGE GET....##");
 
         if (pageRequestDTO.getSize() == 0) {
-            pageRequestDTO.setSize(10); // 기본값 10
+            pageRequestDTO.setSize(10);
         }
 
         PageResponseDTO<InputDTO> responseDTO = pageService.inputWithAll(pageRequestDTO);
@@ -136,6 +142,7 @@ public class InPutController {
                 .map(InputDTO::getIpState)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
+
 
         log.info("## ipStateSet : " + ipStateSet);
         log.info("## drStateSet : " + drStateSet);

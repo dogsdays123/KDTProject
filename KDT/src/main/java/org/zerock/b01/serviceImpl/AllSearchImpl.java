@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.result.Output;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.DppListAllDTO;
 import org.zerock.b01.dto.allDTO.*;
 import org.zerock.b01.service.AllSearch;
+import org.zerock.b01.service.OutputService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -498,11 +500,13 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         QInventoryStock inventoryStock = QInventoryStock.inventoryStock;
         QMaterial material = QMaterial.material;
         QDeliveryProcurementPlan dpp = QDeliveryProcurementPlan.deliveryProcurementPlan;
+        QProductionPlan pp = QProductionPlan.productionPlan;
 //        JPQLQuery<InventoryStock> query = from(inventoryStock);
 
         JPQLQuery<Tuple> query = from(inventoryStock)
                 .join(inventoryStock.material, material)
-                .leftJoin(dpp).on(inventoryStock.material.mCode.eq(dpp.productionPlan.ppCode)) // 조인 조건 수정
+                .leftJoin(dpp).on(inventoryStock.material.mCode.eq(dpp.material.mCode))
+                .leftJoin(dpp.productionPlan, pp)
                 .select(inventoryStock, dpp)
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
@@ -555,6 +559,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                             .isAvailable(Integer.parseInt(stock.getIsAvailable()))
                             .isNum(Integer.parseInt(stock.getIsNum()))
                             .isLocation(stock.getIsLocation())
+
                             .pCode(stock.getMaterial().getProduct().getPCode())
                             .regDate(stock.getRegDate().toLocalDate())
                             .ppCode(plan != null ? plan.getProductionPlan().getPpCode() : null) // 필요시 추가
@@ -759,6 +764,70 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<DeliveryProcurementPlan> countQuery = from(dpp).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public  Page<OutPutDTO> outputSearchWithAll(String[] types, String keyword, String pName, String mName, String opState, Pageable pageable){
+
+        QOutPut outPut = QOutPut.outPut;
+        JPQLQuery<OutPut> query = from(outPut);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(outPut.material.mName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(outPut.material.mName.contains(mName));
+        }
+
+//        if (ipState != null && !ipState.isEmpty() && !"전체".equals(ipState)) {
+//            log.info("Received pName: " + ipState);
+//            try {
+//                CurrentStatus status = CurrentStatus.valueOf(ipState); // 문자열을 enum 값으로 변환
+//                booleanBuilder.and(inPut.ipState.eq(status)); // enum 값을 비교
+//            } catch (IllegalArgumentException e) {
+//                log.error("Invalid drState value: " + ipState);
+//            }
+//        }
+
+        if (opState != null && !opState.isEmpty() && !"전체".equals(opState)) {
+            log.info("Received pName: " + opState);
+            try {
+                CurrentStatus status = CurrentStatus.valueOf(opState); // 문자열을 enum 값으로 변환
+                booleanBuilder.and(outPut.opState.eq(status)); // enum 값을 비교
+            } catch (IllegalArgumentException e) {
+                log.error("Invalid drState value: " + opState);
+            }
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(outPut.regDate.desc());
+
+        List<OutPut> resultList = query.fetch();
+
+        List<OutPutDTO> dtoList = resultList.stream()
+                .map(prod -> OutPutDTO.builder()
+                        .opState(prod.getOpState())
+                        .opANum(prod.getOpANum())
+                        .opCode(prod.getOpCode())
+                        .mCode(prod.getMaterial().getMCode())
+                        .mName(prod.getMaterial().getMName())
+                        .ppCode(prod.getProductionPlan().getPpCode())
+                        .regDate(prod.getRegDate().toLocalDate())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<OutPut> countQuery = from(outPut).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

@@ -5,6 +5,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class OutPut extends BaseEntity {
     private CurrentStatus opState;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "aId", nullable = false)
+    @JoinColumn(name = "aId")
     private Assy assy; // 조립 구조 외래키
 
     @ManyToOne(fetch = FetchType.LAZY)

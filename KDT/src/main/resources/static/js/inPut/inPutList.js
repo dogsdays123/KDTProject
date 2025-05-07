@@ -40,6 +40,27 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
 
     const ipIds = [];
 
+    let hasPending = false;
+
+    for (let checkbox of selectedRows) {
+        const row = checkbox.closest('tr');
+        const cells = row.querySelectorAll('td');
+        const status = cells[10].textContent.trim();
+
+        if (status === '진행 중') {
+            hasPending = true;
+            break;
+        }
+    }
+
+    if (hasPending) {
+        const proceed = confirm('선택한 항목 중 입고 처리가 완료되지 않은 항목이 포함되어 있습니다. 그래도 진행하시겠습니까?');
+        if (!proceed) {
+            return;
+        }
+    }
+
+
     selectedRows.forEach(checkbox => {
         const row = checkbox.closest('tr');
         const cells = row.querySelectorAll('td');
@@ -102,3 +123,35 @@ document.querySelector(".pagination").addEventListener("click", function (e) {
 
     formObj.submit()
 }, false)
+
+document.addEventListener("DOMContentLoaded", () => {
+    const states = {
+        ON_HOLD:      { text: "대기", class: "badge bg-secondary" },
+        APPROVAL:     { text: "승인", class: "badge bg-success" },
+        IN_PROGRESS:  { text: "진행 중", class: "badge bg-info" },
+        UNDER_INSPECTION: { text: "검수중", class: "badge bg-warning text-dark" },
+        RETURNED:     { text: "반품", class: "badge bg-danger" },
+        FINISHED:     { text: "종료", class: "badge bg-dark" },
+        REJECT:       { text: "거절", class: "badge bg-danger" },
+        DELIVERED:    { text: "배달 됨", class: "badge bg-primary" },
+        ARRIVED:      { text: "도착함", class: "badge bg-success" },
+        NOT_REMAINING: { text: "남은 게 없음", class: "badge bg-light text-dark" },
+        UNKNOWN:      { text: "알 수 없음", class: "badge bg-secondary" }
+    };
+
+    document.querySelectorAll(".ipState option").forEach(option => {
+        const state = option.dataset.state;
+        if (!state) {
+            option.textContent = "전체";
+        } else {
+            option.textContent = stateMap[state] || "알 수 없음";
+        }
+    });
+
+    document.querySelectorAll('[data-state]').forEach(function (td) {
+        const stateKey = td.getAttribute('data-state');
+        const state = states[stateKey] || states["UNKNOWN"];
+
+        td.innerHTML = `<span class="${state.class}">${state.text}</span>`;
+    });
+});

@@ -13,4 +13,6 @@ public interface InventoryStockRepository extends JpaRepository<InventoryStock, 
 
     @Query("select i from InventoryStock i where i.material.mCode = :mCode")
     List<InventoryStock> findByMaterialCode(@Param("mCode") String mCode);
+
+    boolean existsByMaterial_mCode(String mCode);
 }

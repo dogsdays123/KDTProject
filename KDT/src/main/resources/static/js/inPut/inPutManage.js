@@ -88,25 +88,26 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
     });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    // 모든 `drState` 값을 처리할 수 있는 코드
+document.addEventListener("DOMContentLoaded", function () {
     const states = {
-        ON_HOLD: "대기",
-        APPROVAL: "승인",
-        IN_PROGRESS: "진행 중",
-        UNDER_INSPECTION: "검수중",
-        RETURNED: "반품",
-        FINISHED: "종료",
-        REJECT: "거절",
-        DELIVERED: "배달 됨",
-        ARRIVED: "도착함",
-        NOT_REMAINING: "남은 게 없음"
+        ON_HOLD:      { text: "대기", class: "badge bg-secondary" },
+        APPROVAL:     { text: "승인", class: "badge bg-success" },
+        IN_PROGRESS:  { text: "진행 중", class: "badge bg-info" },
+        UNDER_INSPECTION: { text: "검수중", class: "badge bg-warning text-dark" },
+        RETURNED:     { text: "반품", class: "badge bg-danger" },
+        FINISHED:     { text: "종료", class: "badge bg-dark" },
+        REJECT:       { text: "거절", class: "badge bg-danger" },
+        DELIVERED:    { text: "배달 됨", class: "badge bg-primary" },
+        ARRIVED:      { text: "도착함", class: "badge bg-success" },
+        NOT_REMAINING: { text: "남은 게 없음", class: "badge bg-light text-dark" },
+        UNKNOWN:      { text: "알 수 없음", class: "badge bg-secondary" }
     };
 
-    // 모든 drState 항목을 가져와서 처리
-    document.querySelectorAll('[data-state]').forEach(function(td) {
-        const state = td.getAttribute('data-state');
-        td.textContent = states[state] || "알 수 없음"; // 상태를 한글로 변경
+    document.querySelectorAll('[data-state]').forEach(function (td) {
+        const stateKey = td.getAttribute('data-state');
+        const state = states[stateKey] || states["UNKNOWN"];
+
+        td.innerHTML = `<span class="${state.class}">${state.text}</span>`;
     });
 });
 
@@ -117,55 +118,21 @@ document.querySelector(".clearBtn").addEventListener("click", function (e) {
     self.location = '/inPut/inPutManage'
 }, false)
 
-document.querySelector(".pagination").addEventListener("click", function (e) {
-    e.preventDefault()
-    e.stopPropagation()
-
-    const target = e.target
-
-    if (target.tagName !== 'A') {
-        return
-    }
-
-    const num = target.getAttribute("data-num")
-
-    const formObj = document.querySelector("form")
-
-    formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
-
-    formObj.submit()
-}, false)
-// document.getElementById('openPurchaseModal').addEventListener('click', function () {
-//     const selectedRows = Array.from(document.querySelectorAll('.selectPlan:checked'))
-//         .map(cb => cb.closest('tr')); // 체크된 체크박스의 행 가져오기
+// document.querySelector(".pagination").addEventListener("click", function (e) {
+//     e.preventDefault()
+//     e.stopPropagation()
 //
-//     if (selectedRows.length === 0) {
-//         alert('하나 이상의 항목을 선택해주세요.');
-//         return;
+//     const target = e.target
+//
+//     if (target.tagName !== 'A') {
+//         return
 //     }
 //
-//     const firstRow = selectedRows[0].children;
+//     const num = target.getAttribute("data-num")
 //
-//     const planCodeInput = firstRow[1].innerText;
-//     const materialName = firstRow[2].innerText;
-//     const materialQuantity = firstRow[4].innerText;
+//     const formObj = document.querySelector("form")
 //
-//     document.getElementById('requestQuantity').addEventListener('input', function () {
-//         const availableQuantity = parseInt(firstRow[4].innerText); // 납입 가능 수량
-//         const requestQuantity = parseInt(this.value); // 입력한 납입 요청 수량
+//     formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
 //
-//         if (requestQuantity > availableQuantity) {
-//             alert('출고 수량은 출고 가능 수량을 초과할 수 없습니다.');
-//             this.value = ''; // 잘못 입력한 값 비우기
-//             this.focus();
-//         }
-//     });
-//
-//     document.getElementById('planCodeInput').innerText = planCodeInput;
-//     document.getElementById('materialName').innerText = materialName;
-//     document.getElementById('materialQuantity').innerText = materialQuantity;
-//
-//     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
-//     modal.show();
-//
-// });
+//     formObj.submit()
+// }, false)

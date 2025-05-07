@@ -8,22 +8,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.zerock.b01.dto.InventoryStockDTO;
-import org.zerock.b01.dto.PageRequestDTO;
-import org.zerock.b01.dto.PageResponseDTO;
-import org.zerock.b01.dto.UserByDTO;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.CurrentStatus;
+import org.zerock.b01.dto.*;
 import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -38,6 +32,7 @@ public class OutPutController {
     private final InventoryStockService inventoryStockService;
 
     private final PageService pageService;
+    private final OutputService outputService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -64,7 +59,7 @@ public class OutPutController {
         log.info("##OUTPUT INVENTORY LIST PAGE GET....##");
 
         if (pageRequestDTO.getSize() == 0) {
-            pageRequestDTO.setSize(10); // 기본값 10
+            pageRequestDTO.setSize(10);
         }
 
         PageResponseDTO<InventoryStockDTO> responseDTO = pageService.inventoryStockWithAll(pageRequestDTO);
@@ -94,10 +89,74 @@ public class OutPutController {
 
         model.addAttribute("isLocationList", uniqueIsLocation);
 
+        model.addAttribute("selectedPName", pageRequestDTO.getPName() != null ? pageRequestDTO.getPName() : "");
         model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
         model.addAttribute("selectedCType", pageRequestDTO.getComponentType() != null ? pageRequestDTO.getComponentType() : "");
     }
 
     @GetMapping("/outPutList")
-    public void deliveryList(){ log.info("##MATERIAL DELIVERY LIST PAGE GET....##"); }
+    public void outPutList(PageRequestDTO pageRequestDTO, Model model){
+
+        log.info("##MATERIAL DELIVERY LIST PAGE GET....##");
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<OutPutDTO> responseDTO = pageService.outputWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<OutPutDTO> outPutDTOList = outputService.getOutputs();
+        Set<String> uniqueMNames = outPutDTOList.stream()
+                .map(OutPutDTO::getMName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("uniqueMNameList", uniqueMNames);
+
+        model.addAttribute("outPutDTOList", outPutDTOList);
+        model.addAttribute("responseDTO", responseDTO);
+        log.info("OP List : " + outPutDTOList);
+        log.info("OP ResponseDTO : " + responseDTO);
+
+        Set<CurrentStatus> opStateSet = outPutDTOList.stream()
+                .map(OutPutDTO::getOpState)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        log.info("opStateSet : " + opStateSet);
+
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedOPState", pageRequestDTO.getOpState() != null ? pageRequestDTO.getOpState() : "");
+        model.addAttribute("opStateSet", opStateSet);
+    }
+
+    @PostMapping("/outputRegister")
+    public String inventoryRegisterPost(String uId, OutPutDTO outPutDTO, Model model, RedirectAttributes redirectAttributes){
+
+        log.info(" ^^^^ " + uId);
+
+        outputService.registerOutput(outPutDTO);
+        redirectAttributes.addFlashAttribute("message", "출고 처리가 완료되었습니다.");
+        return "redirect:/outPut/outPutManage";
+    }
+
+    @PostMapping("/remove")
+    public String remove(@ModelAttribute OutPutDTO outPutDTO, RedirectAttributes redirectAttributes, @RequestParam List<String> opIds) {
+        log.info("pp remove post.....#@" + outPutDTO);
+        outputService.removeOutput(opIds);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/outPut/outPutList";
+    }
+
+    @PostMapping("/confirm")
+    public String confirm(@ModelAttribute OutPutDTO outPutDTO, RedirectAttributes redirectAttributes, @RequestParam List<String> opIds) {
+        log.info("pp remove post.....#@" + outPutDTO);
+        outputService.confirmOutput(opIds);
+        redirectAttributes.addFlashAttribute("message", "출고 처리 확정이 완료되었습니다.");
+        return "redirect:/outPut/outPutList";
+    }
 }

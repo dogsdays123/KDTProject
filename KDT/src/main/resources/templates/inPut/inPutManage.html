@@ -10,7 +10,7 @@
 <body>
 <div layout:fragment="mtReceipt">
   <div class="container-fluid">
-    <div class="container" style="max-width: 1000px; margin-left: 0;">
+    <div class="container" style="max-width: 1200px; margin-left: 0;">
       <div class="d-flex align-items-center mb-3">
         <h4 class="mb-0 me-2">입고 관리</h4>
         <div class="tooltip-wrap">
@@ -92,7 +92,7 @@
             </tr>
             </thead>
             <tbody th:with="link = ${pageRequestDTO.getLink()}">
-            <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
+            <tr th:if="${#lists.isEmpty(filteredDeliveryRequestList)}">
               <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 입고 대기 항목이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
             </tr>
             <tr th:each="dto:${responseDTO.dtoList}" th:if="${dto.drNum != 0}">
@@ -114,23 +114,23 @@
             선택 항목 입고 검수
           </button>
         </div>
-        <div class="d-flex justify-content-center">
-          <ul class="pagination flex-wrap">
-            <li class="page-item" th:if="${responseDTO.prev}">
-              <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
-            </li>
+<!--        <div class="d-flex justify-content-center">-->
+<!--          <ul class="pagination flex-wrap">-->
+<!--            <li class="page-item" th:if="${responseDTO.prev}">-->
+<!--              <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>-->
+<!--            </li>-->
 
-            <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
-              <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
-                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
-              </li>
-            </th:block>
+<!--            <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">-->
+<!--              <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">-->
+<!--                <a class="page-link" th:data-num="${i}">[[${i}]]</a>-->
+<!--              </li>-->
+<!--            </th:block>-->
 
-            <li class="page-item" th:if="${responseDTO.next}">
-              <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
-            </li>
-          </ul>
-        </div>
+<!--            <li class="page-item" th:if="${responseDTO.next}">-->
+<!--              <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--        </div>-->
       </div>
     </div>
   </div>

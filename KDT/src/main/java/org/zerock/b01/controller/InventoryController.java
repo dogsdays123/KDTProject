@@ -108,10 +108,18 @@ public class InventoryController {
 
         }
 
-        for(InventoryStockDTO inventoryStockDTO : inventoryStockDTOS){
-            inventoryStockService.registerIS(inventoryStockDTO);
+        try {
+            for (InventoryStockDTO inventoryStockDTO : inventoryStockDTOS) {
+                inventoryStockService.registerIS(inventoryStockDTO); // 중복 시 예외 발생
+            }
+            redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage()); // 중복 알림
         }
-        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
+//        for(InventoryStockDTO inventoryStockDTO : inventoryStockDTOS){
+//            inventoryStockService.registerIS(inventoryStockDTO);
+//        }
+//        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/inventory/inventoryRegister";
     }
 
