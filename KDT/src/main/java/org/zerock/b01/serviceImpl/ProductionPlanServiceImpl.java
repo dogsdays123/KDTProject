@@ -38,6 +38,9 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
     @Autowired
     private UserByRepository userByRepository;
 
+    @Autowired
+    private AutoGenerateCode autoGenerateCode;
+
     @Override
     public ProductionPlan findProductionPlan(ProductionPlanDTO productionPlanDTO){
         ProductionPlan productionPlan = modelMapper.map(productionPlanDTO, ProductionPlan.class);
@@ -51,10 +54,12 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
         ProductionPlan plan = modelMapper.map(productionPlanDTO, ProductionPlan.class);
         Product product = productionPlanRepository.findByProduct(productionPlanDTO.getPName());
 
+        //제품 자동등록
         if(product == null){
             product = new Product();
             product.setPName(productionPlanDTO.getPName());
-            product.setPCode(productionPlanDTO.getPppCode());
+            //코드 자동생성
+            product.setPCode(autoGenerateCode.generateCode("p", productionPlanDTO.getPName()));
             product.setUserBy(userByRepository.findByUId(uId));
             productRepository.save(product);
         }
@@ -65,21 +70,8 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
         //만약 생산계획 코드가 없고, 새로 입력된 경우
         if (productionPlanDTO.getPpCode() == null) {
             log.info("NoHaveNew" + plan.getPpCode());
-            // 생산 계획 코드 생성 로직 추가
-            String productionPlanCode = generateProductionPlanCode(productionPlanDTO);
-            plan.set(productionPlanCode);
-        }
-        //생산계획 코드가 있지만, 새로 입력된 경우
-        else if(productionPlanRepository.findByProductionPlanCode(productionPlanDTO.getPpCode()) == null){
-
-            log.info("haveNew" + plan.getPpCode());
-
-        } else { //생산 계획 코드가 있는 경우 덮어쓰기한다.
-            log.info("haveOld" + plan.getPpCode());
-            plan.setPName(productionPlanDTO.getPName());
-            plan.setPpNum(productionPlanDTO.getPpNum());
-            plan.setPpStart(productionPlanDTO.getPpStart());
-            plan.setPpEnd(productionPlanDTO.getPpEnd());
+            //코드 자동생성
+            plan.setPpCode(autoGenerateCode.generateCode("pp", ""));
         }
 
         plan.setProduct(product);
@@ -92,31 +84,6 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
 
     public List<ProductionPlan> getPlans(){
         return productionPlanRepository.findByPlans();
-    }
-
-    public String generateProductionPlanCode(ProductionPlanDTO dto) {
-        List<Product> products = productRepository.findByProducts();
-
-        // 제품명에 따른 접두어 설정
-        String prefix = "";
-
-        for(Product product : products){
-            if(dto.getPName().equals(product.getPName())){
-                prefix = product.getPName();
-            } else{
-                prefix = "DEFAULT";
-            }
-        }
-
-        // 날짜 포맷 (예: 20231120)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMM");
-        String dateCode = dto.getPpStart().format(formatter);
-
-        // 동일 접두어 코드의 다음 번호
-        Long nextSequence = productionPlanRepository.countByPrefix(prefix) + 1;
-
-        // 코드 생성
-        return String.format("%s%s%03d", prefix, dateCode, nextSequence);
     }
 
     @Override

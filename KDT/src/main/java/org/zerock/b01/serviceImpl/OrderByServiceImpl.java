@@ -25,10 +25,13 @@ public class OrderByServiceImpl implements OrderByService {
     UserByRepository userByRepository;
     @Autowired
     OrderByRepository orderByRepository;
+    @Autowired
+    AutoGenerateCode autoGenerateCode;
 
     public void orderByRegister(OrderByDTO orderByDTO, String uId) {
         DeliveryProcurementPlan dpp = dppRepository.findById(orderByDTO.getDppCode()).orElseThrow();
         OrderBy orderBy = modelMapper.map(orderByDTO, OrderBy.class);
+        orderBy.setOCode(autoGenerateCode.generateCode("ob", ""));
         orderBy.setUserBy(userByRepository.findById(uId).orElseThrow());
         orderBy.setDeliveryProcurementPlan(dpp);
         orderBy.setOState(CurrentStatus.ON_HOLD);

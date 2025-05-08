@@ -29,16 +29,23 @@ document.addEventListener('DOMContentLoaded', function () {
             document.querySelector('.rqNumInput').value = rqNum;
             document.querySelector('.mPerPrice').value = document.querySelector('.mPerPriceHidden').value;
 
-            loadMName(pName);
-
             // 모달 열기
             const modal = new bootstrap.Modal(document.getElementById('orderByModal'));
             modal.show();
         });
     });
 
-    form.addEventListener('submit', function (event) {
-        event.preventDefault(); // 기본 제출 막기
+    //모든 폼 자동제출 막기
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                e.preventDefault();
+            }
+        });
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
 
         alert(`구매 발주가 등록되었습니다`);
 
@@ -108,7 +115,6 @@ function renderOrderByTable() {
         //이런식으로 input값 넣어줄거임
         row.innerHTML = `
       <td>
-      <input type="hidden" name="orders[${rowIndex}].oCode" value="0">
       <input type="hidden" name="orders[${rowIndex}].dppCode" value="${dppCode}">
       <input type="hidden" name="orders[${rowIndex}].oNum" value="${item.oNum}">
         ${item.oNum}
@@ -130,68 +136,6 @@ function removeOrderBy(index) {
     renderOrderByTable();
 }
 
-$(document).ready(function () {
-
-    $('#mName').on('change', function () {
-        const input = $(this).val();  // 선택된 상품 값
-        loadMCode(input);
-    });
-
-});
-
-function loadMName(pName) {
-    if (!pName) {return;}
-
-    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
-    const encodes = encodeURIComponent(pName);
-
-    // AJAX를 사용하여 부품 목록을 가져오는 코드
-    $.ajax({
-        url: `/dpp/${encodes}/mName`,  // URL 인코딩 적용
-        method: 'GET',  // HTTP GET 요청
-        success: function (mNames) {
-            // 부품명 선택 요소 초기화
-            const mNameSelect = $('#mName');
-            mNameSelect.empty();  // 기존 옵션 제거
-            mNameSelect.append('<option value="" selected>선택</option>');
-            mNames.forEach(type => {
-                mNameSelect.append(`<option value="${type}">${type}</option>`);
-            });
-            mNameSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
-        },
-        error: function (error) {
-            console.error('목록을 가져오는 중 오류 발생:', error);
-        }
-    });
-}
-
-function loadMCode(mName) {
-    if (!mName) {return;}
-
-    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
-    const encodes = encodeURIComponent(mName);
-
-    // AJAX를 사용하여 부품 목록을 가져오는 코드
-    $.ajax({
-        url: `/dpp/${encodes}/mCode`,  // URL 인코딩 적용
-        method: 'GET',  // HTTP GET 요청
-        success: function (mCodes) {
-            // 부품명 선택 요소 초기화
-            const mCodeSelect = $('#mCode');
-            mCodeSelect.empty();  // 기존 옵션 제거
-            mCodeSelect.append('<option value="" selected>선택</option>');
-            mCodes.forEach(type => {
-                mCodeSelect.append(`<option value="${type}">${type}</option>`);
-            });
-            mCodeSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
-        },
-        error: function (error) {
-            console.error('목록을 가져오는 중 오류 발생:', error);
-        }
-    });
-}
-
-
 function resetView() {
     const modal = bootstrap.Modal.getInstance(document.getElementById('orderByModal'));
 
@@ -200,4 +144,26 @@ function resetView() {
     orderByList.length = 0;
 
     if (modal) modal.hide();
+}
+
+$(document).ready(function () {
+
+    $('#orderInput').on('change', function () {
+        const input = $(this).val();  // 선택된 상품 값
+        loadTotalPrice(input);
+    });
+
+});
+
+function loadTotalPrice(orderInput) {
+    if (!orderInput || isNaN(orderInput)) return;
+
+    const unitPrice = parseFloat($('.mPerPrice').val());  // 단가
+    if (isNaN(unitPrice)) return;
+
+    const total = unitPrice * orderInput;
+
+    const totalPrice = $('#totalPrice');
+    totalPrice.val(total);  // input 요소일 경우
+    totalPrice.trigger('change');  // 리스너가 있을 경우만 유효
 }

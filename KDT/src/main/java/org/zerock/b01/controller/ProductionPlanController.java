@@ -91,12 +91,6 @@ public class ProductionPlanController {
         return "/productionPlan/ppRegister";
     }
 
-    @PostMapping("ppRegister")
-    public void registerPost(ProductionPlanDTO productionPlanDTO, Model model, HttpServletRequest request) {
-        log.info("##PP REGISTER PAGE POST....##");
-        log.info(productionPlanDTO);
-    }
-
     @GetMapping("/ppOrderPlan")
     public void orderPlan() {
         log.info("##ORDER PLAN PAGE GET....##");
@@ -194,27 +188,25 @@ public class ProductionPlanController {
             XSSFRow row = worksheet.getRow(i);
 
             if (row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) != null) {
-                String productionPlanCode = formatter.formatCellValue(row.getCell(0));
-                entity.setPpCode(productionPlanCode);
-            }
+                String productName = formatter.formatCellValue(row.getCell(0));
+                String pCode = productRepository.findPCodeByPName(productName).orElse(null);
+                entity.setPName(productName);
 
-            String productName = formatter.formatCellValue(row.getCell(1));
+                if(pCode == null) {
+                    return productName + "은(는) 등록되지 않은 상품입니다.";
+                }
+
+                entity.setPppCode(pCode);
+                entity.setPName(productName);
+            }
 
             //날짜 형식이라 포맷을 해줘야함
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-            LocalDate productionStartDate = LocalDate.parse(sdf.format(row.getCell(2).getDateCellValue()));
-            LocalDate productionEndDate = LocalDate.parse(sdf.format(row.getCell(3).getDateCellValue()));
-            Integer productionQuantity = Integer.parseInt(formatter.formatCellValue(row.getCell(4)));
+            LocalDate productionStartDate = LocalDate.parse(sdf.format(row.getCell(1).getDateCellValue()));
+            LocalDate productionEndDate = LocalDate.parse(sdf.format(row.getCell(2).getDateCellValue()));
+            Integer productionQuantity = Integer.parseInt(formatter.formatCellValue(row.getCell(3)));
 
-            String pCode = productRepository.findPCodeByPName(productName).orElse(null);
-
-            if(pCode == null) {
-                return productName + "은(는) 등록되지 않은 상품입니다.";
-            }
-
-            entity.setPppCode(pCode);
-            entity.setPName(productName);
             entity.setPpStart(productionStartDate);
             entity.setPpEnd(productionEndDate);
             entity.setPpNum(productionQuantity);

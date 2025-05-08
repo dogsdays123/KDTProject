@@ -36,10 +36,6 @@ public class ProductionPlan extends BaseEntity {
     @JoinColumn(name = "pCode", nullable = false)
     private Product product; // 제품 외래키
 
-    public void set(String ppCode){
-        this.ppCode = ppCode;
-    }
-
     public void change(Integer pp_num, LocalDate pp_start, LocalDate pp_end){
         this.ppNum = pp_num;
         this.ppStart = pp_start;

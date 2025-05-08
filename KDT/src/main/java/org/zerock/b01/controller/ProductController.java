@@ -52,7 +52,6 @@ public class ProductController {
     private final MaterialService materialService;
     private final ProductionPlanRepository productionPlanRepository;
     private final MaterialRepository materialRepository;
-//    private final ProductRepository productRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -127,7 +126,6 @@ public class ProductController {
     //제품 직접 등록
     @PostMapping("/goodsRegister")
     public String productRegisterPost(String uId,
-                                      @RequestParam("pCodes[]") List<String> pCodes,
                                       @RequestParam("pNames[]") List<String> pNames,
                                       Model model, RedirectAttributes redirectAttributes,
                                       HttpServletRequest request) {
@@ -137,9 +135,8 @@ public class ProductController {
         List<ProductDTO> products = new ArrayList<>();
 
         // pCodes와 pNames 배열을 순회하여 Product 객체를 만들어 products 리스트에 추가
-        for (int i = 0; i < pCodes.size(); i++) {
+        for (int i = 0; i < pNames.size(); i++) {
             ProductDTO product = new ProductDTO();
-            product.setPCode(pCodes.get(i)); // pCode를 설정
             product.setPName(pNames.get(i)); // pName을 설정
             products.add(product); // 제품 리스트에 추가
         }
@@ -190,24 +187,14 @@ public class ProductController {
 
             ProductDTO productDTO = new ProductDTO();
 
-            // 0번 셀: 상품 코드 (PCode)
-            String productCode = "";
-            XSSFCell cell0 = row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-            if (cell0 != null) {
-                productCode = formatter.formatCellValue(cell0);
-            }
-            productDTO.setPCode(productCode);
-
             // 1번 셀: 상품 이름 (PName)
             String productName = "";
-            XSSFCell cell1 = row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            XSSFCell cell1 = row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
             if (cell1 != null) {
                 productName = formatter.formatCellValue(cell1);
             }
             productDTO.setPName(productName);
 
-            // 로그로 확인
-            log.info("상품 코드: {}", productDTO.getPCode());
             log.info("상품 이름: {}", productDTO.getPName());
 
             productDTOs.add(productDTO);

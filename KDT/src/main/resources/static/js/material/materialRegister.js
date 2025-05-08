@@ -1,4 +1,3 @@
-let mCodeChecks = null;
 let errorChecks = null;
 let selectedFiles = []; // 전역 변수로 따로 관리
 
@@ -7,7 +6,6 @@ function addPlan() {
     const mComponentType = document.getElementById('mComponentType').value;
     const mType = document.getElementById('mType').value;
     const mName = document.getElementById('mName').value;
-    const mCode = document.getElementById('mCode').value;
     const leadTime = document.getElementById('leadTime').value;
     const depth = document.getElementById('depth').value;
     const height = document.getElementById('height').value;
@@ -19,7 +17,7 @@ function addPlan() {
     let rowIndex = 0;
     //uId는 따로 받아온다.
 
-    if (!pName || !mType || !mName || !mCode || !leadTime
+    if (!pName || !mType || !mName || !leadTime
         || !depth || !height || !width || !weight || !unitPrice || !mMinNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
@@ -33,7 +31,6 @@ function addPlan() {
         <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mType" value="${mType}">${mType}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mName" value="${mName}">${mName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mCode" value="${mCode}">${mCode}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mMinNum" value="${mMinNum}">${mMinNum}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mDepth" value="${depth}">${depth}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mHeight" value="${height}">${height}</td>
@@ -84,7 +81,6 @@ function addPlan() {
     document.getElementById('mComponentType').value = '';
     document.getElementById('mType').value = '';
     document.getElementById('mName').value = '';
-    document.getElementById('mCode').value = '';
     document.getElementById('leadTime').value = '';
     document.getElementById('depth').value = '';
     document.getElementById('height').value = '';
@@ -155,9 +151,7 @@ function updateFileListUI() {
         processData: false,
         contentType: false,
         success: function (response) {
-            mCodeChecks = response.mCodes;
             errorChecks = response.errorCheck;
-            console.log(mCodeChecks);
             console.log(errorChecks);
         },
         error: function (xhr, status, error) {
@@ -224,8 +218,6 @@ function loadFileContent(file, index) {
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
 
-        let mCodes = [];
-
         rows[0]?.forEach(header => {
             const th = document.createElement('th');
             th.textContent = header;
@@ -236,27 +228,13 @@ function loadFileContent(file, index) {
             const tr = document.createElement('tr');
             tr.setAttribute('data-file-name', file.name);
 
-            const materialCode = row[0];
-
-            mCodes.push(materialCode);
-
-            row.forEach((cell, colIndex) => {
+            row.forEach((cell) => {
                 const td = document.createElement('td');
                 td.textContent = cell;
-
-                if (colIndex === 4 && mCodeChecks.includes(cell)) {
-                    td.style.color = 'red';
-                    td.style.fontWeight = 'bold';
-                }
-            // row.forEach(cell => {
-            //     const td = document.createElement('td');
-            //     td.textContent = cell;
                 tr.appendChild(td);
             });
             tableBody.appendChild(tr);
         });
-
-        console.log("mCodes: ", mCodes);
 
         const fileTable = document.getElementById('fileTable');
         fileTable.setAttribute('data-file-name', file.name);
@@ -300,9 +278,7 @@ $('#excelUpload').on('click', function (e) {
         processData: false,
         contentType: false,
         success: function (response) {
-            mCodeChecks = response.mCodes;
             errorChecks = response.errorCheck;
-            console.log(mCodeChecks);
             console.log(errorChecks);
             if (response.isAvailable) {
                 alert("파일 업로드에 성공했습니다.(특정)");

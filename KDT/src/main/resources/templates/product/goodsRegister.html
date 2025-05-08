@@ -24,12 +24,6 @@
                 <form th:action="@{/product/goodsRegister}" method="post">
                     <input type="hidden" name="uId" th:value="${userBy.uId}">
                     <div class="row g-2 mb-2">
-                        <!-- 상품 코드 -->
-                        <div class="col-md-2">
-                            <label for="pCode" class="form-label small">상품 코드</label>
-                            <input type="text" class="form-control form-control-sm" id="pCode" placeholder="예: PRD001">
-                        </div>
-
                         <!-- 상품명 -->
                         <div class="col-md-2">
                             <label for="pName" class="form-label small">상품명</label>
@@ -45,7 +39,6 @@
                             <table class="table table-bordered table-hover table-sm align-middle" id="planTable">
                                 <thead class="table-light small text-center">
                                 <tr>
-                                    <th>상품 코드</th>
                                     <th>상품명</th>
                                     <th>삭제</th>
                                 </tr>

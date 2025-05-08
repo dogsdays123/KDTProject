@@ -14,9 +14,6 @@ public interface ProductRepository extends JpaRepository<Product, String>, AllSe
     @Query("select p from Product p")
     List<Product> findByProducts();
 
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.pCode LIKE CONCAT(:prefix, '%')")
-    Long countByPrefix(String prefix);
-
     @Query("select p from Product p where p.pName=:pName")
     Optional<Product> findByProductName(@Param("pName") String pName);
 

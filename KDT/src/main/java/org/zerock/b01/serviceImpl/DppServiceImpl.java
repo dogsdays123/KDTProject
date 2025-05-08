@@ -21,67 +21,30 @@ public class DppServiceImpl implements DppService {
 
     @Autowired
     UserByRepository userByRepository;
-
     @Autowired
     ProductRepository productRepository;
-
     @Autowired
     ProductionPlanRepository productionPlanRepository;
-
     @Autowired
     DeliveryProcurementPlanRepository deliveryProcurementPlanRepository;
-
     @Autowired
     MaterialRepository materialRepository;
     @Autowired
     private SupplierRepository supplierRepository;
+    @Autowired
+    AutoGenerateCode autoGenerateCode;
 
     @Override
     public void registerDpp(DeliveryProcurementPlanDTO dppDTO) {
         DeliveryProcurementPlan dpp = modelMapper.map(dppDTO, DeliveryProcurementPlan.class);
 
-        log.info("test$$ " + dppDTO.getMCode());
-
-        Material m = materialRepository.findByMaterialCode(dppDTO.getMCode()).orElseThrow();
-        ProductionPlan pp = productionPlanRepository.findByProductionPlanCode(dppDTO.getPpCode()).orElseThrow();
-
         dpp.setUserBy(userByRepository.findByUId(dppDTO.getUId()));
-        dpp.setMaterial(m);
-        dpp.setProductionPlan(pp);
+        dpp.setMaterial(materialRepository.findByMaterialCode(dppDTO.getMCode()).orElseThrow());
+        dpp.setProductionPlan(productionPlanRepository.findByProductionPlanCode(dppDTO.getPpCode()).orElseThrow());
         dpp.setDppState(CurrentStatus.ON_HOLD);
         dpp.setSupplier(supplierRepository.findSupplierBySName(dppDTO.getSName()));
+        dpp.setOneCode(autoGenerateCode.generateCode("dpp", ""));
 
-        if (dppDTO.getMCode() == null) {
-            String dppCode = generateDppCode(dppDTO);
-            dpp.setOneCode(dppCode);
-        } else if (deliveryProcurementPlanRepository.findById(dppDTO.getDppCode()).isEmpty()) {
-            log.info("NewHave " + dppDTO.getDppCode());
-        } else {
-            log.info("haveOld " + dppDTO.getDppCode());
-        }
-        ;
-        log.info("materialDTO = " + dppDTO);
         deliveryProcurementPlanRepository.save(dpp);
-    }
-
-    public String generateDppCode(DeliveryProcurementPlanDTO dto) {
-        List<Product> products = productRepository.findByProducts();
-
-        // 제품명에 따른 접두어 설정
-        String prefix = "";
-
-        for (Product product : products) {
-            if (productRepository.findByProductCodeObj(dto.getPpCode()).getPName().equals(product.getPName())) {
-                prefix = product.getPName();
-            } else {
-                prefix = "DEFAULT";
-            }
-        }
-
-        // 동일 접두어 코드의 다음 번호
-        Long nextSequence = productionPlanRepository.countByPrefix(prefix) + 1;
-
-        // 코드 생성
-        return String.format("%s%03d", prefix, nextSequence);
     }
 }

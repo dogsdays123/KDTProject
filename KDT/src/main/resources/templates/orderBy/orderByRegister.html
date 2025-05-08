@@ -172,11 +172,11 @@
                                                 </div>
                                                 <div style="width: 100px;">
                                                     <label class="form-label small">발주 주문 수량</label>
-                                                    <input type="number" class="form-control form-control-sm">
+                                                    <input type="number" id="orderInput" class="form-control form-control-sm">
                                                 </div>
                                                 <div style="width: 100px;">
                                                     <label class="form-label small">총 금액</label>
-                                                    <input type="number" class="form-control form-control-sm">
+                                                    <input type="number" id="totalPrice" class="form-control form-control-sm" readonly>
                                                 </div>
                                                 <div style="width: 150px;">
                                                     <label class="form-label small">예상 납기일</label>
@@ -184,7 +184,7 @@
                                                 </div>
                                                 <div style="width: 150px;">
                                                     <label class="form-label small">비고</label>
-                                                    <textarea id="oRemarks" class="form-control form-control-sm"></textarea>
+                                                    <textarea id="oRemarks" class="form-control form-control-sm" required></textarea>
                                                 </div>
                                                 <div style="width: 100px;" class="d-flex">
                                                     <button type="button" class="btn btn-dark btn-sm w-100"

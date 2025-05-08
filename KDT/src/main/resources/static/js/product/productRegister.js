@@ -1,12 +1,10 @@
 let selectedFiles = []; // 전역 변수로 따로 관리
-let pCodeChecks = null;
 let pNameChecks = null;
 
 function addPlan() {
-    const productCode = document.getElementById('pCode').value;
     const productName = document.getElementById('pName').value;
 
-    if (!productName || !productCode) {
+    if (!productName) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -16,7 +14,6 @@ function addPlan() {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-            <td><input type="hidden" name="pCodes[]" value="${productCode}">${productCode}</td> 
             <td><input type="hidden" name="pNames[]" value="${productName}">${productName}</td>
             <td>
               <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
@@ -55,7 +52,6 @@ function addPlan() {
         tableBody.appendChild(registerRow);
     }``
     // 입력값 초기화
-    document.getElementById('pCode').value = '';
     document.getElementById('pName').value = '';
 }
 
@@ -119,9 +115,7 @@ function updateFileListUI() {
         processData: false,
         contentType: false,
         success: function(response) {
-            pCodeChecks = response.pCodes;
             pNameChecks = response.pNames;
-            console.log(pCodeChecks);
             console.log(pNameChecks);
         },
         error: function(xhr, status, error) {
@@ -188,7 +182,6 @@ function loadFileContent(file, index) {
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
 
-        let pCodes = [];
         let pNames = [];
 
         rows[0]?.forEach(header => {
@@ -201,18 +194,15 @@ function loadFileContent(file, index) {
             const tr = document.createElement('tr');
             tr.setAttribute('data-file-name', file.name);
 
-            const productCode = row[0];
-            const productName = row[1];
+            const productName = row[0];
 
-            pCodes.push(productCode);
             pNames.push(productName);
 
             row.forEach((cell, colIndex) => {
                 const td = document.createElement('td');
                 td.textContent = cell;
 
-                if ((colIndex === 0 && pCodeChecks.includes(cell)) ||
-                    (colIndex === 1 && pNameChecks.includes(cell))) {
+                if (colIndex === 0 && pNameChecks.includes(cell)) {
                     td.style.color = 'red';
                     td.style.fontWeight = 'bold';
                 }
@@ -222,7 +212,6 @@ function loadFileContent(file, index) {
             tableBody.appendChild(tr);
         });
 
-        console.log("pCodes: ", pCodes);
         console.log("pNames: ", pNames);
 
         const fileTable = document.getElementById('fileTable');
@@ -267,9 +256,7 @@ $('#excelUpload').on('click', function (e) {
         processData: false,
         contentType: false,
         success: function(response) {
-            pCodeChecks = response.pCodes;
             pNameChecks = response.pNames;
-            console.log(pCodeChecks);
             console.log(pNameChecks);
             if (response.isAvailable) {
                 alert("파일 업로드에 성공했습니다.(특정)");
