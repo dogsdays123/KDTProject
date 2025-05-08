@@ -54,10 +54,11 @@ public class PageServiceImpl implements PageService {
     private InputRepository inputRepository;
     @Autowired
     private final DeliveryProcurementPlanRepository dppRepository;
-    @Autowired
 
+    @Autowired
     private OutputRepository outputRepository;
 
+    @Autowired
     private OrderByRepository orderByRepository;
 
 

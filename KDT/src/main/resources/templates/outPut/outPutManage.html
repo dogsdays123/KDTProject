@@ -94,8 +94,8 @@
                         </tr>
                         </thead>
                         <tbody th:with="link = ${pageRequestDTO.getLink()}">
-                        <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
-                            <td colspan="10" class="text-center" style="padding: 20px 0;">재고에 등록된 자재가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
+                        <tr th:if="${responseDTO.dtoList == null or #lists.isEmpty(responseDTO.dtoList)}">
+                            <td colspan="10" class="text-center" style="padding: 20px 0;">출고 가능한 자재가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
                         <tr th:each="dto:${responseDTO.dtoList}" th:if="${dto.isNum != null && dto.isNum != 0}">
                             <td><input type="checkbox" class="selectPlan"></td>

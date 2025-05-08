@@ -777,7 +777,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
 
     @Override
-    public  Page<OutPutDTO> outputSearchWithAll(String[] types, String keyword, String pName, String mName, String opState, Pageable pageable){
+    public  Page<OutPutDTO> outputSearchWithAll(String[] types, String keyword, String pName, String mName, String opState, Pageable pageable) {
 
         QOutPut outPut = QOutPut.outPut;
         JPQLQuery<OutPut> query = from(outPut);
@@ -835,6 +835,10 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<OutPut> countQuery = from(outPut).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
 
     public Page<OrderByListAllDTO> orderBySearchWithAll
             (String[] types, String keyword, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, String uId, Pageable pageable){

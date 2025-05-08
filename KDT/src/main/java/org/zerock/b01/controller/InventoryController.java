@@ -205,27 +205,33 @@ public class InventoryController {
             String isAvailable = formatter.formatCellValue(row.getCell(4));
             String isLocation = formatter.formatCellValue(row.getCell(5));
 
-            Optional<String> optionalPCode = productRepository.findPCodeByPName(productName);
+            try {
+                Optional<String> optionalPCode = productRepository.findPCodeByPName(productName);
+                String mCode = materialRepository.findMCodeByMName(materialName)
+                        .orElseThrow(() -> new IllegalArgumentException("해당 자재명을 가진 자재 코드가 없습니다: " + materialName));
+                entity.setMCode(mCode);
 
-            String mCode = materialRepository.findMCodeByMName(materialName)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 자재명을 가진 자재 코드가 없습니다: " + materialName));
-            entity.setMCode(mCode);
+                if (optionalPCode.isPresent()) {
+                    entity.setPCode(optionalPCode.get());
+                } else {
+                    throw new IllegalArgumentException("해당 제품명을 가진 제품 코드가 없습니다: " + productName);
+                }
 
-            if (optionalPCode.isPresent()) {
-                entity.setPCode(optionalPCode.get());
-            } else {
-                throw new IllegalArgumentException("해당 제품명을 가진 제품 코드가 없습니다: " + productName);
+                entity.setPName(productName);
+                entity.setIsComponentType(componentType);
+                entity.setIsNum(Integer.parseInt(isNum));
+                entity.setIsAvailable(Integer.parseInt(isAvailable));
+                entity.setIsLocation(isLocation);
+
+                inventoryStockService.registerIS(entity);
+
+            } catch (IllegalStateException e) {
+                log.warn("중복 자재로 등록되지 않음 (행 {}): {}", i + 1, e.getMessage());
+            } catch (IllegalArgumentException e) {
+                log.error("유효하지 않은 데이터로 등록 실패 (행 {}): {}", i + 1, e.getMessage());
+            } catch (Exception e) {
+                log.error("알 수 없는 오류 발생 (행 {}): {}", i + 1, e.getMessage());
             }
-
-            entity.setPName(productName);
-            entity.setIsComponentType(componentType);
-            int parsedNum = Integer.parseInt(isNum);
-            entity.setIsNum(parsedNum);
-            int parsedAva = Integer.parseInt(isAvailable);
-            entity.setIsAvailable(parsedAva);
-            entity.setIsLocation(isLocation);
-
-            inventoryStockService.registerIS(entity);
         }
     }
 
@@ -245,5 +251,22 @@ public class InventoryController {
         return "redirect:/inventory/inventoryList";
     }
 
+
+    @GetMapping("/api/products/{pCode}/component-types")
+    @ResponseBody
+    public List<String> getComponentTypesByProductCode(@PathVariable String pCode) {
+        List<String> componentTypes = materialRepository.findComponentTypesByProductCode(pCode);
+        return componentTypes != null ? componentTypes : Collections.emptyList();
+    }
+
+    // 부품명을 선택하면 자재 목록을 반환
+    @GetMapping("/api/materials")
+    @ResponseBody
+    public List<MaterialDTO> getMaterialsByComponentType(String componentType) {
+        List<Material> materials = materialService.getMaterialByComponentType(componentType);
+        return materials.stream()
+                .map(material -> new MaterialDTO(material.getMCode(), material.getMName()))
+                .collect(Collectors.toList());
+    }
 
 }

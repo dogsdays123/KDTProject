@@ -3,6 +3,8 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -64,16 +66,26 @@ public class OutPutController {
 
         PageResponseDTO<InventoryStockDTO> responseDTO = pageService.inventoryStockWithAll(pageRequestDTO);
 
+        List<InventoryStockDTO> filteredList = responseDTO.getDtoList().stream()
+                .filter(dto -> dto.getIsNum() != null && dto.getIsNum() > 0)
+                .collect(Collectors.toList());
+
+        PageResponseDTO<InventoryStockDTO> filteredResponseDTO = PageResponseDTO.<InventoryStockDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(filteredList)
+                .total(filteredList.size()) // 필터링된 수량 기준으로 total 조정
+                .build();
+
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
 
         List<InventoryStockDTO> inventoryStockList = inventoryStockService.getInventoryStockList();
         model.addAttribute("inventoryStockList", inventoryStockList);
-        model.addAttribute("responseDTO", responseDTO);
+        model.addAttribute("responseDTO", filteredResponseDTO);
 
         log.info("IS List : " + inventoryStockList);
-        log.info("IS ResponseDTO : " + responseDTO);
+        log.info("IS ResponseDTO : " + filteredResponseDTO);
 
         Set<String> uniquePNames = inventoryStockList.stream()
                 .map(InventoryStockDTO::getPName)
