@@ -202,7 +202,7 @@ function loadFileContent(file, index) {
             });
             tableBody.appendChild(tr);
         });
-        
+
         console.log("pNames: ", pNames);
 
         const fileTable = document.getElementById('fileTable');
