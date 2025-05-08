@@ -125,7 +125,7 @@ document.getElementById("productName").addEventListener("change", function() {
 
     if (productCode) {
         // 상품코드에 맞는 부품명 목록을 가져옵니다.
-        fetch(`/bom/api/products/${productCode}/component-types`)
+        fetch(`/inventory/api/products/${productCode}/component-types`)
             .then(response => response.json())
             .then(componentTypes => {
                 const componentSelect = document.getElementById("componentType");
@@ -146,7 +146,7 @@ document.getElementById("componentType").addEventListener("change", function() {
     let componentType = this.value;
     if (componentType) {
         // 부품명에 맞는 자재 목록을 가져옵니다.
-        fetch(`/bom/api/materials?componentType=${componentType}`)
+        fetch(`/inventory/api/materials?componentType=${componentType}`)
             .then(response => response.json())
             .then(materials => {
                 console.log(materials);  // 응답 데이터 확인

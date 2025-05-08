@@ -46,6 +46,10 @@ public class Material extends BaseEntity {
     @JsonIgnore
     private Product product;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sId")
+    private Supplier supplier;
+
     public void setOneCode(String mCode) {
         this.mCode = mCode;
     }

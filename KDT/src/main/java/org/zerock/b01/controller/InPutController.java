@@ -65,7 +65,9 @@ public class InPutController {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
 
-        List<DeliveryRequestDTO> filteredList = responseDTO.getDtoList().stream()
+        List<DeliveryRequestDTO> filteredList = Optional.ofNullable(responseDTO.getDtoList())
+                .orElse(Collections.emptyList())
+                .stream()
                 .filter(dto -> dto.getDrNum() != 0)
                 .collect(Collectors.toList());
 

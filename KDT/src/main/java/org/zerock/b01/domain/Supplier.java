@@ -3,6 +3,8 @@ package org.zerock.b01.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -48,6 +50,10 @@ public class Supplier extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uId", nullable = false)
     private UserBy userBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mCode")
+    private Material material;
 
     public void changeStatus(String status) {
         this.sStatus = status;
