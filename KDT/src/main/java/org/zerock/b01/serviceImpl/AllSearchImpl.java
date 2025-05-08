@@ -906,4 +906,54 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
         return new PageImpl<>(dtoList, pageable, total);
     }
+
+
+    @Override
+    public  Page<SupplierStockDTO> supplierStockSearchWithAll(String[] types, String keyword, String pName, String mName, Long sId, Pageable pageable) {
+
+        QSupplierStock supplierStock = QSupplierStock.supplierStock;
+        JPQLQuery<SupplierStock> query = from(supplierStock);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (sId != null) {
+            booleanBuilder.and(supplierStock.supplier.sId.eq(sId));
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(supplierStock.material.mName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(supplierStock.material.mName.contains(mName));
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(supplierStock.regDate.desc());
+
+        List<SupplierStock> resultList = query.fetch();
+
+        List<SupplierStockDTO> dtoList = resultList.stream()
+                .map(prod -> SupplierStockDTO.builder()
+                        .ssId(prod.getSsId())
+                        .ssNum(prod.getSsNum())
+                        .ssMinOrderQty(prod.getSsMinOrderQty())
+                        .leadTime(prod.getLeadTime())
+                        .unitPrice(prod.getUnitPrice())
+                        .mCode(prod.getMaterial().getMCode())
+                        .sId(prod.getSupplier().getSId())
+                        .regDate(prod.getRegDate().toLocalDate())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<SupplierStock> countQuery = from(supplierStock).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
 }
