@@ -18,7 +18,7 @@ public class DeliveryProcurementPlan extends BaseEntity {
 
     private String dppRequireNum;
 
-    private String dppNum;
+    private Long dppNum;
 
     private LocalDate dppDate;
 
@@ -32,6 +32,10 @@ public class DeliveryProcurementPlan extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mCode", nullable = false)
     private Material material; // 자재 외래키
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sId", nullable = false)
+    private Supplier supplier;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uId", nullable = false)

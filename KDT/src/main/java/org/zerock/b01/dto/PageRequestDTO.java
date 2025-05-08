@@ -79,11 +79,8 @@ public class PageRequestDTO {
     private String drState;
 
     //발주서
-    private String oCode;
-    private String oNum;
-    private String oDate;
-    private String oTotalPrice;
-    private String oExpectDate;
+    private LocalDate oRegDate;
+    private LocalDate oExpectDate;
     private String oState;
 
     //입고
@@ -94,6 +91,7 @@ public class PageRequestDTO {
 
     //dpp
     private String dppCode;
+    private Long dppNum;
     private LocalDate dppDate;
     private String dppState;
 

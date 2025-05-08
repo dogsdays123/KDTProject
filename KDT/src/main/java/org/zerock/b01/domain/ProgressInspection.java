@@ -3,6 +3,8 @@ package org.zerock.b01.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Builder
@@ -17,7 +19,7 @@ public class ProgressInspection extends BaseEntity {
 
     private String psDegree;
 
-    private String psDate;
+    private LocalDate psDate;
 
     @Enumerated(EnumType.STRING)
     private CurrentStatus psState;

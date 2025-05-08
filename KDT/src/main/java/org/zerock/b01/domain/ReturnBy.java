@@ -14,7 +14,7 @@ public class ReturnBy extends BaseEntity {
     @Id
     private String rCode;
 
-    private String rNum;
+    private Long rNum;
 
     @Enumerated(EnumType.STRING)
     private CurrentStatus rState;

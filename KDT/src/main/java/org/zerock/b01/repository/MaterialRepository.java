@@ -17,7 +17,6 @@ public interface MaterialRepository extends JpaRepository<Material, String>, All
 
     @Query("select m from Material m where m.mCode=:mCode")
     Optional<Material> findByMaterialCode(@Param("mCode") String mCode);
-//    Material findByMaterialCode(String mCode);
 
     @Query("SELECT COUNT(m) FROM Material m WHERE m.mCode LIKE CONCAT(:prefix, '%')")
     Long countByPrefix(String prefix);
@@ -32,6 +31,18 @@ public interface MaterialRepository extends JpaRepository<Material, String>, All
 
     @Query("SELECT DISTINCT m.mComponentType FROM Material m WHERE m.product.pName = :pName")
     List<String> findComponentTypesByProductName(@Param("pName") String pName);
+
+    @Query("select m.mName from Material m where m.product.pName = :pName")
+    List<String> findMNameByPName(@Param("pName") String pName);
+
+    @Query("select m.mCode from Material m where m.mName = :mName")
+    List<String> findMCodeByMNameList(@Param("mName") String mName);
+
+    @Query("select m.mName from Material m where m.mComponentType = :mComponentType")
+    List<String> findMNameByType(@Param("mComponentType") String mComponentType);
+
+    @Query("select m.mName from Material m where m.product.pName = :pName and m.mComponentType = :mComponentType")
+    List<String> findMNameByETC(@Param("pName") String pName, @Param("mComponentType") String mComponentType);
 
     @Query("SELECT m FROM Material m WHERE m.mComponentType = :componentType")
     List<Material> findByComponentType(@Param("componentType") String componentType);

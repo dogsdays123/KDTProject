@@ -9,16 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Material;
-import org.zerock.b01.domain.Product;
 import org.zerock.b01.dto.*;
 
-import org.zerock.b01.dto.allDTO.PlanListAllDTO;
-import org.zerock.b01.dto.allDTO.ProductListAllDTO;
-import org.zerock.b01.dto.allDTO.SupplierAllDTO;
-import org.zerock.b01.dto.allDTO.UserByAllDTO;
-
-import org.zerock.b01.dto.DppListAllDTO;
 import org.zerock.b01.dto.allDTO.*;
+import org.zerock.b01.dto.allDTO.DppListAllDTO;
+
 
 import org.zerock.b01.repository.*;
 import org.zerock.b01.service.PageService;
@@ -60,7 +55,11 @@ public class PageServiceImpl implements PageService {
     @Autowired
     private final DeliveryProcurementPlanRepository dppRepository;
     @Autowired
+
     private OutputRepository outputRepository;
+
+    private OrderByRepository orderByRepository;
+
 
     @Override
     public PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO){
@@ -181,7 +180,6 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public PageResponseDTO<UserByAllDTO> userByWithAllList(PageRequestDTO pageRequestDTO){
-        log.info(">>>> user 페이지 번호: {}", pageRequestDTO.getPage());
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
         String uName = pageRequestDTO.getUName();
@@ -215,17 +213,30 @@ public class PageServiceImpl implements PageService {
 
         Page<BomDTO> result = bomRepository.bomSearchWithAll(types, keyword, componentType, mName, pName, uId, pageable);
 
-        for (BomDTO bomDTO : result.getContent()) {
-            Product product = productRepository.findByProductId(bomDTO.getPCode())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
-            bomDTO.setPName(product.getPName());
-
-            Material material = materialRepository.findByMaterialCode(bomDTO.getMCode())
-                    .orElseThrow(() -> new RuntimeException("Material not found"));
-            bomDTO.setMName(material.getMName()); //
-        }
-
         return PageResponseDTO.<BomDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<OrderByListAllDTO> orderByWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        LocalDate oRegDate = pageRequestDTO.getORegDate();
+        LocalDate oExpectDate = pageRequestDTO.getOExpectDate();
+        String sName = pageRequestDTO.getSName();
+        String mName = pageRequestDTO.getMName();
+        String oState = pageRequestDTO.getOState();
+        String uId = pageRequestDTO.getUId();
+
+        Pageable pageable = pageRequestDTO.getPageable("uId");
+
+        Page<OrderByListAllDTO> result = orderByRepository.orderBySearchWithAll
+                (types, keyword, oRegDate, oExpectDate, sName, mName, oState, uId, pageable);
+
+        return PageResponseDTO.<OrderByListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
@@ -325,13 +336,16 @@ public class PageServiceImpl implements PageService {
         String ppCode = pageRequestDTO.getPpCode();
         String mName = pageRequestDTO.getMName();
         String mCode = pageRequestDTO.getMCode();
+        String sName = pageRequestDTO.getSName();
+        String pName = pageRequestDTO.getPName();
+        Long dppNum = pageRequestDTO.getDppNum();
         LocalDate dppDate = pageRequestDTO.getDppDate();
         String dppState = pageRequestDTO.getDppState();
         String uId = pageRequestDTO.getUId();
 
         Pageable pageable = pageRequestDTO.getPageable("uId");
 
-        Page<DppListAllDTO> result = dppRepository.dppSearchWithAll(types, keyword, dppCode, ppCode, mName, mCode, dppDate, dppState, uId, pageable);
+        Page<DppListAllDTO> result = dppRepository.dppSearchWithAll(types, keyword, dppCode, ppCode, mName, mCode, sName, dppNum, pName, dppDate, dppState, uId, pageable);
 
         return PageResponseDTO.<DppListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

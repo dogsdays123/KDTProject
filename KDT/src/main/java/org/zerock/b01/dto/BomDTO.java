@@ -16,7 +16,7 @@ public class BomDTO {
 
     private String bRequireNum;
 
-    private String bComponentType;
+    private String mComponentType;
 
     private String mCode;
 
@@ -27,5 +27,7 @@ public class BomDTO {
     private String mName;
 
     private LocalDate regDate;
+
+    private String uId;
 
 }

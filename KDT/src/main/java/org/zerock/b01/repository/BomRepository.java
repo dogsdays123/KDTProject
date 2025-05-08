@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface BomRepository extends JpaRepository<Bom, Long>, AllSearch {
 
     @Query("select p from Product p where p.pName=:pName")
-    Product findByProduct(String pName);
+    Product findByProductByPName(String pName);
 
     @Query("select m from Material m where m.mCode=:mCode")
     Optional<Material> findByMaterialCode(@Param("mCode") String mCode);

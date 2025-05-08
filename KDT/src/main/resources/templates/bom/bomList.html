@@ -25,31 +25,28 @@
                         <div class="col-md-2">
                             <label for="parts" class="form-label small">상품 선택</label>
                             <select name="pName" class="form-select form-select-sm">
-                                <option value="" th:selected="${selectedPName == ''}">전체</option>
-                                <option th:each="dto:${bomList}"
-                                        th:value="${dto.getPName()}"
-                                        th:text="${dto.getPName()}"
-                                        th:selected="${dto.getPName() == selectedPName}"></option>
+                                <option value="" selected>선택</option>
+                                <th:block th:each="p : ${productList}">
+                                    <option th:value="${p.pName}" th:text="${p.pName}"></option>
+                                </th:block>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="parts" class="form-label small">부품 선택</label>
+                            <label for="parts" class="form-label small">부품 종류</label>
                             <select name="componentType" class="form-select form-select-sm" id="parts">
-                                <option value="" th:selected="${selectedCType == ''}">전체</option>
-                                <option th:each="dto:${bomList}"
-                                        th:value="${dto.getBComponentType()}"
-                                        th:text="${dto.getBComponentType()}"
-                                        th:selected="${dto.getBComponentType() == selectedCType}"></option>
+                                <option value="" selected>선택</option>
+                                <th:block th:each="m : ${materialList}">
+                                    <option th:value="${m.mComponentType}" th:text="${m.mComponentType}"></option>
+                                </th:block>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label for="parts" class="form-label small">자재 선택</label>
+                            <label for="parts" class="form-label small">부품 이름</label>
                             <select name="mName" class="form-select form-select-sm">
-                                <option value="" th:selected="${selectedMName == ''}">전체</option>
-                                <option th:each="dto:${bomList}"
-                                        th:value="${dto.getMName()}"
-                                        th:text="${dto.getMName()}"
-                                        th:selected="${dto.getMName() == selectedMName}"></option>
+                                <option value="" selected>선택</option>
+                                <th:block th:each="m : ${materialList}">
+                                    <option th:value="${m.mName}" th:text="${m.mName}"></option>
+                                </th:block>
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
@@ -90,14 +87,13 @@
                             <thead class="table-light small text-center">
                             <tr>
                                 <th><input type="checkbox" id="selectAll" title="전체선택"></th>
-                                <th style="display: none">BOM번호</th>
-                                <th>상품 코드</th>
-                                <th>상품</th>
-                                <th>부품</th>
-                                <th>자재 코드</th>
-                                <th>자재명</th>
+                                <th>BOM 번호</th>
+                                <th>상품 이름</th>
+                                <th>부품 종류</th>
+                                <th>부품 이름</th>
                                 <th>필요 수량</th>
                                 <th>등록일</th>
+                                <th>등록자</th>
                                 <th>수정</th>
                             </tr>
                             </thead>
@@ -107,16 +103,15 @@
                             </tr>
                             <tr th:each="dto:${responseDTO.dtoList}">
                                 <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-                                <td th:text="${dto.bId}" style="display: none"></td>
-                                <td th:text="${dto.pCode}"></td>
+                                <td th:text="${dto.bId}"></td>
                                 <td th:text="${dto.pName}"></td>
-                                <td th:text="${dto.bComponentType}"></td>
-                                <td th:text="${dto.mCode}"></td>
+                                <td th:text="${dto.mComponentType}"></td>
                                 <td th:text="${dto.mName}"></td>
                                 <td th:text="${dto.bRequireNum}"></td>
                                 <td th:text="${dto.regDate}"></td>
+                                <td th:text="${dto.uId}"></td>
                                 <td>
-                                    <button type="button" class="icon-button" id="openPurchaseModal" title="BOM 정보 수정">
+                                    <button type="button" class="icon-button" id="bomModifyButton" title="BOM 정보 수정">
                                         <i class="bi bi-pencil fs-6"></i>
                                     </button>
                                 </td>
@@ -126,7 +121,7 @@
                     </div>
                     <br>
                     <div class="text-start">
-                        <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
+                        <button type="button" class="btn btn-danger btn-sm" id="bomRemoveButton">
                             선택 항목 삭제
                         </button>
                     </div>
@@ -149,47 +144,43 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+            <div class="modal fade" id="bomModify" tabindex="-1" aria-labelledby="bomModifyModal" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
-                    <form th:action="@{/bom/modify}" method="post" id="purchaseOrderForm">
+                    <form th:action="@{/bom/modify}" method="post" id="bomModifyModal">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="purchaseOrderModalLabel">BOM 정보 수정</h5>&nbsp;&nbsp;
+                            <h5 class="modal-title" id="bomModifyModalLabel">BOM 정보 수정</h5>&nbsp;&nbsp;
                             <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 수정 가능 항목입니다</small>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                                 <div class="row g-3 mb-3">
                                     <div class="col-12">
-                                        <input type="text" id="bId" name="bId" class="form-control form-control-sm" hidden="hidden" readonly required>
+                                        <input type="text" id="bId" class="form-control form-control-sm" hidden="hidden" readonly>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">상품 코드</label>
-                                        <input type="text" id="pCode" name="pCode" class="form-control form-control-sm" readonly required>
+                                        <label class="form-label ">상품 이름</label>
+                                        <input type="text" id="pName" class="form-control form-control-sm" readonly required>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">상품</label>
-                                        <input type="text" id="pName" name="pName" class="form-control form-control-sm" readonly required>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label"><span class="text-danger">*</span> 부품 선택</label>
-                                        <select id="cType" name="bComponentType" class="form-select form-select-sm" >
+                                        <label class="form-label "><span class="text-danger">*</span> 부품 종류</label>
+                                        <select id="mType" class="form-select form-select-sm" >
                                             <option value="" selected>선택</option>
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label"><span class="text-danger">*</span> 자재 선택</label>
-                                        <select name="mName" id="mName" class="form-select form-select-sm">
+                                        <label class="form-label "><span class="text-danger">*</span> 부품 이름</label>
+                                        <select id="mName" class="form-select form-select-sm">
                                             <option value="" selected>선택</option>
                                         </select>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">자재 코드</label>
-                                        <input type="text" id="mCode" name="mCode" class="form-control form-control-sm" readonly required>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label"><span class="text-danger">*</span> 수량</label>
-                                        <input type="text" id="reNum" name="bRequireNum" class="form-control form-control-sm" required>
+                                        <input type="text" id="require" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label"><span class="text-danger">*</span> 등록자</label>
+                                        <input type="text" id="uId" class="form-control form-control-sm" readonly>
                                     </div>
                                 </div>
 
@@ -202,12 +193,12 @@
                     </form>
                 </div>
             </div>
-            <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+            <div class="modal fade" id="bomRemove" tabindex="-1" aria-labelledby="bomRemoveModal" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
-                    <form th:action="@{/bom/remove}" method="post" id="purchaseOrderDelForm">
+                    <form th:action="@{/bom/remove}" method="post" id="bomRemoveModal">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="purchaseOrderModalDelLabel">BOM 정보 삭제</h5>&nbsp;&nbsp;
+                            <h5 class="modal-title" id="bomRemoveModalLabel">BOM 정보 삭제</h5>&nbsp;&nbsp;
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -247,3 +238,31 @@
         <script th:src="@{/js/bom/bomList.js}"></script>
     </div>
 </body>
+<script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if (target.tagName !== 'A') {
+            return
+        }
+
+        const num = target.getAttribute("data-num")
+
+        const formObj = document.querySelector("form")
+
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+        formObj.submit()
+    }, false)
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location = '/dpp/dppList'
+    }, false)
+</script>
+

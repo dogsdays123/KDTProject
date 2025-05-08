@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Builder
@@ -30,5 +32,5 @@ public class Contract extends BaseEntity {
 
     private String cSignB;
 
-    private String cDate;
+    private LocalDate cDate;
 }

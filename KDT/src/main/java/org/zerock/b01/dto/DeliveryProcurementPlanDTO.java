@@ -20,7 +20,7 @@ public class DeliveryProcurementPlanDTO {
 
     private String dppRequireNum;
 
-    private String dppNum;
+    private Long dppNum;
 
     private LocalDate dppDate;
 
@@ -31,6 +31,8 @@ public class DeliveryProcurementPlanDTO {
     private String ppCode; // 생산계획코드 외래키
 
     private String mCode; // 자재 외래키
+
+    private String sName;
 
     private String uId;
 }

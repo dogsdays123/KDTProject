@@ -1,10 +1,6 @@
-package org.zerock.b01.dto;
+package org.zerock.b01.dto.allDTO;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.zerock.b01.domain.CurrentStatus;
-import org.zerock.b01.domain.Material;
-import org.zerock.b01.domain.ProductionPlan;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +16,9 @@ public class DppListAllDTO {
 
     private String dppRequireNum;
 
-    private String dppNum;
+    private Long dppNum;
+
+    private String mPerPrice;
 
     private LocalDate dppDate;
 
@@ -29,6 +27,8 @@ public class DppListAllDTO {
     private String dppState;
 
     private String ppCode; // 생산계획코드 외래키
+
+    private String pName;
 
     private String mName;
 
