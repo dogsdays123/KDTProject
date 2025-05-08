@@ -55,7 +55,11 @@ public class PageServiceImpl implements PageService {
     @Autowired
     private final DeliveryProcurementPlanRepository dppRepository;
     @Autowired
+
+    private OutputRepository outputRepository;
+
     private OrderByRepository orderByRepository;
+
 
     @Override
     public PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO){
@@ -344,6 +348,31 @@ public class PageServiceImpl implements PageService {
         Page<DppListAllDTO> result = dppRepository.dppSearchWithAll(types, keyword, dppCode, ppCode, mName, mCode, sName, dppNum, pName, dppDate, dppState, uId, pageable);
 
         return PageResponseDTO.<DppListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<OutPutDTO> outputWithAll(PageRequestDTO pageRequestDTO){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String pName = pageRequestDTO.getPName();
+        String mName = pageRequestDTO.getMName();
+        String opState = pageRequestDTO.getOpState();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<OutPutDTO> result = outputRepository.outputSearchWithAll(types, keyword, pName, mName, opState, pageable);
+
+        for(OutPutDTO outPutDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(outPutDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            outPutDTO.setMName(material.getMName()); //
+        }
+
+        return PageResponseDTO.<OutPutDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())

@@ -301,3 +301,7 @@ body {
   font-size: 12px;
   transform: translateX(-50%); /* 중앙 정렬을 위한 수평 이동 */
 }
+
+.badge {
+  font-size: 0.8rem; /* 기본보다 조금 크게 */
+}

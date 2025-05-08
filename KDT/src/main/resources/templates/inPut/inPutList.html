@@ -31,29 +31,15 @@
                             </option>
                         </select>
                     </div>
-                    <div class="col-md-1">
-                        <label class="form-label small">검수 결과</label>
-                        <select name="drState" class="form-select form-select-sm" title="검수결과">
-                            <option value="" th:selected="${selectedDRState == ''}">전체</option>
-                            <option th:each="state : ${drStateSet}"
-                                    th:value="${state}"
-                                    th:text="${state}"
-                                    th:selected="${state.name() == selectedDRState}"
-                                    th:class="'state-' + ${state.name()}"
-                                    th:attr="data-state=${state.name()}">
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <label class="form-label small">입고 상태</label>
-                        <select name="ipState" class="form-select form-select-sm" title="입고상태">
+                        <select name="ipState" class="ipState form-select form-select-sm" title="입고상태">
                             <option value="" th:selected="${selectedIPState == ''}">전체</option>
                             <option th:each="state : ${ipStateSet}"
-                                    th:value="${state}"
-                                    th:text="${state}"
-                                    th:selected="${state == selectedIPState}"
-                                    th:class="'state-' + ${state}"
-                                    th:attr="data-state=${state}">
+                                    th:value="${state.name()}"
+                                    th:selected="${state.name() == selectedIPState}"
+                                    th:class="'state-' + ${state.name()}"
+                                    th:attr="data-state=${state.name()}">
                             </option>
                         </select>
                     </div>
@@ -103,7 +89,7 @@
                             <th>합격 수량</th>
                             <th>불량 수량</th>
                             <th>입고 일자</th>
-                            <th>검수 결과</th>
+<!--                            <th>검수 결과</th>-->
                             <th>입고 상태</th>
                         </tr>
                         </thead>
@@ -122,10 +108,7 @@
                             <td th:text="${dto.ipTrueNum}"></td>
                             <td th:text="${dto.ipFalseNum}"></td>
                             <td th:text="${dto.regDate}"></td>
-                            <td class="CheckState" th:data-state="${dto.getDrState() != null ? dto.getDrState() : 'UNKNOWN'}"></td>
-<!--                            <td th:text="${dto.drState}"></td>-->
                             <td class="CheckState" th:data-state="${dto.getIpState() != null ? dto.getIpState() : 'UNKNOWN'}"></td>
-<!--                            <td th:text="${dto.ipState}"></td>-->
                         </tr>
                         </tbody>
                     </table>

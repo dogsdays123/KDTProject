@@ -10,7 +10,7 @@
 <body>
 <div layout:fragment="mtDelivery">
     <div class="container-fluid">
-        <div class="container" style="max-width: 1000px; margin-left: 0;">
+        <div class="container" style="max-width: 1200px; margin-left: 0;">
             <div class="d-flex align-items-center mb-3">
                 <h4 class="mb-0 me-2">출고 관리</h4>
                 <div class="tooltip-wrap">
@@ -21,29 +21,30 @@
             <form>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label class="form-label small">자재 코드</label>
-                        <select class="form-select form-select-sm" title="자재코드">
-                            <option selected>전체</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
+                        <label class="form-label small">상품명</label>
+                        <select name="pName" class="form-select form-select-sm" title="자재명">
+                            <option value="" th:selected="${selectedPName == ''}">전체</option>
+                            <option th:each="pName : ${pNameList}"
+                                    th:value="${pName}"
+                                    th:text="${pName}"
+                                    th:selected="${pName == selectedPName}">
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label small">자재명</label>
-                        <input type="text" class="form-control form-control-sm" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small">출고 상태</label>
-                        <select class="form-select form-select-sm" title="상태">
-                            <option selected>전체</option>
-                            <option value="-">가능</option>
-                            <option value="-">불가능</option>
-                            <option value="-">부분가능</option>
+                        <select name="mName" class="form-select form-select-sm" title="자재명">
+                            <option value="" th:selected="${selectedMName == ''}">전체</option>
+                            <option th:each="dto : ${inventoryStockList}"
+                                    th:if="${dto.isNum > 0}"
+                                    th:value="${dto.mName}"
+                                    th:text="${dto.mName}"
+                                    th:selected="${dto.mName == selectedMName}">
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                        <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
                         <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                     </div>
                 </div>
@@ -54,7 +55,7 @@
                     <div class="col-md-6">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
-                            <input type="text" class="form-control" id="keyword" title="검색어 입력" placeholder="검색어 입력">
+                            <input type="text" class="form-control" name="keyword" id="keyword" th:value="${pageRequestDTO.keyword}" placeholder="검색할 항목을 입력하세요 (예: 자재명)">
                         </div>
                     </div>
                 </div>
@@ -64,11 +65,11 @@
             <div class="d-flex justify-content-end mb-2">
                 <form>
                     <div class="col-auto">
-                        <select class="form-select form-select-sm" title="정렬 갯수 필터">
-                            <option selected>전체</option>
-                            <option value="20">20개씩</option>
-                            <option value="30">30개씩</option>
-                            <option value="50">50개씩</option>
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size" onchange="this.form.submit()">
+                            <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                            <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                            <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                            <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
                         </select>
                     </div>
                 </form>
@@ -79,7 +80,8 @@
                         <thead class="table-light small text-center">
                         <tr>
                             <th><input type="checkbox" id="selectAll" disabled></th>
-                            <th>상품코드</th>
+                            <th>생산 계획 코드</th>
+                            <th>상품 코드</th>
                             <th>상품</th>
                             <th>품목</th>
                             <th>자재 코드</th>
@@ -98,6 +100,7 @@
                         <tr th:each="dto:${responseDTO.dtoList}" th:if="${dto.isNum != null && dto.isNum != 0}">
                             <td><input type="checkbox" class="selectPlan"></td>
                             <td th:text="${dto.isId}" style="display: none"></td>
+                            <td th:text="${dto.ppCode}"></td>
                             <td th:text="${dto.pCode}"></td>
                             <td th:text="${dto.pName}"></td>
                             <td th:text="${dto.isComponentType}"></td>
@@ -107,11 +110,6 @@
                             <td th:text="${dto.isAvailable}"></td>
                             <td th:text="${dto.isLocation}"></td>
                             <td th:text="${dto.regDate}"></td>
-<!--                            <td>-->
-<!--                                <button type="button" class="icon-button"  title="생산 계획 수정">-->
-<!--                                    <i class="bi bi-pencil fs-6"></i>-->
-<!--                                </button>-->
-<!--                            </td>-->
                         </tr>
                         </tbody>
                     </table>
@@ -121,11 +119,29 @@
                         선택 항목 출고 처리
                     </button>
                 </div>
+                <div class="d-flex justify-content-center">
+                    <ul class="pagination flex-wrap">
+                        <li class="page-item" th:if="${responseDTO.prev}">
+                            <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                        </li>
+
+                        <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                            </li>
+                        </th:block>
+
+                        <li class="page-item" th:if="${responseDTO.next}">
+                            <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
     <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
+            <form method="post" th:action="@{/outPut/outputRegister}">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="purchaseOrderModalLabel">출고 처리</h5>&nbsp;&nbsp;
@@ -133,7 +149,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="purchaseOrderForm">
                         <div class="row g-3 mb-3">
                             <p class="text-muted small mb-2">
                                 선택된 자재 코드 : <strong><span id="mCode"></span></strong>&nbsp;&nbsp;
@@ -143,21 +158,29 @@
                                 출고 가능 수량 : <strong><span id="isAvailable"></span></strong>&nbsp;&nbsp;
                             </p>
                             <div class="col-12">
+                                <label class="form-label"><span class="text-danger">*</span> 자재 코드</label>
+                                <input type="text"  id="mCodeHidden" name="mCode" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label"><span class="text-danger">*</span> 생산 계획 코드</label>
+                                <input type="text" id="ppCodeHidden" name="ppCode" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 출고 수량</label>
-                                <input type="text" id="opNum" class="form-control form-control-sm" required>
+                                <input type="text" id="opANum" name="opANum" class="form-control form-control-sm" required>
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 출고일</label>
-                                <input type="date" id="deliveryDate" class="form-control form-control-sm" required>
+                                <input type="date" id="regDate" class="form-control form-control-sm" required>
                             </div>
                         </div>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary btn-sm">출고 등록</button>
+                    <button type="submit" class="btn btn-primary btn-sm">출고 등록</button>
                 </div>
             </div>
+            </form>
         </div>
     </div>
     <script th:if="${message != null}" th:inline="javascript">

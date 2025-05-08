@@ -47,6 +47,7 @@ public class InventoryStockServiceImpl implements InventoryStockService {
             inventoryStockDTO.setPName(inventoryStock.getMaterial().getProduct().getPName());
             inventoryStockDTO.setIsComponentType(inventoryStock.getMaterial().getMComponentType());
             inventoryStockDTO.setRegDate(inventoryStock.getRegDate().toLocalDate());
+
             inventoryStockDTOList.add(inventoryStockDTO);
         }
         return inventoryStockDTOList;
@@ -54,6 +55,11 @@ public class InventoryStockServiceImpl implements InventoryStockService {
 
     @Override
     public void registerIS(InventoryStockDTO inventoryStockDTO){
+
+        boolean exists = inventoryStockRepository.existsByMaterial_mCode(inventoryStockDTO.getMCode());
+        if (exists) {
+            throw new IllegalStateException("이미 등록된 자재입니다.");
+        }
 
         InventoryStock inventoryStock = modelMapper.map(inventoryStockDTO, InventoryStock.class);
 
