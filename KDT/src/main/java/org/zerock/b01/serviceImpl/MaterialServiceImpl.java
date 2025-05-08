@@ -30,12 +30,12 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private MaterialRepository materialRepository;
-
     @Autowired
     private UserByRepository userByRepository;
-
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    AutoGenerateCode autoGenerateCode;
 
     @Override
     public List<Material> getMaterials() {
@@ -67,7 +67,7 @@ public class MaterialServiceImpl implements MaterialService {
 
         if(materialDTO.getMCode() == null){
             log.info("NewNoHave " + material.getMCode());
-            String productionPlanCode = generateProductionPlanCode(materialDTO);
+            String productionPlanCode =  autoGenerateCode.generateCode("m", "");
             material.setOneCode(productionPlanCode);
         }
         else if(materialRepository.findByMaterialCode(materialDTO.getMCode()).isEmpty()){
@@ -100,86 +100,16 @@ public class MaterialServiceImpl implements MaterialService {
             material.setProduct(productRepository.findByProductNameObj(materialDTO.getPName()));
             material.setUserBy(userByRepository.findByUId(uId));
 
-            String mCode = material.getMCode();
-
             boolean isDuplicated = false;
 
-            if (materialRepository.findByMaterialCode(mCode).isPresent()) {
-                isDuplicated = true;
-            }
-
-            if (isDuplicated) {
-                duplicatedCodes.add(mCode);
-            } else {
-                materialRepository.save(material);
-            }
+            material.setMCode(autoGenerateCode.generateCode("m", ""));
+            materialRepository.save(material);
         }
 
         Map<String, String[]> result = new HashMap<>();
         result.put("errorCheck", errorCheck.toArray(new String[0]));
-        result.put("mCodes", duplicatedCodes.toArray(new String[0]));
 
         return result;
-    }
-
-    @Override
-    public Map<String, String[]> materialCheck(List<MaterialDTO> materialDTOs) {
-        List<String> duplicatedCodes = new ArrayList<>();
-        List<String> errorCheck = new ArrayList<>();
-
-        //돌아라돌아라
-        for (MaterialDTO materialDTO : materialDTOs) {
-            //만약 엑셀에 들어온 제품이 등록되지 않은 제품이라면 error로 저장
-            if(productRepository.findByProductNameObj(materialDTO.getPName()) == null){
-                errorCheck.add(materialDTO.getPName());
-                continue;
-            }
-            //그게 아니면 정상영업합니다.
-            Material material = modelMapper.map(materialDTO, Material.class);
-            material.setProduct(productRepository.findByProductNameObj(materialDTO.getPName()));
-            String mCode = material.getMCode();
-
-            boolean isDuplicated = false;
-
-            if (materialRepository.findByMaterialCode(mCode).isPresent()) {
-                isDuplicated = true;
-            }
-
-            if (isDuplicated) {
-                duplicatedCodes.add(mCode);
-            }
-        }
-
-        Map<String, String[]> result = new HashMap<>();
-        result.put("errorCheck", errorCheck.toArray(new String[0]));
-        result.put("mCodes", duplicatedCodes.toArray(new String[0]));
-
-        return result;
-    }
-
-    public String generateProductionPlanCode(MaterialDTO dto) {
-        List<Product> products = productRepository.findByProducts();
-
-        // 제품명에 따른 접두어 설정
-        String prefix = "";
-
-        for(Product product : products){
-            if(dto.getPName().equals(product.getPName())){
-                prefix = product.getPName();
-            } else{
-                prefix = "DEFAULT";
-            }
-        }
-
-        // 날짜 포맷 (예: 20231120)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMM");
-        String dateCode = dto.getRegDate().format(formatter);
-
-        // 동일 접두어 코드의 다음 번호
-        Long nextSequence = materialRepository.countByPrefix(prefix) + 1;
-
-        // 코드 생성
-        return String.format("%s%s%03d", prefix, dateCode, nextSequence);
     }
 
     @Override

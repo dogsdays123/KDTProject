@@ -2,12 +2,11 @@ function addPlan() {
     const ppStart = document.getElementById('ppStart').value;
     const ppEnd = document.getElementById('ppEnd').value;
     const pName = document.getElementById('pName').value;
-    const ppCode = document.getElementById('ppCode').value;
     const ppNum = document.getElementById('ppNum').value;
     const uId = document.getElementById("uId").value;
     let rowIndex = 0;
 
-    if (!ppStart || !ppEnd || !pName || !ppCode || !ppNum) {
+    if (!ppStart || !ppEnd || !pName || !ppNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -16,7 +15,6 @@ function addPlan() {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="plans[${rowIndex}].ppCode" value="${ppCode}">${ppCode}</td>
         <td><input type="hidden" name="plans[${rowIndex}].pName" value="${pName}">${pName}</td>
         <td><input type="hidden" name="plans[${rowIndex}].ppStart" value="${ppStart}">${ppStart}</td>
         <td><input type="hidden" name="plans[${rowIndex}].ppEnd" value="${ppEnd}">${ppEnd}</td>
@@ -64,7 +62,6 @@ function addPlan() {
     document.getElementById('ppStart').value = '';
     document.getElementById('ppEnd').value = '';
     document.getElementById('pName').value = '';
-    document.getElementById('ppCode').value = '';
     document.getElementById('ppNum').value = '';
     document.getElementById('uId').value = '';
 
@@ -182,7 +179,6 @@ function loadFileContent(file, index) {
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
 
-        let pCodes = [];
         let pNames = [];
 
         rows[0]?.forEach(header => {
@@ -195,10 +191,8 @@ function loadFileContent(file, index) {
             const tr = document.createElement('tr');
             tr.setAttribute('data-file-name', file.name);
 
-            const productCode = row[0];
-            const productName = row[1];
+            const productName = row[0];
 
-            pCodes.push(productCode);
             pNames.push(productName);
 
             row.forEach(cell => {
@@ -208,8 +202,7 @@ function loadFileContent(file, index) {
             });
             tableBody.appendChild(tr);
         });
-
-        console.log("pCodes: ", pCodes);
+        
         console.log("pNames: ", pNames);
 
         const fileTable = document.getElementById('fileTable');
