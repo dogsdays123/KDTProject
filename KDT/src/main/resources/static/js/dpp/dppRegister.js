@@ -53,9 +53,6 @@ function addProcurement(button) {
     const selectElements = container.querySelectorAll('select');
     const dateInput = container.querySelector('input[type="date"]');
 
-// 조달계획코드
-    const dppCode = textInputs.length > 0 ? textInputs[0].value.trim() : '';
-
 // 공급업체, 자재명, 자재코드
     const supplier = selectElements.length > 0 ? selectElements[0].value : '';
     const mName = selectElements.length > 1 ? selectElements[1].value : '';
@@ -69,14 +66,13 @@ function addProcurement(button) {
     const dueDate = dateInput ? dateInput.value.trim() : '';
 
     // 유효성 체크 (선택)
-    if (!dppCode || !supplier || !mName || !mCode || !needQty || !supplyQty || !dueDate) {
+    if (!supplier || !mName || !mCode || !needQty || !supplyQty || !dueDate) {
         alert('필수 정보를 입력해주세요');
         return;
     }
 
     // 데이터 객체 생성
     const item = {
-        dppCode,
         supplier,
         mName,
         mCode,
@@ -104,7 +100,6 @@ function renderProcurementTable() {
         const row = document.createElement('tr');
         //이런식으로 input값 넣어줄거임
         row.innerHTML = `
-      <td><input type="hidden" name="dpps[${rowIndex}].dppCode" value="${item.dppCode}">${item.dppCode}</td>
       <td><input type="hidden" name="dpps[${rowIndex}].sName" value="${item.supplier}">${item.supplier}</td>
       <td><input type="hidden" name="dpps[${rowIndex}].mName" value="${item.mName}">${item.mName}</td>
       <td><input type="hidden" name="dpps[${rowIndex}].mCode" value="${item.mCode}">${item.mCode}</td>

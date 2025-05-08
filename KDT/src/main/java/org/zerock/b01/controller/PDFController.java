@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zerock.b01.dto.PurchaseOrderRequestDTO;
 import org.zerock.b01.dto.TransactionStatementDTO;
 import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.dto.allDTO.OrderByPdfDTO;
+import org.zerock.b01.dto.formDTO.OrderByPdfFormDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
@@ -69,9 +71,15 @@ public class PDFController {
     private final PdfService pdfService;
 
     // DG 전동 구매 발주서 pdf
-    @PostMapping("/purchase/order/pdf/download")
-    public ResponseEntity<byte[]> downloadPurchaseOrderPdf(@RequestBody PurchaseOrderRequestDTO request) {
-        byte[] pdfBytes = pdfService.createPdf(request); // 여기에 진짜 PDF 생성
+    @PostMapping("/orderBy/pdf/download")
+    public ResponseEntity<byte[]> downloadPurchaseOrderPdf(@RequestBody OrderByPdfFormDTO form) {
+        log.info("pdfs: {}", form.getPdfs());
+
+        if(form.getPdfs().isEmpty()){
+            return null;
+        }
+
+        byte[] pdfBytes = pdfService.createPdf(form); // 여기에 진짜 PDF 생성
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
@@ -80,12 +88,16 @@ public class PDFController {
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/purchase/order/pdf/preview")
-    public ResponseEntity<byte[]> previewPurchaseOrderPdf(@RequestBody PurchaseOrderRequestDTO request) {
-        log.info("## PDF PREVIEW 요청 ##");
+    @PostMapping("/orderBy/pdf/preview")
+    public ResponseEntity<byte[]> previewPurchaseOrderPdf(@RequestBody OrderByPdfFormDTO form) {
+        log.info("pdfs: {}", form.getPdfs());
+
+        if(form.getPdfs().isEmpty()){
+            return null;
+        }
 
         // PDF 생성 로직 - 예시로 dummy 데이터 사용
-        byte[] pdf = pdfService.createPdf(request); // 전달받은 값으로 PDF 생성
+        byte[] pdf = pdfService.createPdf(form); // 전달받은 값으로 PDF 생성
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

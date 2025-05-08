@@ -1,6 +1,9 @@
 let orderByList = [];
 let worldValue = [];
 let dppCode;
+let planForPDF = [];
+let sName;
+let uId;
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('orderByForm');
@@ -15,10 +18,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = button.closest('tr');
             const dppCode1 = row.children[0].textContent.trim();
             const pName = row.children[1].textContent.trim();
+            const sName1 = row.children[2].textContent.trim();
             const mName = row.children[3].textContent.trim();
             const dppNum = row.children[4].textContent.trim();
             const rqNum = row.children[5].textContent.trim();
+            uId = row.children[8].textContent.trim();
 
+            sName = sName1;
             dppCode = dppCode1;
 
             // 모달에 값 주입
@@ -66,38 +72,67 @@ function addOrderBy(button) {
     const textInputs = container.querySelectorAll('input[type="text"]');
     const numberInputs = container.querySelectorAll('input[type="number"]');
     const selectElements = container.querySelectorAll('select');
-    const dateInput = container.querySelector('input[type="date"]');
+    const dateInputs = container.querySelectorAll('input[type="date"]');
+    const radioInputs = container.querySelectorAll('input[type="radio"]');
+
     const oRemarks = document.getElementById('oRemarks').value;
+    const mName = document.getElementById('mNameInput').textContent;
     console.log(oRemarks);
 
-// 발주서 코드(이제는 자동생성으로 돌릴거임)
-    //const dppCode = textInputs.length > 0 ? textInputs[0].value.trim() : '';
+// text
+    const perPrice = textInputs.length > 2 ? textInputs[2].value.trim() : '';
+    const orderAddress = textInputs.length > 3 ? textInputs[3].value.trim() : '';
 
-// 공급업체, 자재명, 자재코드
-    //const supplier = selectElements.length > 0 ? selectElements[0].value : '';
-
-// 수량
+// number
     const oNum = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
     const oTotalPrice = numberInputs.length > 1 ? numberInputs[1].value.trim() : '';
 
-// 납기일
-    const oExpectDate = dateInput ? dateInput.value.trim() : '';
+// date
+    const oExpectDate = dateInputs.length > 0 ? dateInputs[0].value.trim() : '';
+    const payDate = dateInputs.length > 1 ? dateInputs[1].value.trim() : '';
 
-    // 유효성 체크 (선택)
-    if (!oNum || !oTotalPrice || !oExpectDate) {
+// radio (하나만 선택되도록 그룹화된 라디오에서 선택된 값 찾기)
+    const payMethod = container.querySelector('input[name="payMethod"]:checked')?.value || '';
+    const payDocument = container.querySelector('input[name="payDocument"]:checked')?.value || '';
+
+// 유효성 체크
+    if (!oNum || !oTotalPrice || !oExpectDate || !perPrice || !orderAddress || !payDate ||
+        !payMethod || !payDocument) {
         alert('필수 정보를 입력해주세요');
         return;
     }
 
+
     // 데이터 객체 생성
     const item = {
+        mName,
         oNum,
-        oTotalPrice,
         oExpectDate,
-        oRemarks
+        sName,
+        orderAddress,
+        oRemarks,
+        payDate,
+        perPrice,
+        oTotalPrice,
+        payMethod,
+        payDocument
+    };
+    const item2 = {
+        dppCode,
+        oNum,
+        oExpectDate,
+        sName,
+        orderAddress,
+        oRemarks,
+        payDate,
+        payMethod,
+        payDocument,
+        uId
     };
 
-    console.log(item);
+    planForPDF.push(item2);
+
+    console.log(planForPDF);
 
     orderByList.push(item);
 
@@ -114,6 +149,7 @@ function renderOrderByTable() {
         const row = document.createElement('tr');
         //이런식으로 input값 넣어줄거임
         row.innerHTML = `
+      <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
       <td>
       <input type="hidden" name="orders[${rowIndex}].dppCode" value="${dppCode}">
       <input type="hidden" name="orders[${rowIndex}].oNum" value="${item.oNum}">
@@ -166,4 +202,65 @@ function loadTotalPrice(orderInput) {
     const totalPrice = $('#totalPrice');
     totalPrice.val(total);  // input 요소일 경우
     totalPrice.trigger('change');  // 리스너가 있을 경우만 유효
+}
+
+
+
+//PDF용
+function previewOrderPDF() {
+    const selectedPlans = planForPDF;
+    if (selectedPlans.length === 0) {
+        alert('조달계획을 최소 1개 이상 선택해주세요.');
+        return;
+    }
+
+    // const formData = collectFormData();
+    const formData = {
+        pdfs: selectedPlans
+    };
+
+    console.log(JSON.stringify(formData));  // formData의 JSON 문자열로 출력
+
+    fetch('/orderBy/pdf/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+    })
+        .then(res => res.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank'); // 새 창으로 PDF 미리보기
+        })
+        .catch(() => alert('미리보기에 실패했습니다.'));
+}
+
+
+
+function generateOrderPDF(){
+    const selectedPlans = planForPDF;
+    if (selectedPlans.length === 0) {
+        alert('조달계획을 최소 1개 이상 선택해주세요.');
+        return;
+    }
+    const formData = {
+        pdfs: selectedPlans
+    };
+
+    fetch('/orderBy/pdf/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+    })
+        .then(res => res.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `발주서_${formData.planCode}.pdf`;
+            a.click();
+            alert('발주서가 PDF로 생성되어 메일로 전송되었습니다.');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('purchaseOrderModal'));
+            if (modal) modal.hide();
+        })
+        .catch(() => alert('발주서 생성에 실패했습니다.'));
 }
