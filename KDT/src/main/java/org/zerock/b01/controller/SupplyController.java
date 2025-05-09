@@ -25,6 +25,7 @@ import org.zerock.b01.dto.allDTO.OrderByListAllDTO;
 import org.zerock.b01.dto.allDTO.PlanListAllDTO;
 import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.OrderByRepository;
+import org.zerock.b01.repository.SupplierStockRepository;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
@@ -48,6 +49,7 @@ public class SupplyController {
     private final UserByService userByService;
     private final PageService pageService;
     private final UserByRepository userByRepository;
+    private final SupplierStockRepository supplierStockRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -89,6 +91,19 @@ public class SupplyController {
 
         PageResponseDTO<OrderByListAllDTO> responseDTO =
                 pageService.orderByWithAll(pageRequestDTO);
+
+        // ✅ leadTime 추가 로직 (Material 기준으로 조회)
+        List<OrderByListAllDTO> dtoList = responseDTO.getDtoList();
+
+        for (OrderByListAllDTO dto : dtoList) {
+            String leadTime = supplierStockRepository.findLeadTimeByMCode(dto.getMCode());
+            log.info("mCode {} / leadTime {}", dto.getMCode(), leadTime);
+            if (leadTime != null) {
+                dto.setLeadTime(leadTime);
+            } else {
+                dto.setLeadTime("미배정");
+            }
+        }
 
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());

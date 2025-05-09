@@ -19,7 +19,9 @@ public class OrderByListAllDTO {
     private LocalDateTime oRegDate;
     private String sName;
     private String mName;
+    private String mCode;
     private LocalDate oExpectDate;
     private String oState;
+    private String leadTime;
     private String uId;
 }

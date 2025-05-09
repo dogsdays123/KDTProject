@@ -99,7 +99,7 @@
                             <th>공급 업체명</th>
                             <th>총 금액</th>
                             <th>납기일</th>
-                            <th>결제 방식</th>
+                            <th>리드 타임</th>
                             <th>발주자</th>
                             <th>상태</th>
                         </tr>
@@ -119,7 +119,7 @@
                         <td th:text="${dto.getSName()}"></td>
                         <td th:text="${dto.getOTotalPrice()}"></td>
                         <td th:text="${dto.getOExpectDate()}"></td>
-                        <td th:text="123"></td>
+                        <td th:text="${dto.getLeadTime()}"></td>
                         <td th:text="${dto.getUId()}"></td>
                         <td th:text="${dto.getOState()}"></td>
                       </tr>
