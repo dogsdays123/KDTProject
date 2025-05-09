@@ -19,10 +19,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.b01.domain.Bom;
-import org.zerock.b01.domain.Material;
-import org.zerock.b01.domain.Product;
+import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.*;
+import org.zerock.b01.dto.allDTO.OrderByListAllDTO;
+import org.zerock.b01.dto.allDTO.PlanListAllDTO;
+import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.repository.OrderByRepository;
+import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
@@ -41,7 +44,10 @@ public class SupplyController {
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
+    private final OrderByRepository orderByRepository;
     private final UserByService userByService;
+    private final PageService pageService;
+    private final UserByRepository userByRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -64,8 +70,31 @@ public class SupplyController {
     }
 
     @GetMapping("/progressInspection")
-    public void progressInspection() {
-        log.info("##PROGRESS INSPECTION PAGE GET....##");
+    public void progressInspection(PageRequestDTO pageRequestDTO, Model model) {
+        List<OrderBy> orderByList = orderByRepository.findAll();
+        model.addAttribute("orderByList", orderByList);
+
+        List<String> sNameList = orderByRepository.findSupplierNames();
+        model.addAttribute("sNameList", sNameList);
+
+        List<String> mNameList = orderByRepository.findMaterialNames();
+        model.addAttribute("mNameList", mNameList);
+
+        List<UserBy> userByList = userByRepository.findAll();
+        model.addAttribute("userByList", userByList);
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<OrderByListAllDTO> responseDTO =
+                pageService.orderByWithAll(pageRequestDTO);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        model.addAttribute("responseDTO", responseDTO);
     }
 
     @GetMapping("/requestDelivery")

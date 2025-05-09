@@ -13,4 +13,7 @@ public interface SupplierStockRepository extends JpaRepository<SupplierStock, Lo
 
     @Query("SELECT ss FROM SupplierStock ss WHERE ss.supplier.sId = :sId")
     List<SupplierStock> findAllBySupplierId(@Param("sId") Long sId);
+
+    @Query("SELECT ss.supplier.sName FROM SupplierStock ss WHERE ss.material.mCode = :mCode")
+    List<String> findSNameByMCode(@Param("mCode") String mCode);
 }

@@ -199,13 +199,12 @@ public class MaterialController {
             materialDTO.setMComponentType(formatter.formatCellValue(row.getCell(1)));
             materialDTO.setMType(formatter.formatCellValue(row.getCell(2)));
             materialDTO.setMName(formatter.formatCellValue(row.getCell(3)));
-            materialDTO.setMLeadTime(formatter.formatCellValue(row.getCell(4)));
-            materialDTO.setMDepth(Float.parseFloat(formatter.formatCellValue(row.getCell(5))));
-            materialDTO.setMHeight(Float.parseFloat(formatter.formatCellValue(row.getCell(6))));
-            materialDTO.setMWidth(Float.parseFloat(formatter.formatCellValue(row.getCell(7))));
-            materialDTO.setMWeight(Float.parseFloat(formatter.formatCellValue(row.getCell(8))));
-            materialDTO.setMUnitPrice(formatter.formatCellValue(row.getCell(9)));
-            materialDTO.setMMinNum(formatter.formatCellValue(row.getCell(10)));
+            materialDTO.setMDepth(Float.parseFloat(formatter.formatCellValue(row.getCell(4))));
+            materialDTO.setMHeight(Float.parseFloat(formatter.formatCellValue(row.getCell(5))));
+            materialDTO.setMWidth(Float.parseFloat(formatter.formatCellValue(row.getCell(6))));
+            materialDTO.setMWeight(Float.parseFloat(formatter.formatCellValue(row.getCell(7))));
+            materialDTO.setMUnitPrice(formatter.formatCellValue(row.getCell(8)));
+            materialDTO.setMMinNum(formatter.formatCellValue(row.getCell(9)));
 
             materialDTOs.add(materialDTO);
         }

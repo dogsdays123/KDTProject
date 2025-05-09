@@ -155,16 +155,6 @@
                                     <div class="tab-pane fade show active" id="wheel" role="tabpanel">
                                         <div class="d-flex flex-nowrap align-items-end gap-2 overflow-visible">
                                             <div style="width: 150px;">
-                                                <label class="form-label small">공급업체</label>
-                                                <select class="form-select form-select-sm">
-                                                    <option selected>전체</option>
-                                                    <th:block th:each="sup : ${supplierList}">
-                                                        <option th:value="${sup.getSName()}"
-                                                                th:text="${sup.getSName()}"></option>
-                                                    </th:block>
-                                                </select>
-                                            </div>
-                                            <div style="width: 150px;">
                                                 <label for="mName" class="form-label small">자재명</label>
                                                 <select class="form-select form-select-sm" id="mName">
                                                     <option selected>전체</option>
@@ -189,6 +179,23 @@
                                                     <th:block th:each="m : ${materialList}">
                                                         <option th:value="${m.getMCode()}" th:text="${m.getMCode()}"
                                                                 th:data-code="${m.getMCode()}"></option>
+                                                    </th:block>
+                                                </div>
+                                            </div>
+                                            <div style="width: 150px;">
+                                                <label class="form-label small">공급업체</label>
+                                                <select class="form-select form-select-sm"  name="sup" id="sup">
+                                                    <option selected>전체</option>
+                                                    <th:block th:each="sup : ${supplierList}">
+                                                        <option th:value="${sup.getSName()}"
+                                                                th:text="${sup.getSName()}"></option>
+                                                    </th:block>
+                                                </select>
+                                                <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
+                                                <div id="supHTML" style="display: none;">
+                                                    <th:block th:each="sup : ${supplierList}">
+                                                        <option th:value="${sup.getSName()}" th:text="${sup.getSName()}"
+                                                                th:data-code="${sup.getSName()}"></option>
                                                     </th:block>
                                                 </div>
                                             </div>
@@ -218,9 +225,9 @@
                                            style="table-layout: fixed; width: 100%;">
                                         <thead class="table-light small text-center">
                                         <tr>
-                                            <th>공급 업체</th>
                                             <th>자재명</th>
                                             <th>자재 코드</th>
+                                            <th>공급 업체</th>
                                             <th>필요 수량</th>
                                             <th>조달 수량</th>
                                             <th>납기일</th>

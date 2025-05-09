@@ -42,7 +42,14 @@ public class ForAdminTests {
                 .uPhone("01000000000")
                 .build();
 
-        userByService.registerAdmin(user);
+        SupplierDTO supplierDTO = SupplierDTO.builder()
+                .sName("admin")
+                .sRegNum("12345678")
+                .sManager("admin")
+                .sStatus("관리자")
+                .build();
+
+        userByService.registerAdmin(user, supplierDTO);
     }
 
     @Test

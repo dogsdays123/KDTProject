@@ -38,6 +38,7 @@ public class DeliveryProcurementPlanController {
     private final UserByRepository userByRepository;
     private final DeliveryProcurementPlanRepository deliveryProcurementPlanRepository;
     private final ProductionPlanRepository productionPlanRepository;
+    private final SupplierStockRepository supplierStockRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -138,14 +139,11 @@ public class DeliveryProcurementPlanController {
         return mCodes != null ? mCodes : Collections.emptyList();
     }
 
-    @GetMapping("/{ppCode}/ppCode")
+    @GetMapping("/{mCode}/ss")
     @ResponseBody
-    public List<String> getDppCodeByPpCode(@PathVariable String ppCode) {
-        log.info("****** " + ppCode);
-        List<String> ppCodes = productionPlanRepository.findDppCodeByPpCode(
-                productionPlanRepository.findByProductionPlanCodeObj(ppCode)
-        );
-        return ppCodes != null ? ppCodes : Collections.emptyList();
+    public List<String> getDppCodeByPpCode(@PathVariable String mCode) {
+        List<String> ss = supplierStockRepository.findSNameByMCode(mCode);
+        return ss != null ? ss : Collections.emptyList();
     }
 
 
@@ -156,6 +154,7 @@ public class DeliveryProcurementPlanController {
                            HttpServletRequest request) throws IOException {
 
         List<DeliveryProcurementPlanDTO> dppDTOs = form.getDpps();
+        log.info("dto$ {}", form.getDpps());
 
         for(DeliveryProcurementPlanDTO dppDTO : dppDTOs) {
             dppDTO.setUId(uId);

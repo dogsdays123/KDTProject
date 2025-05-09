@@ -118,7 +118,7 @@ public class MaterialServiceImpl implements MaterialService {
         Material material = result.orElseThrow();
         material.change(materialDTO.getMComponentType(), materialDTO.getMType(), materialDTO.getMName(), materialDTO.getMMinNum(), materialDTO.getMUnitPrice(),
                 materialDTO.getMDepth(), materialDTO.getMHeight(), materialDTO.getMWidth(),
-                materialDTO.getMWeight(), materialDTO.getMLeadTime());
+                materialDTO.getMWeight());
 
         materialRepository.save(material);
     }

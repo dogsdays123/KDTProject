@@ -429,7 +429,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .mWeight(prod.getMWeight())
                         .mUnitPrice(prod.getMUnitPrice())
                         .mComponentType(prod.getMComponentType())
-                        .mLeadTime(prod.getMLeadTime())
                         .uId(prod.getUserBy().getUId())
                         .pName(prod.getProduct().getPName())
                         .regDate(prod.getRegDate().toLocalDate())

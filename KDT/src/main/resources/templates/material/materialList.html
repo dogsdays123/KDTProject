@@ -113,12 +113,8 @@
                                 <th style="width: 190px;">자재명</th>
                                 <th style="width: 70px;">최소 공급 수량</th>
                                 <th style="width: 100px;">규격</th>
-<!--                                <th style="width: 40px;">높이</th>-->
-<!--                                <th style="width: 40px;">세로</th>-->
-<!--                                <th style="width: 40px;">가로</th>-->
                                 <th style="width: 40px;">무게</th>
                                 <th style="width: 40px;">단가</th>
-                                <th style="width: 40px;">리드타임</th>
                                 <th style="width: 40px;">등록자</th>
                                 <th style="width: 40px;">수정</th>
                             </tr>
@@ -143,7 +139,6 @@
                                 <td th:text="${dto.getMWidth()}" style="display: none"></td>
                                 <td th:text="${dto.getMWeight()}"></td>
                                 <td th:text="${dto.getMUnitPrice()}"></td>
-                                <td th:text="${dto.getMLeadTime()}"></td>
                                 <td th:text="${dto.getUId()}"></td>
                                 <td>
                                     <button type="button" class="icon-button" id="openPurchaseModal" title="부품 정보 수정">
@@ -245,10 +240,6 @@
                                                 <div class="col-6">
                                                     <label class="form-label"><span class="text-danger">*</span> 단가</label>
                                                     <input type="text" id="ppMUnitPrice" name="mUnitPrice" class="form-control form-control-sm" required>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label"><span class="text-danger">*</span> 리드타임</label>
-                                                    <input type="text" id="ppMLeadTime" name="mLeadTime" class="form-control form-control-sm" required>
                                                 </div>
                                             </div>
                                         </div>
