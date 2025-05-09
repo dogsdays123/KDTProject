@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Material;
+import org.zerock.b01.domain.Supplier;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.PurchaseItemDTO;
 import org.zerock.b01.dto.PurchaseOrderRequestDTO;
@@ -19,6 +20,7 @@ import org.zerock.b01.dto.allDTO.OrderByPdfDTO;
 import org.zerock.b01.dto.formDTO.OrderByPdfFormDTO;
 import org.zerock.b01.repository.DeliveryProcurementPlanRepository;
 import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.repository.SupplierRepository;
 import org.zerock.b01.repository.UserByRepository;
 
 import java.io.ByteArrayOutputStream;
@@ -38,6 +40,8 @@ public class PdfService {
     DeliveryProcurementPlanRepository dppRepository;
     @Autowired
     UserByRepository userByRepository;
+    @Autowired
+    SupplierRepository supplierRepository;
 
     public byte[] createSupplierPdf(TransactionStatementDTO request) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -332,6 +336,7 @@ public class PdfService {
     public byte[] createPdf(OrderByPdfFormDTO request) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         UserBy userBy = userByRepository.findById(request.getPdfs().get(0).getUId()).orElseThrow();
+        Supplier sup = supplierRepository.findSupplierBySName(request.getPdfs().get(0).getSName());
 
         try {
             Document document = new Document();
@@ -375,30 +380,30 @@ public class PdfService {
             headerCell.setPadding(7f); // 여백도 선택
             supplierInfoTable.addCell(headerCell);
 
-            PdfPCell supplierAddressCell = new PdfPCell(new Phrase("부산광역시 사상구 학감대로 226 롯데프라자 2층", font));
+            PdfPCell supplierAddressCell = new PdfPCell(new Phrase(sup.getSAddress() + " / " + sup.getSAddressExtra(), font));
             supplierAddressCell.setColspan(3);
             supplierAddressCell.setHorizontalAlignment(Element.ALIGN_CENTER);   // ← 가운데 정렬
             supplierAddressCell.setVerticalAlignment(Element.ALIGN_MIDDLE);     // ← 수직 가운데 정렬
             supplierAddressCell.setFixedHeight(20f);
 
             supplierInfoTable.addCell(createCenteredCell("상호명", font));
-            supplierInfoTable.addCell(createCenteredCell("(주)모터바이크", font));
+            supplierInfoTable.addCell(createCenteredCell(sup.getSName(), font));
             supplierInfoTable.addCell(createCenteredCell("사업자등록번호", font));
-            supplierInfoTable.addCell(createCenteredCell("247-85-01361", font));
+            supplierInfoTable.addCell(createCenteredCell(sup.getSRegNum(), font));
             supplierInfoTable.addCell(createCenteredCell("대표자명", font));
-            supplierInfoTable.addCell(createCenteredCell("박효정", font));
+            supplierInfoTable.addCell(createCenteredCell(sup.getSExponent(), font));
             supplierInfoTable.addCell(createCenteredCell("업종", font));
-            supplierInfoTable.addCell(createCenteredCell("전자상거래, 판촉물", font));
+            supplierInfoTable.addCell(createCenteredCell(sup.getSBusinessType() + ", " + sup.getSBusinessArray(), font));
             supplierInfoTable.addCell(createCenteredCell("사업장주소", font));
             supplierInfoTable.addCell(supplierAddressCell);
             supplierInfoTable.addCell(createCenteredCell("전화", font));
-            supplierInfoTable.addCell(createCenteredCell("1588-8888", font));
+            supplierInfoTable.addCell(createCenteredCell(sup.getSPhone(), font));
             supplierInfoTable.addCell(createCenteredCell("팩스(FAX)", font));
-            supplierInfoTable.addCell(createCenteredCell("070-1234-5678", font));
+            supplierInfoTable.addCell(createCenteredCell(sup.getSFax(), font));
             supplierInfoTable.addCell(createCenteredCell("직통전화", font));
-            supplierInfoTable.addCell(createCenteredCell("010-1234-5678", font));
+            supplierInfoTable.addCell(createCenteredCell(sup.getSPhoneDirect(), font));
             supplierInfoTable.addCell(createCenteredCell("담당직원", font));
-            supplierInfoTable.addCell(createCenteredCell("", font));
+            supplierInfoTable.addCell(createCenteredCell(sup.getSManager(), font));
             supplierInfoTable.addCell(createCenteredCell("비고", font));
             supplierInfoTable.addCell(createCenteredCell("", font));
 

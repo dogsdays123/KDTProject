@@ -69,6 +69,23 @@
                   </th:block>
                 </div>
               </div>
+              <div class="col-md-2">
+                <label for="materialCode" class="form-label small">부품 코드</label>
+                <select class="form-select form-select-sm" id="materialCode">
+                  <option value="" selected>전체</option>
+                  <th:block th:each="m : ${materialList}">
+                    <option th:value="${m.mCode}" th:text="${m.mCode}"></option>
+                  </th:block>
+                </select>
+                <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
+                <div id="mCodeHTML" style="display: none;">
+                  <option value="" selected>전체</option>
+                  <th:block th:each="m : ${materialList}">
+                    <option th:value="${m.mCode}" th:text="${m.mCode}"
+                            th:data-code="${m.mCode}"></option>
+                  </th:block>
+                </div>
+              </div>
               <div class="col-md-1">
                 <label class="form-label small">필요 수량</label>
                 <input type="number" id="productQuantity" class="form-control form-control-sm" name="수량">
@@ -85,10 +102,9 @@
                 <thead class="table-light small text-center">
                 <tr>
                   <th>상품</th>
-                  <th>상품 코드</th>
                   <th>부품</th>
-                  <th>자재명</th>
-                  <th>자재 코드</th>
+                  <th>부품 이름</th>
+                  <th>부품 코드</th>
                   <th>필요 수량</th>
                   <th>삭제</th>
                 </tr>
