@@ -6,11 +6,20 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.zerock.b01.domain.Material;
+import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.PurchaseItemDTO;
 import org.zerock.b01.dto.PurchaseOrderRequestDTO;
 import org.zerock.b01.dto.TransactionItemDTO;
 import org.zerock.b01.dto.TransactionStatementDTO;
+import org.zerock.b01.dto.allDTO.OrderByPdfDTO;
+import org.zerock.b01.dto.formDTO.OrderByPdfFormDTO;
+import org.zerock.b01.repository.DeliveryProcurementPlanRepository;
+import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.repository.UserByRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.text.NumberFormat;
@@ -19,8 +28,16 @@ import java.util.Date;
 
 import static java.awt.SystemColor.text;
 
+@Log4j2
 @Service
 public class PdfService {
+
+    @Autowired
+    MaterialRepository materialRepository;
+    @Autowired
+    DeliveryProcurementPlanRepository dppRepository;
+    @Autowired
+    UserByRepository userByRepository;
 
     public byte[] createSupplierPdf(TransactionStatementDTO request) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -106,6 +123,7 @@ public class PdfService {
             supplierAddressCell.setVerticalAlignment(Element.ALIGN_MIDDLE);     // ← 수직 가운데 정렬
             supplierAddressCell.setFixedHeight(20f);
 
+            //우리회사 정보
             supplierInfoTable.addCell(createCenteredCell("상호명", font));
             supplierInfoTable.addCell(createCenteredCell("(주)DG전동", font));
             supplierInfoTable.addCell(createCenteredCell("사업자등록번호", font));
@@ -311,8 +329,9 @@ public class PdfService {
 
 
 
-    public byte[] createPdf(PurchaseOrderRequestDTO request) {
+    public byte[] createPdf(OrderByPdfFormDTO request) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+        UserBy userBy = userByRepository.findById(request.getPdfs().get(0).getUId()).orElseThrow();
 
         try {
             Document document = new Document();
@@ -474,13 +493,15 @@ public class PdfService {
             materialInfoTable.addCell(createColoredCell("단가", contentTitleFont1, headerColor));
             materialInfoTable.addCell(createColoredCell("공급가액(VAT포함)", contentTitleFont1, headerColor));
 
-            for (PurchaseItemDTO item : request.getItems()){
-                String standard = item.getWidth() + "x" + item.getDepth() + "x" + item.getHeight();
+            for (OrderByPdfDTO item : request.getPdfs()){
+                log.info("%%% " + item.getDppCode());
+                Material m  = materialRepository.findById(dppRepository.findById(item.getDppCode()).orElseThrow().getMaterial().getMCode()).orElseThrow();
+                String standard = m.getMWidth() + "x" + m.getMDepth() + "x" + m.getMHeight();
                 // 수량 x 단가
                 NumberFormat numberFormat = NumberFormat.getInstance();
 
-                int quantity = Integer.parseInt(item.getQuantity()); // 문자열을 숫자로 먼저 변환
-                int unitPrice = Integer.parseInt(request.getUnitPrice());
+                int quantity = Integer.parseInt(item.getONum()); // 문자열을 숫자로 먼저 변환
+                int unitPrice = Integer.parseInt(m.getMUnitPrice());
 
                 int total = quantity * unitPrice;
 
@@ -494,7 +515,7 @@ public class PdfService {
                 String formattedVat = "\\ " + numberFormat.format(vat);
                 String formattedSum = "\\ " + numberFormat.format(sum);
 
-                PdfPCell nameCell = createCenteredCell(item.getMaterialName(), font);
+                PdfPCell nameCell = createCenteredCell(m.getMName(), font);
                 nameCell.setColspan(3);
                 materialInfoTable.addCell(nameCell);
 
@@ -535,7 +556,7 @@ public class PdfService {
                 deliveryLocationCell.setColspan(2);
                 deliveryLocationCell.setMinimumHeight(30f);
 
-                PdfPCell deliveryLocationCellInfo = createCenteredCell(request.getDeliveryLocation(), font);
+                PdfPCell deliveryLocationCellInfo = createCenteredCell(item.getOrderAddress(), font);
                 deliveryLocationCellInfo.setColspan(5);
                 deliveryLocationCell.setMinimumHeight(30f);
 
@@ -546,7 +567,7 @@ public class PdfService {
                 deliveryDateCell.setColspan(2);
                 deliveryLocationCell.setMinimumHeight(5f);
 
-                PdfPCell deliveryDateCellInfo = createCenteredCell(request.getDeliveryDate(), contentTitleFont1);
+                PdfPCell deliveryDateCellInfo = createCenteredCell(item.getOExpectDate(), contentTitleFont1);
                 deliveryDateCellInfo.setColspan(5);
                 deliveryLocationCell.setMinimumHeight(5f);
 
@@ -556,24 +577,17 @@ public class PdfService {
                 PdfPCell significantCell = createColoredCell("특이사항(요청사항)", contentTitleFont1, headerColor);
                 significantCell.setColspan(2);
 
-                PdfPCell significantCellInfo = createCenteredCell(request.getSignificant(), font);
+                PdfPCell significantCellInfo = createCenteredCell(item.getORemarks(), font);
                 significantCellInfo.setColspan(5);
 
                 materialInfoTable.addCell(significantCell);
                 materialInfoTable.addCell(significantCellInfo);
 
-                String payMethod = "";
-
                 BaseFont baseFont1 = BaseFont.createFont("fonts/NanumGothic-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                 Font font1 = new Font(baseFont1, 10, Font.NORMAL);
 
-                if ("Y".equals(request.getPayMethodCash())) {
-                    payMethod += "[o] 계좌이체(입금자명 : DG전동)";
-                }
-                if ("Y".equals(request.getPayMethodCard())) {
-                    if (!payMethod.isEmpty()) payMethod += " / "; // 구분자
-                    payMethod += "[o] 신용카드결제";
-                }
+                //결제방식
+                String payMethod = item.getPayMethod();
 
                 PdfPCell payMethodCell = createColoredCell("결제방법", contentTitleFont1, headerColor);
                 payMethodCell.setColspan(2);
@@ -584,21 +598,14 @@ public class PdfService {
                 materialInfoTable.addCell(payMethodCell);
                 materialInfoTable.addCell(payMethodCellInfo);
 
-                String payDocument = "";
-
-                if("Y".equals(request.getPayDocumentsTex())){
-                    payDocument += "[o] 세금계산서";
-                }
-                if ("Y".equals(request.getPayDocumentsCash())) {
-                    if (!payMethod.isEmpty()) payDocument += " / "; // 구분자
-                    payDocument += "[o] 신용카드결제";
-                }
+                //세후계산
+                String payDocument = item.getPayDocument();
 
                 PdfPCell payDateCell = createColoredCell("결제일자", contentTitleFont1, headerColor);
                 payDateCell.setColspan(2);
                 payDateCell.setMinimumHeight(5f);
 
-                PdfPCell payDateCellInfo = createCenteredCell(request.getPayDate(), font);
+                PdfPCell payDateCellInfo = createCenteredCell(item.getPayDate(), font);
                 payDateCellInfo.setColspan(5);
                 payDateCellInfo.setMinimumHeight(5f);
 

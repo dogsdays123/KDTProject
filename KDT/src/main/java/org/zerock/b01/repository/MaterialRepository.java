@@ -26,6 +26,9 @@ public interface MaterialRepository extends JpaRepository<Material, String>, All
 
     boolean existsByProduct_pCode(String pCode);
 
+    @Query("select m from Material m where m.mName=:mName")
+    Material findByName(@Param("mName") String mName);
+
     @Query("SELECT DISTINCT m.mComponentType FROM Material m WHERE m.product.pCode = :pCode")
     List<String> findComponentTypesByProductCode(@Param("pCode") String pCode);
 
