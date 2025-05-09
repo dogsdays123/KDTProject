@@ -94,12 +94,12 @@ public class BomServiceImpl implements BomService {
 
         //돌아라돌아라
         for (BomDTO bomDTO : bomDTOs) {
-            //만약 엑셀에 들어온 제품이 등록되지 않은 제품이라면 error로 저장
+
             if(bomRepository.findByProductByPName(bomDTO.getPName()) == null){
                 pNames.add(bomDTO.getPName());
                 continue;
             }
-            //그게 아니면 정상영업합니다.
+
             if(materialRepository.findByMaterialCode(bomDTO.getMCode()).orElse(null) == null){
                 mCodes.add(bomDTO.getMCode());
             }

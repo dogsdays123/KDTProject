@@ -3,24 +3,20 @@ let errorChecks = null;
 let selectedFiles = []; // 전역 변수로 따로 관리
 
 function addPlan() {
-    const pName = document.getElementById('pName').value;
-    const mComponentType = document.getElementById('mComponentType').value;
-    const mType = document.getElementById('mType').value;
-    const mName = document.getElementById('mName').value;
-    const mCode = document.getElementById('mCode').value;
-    const leadTime = document.getElementById('leadTime').value;
-    const depth = document.getElementById('depth').value;
-    const height = document.getElementById('height').value;
-    const width = document.getElementById('width').value;
-    const weight = document.getElementById('weight').value;
+    const productName = document.getElementById('productName').value;
+    const productCode = document.getElementById('productCode').value;
+    const componentType = document.getElementById('componentType').value;
+    const materialList = document.getElementById('materialList');
+    const materialCode = document.getElementById('materialCode').value;
+    const ssNum = document.getElementById('ssNum').value;
+    const ssMinOrderQty = document.getElementById('ssMinOrderQty').value;
     const unitPrice = document.getElementById('unitPrice').value;
-    const mMinNum = document.getElementById('mMinNum').value;
-    const uId = document.getElementById("uId").value;
-    let rowIndex = 0;
-    //uId는 따로 받아온다.
+    const leadTime = document.getElementById('leadTime').value;
 
-    if (!pName || !mType || !mName || !mCode || !leadTime
-        || !depth || !height || !width || !weight || !unitPrice || !mMinNum) {
+    const materialName = materialList.options[materialList.selectedIndex].text;
+
+    if (!productName || !componentType || !componentType || !materialList || !materialCode
+        || !ssNum || !ssMinOrderQty || !unitPrice || !leadTime) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -29,19 +25,14 @@ function addPlan() {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="materials[${rowIndex}].pName" value="${pName}">${pName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mType" value="${mType}">${mType}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mName" value="${mName}">${mName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mCode" value="${mCode}">${mCode}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mMinNum" value="${mMinNum}">${mMinNum}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mDepth" value="${depth}">${depth}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mHeight" value="${height}">${height}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mWidth" value="${width}">${width}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mWeight" value="${weight}">${weight}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mUnitPrice" value="${unitPrice}">${unitPrice}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mLeadTime" value="${leadTime}">${leadTime}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].uId" value="${uId}">${uId}</td> 
+        <td><input type="hidden" name="pNames[]" value="${productName}">${productName}</td> 
+        <td><input type="hidden" name="cTypes[]" value="${componentType}">${componentType}</td> 
+        <td><input type="hidden" name="mNames[]" value="${materialName}">${materialName}</td> 
+        <td><input type="hidden" name="mCodes[]" value="${materialCode}">${materialCode}</td> 
+        <td><input type="hidden" name="ssNums[]" value="${ssNum}">${ssNum}</td> 
+        <td><input type="hidden" name="ssMinOrderQty[]" value="${ssMinOrderQty}">${ssMinOrderQty}</td> 
+        <td><input type="hidden" name="unitPrices[]" value="${unitPrice}">${unitPrice}</td> 
+        <td><input type="hidden" name="leadTimes[]" value="${leadTime}">${leadTime}</td> 
         <td>
           <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
             <i class="bi bi-x-lg"></i>
@@ -50,7 +41,7 @@ function addPlan() {
     `;
 
     tableBody.appendChild(newRow);
-    rowIndex++;
+
 
     const planRows = tableBody.querySelectorAll('tr:not(#registerRow)');
     if (planRows.length === 0) {
@@ -58,7 +49,7 @@ function addPlan() {
         if (existingRegisterRow) {
             existingRegisterRow.remove();
         }
-        return; // 항목 없으면 함수 종료
+        return;
     }
 
     if (!document.getElementById('registerRow')) {
@@ -79,20 +70,17 @@ function addPlan() {
         tableBody.appendChild(registerRow);
     }
 
+
     // 입력값 초기화
-    document.getElementById('pName').value = '';
-    document.getElementById('mComponentType').value = '';
-    document.getElementById('mType').value = '';
-    document.getElementById('mName').value = '';
-    document.getElementById('mCode').value = '';
-    document.getElementById('leadTime').value = '';
-    document.getElementById('depth').value = '';
-    document.getElementById('height').value = '';
-    document.getElementById('width').value = '';
-    document.getElementById('weight').value = '';
+    document.getElementById('productName').selectedIndex = 0;
+    document.getElementById('productCode').value = '';
+    document.getElementById('componentType').selectedIndex = 0;
+    document.getElementById('materialList').selectedIndex = 0;
+    document.getElementById('materialCode').value = '';
+    document.getElementById('ssNum').value = '';
+    document.getElementById('ssMinOrderQty').value = '';
     document.getElementById('unitPrice').value = '';
-    document.getElementById('mMinNum').value = '';
-    document.getElementById("uId").value = '';
+    document.getElementById('leadTime').value = '';
 }
 
 // 삭제 버튼 클릭 시 해당 행 삭제
@@ -149,7 +137,7 @@ function updateFileListUI() {
 
     // AJAX 요청 보내기
     $.ajax({
-        url: '/material/addMaterial',
+        url: '/supplier/addSStock',
         method: 'POST',
         data: formData,
         processData: false,
@@ -294,7 +282,7 @@ $('#excelUpload').on('click', function (e) {
 
     // AJAX 요청 보내기
     $.ajax({
-        url: '/material/addMaterial',
+        url: '/supplier/addSStock',
         method: 'POST',
         data: formData,
         processData: false,
@@ -316,9 +304,9 @@ $('#excelUpload').on('click', function (e) {
             document.getElementById('fileListContainer').style.display = 'none';
 
             if (confirm("목록 페이지로 이동하시겠습니까?")) {
-                window.location.href = "/material/materialList";
+                window.location.href = "/supplier/sInventoryList";
             } else {
-                window.location.href = "/material/materialRegister";
+                window.location.href = "/supplier/sInventoryRegister";
             }
 
         },
@@ -372,4 +360,69 @@ $(document).ready(function () {
             $('#mComponentType').trigger('change');
         }
     });
+});
+
+document.getElementById("productName").addEventListener("change", function() {
+    var selectedOption = this.options[this.selectedIndex];  // 선택한 상품 옵션
+    var productCode = selectedOption.getAttribute("data-code");  // 상품 코드 가져오기
+    document.getElementById("productCode").value = productCode;
+
+    if (productCode) {
+        // 상품코드에 맞는 부품명 목록을 가져옵니다.
+        fetch(`/supplier/api/products/${productCode}/component-types`)
+            .then(response => response.json())
+            .then(componentTypes => {
+                const componentSelect = document.getElementById("componentType");
+                componentSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
+                componentTypes.forEach(type => {
+                    let option = document.createElement("option");
+                    option.value = type;
+                    option.textContent = type;
+                    componentSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching component types:', error));
+    }// 상품 코드 입력란에 설정
+});
+
+
+document.getElementById("componentType").addEventListener("change", function() {
+    let componentType = this.value;
+    if (componentType) {
+        // 부품명에 맞는 자재 목록을 가져옵니다.
+        fetch(`/supplier/api/materials?componentType=${componentType}`)
+            .then(response => response.json())
+            .then(materials => {
+                console.log(materials);  // 응답 데이터 확인
+                const materialSelect = document.getElementById("materialList");
+                materialSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
+
+                if (Array.isArray(materials) && materials.length > 0) {
+                    materials.forEach(material => {
+                        console.log(material);  // 각 material 객체 출력하여 mCode, mName 확인
+                        let option = document.createElement("option");
+                        option.value = material.mcode; // 자재 코드
+                        option.textContent = material.mname; // 자재 이름
+                        option.setAttribute("data-name", material.mname); // 자재 이름 저장
+                        option.setAttribute("data-code", material.mcode);
+
+                        materialSelect.appendChild(option);
+                    });
+                } else {
+                    console.error("Returned data is not an array or is empty:", materials);
+                }
+            })
+            .catch(error => console.error('Error fetching materials:', error));
+    }
+});
+
+document.getElementById("materialList").addEventListener("change", function() {
+    let selectedMaterial = this.options[this.selectedIndex];
+    let materialCode = selectedMaterial.getAttribute("data-code");  // 자재 코드
+    let materialName = selectedMaterial.getAttribute("data-name");  // 자재 이름
+
+    // 자재 코드 입력 필드에 자재 코드 자동 입력
+    document.getElementById("materialCode").value = materialCode;
+    document.getElementById("materialList").options[this.selectedIndex].text = materialName;
+
 });

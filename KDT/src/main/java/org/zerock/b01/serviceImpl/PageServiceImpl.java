@@ -61,6 +61,8 @@ public class PageServiceImpl implements PageService {
     @Autowired
     private OrderByRepository orderByRepository;
 
+    @Autowired
+    private SupplierStockRepository supplierStockRepository;
 
     @Override
     public PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO){
@@ -378,5 +380,34 @@ public class PageServiceImpl implements PageService {
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
                 .build();
+    }
+
+    @Override
+    public PageResponseDTO<SupplierStockDTO> supplierStockWithAll(PageRequestDTO pageRequestDTO, Long sId){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String pName = pageRequestDTO.getPName();
+        String mName = pageRequestDTO.getMName();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<SupplierStockDTO> result = supplierStockRepository.supplierStockSearchWithAll(types, keyword, pName, mName, sId, pageable);
+
+        for(SupplierStockDTO supplierStockDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(supplierStockDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            supplierStockDTO.setMName(material.getMName()); //
+        }
+
+        return PageResponseDTO.<SupplierStockDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<SupplierStockDTO> adminSupplierStockWithAll(PageRequestDTO pageRequestDTO) {
+        return supplierStockWithAll(pageRequestDTO, null);
     }
 }

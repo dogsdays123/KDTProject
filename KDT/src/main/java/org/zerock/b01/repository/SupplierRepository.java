@@ -9,6 +9,7 @@ import org.zerock.b01.domain.Supplier;
 import org.zerock.b01.domain.UserBy;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
@@ -20,4 +21,8 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
     @Query("select s from Supplier s where s.sStatus = '승인'")
     List<Supplier> findSupWithOutDisAgree();
+
+    @Query("select s from Supplier s where s.userBy.uId=:uId")
+    Optional<Supplier> findSupplierByUID(String uId);
+
 }

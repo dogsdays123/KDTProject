@@ -130,6 +130,44 @@ document.querySelectorAll('.icon-button').forEach(button => {
     });
 });
 
+document.querySelectorAll('.icon-button').forEach(button => {
+    button.addEventListener('click', function () {
+        const row = this.closest('tr'); // 클릭한 버튼이 속한 tr
+
+        // 각 td 값을 가져오기
+        const pName = row.querySelector('td:nth-child(2)').innerText;
+        const CType = row.querySelector('td:nth-child(3)').innerText;
+        const mCode = row.querySelector('td:nth-child(4)').innerText;
+        const mType = row.querySelector('td:nth-child(5)').innerText;
+        const mName = row.querySelector('td:nth-child(6)').innerText;
+        const mMinNum = row.querySelector('td:nth-child(7)').innerText;
+        const mDepth = row.querySelector('td:nth-child(9)').innerText;
+        const mHeight = row.querySelector('td:nth-child(10)').innerText;
+        const mWidth = row.querySelector('td:nth-child(11)').innerText;
+        const mWeight = row.querySelector('td:nth-child(12)').innerText;
+        const mUnitPrice = row.querySelector('td:nth-child(13)').innerText;
+        const mLeadTime = row.querySelector('td:nth-child(14)').innerText;
+
+
+        document.getElementById('ppProductName').value = pName;
+        document.getElementById('ppComponentType').value = CType;
+        document.getElementById('ppMCode').value = mCode;
+        document.getElementById('ppMType').value = mType;
+        document.getElementById('ppMName').value = mName;
+        document.getElementById('ppMMinNum').value = mMinNum;
+        document.getElementById('ppMDepth').value = mDepth;
+        document.getElementById('ppMHeight').value = mHeight;
+        document.getElementById('ppMWidth').value = mWidth;
+        document.getElementById('ppMWeight').value = mWeight;
+        document.getElementById('ppMUnitPrice').value = mUnitPrice;
+        document.getElementById('ppMLeadTime').value = mLeadTime;
+
+        // 모달 띄우기
+        const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
+        modal.show();
+    });
+});
+
 document.getElementById('openPurchaseDelModal').addEventListener('click', function () {
 
     const selectedRows = document.querySelectorAll('.selectPlan:checked');
