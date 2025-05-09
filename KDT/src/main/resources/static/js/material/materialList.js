@@ -20,7 +20,6 @@ document.querySelectorAll('.icon-button').forEach(button => {
         const mWidth = row.querySelector('td:nth-child(11)').innerText;
         const mWeight = row.querySelector('td:nth-child(12)').innerText;
         const mUnitPrice = row.querySelector('td:nth-child(13)').innerText;
-        const mLeadTime = row.querySelector('td:nth-child(14)').innerText;
 
 
         document.getElementById('ppProductName').value = pName;
@@ -34,7 +33,6 @@ document.querySelectorAll('.icon-button').forEach(button => {
         document.getElementById('ppMWidth').value = mWidth;
         document.getElementById('ppMWeight').value = mWeight;
         document.getElementById('ppMUnitPrice').value = mUnitPrice;
-        document.getElementById('ppMLeadTime').value = mLeadTime;
 
         // 모달 띄우기
         const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));

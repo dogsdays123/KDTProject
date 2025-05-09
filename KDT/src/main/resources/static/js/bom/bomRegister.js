@@ -9,12 +9,13 @@ function addPlan() {
     const pName = document.getElementById('productName').value;
     const mComponentType = document.getElementById('componentType').value;
     const mName = document.getElementById('materialName').value;
-    const bomNeed = document.getElementById('productQuantity').value;
+    const mCode = document.getElementById('materialCode').value;
+    const bRequireNum = document.getElementById('productQuantity').value;
     const uId = document.getElementById("uId").value;
     let rowIndex = 0;
     //uId는 따로 받아온다.
 
-    if (!pName || !mComponentType || !mName || !bomNeed) {
+    if (!pName || !mComponentType || !mName || !bRequireNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -23,11 +24,12 @@ function addPlan() {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td><input type="hidden" name="materials[${rowIndex}].pName" value="${pName}">${pName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mName" value="${mName}">${mName}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mType" value="${bomNeed}">${bomNeed}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].uId" value="${uId}">${uId}</td> 
+        <td><input type="hidden" name="boms[${rowIndex}].pName" value="${pName}">${pName}</td>
+        <td><input type="hidden" name="boms[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
+        <td><input type="hidden" name="boms[${rowIndex}].mName" value="${mName}">${mName}</td>
+        <td><input type="hidden" name="boms[${rowIndex}].mCode" value="${mCode}">${mCode}</td>
+        <td><input type="hidden" name="boms[${rowIndex}].bRequireNum" value="${bRequireNum}">${bRequireNum}</td>
+        <input type="hidden" name="boms[${rowIndex}].uId" value="${uId}">
         <td>
           <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
             <i class="bi bi-x-lg"></i>
@@ -66,9 +68,9 @@ function addPlan() {
     }``
     // 입력값 초기화
     document.getElementById('productName').selectedIndex = 0;
-    document.getElementById('productCode').selectedIndex = 0;
     document.getElementById('componentType').selectedIndex = 0;
-    document.getElementById('materialList').selectedIndex = 0;
+    document.getElementById('materialName').selectedIndex = 0;
+    document.getElementById('materialCode').selectedIndex = 0;
     document.getElementById('productQuantity').value = '';
 }
 
@@ -339,7 +341,7 @@ $(document).ready(function () {
 
             // AJAX를 사용하여 부품 목록을 가져오는 코드
             $.ajax({
-                url: `/bom/${pNameEncode}/forComponentType`,  // URL 인코딩 적용
+                url: `/bom/${pNameEncode}/forMType`,  // URL 인코딩 적용
                 method: 'GET',  // HTTP GET 요청
                 success: function (componentTypes) {
                     // 부품명 선택 요소 초기화
@@ -374,6 +376,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('#componentType').on('change', function () {
         const type = $(this).val();  // 선택된 상품 값
+        worlds[1] = type;
 
         if (type) {
             const encodes = [];
@@ -381,7 +384,7 @@ $(document).ready(function () {
             encodes[1] = encodeURIComponent(type);
 
             $.ajax({
-                url: `/bom/${encodes[0]}/${encodes[1]}`,  // URL 인코딩 적용
+                url: `/bom/${encodes[0]}/${encodes[1]}/forMName`,  // URL 인코딩 적용
                 method: 'GET',  // HTTP GET 요청
                 success: function (mNames) {
 
@@ -402,6 +405,41 @@ $(document).ready(function () {
             var mNameHTML = $('#mNameHTML').html();  // 서버에서 렌더링된 HTML 가져오기
             $('#materialName').append(mNameHTML);  // mNameList의 option을 append
             $('#materialName').trigger('change');  // 변경 이벤트 트리거
+        }
+    });
+});
+
+$(document).ready(function () {
+    $('#materialName').on('change', function () {
+        const mName = $(this).val();  // 선택된 상품 값
+
+        if (mName) {
+            const encodes = [];
+            encodes[0] = encodeURIComponent(worlds[1]);
+            encodes[1] = encodeURIComponent(mName);
+
+            $.ajax({
+                url: `/bom/${encodes[0]}/${encodes[1]}/forMCode`,  // URL 인코딩 적용
+                method: 'GET',  // HTTP GET 요청
+                success: function (mCodes) {
+
+                    const mCode = $('#materialCode');
+                    mCode.empty();  // 기존 옵션 제거
+                    mCode.append('<option value="" selected>전체</option>');
+                    mCodes.forEach(type => {
+                        mCode.append(`<option value="${type}">${type}</option>`);
+                    });
+                    mCode.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+                },
+                error: function (error) {
+                    console.error('부품 코드를 가져오는 중 오류 발생:', error);
+                }
+            });
+        } else {
+            $('#materialCode').empty();  // 부품 목록 초기화
+            var mCodeHTML = $('#mCodeHTML').html();  // 서버에서 렌더링된 HTML 가져오기
+            $('#materialCode').append(mCodeHTML);  // mNameList의 option을 append
+            $('#materialCode').trigger('change');  // 변경 이벤트 트리거
         }
     });
 });

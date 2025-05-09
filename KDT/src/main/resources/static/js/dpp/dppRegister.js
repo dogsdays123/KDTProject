@@ -54,9 +54,9 @@ function addProcurement(button) {
     const dateInput = container.querySelector('input[type="date"]');
 
 // 공급업체, 자재명, 자재코드
-    const supplier = selectElements.length > 0 ? selectElements[0].value : '';
-    const mName = selectElements.length > 1 ? selectElements[1].value : '';
-    const mCode = selectElements.length > 2 ? selectElements[2].value : '';
+    const mName = selectElements.length > 0 ? selectElements[0].value : '';
+    const mCode = selectElements.length > 1 ? selectElements[1].value : '';
+    const supplier = selectElements.length > 2 ? selectElements[2].value : '';
 
 // 수량
     const needQty = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
@@ -100,9 +100,9 @@ function renderProcurementTable() {
         const row = document.createElement('tr');
         //이런식으로 input값 넣어줄거임
         row.innerHTML = `
-      <td><input type="hidden" name="dpps[${rowIndex}].sName" value="${item.supplier}">${item.supplier}</td>
       <td><input type="hidden" name="dpps[${rowIndex}].mName" value="${item.mName}">${item.mName}</td>
       <td><input type="hidden" name="dpps[${rowIndex}].mCode" value="${item.mCode}">${item.mCode}</td>
+      <td><input type="hidden" name="dpps[${rowIndex}].sName" value="${item.supplier}">${item.supplier}</td>
       <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppRequireNum" value="${item.needQty}">${item.needQty}</td>
       <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppNum" value="${item.supplyQty}">${item.supplyQty}</td>
       <td class="text-center"><input type="hidden" name="dpps[${rowIndex}].dppDate" value="${item.dueDate}">${item.dueDate}</td>
@@ -126,6 +126,11 @@ $(document).ready(function () {
     $('#mName').on('change', function () {
         const input = $(this).val();  // 선택된 상품 값
         loadMCode(input);
+    });
+
+    $('#mCode').on('change', function () {
+        const input = $(this).val();  // 선택된 상품 값
+        loadSup(input);
     });
 
 });
@@ -184,6 +189,32 @@ function loadMCode(mName) {
     });
 }
 
+function loadSup(mCode) {
+    if (!mCode) {return;}
+
+    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+    const encodes = encodeURIComponent(mCode);
+
+    // AJAX를 사용하여 부품 목록을 가져오는 코드
+    $.ajax({
+        url: `/dpp/${encodes}/ss`,  // URL 인코딩 적용
+        method: 'GET',  // HTTP GET 요청
+        success: function (sss) {
+            console.log(sss);
+            // 부품명 선택 요소 초기화
+            const sssSelect = $('#sup');
+            sssSelect.empty();  // 기존 옵션 제거
+            sssSelect.append('<option value="" selected>선택</option>');
+            sss.forEach(type => {
+                sssSelect.append(`<option value="${type}">${type}</option>`);
+            });
+            sssSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+        },
+        error: function (error) {
+            console.error('목록을 가져오는 중 오류 발생:', error);
+        }
+    });
+}
 
 function resetView() {
     const modal = bootstrap.Modal.getInstance(document.getElementById('procurementModal'));

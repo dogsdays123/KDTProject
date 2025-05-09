@@ -97,25 +97,27 @@ public class BomController {
         log.info("BOM ResponseDTO" + responseDTO);
     }
 
-    @GetMapping("/{pName}/forComponentType")
+    @GetMapping("/{pName}/forMType")
     @ResponseBody
     public List<String> getComponentTypesByProductCode(@PathVariable String pName) {
         List<String> componentTypes = materialRepository.findComponentTypesByProductName(pName);
         return componentTypes != null ? componentTypes : Collections.emptyList();
     }
 
-    @GetMapping("/{mType}/forMName")
-    @ResponseBody
-    public List<String> getMNameProductCode(@PathVariable String mType) {
-        List<String> mNames = materialRepository.findMNameByType(mType);
-        return mNames != null ? mNames : Collections.emptyList();
-    }
-
-    @GetMapping("/{pName}/{mType}")
+    @GetMapping("/{pName}/{mType}/forMName")
     @ResponseBody
     public List<String> getMNames(@PathVariable String pName, @PathVariable String mType) {
         List<String> mNames = materialRepository.findMNameByETC(pName, mType);
         return mNames != null ? mNames : Collections.emptyList();
+    }
+
+    @GetMapping("/{mType}/{mName}/forMCode")
+    @ResponseBody
+    public List<String> getMCodes(@PathVariable String mType, @PathVariable String mName) {
+        List<String> mCodes = materialRepository.findMCodeByETC(mType, mName);
+        log.info("codes : {}", mCodes);
+        log.info("type : {} / name : {}", mType, mName);
+        return mCodes != null ? mCodes : Collections.emptyList();
     }
 
     // 부품명을 선택하면 자재 목록을 반환
@@ -143,18 +145,18 @@ public class BomController {
 
     //붐 직접 등록
     @PostMapping("/bomRegister")
-    @ResponseBody
     public String bomRegisterPost(@ModelAttribute BomFormDTO form,
                                   Model model,
                                   RedirectAttributes redirectAttributes,
                                   HttpServletRequest request) throws IOException {
 
-        Map<String, String[]> bomObj = new HashMap<>();
+        log.info("$$$$ + {}", form.getBoms());
+        Map<String, String[]> bomObj;
         List<BomDTO> bomDTOs = form.getBoms();
         bomObj = bomService.registerBOM(bomDTOs, bomDTOs.get(0).getUId());
 
         redirectAttributes.addFlashAttribute("errorCheck", bomObj.get("errorCheck"));
-        return "redirect:/material/materialRegister";
+        return "redirect:/bom/bomRegister";
     }
 
     //붐 자동 등록
@@ -193,12 +195,11 @@ public class BomController {
             DataFormatter formatter = new DataFormatter();
             XSSFRow row = worksheet.getRow(i);
 
-            bomDTO.setPCode(formatter.formatCellValue(row.getCell(0)));
-            bomDTO.setPName(formatter.formatCellValue(row.getCell(1)));
-            bomDTO.setMCode(formatter.formatCellValue(row.getCell(2)));
-            bomDTO.setMName(formatter.formatCellValue(row.getCell(3)));
-            bomDTO.setMComponentType(formatter.formatCellValue(row.getCell(4)));
-            bomDTO.setBRequireNum(formatter.formatCellValue(row.getCell(5)));
+            bomDTO.setPName(formatter.formatCellValue(row.getCell(0)));
+            bomDTO.setMCode(formatter.formatCellValue(row.getCell(1)));
+            bomDTO.setMName(formatter.formatCellValue(row.getCell(2)));
+            bomDTO.setMComponentType(formatter.formatCellValue(row.getCell(3)));
+            bomDTO.setBRequireNum(formatter.formatCellValue(row.getCell(4)));
 
             bomDTOs.add(bomDTO);
         }

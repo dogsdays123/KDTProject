@@ -30,8 +30,6 @@ public class MaterialDTO {
 
     private Float mWeight;
 
-    private String mLeadTime;
-
     private String mComponentType;
 
     private LocalDate regDate;

@@ -40,7 +40,6 @@ public class BomServiceImpl implements BomService {
         List<BomDTO> bomDTOList = new ArrayList<>();
         for (Bom bom : bomList) {
             BomDTO bomDTO = new BomDTO();
-            bomDTO.setPCode(bom.getProduct().getPCode());
             bomDTO.setPName(bom.getProduct().getPName());
             bomDTO.setMCode(bom.getMaterial().getMCode());
             bomDTO.setMName(bom.getMaterial().getMName());

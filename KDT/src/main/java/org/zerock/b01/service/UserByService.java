@@ -11,7 +11,7 @@ public interface UserByService {
     void agreeEmployee(String uId, String userRank, String userJob, String status);
     void disAgreeEmployee(String uId, String userRank);
     UserByDTO readOneForEmail(String uEmail);
-    void registerAdmin(UserBy user);
+    void registerAdmin(UserBy user, SupplierDTO supplierDTO);
     String registerUser(UserByDTO userByDTO);
     String changeUserProfile(String email);
     void changeUser(UserByDTO userByDTO);

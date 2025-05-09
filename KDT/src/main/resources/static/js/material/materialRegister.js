@@ -6,7 +6,6 @@ function addPlan() {
     const mComponentType = document.getElementById('mComponentType').value;
     const mType = document.getElementById('mType').value;
     const mName = document.getElementById('mName').value;
-    const leadTime = document.getElementById('leadTime').value;
     const depth = document.getElementById('depth').value;
     const height = document.getElementById('height').value;
     const width = document.getElementById('width').value;
@@ -17,7 +16,7 @@ function addPlan() {
     let rowIndex = 0;
     //uId는 따로 받아온다.
 
-    if (!pName || !mType || !mName || !leadTime
+    if (!pName || !mType || !mName
         || !depth || !height || !width || !weight || !unitPrice || !mMinNum) {
         alert('모든 항목을 입력해 주세요!');
         return;
@@ -37,7 +36,6 @@ function addPlan() {
         <td><input type="hidden" name="materials[${rowIndex}].mWidth" value="${width}">${width}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mWeight" value="${weight}">${weight}</td>
         <td><input type="hidden" name="materials[${rowIndex}].mUnitPrice" value="${unitPrice}">${unitPrice}</td>
-        <td><input type="hidden" name="materials[${rowIndex}].mLeadTime" value="${leadTime}">${leadTime}</td>
         <td><input type="hidden" name="materials[${rowIndex}].uId" value="${uId}">${uId}</td> 
         <td>
           <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
@@ -81,7 +79,6 @@ function addPlan() {
     document.getElementById('mComponentType').value = '';
     document.getElementById('mType').value = '';
     document.getElementById('mName').value = '';
-    document.getElementById('leadTime').value = '';
     document.getElementById('depth').value = '';
     document.getElementById('height').value = '';
     document.getElementById('width').value = '';

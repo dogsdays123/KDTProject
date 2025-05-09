@@ -33,8 +33,6 @@ public class Material extends BaseEntity {
 
     private Float mWeight; // 무게
 
-    private String mLeadTime; // 조달시간
-
     private String mComponentType; //부품종류
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,7 +53,7 @@ public class Material extends BaseEntity {
     }
 
     public void change(String mComponentType, String mType, String mName, String mMinNum, String mUnitPrice,
-                       Float mDepth, Float mHeight, Float mWidth, Float mWeight, String mLeadTime) {
+                       Float mDepth, Float mHeight, Float mWidth, Float mWeight) {
         this.mComponentType = mComponentType;
         this.mType = mType;
         this.mName = mName;
@@ -65,6 +63,5 @@ public class Material extends BaseEntity {
         this.mWidth = mWidth;
         this.mWeight = mWeight;
         this.mUnitPrice = mUnitPrice;
-        this.mLeadTime = mLeadTime;
     }
 }

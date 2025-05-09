@@ -41,11 +41,11 @@ public interface MaterialRepository extends JpaRepository<Material, String>, All
     @Query("select m.mCode from Material m where m.mName = :mName")
     List<String> findMCodeByMNameList(@Param("mName") String mName);
 
-    @Query("select m.mName from Material m where m.mComponentType = :mComponentType")
-    List<String> findMNameByType(@Param("mComponentType") String mComponentType);
-
     @Query("select m.mName from Material m where m.product.pName = :pName and m.mComponentType = :mComponentType")
     List<String> findMNameByETC(@Param("pName") String pName, @Param("mComponentType") String mComponentType);
+
+    @Query("select m.mCode from Material m where m.mComponentType = :mType and m.mName = :mName")
+    List<String> findMCodeByETC(@Param("mType") String mType, @Param("mName") String mName);
 
     @Query("SELECT m FROM Material m WHERE m.mComponentType = :componentType")
     List<Material> findByComponentType(@Param("componentType") String componentType);

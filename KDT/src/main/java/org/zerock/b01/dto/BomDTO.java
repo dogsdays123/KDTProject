@@ -1,5 +1,6 @@
 package org.zerock.b01.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -14,20 +15,24 @@ public class BomDTO {
 
     private Long bId;
 
+    @JsonProperty("bRequireNum")
     private String bRequireNum;
 
+    @JsonProperty("mComponentType")
     private String mComponentType;
 
-    private String mCode;
-
-    private String pCode;
-
+    @JsonProperty("pName")
     private String pName;
 
+    @JsonProperty("mCode")
+    private String mCode;
+
+    @JsonProperty("mName")
     private String mName;
 
     private LocalDate regDate;
 
+    @JsonProperty("uId")
     private String uId;
 
 }
