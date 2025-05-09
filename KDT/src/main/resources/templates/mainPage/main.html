@@ -5,20 +5,25 @@
       th:with="breadcrumbLevel1='시작하기'">
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/list/main.min.css" rel="stylesheet">
     <link href="/css/supply/list.css" rel="stylesheet">
 </head>
 <body>
 <div layout:fragment="main">
     <div th:if="${(userBy.status != '') && (userBy.status != null)}">
-        <div class="container-fluid">
-            <div class="container" style="max-width: 1000px; margin-left: 0;">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="mb-4">
-                        <h2 th:text="'환영합니다, ' + ${userBy.uName} + '님'"></h2>
+<!--        <div class="container-fluid">-->
+            <div class="container" style="max-width: 1000px; margin-left: 20px;">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <h5 th:text="'환영합니다, ' + ${userBy.uName} + '님'"></h5>
                     </div>
                 </div>
             </div>
-        </div>
+<!--        </div>-->
     </div>
     <div th:if="${(userBy.status == null) || (userBy.status == '')}">
         <div class="container-fluid">
@@ -36,16 +41,153 @@
             </div>
         </div>
     </div>
-    <div th:if="${(userBy.status == null) || (userBy.status == '')}">
+    <div th:if="${(userBy.status == '관리자') || (userBy.userJob == '관리자')}">
         <div class="container-fluid">
             <div class="container" style="max-width: 1000px; margin-left: 0;">
                 <div class="d-flex align-items-center mb-3">
-                    <div class="mb-4">
-                        <h2 th:text="'환영합니다, ' + ${userBy.uName} + '님'"></h2>
-                        <br>
-                        <div class="alert alert-warning text-center" role="alert">
-                            회원가입이 완료되었습니다. <strong>현재 관리자 승인을 기다리고 있습니다.</strong><br>
-                            승인 완료 후, 전체 기능을 사용할 수 있습니다.
+                    <div class="row g-4">
+                        <!-- 사원 가입 승인 대기 -->
+                        <div class="col-md-6">
+                            <div class="card border-start border-4 border-primary shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">사원 가입 승인 대기</h5>
+                                    <p class="card-text fs-1 fw-bold text-primary">
+                                        8명
+                                    </p>
+                                    <a href="/memberManagement/employeeApproval" class="btn btn-sm btn-outline-primary">관리 바로가기</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 업체 가입 승인 대기 -->
+                        <div class="col-md-6">
+                            <div class="card border-start border-4 border-success shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">업체 가입 승인 대기</h5>
+                                    <p class="card-text fs-1 fw-bold text-success">
+                                        3개
+                                    </p>
+                                    <a href="/memberManagement/supplierApproval" class="btn btn-sm btn-outline-success">관리 바로가기</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${(userBy.status == '승인') || (userBy.userJob == '생산부서')}">
+        <div class="container-fluid">
+            <div class="container" style="max-width: 1600px;">
+                <!-- 카드 영역 -->
+                <div class="row g-3 justify-content-center text-center mb-4">
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <div class="card p-2">
+                            <div class="card-body py-2 px-1">
+                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
+                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <div class="card p-2">
+                            <div class="card-body py-2 px-1">
+                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
+                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <div class="card p-2">
+                            <div class="card-body py-2 px-1">
+                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
+                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <div class="card p-2">
+                            <div class="card-body py-2 px-1">
+                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
+                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <div class="card p-2">
+                            <div class="card-body py-2 px-1">
+                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
+                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <div class="card p-2">
+                            <div class="card-body py-2 px-1">
+                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
+                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- 달력 -->
+                    <div class="col-lg-6 mb-4">
+                        <h6 class="mb-3" style="font-weight: bold">생산 계획 일정</h6>
+                        <div class="card p-2">
+                        <div id="calendar" style="min-width: 100%; min-height: 400px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 발주 목록 테이블 -->
+                    <div class="col-lg-6 mb-4">
+                        <h6 class="mb-3">발주 목록</h6>
+                        <div class="card p-2">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light small text-center">
+                                <tr>
+                                    <th>발주 번호</th>
+                                    <th>품목</th>
+                                    <th>수량</th>
+                                    <th>상태</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>PO-001</td>
+                                    <td>알루미늄 바</td>
+                                    <td>100</td>
+                                    <td><span class="badge bg-warning text-dark">대기</span></td>
+                                </tr>
+                                <tr>
+                                    <td>PO-002</td>
+                                    <td>강철 프레임</td>
+                                    <td>50</td>
+                                    <td><span class="badge bg-success">완료</span></td>
+                                </tr>
+                                <tr>
+                                    <td>PO-002</td>
+                                    <td>강철 프레임</td>
+                                    <td>50</td>
+                                    <td><span class="badge bg-success">완료</span></td>
+                                </tr>
+                                <tr>
+                                    <td>PO-002</td>
+                                    <td>강철 프레임</td>
+                                    <td>50</td>
+                                    <td><span class="badge bg-success">완료</span></td>
+                                </tr>
+                                <tr>
+                                    <td>PO-002</td>
+                                    <td>강철 프레임</td>
+                                    <td>50</td>
+                                    <td><span class="badge bg-success">완료</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -53,7 +195,51 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script th:src="@{/js/mainPage/productionDept.js}"></script>
+    <script th:inline="javascript">
 
+       var events = /*[[${events}]]*/ '[]';  // Thymeleaf에서 전달받은 이벤트 데이터
+       console.log('events:', events);  // 'events' 출력, 데이터가 제대로 넘어오는지 확인
+       events = JSON.parse(events);  // JSON을 JavaScript 객체로 변환
+       console.log('parsed events:', events);  // 파싱된 이벤트 확인
+
+       document.addEventListener('DOMContentLoaded', function() {
+           var calendarEl = document.getElementById('calendar');
+           var calendar = new FullCalendar.Calendar(calendarEl, {
+               initialView: 'dayGridMonth',  // 기본 뷰 설정
+               locale: 'ko',  // 한국어 설정
+               events: events,  // Thymeleaf로 전달된 events 데이터 사용
+               // validRange: { // 현재 월만 보여줌
+               //     start: new Date().toISOString().slice(0, 10), // 오늘 날짜 이후부터
+               //     end: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().slice(0, 10) // 한 달 뒤까지
+               // },
+               dayHeaderClassNames: ['fc-weekend'],  // 주말 클래스 추가
+               eventColor: '#0d6efd',  // 기본 이벤트 색상
+               eventDidMount: function(info) {
+                   const color = info.event.extendedProps.color;
+                   if (color) {
+                       info.el.style.backgroundColor = color;
+                   }
+               },
+               dayCellDidMount: function(info) {
+                   const day = info.date.getDay();
+                   if (day === 0) {
+                       info.el.style.color = 'red';   // 일요일
+                   } else if (day === 6) {
+                       info.el.style.color = 'blue';  // 토요일
+                   } else {
+                       info.el.style.color = 'black'; // 평일
+                   }
+               }
+           });
+           calendar.render();  // 캘린더 렌더링
+       });
+       /*]]>*/
+    </script>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.min.js"></script>

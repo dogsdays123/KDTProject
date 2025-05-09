@@ -197,7 +197,6 @@ public class SupplierController {
         return "redirect:/supplier/sInventoryRegister";
     }
 
-    //붐 자동 등록
     @PostMapping("/addSStock")
     @ResponseBody
     public Map<String, Object> SStockRegisterAuto(@RequestParam("check") boolean check, @RequestParam("file") MultipartFile[] files, Model model, RedirectAttributes redirectAttributes) throws IOException {

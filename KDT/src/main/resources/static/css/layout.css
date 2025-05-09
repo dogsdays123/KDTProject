@@ -16,16 +16,6 @@ body {
   font-family: 'S-CoreDream-3Light';
 }
 
-/*main{*/
-/*  width: 90%;*/
-/*  position: fixed;*/
-/*  height: 100%;*/
-/*  background: #ffffff;*/
-/*  padding: 30px;*/
-/*  z-index: -1;*/
-/*}*/
-
-
 .sidebar {
   position: fixed;
   top: 0;
@@ -304,4 +294,66 @@ body {
 
 .badge {
   font-size: 0.8rem; /* 기본보다 조금 크게 */
+}
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.summary-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-3px);
+}
+
+.summary-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #343a40;
+}
+
+.summary-card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 8px 0 0;
+  color: #0d6efd;
+}
+
+.fc-toolbar-title {
+  font-size: 0.9rem !important; /* 필요시 !important 사용 */
+}
+
+.fc-today-button{
+  display: none; !important;
+}
+.fc-button {
+  font-size: 0.8rem !important;   /* 글자 크기 줄이기 */
+  padding: 0.25rem 0.5rem !important;  /* 내부 여백 줄이기 */
+  height: auto !important;       /* 필요 시 높이 자동으로 */
+  line-height: 1.2 !important;   /* 텍스트 정렬을 자연스럽게 */
+}
+
+.fc-daygrid-day-number {
+  color: black !important;
+  text-decoration: none !important;
+}
+
+/* 달력 요일 헤더 텍스트 색상도 검정으로 */
+.fc-col-header-cell-cushion {
+  color: black !important;
+  text-decoration: none !important;
+}
+
+#calendar {
+  border: none !important;
 }
