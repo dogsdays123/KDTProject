@@ -69,6 +69,8 @@ public class PageController {
         return null; // 정상적인 flow에서는 null을 반환
     }
 
+
+
     @GetMapping("/guide")
     public void guide() {
         log.info ("layout guide test...");

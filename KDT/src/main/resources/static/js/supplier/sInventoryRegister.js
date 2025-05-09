@@ -137,7 +137,7 @@ function updateFileListUI() {
 
     // AJAX 요청 보내기
     $.ajax({
-        url: '/material/addMaterial',
+        url: '/supplier/addSStock',
         method: 'POST',
         data: formData,
         processData: false,
@@ -282,7 +282,7 @@ $('#excelUpload').on('click', function (e) {
 
     // AJAX 요청 보내기
     $.ajax({
-        url: '/material/addMaterial',
+        url: '/supplier/addSStock',
         method: 'POST',
         data: formData,
         processData: false,
@@ -304,9 +304,9 @@ $('#excelUpload').on('click', function (e) {
             document.getElementById('fileListContainer').style.display = 'none';
 
             if (confirm("목록 페이지로 이동하시겠습니까?")) {
-                window.location.href = "/material/materialList";
+                window.location.href = "/supplier/sInventoryList";
             } else {
-                window.location.href = "/material/materialRegister";
+                window.location.href = "/supplier/sInventoryRegister";
             }
 
         },

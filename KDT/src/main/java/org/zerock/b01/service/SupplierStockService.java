@@ -13,4 +13,6 @@ public interface SupplierStockService {
     List<SupplierStockDTO> getSupplierStockList(Long sId);
     void modifySupplierStock(SupplierStockDTO supplierStockDTO, Long ssId);
     void removeSupplierStock(List<Long> ssIds);
+//    Map<String, String[]> registerSStockAuto(List<SupplierStockDTO> stockDTOS);
+//    Map<String, String[]> checkSStock(List<SupplierStockDTO> supplierStockDTOS);
 }

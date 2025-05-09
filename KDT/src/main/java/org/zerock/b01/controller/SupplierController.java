@@ -3,6 +3,10 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Product;
@@ -20,6 +25,7 @@ import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -191,30 +197,77 @@ public class SupplierController {
         return "redirect:/supplier/sInventoryRegister";
     }
 
-//    //부품 자동 등록
-//    @PostMapping("/addMaterial")
-//    @ResponseBody
-//    public Map<String, Object> addMaterial(String uId, @RequestParam("file") MultipartFile[] files,
-//                                           @RequestParam("check") String check,
-//                                           Model model, RedirectAttributes redirectAttributes) throws IOException {
-//        log.info("test ");
-//
-//        Map<String, Object> response = new HashMap<>();
-//        Map<String, String[]> materialObj = new HashMap<>();
-//
-//        // 엑셀 파일 처리
-//        for (MultipartFile file : files) {
-//            XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
-//            XSSFSheet worksheet = workbook.getSheetAt(0);
-//            materialObj = registerMaterialForExel(worksheet, uId, check);
-//        }
-//
-//        //materialService 에서 가져온 mCodes
-//        response.put("mCodes", materialObj.get("mCodes"));
-//        response.put("errorCheck", materialObj.get("errorCheck"));
-//
-//        return response;
-//    }
+    //붐 자동 등록
+    @PostMapping("/addSStock")
+    @ResponseBody
+    public Map<String, Object> SStockRegisterAuto(@RequestParam("check") boolean check, @RequestParam("file") MultipartFile[] files, Model model, RedirectAttributes redirectAttributes) throws IOException {
+
+        Map<String, Object> response = new HashMap<>();
+        Map<String, String[]> sStockObj = new HashMap<>();
+        List<String> allMCodes = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
+            XSSFSheet worksheet = workbook.getSheetAt(0);
+            Map<String, String[]> temp = registerSStockOnController(worksheet, redirectAttributes);
+
+            if (check) {
+                if (temp.containsKey("mCodes")) {
+                    allMCodes.addAll(Arrays.asList(temp.get("mCodes")));
+                }
+            } else {
+                response.put("errorCheck", temp.get("errorCheck"));
+                return response;
+            }
+        }
+
+        response.put("mCodes", allMCodes.toArray(new String[0]));
+        return response;
+    }
+
+
+    private Map<String, String[]> registerSStockOnController(XSSFSheet worksheet,  RedirectAttributes redirectAttributes) {
+        List<SupplierStockDTO> supplierStockDTOS = new ArrayList<>();
+        List<String> mCodes = new ArrayList<>();
+        Map<String, String[]> result = new HashMap<>();
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String uId = ((UserBySecurityDTO) auth.getPrincipal()).getUId();
+        SupplierDTO supplierDTO;
+        try {
+            supplierDTO = supplierService.findByUserId(uId);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("message", "공급업체 회원만 재고 등록이 가능합니다.");
+            return Collections.singletonMap("error", new String[]{"공급업체 회원 아님"});
+        }
+
+        Long sId = supplierDTO.getSId();
+
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            XSSFRow row = worksheet.getRow(i);
+            if (row == null) continue;
+
+            SupplierStockDTO supplierStockDTO = new SupplierStockDTO();
+            DataFormatter formatter = new DataFormatter();
+
+            supplierStockDTO.setMCode(formatter.formatCellValue(row.getCell(0)));
+            supplierStockDTO.setMName(formatter.formatCellValue(row.getCell(1)));
+            supplierStockDTO.setSsNum(formatter.formatCellValue(row.getCell(3)));
+            supplierStockDTO.setSsMinOrderQty(formatter.formatCellValue(row.getCell(4)));
+            supplierStockDTO.setUnitPrice(formatter.formatCellValue(row.getCell(5)));
+            supplierStockDTO.setLeadTime(formatter.formatCellValue(row.getCell(6)));
+            supplierStockDTO.setSId(sId);
+            supplierStockDTOS.add(supplierStockDTO);
+            mCodes.add(supplierStockDTO.getMCode());
+        }
+
+        for (SupplierStockDTO supplierStockDTO : supplierStockDTOS) {
+            supplierStockService.registerSStock(supplierStockDTO);
+        }
+
+        result.put("mCodes", mCodes.toArray(new String[0]));
+        return result;
+    }
 
     @PostMapping("/modify")
     public String modify(@ModelAttribute SupplierStockDTO supplierStockDTO, RedirectAttributes redirectAttributes, Long ssId) {

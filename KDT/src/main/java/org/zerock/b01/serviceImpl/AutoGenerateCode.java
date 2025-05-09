@@ -30,7 +30,7 @@ public class AutoGenerateCode {
     public String generateCode(String type, String name) {
 
         String dateToString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
-        String prefix = type + "-" + dateToString;
+        String prefix = type + "-";
         int count = 0;
 
         List<Product> p = productRepository.findAll();
