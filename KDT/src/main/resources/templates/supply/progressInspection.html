@@ -102,7 +102,6 @@
                             <th>리드 타임</th>
                             <th>발주자</th>
                             <th>상태</th>
-                            <th>수정</th>
                         </tr>
                         </thead>
                       <tbody id="plansTable" th:with="link = ${pageRequestDTO.getLink()}">
@@ -122,23 +121,17 @@
                         <td th:text="${dto.getOExpectDate()}"></td>
                         <td th:text="${dto.getLeadTime()}"></td>
                         <td th:text="${dto.getUId()}"></td>
-                          <td class="CheckState"
-                              th:data-state="${dto.getOState() != null ? dto.getOState() : 'UNKNOWN'}"></td>
-                          <td>
-                              <button type="button" class="icon-button openOrderByModal">
-                                  <i class="bi bi-pencil fs-6"></i>
-                              </button>
-                          </td>
+                          <td class="CheckState" th:data-state="${dto.getOState() != null ? dto.getOState() : 'UNKNOWN'}"></td>
                       </tr>
                       </tbody>
                     </table>
                 </div>
                 <div class="text-start">
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-primary btn-sm" id="openPurchaseModal">
+                        <button type="button" class="btn btn-primary btn-sm" id="openPiModal">
                             선택 항목 진척 검수 요청
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
+                        <button type="button" class="btn btn-danger btn-sm" id="openopenPiDelModal">
                             선택 항목 요청 취소
                         </button>
                     </div>
@@ -163,12 +156,12 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel"
+    <div class="modal fade" id="piModal" tabindex="-1" aria-labelledby="PiModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="purchaseOrderModalLabel">진척 검수 요청</h5>
+                    <h5 class="modal-title" id="PiModalLabel">진척 검수 요청</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -185,12 +178,12 @@
                                 <th>납기일</th>
                             </tr>
                             </thead>
-                            <tbody id="inspectionTableBody">
+                            <tbody id="piBody">
                             <!-- JS로 선택된 사원 목록 추가 -->
                             </tbody>
                         </table>
                     </div>
-                    <form id="purchaseOrderForm">
+                    <form id="piForm">
                         <div class="row g-3 mb-3">
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 희망 입고일</label>
@@ -211,12 +204,12 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel"
+    <div class="modal fade" id="PiModalDel" tabindex="-1" aria-labelledby="PiModalDelLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="purchaseOrderModalDelLabel">진척 검수 요청 취소</h5>&nbsp;&nbsp;
+                    <h5 class="modal-title" id="PiModalDelLabel">진척 검수 요청 취소</h5>&nbsp;&nbsp;
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -234,7 +227,7 @@
                                     <th>납기일</th>
                                 </tr>
                                 </thead>
-                                <tbody id="deleteTableBody">
+                                <tbody id="deletePiModal">
                                 <!-- JS로 선택된 사원 목록 추가 -->
                                 </tbody>
                             </table>

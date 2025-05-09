@@ -1,183 +1,38 @@
-let orderByList = [];
-let worldValue = [];
-let dppCode;
-let planForPDF = [];
-let sName;
-let uId;
-
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('orderByForm');
-    const buttons = document.querySelectorAll('.openOrderByModal');
-    const modalElement = document.getElementById('orderByModal');
-    const tbody = document.getElementById('orderByBody');
-
-    buttons.forEach(function (button) {
-        button.addEventListener('click', function () {
-
-            // 클릭된 버튼의 부모 <tr>을 찾음
-            const row = button.closest('tr');
-            const dppCode1 = row.children[0].textContent.trim();
-            const pName = row.children[1].textContent.trim();
-            const sName1 = row.children[2].textContent.trim();
-            const mName = row.children[3].textContent.trim();
-            const dppNum = row.children[4].textContent.trim();
-            const rqNum = row.children[5].textContent.trim();
-            uId = row.children[8].textContent.trim();
-
-            sName = sName1;
-            dppCode = dppCode1;
-
-            // 모달에 값 주입
-            document.getElementById('dppCodeInput').textContent = dppCode1;
-            document.getElementById('pNameInput').textContent = pName;
-            document.getElementById('mNameInput').textContent = mName;
-            document.querySelector('.dppNumInput').value = dppNum;
-            document.querySelector('.rqNumInput').value = rqNum;
-            document.querySelector('.mPerPrice').value = document.querySelector('.mPerPriceHidden').value;
-
-            // 모달 열기
-            const modal = new bootstrap.Modal(document.getElementById('orderByModal'));
-            modal.show();
-        });
-    });
-
-    //모든 폼 자동제출 막기
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
-                e.preventDefault();
-            }
-        });
-    });
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        alert(`구매 발주가 등록되었습니다`);
-
-        // 폼을 서버에 전송하는 로직
-        form.submit(); // 수동으로 다시 제출
-
-        const modal = bootstrap.Modal.getInstance(document.getElementById('orderByModal'));
-        if (modal) modal.hide();
-
-        if (tbody) tbody.innerHTML = '';
-        orderByList.length = 0;
+document.getElementById('selectAll').addEventListener('change', function () {
+    document.querySelectorAll('.selectPlan').forEach(cb => {
+        cb.checked = this.checked;
     });
 });
 
-function addOrderBy(button) {
-    const container = button.closest('.tab-pane'); // 현재 탭 안
-
-    const textInputs = container.querySelectorAll('input[type="text"]');
-    const numberInputs = container.querySelectorAll('input[type="number"]');
-    const selectElements = container.querySelectorAll('select');
-    const dateInputs = container.querySelectorAll('input[type="date"]');
-    const radioInputs = container.querySelectorAll('input[type="radio"]');
-
-    const oRemarks = document.getElementById('oRemarks').value;
-    const mName = document.getElementById('mNameInput').textContent;
-    console.log(oRemarks);
-
-// text
-    const perPrice = textInputs.length > 2 ? textInputs[2].value.trim() : '';
-    const orderAddress = textInputs.length > 3 ? textInputs[3].value.trim() : '';
-
-// number
-    const oNum = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
-    const oTotalPrice = numberInputs.length > 1 ? numberInputs[1].value.trim() : '';
-
-// date
-    const oExpectDate = dateInputs.length > 0 ? dateInputs[0].value.trim() : '';
-    const payDate = dateInputs.length > 1 ? dateInputs[1].value.trim() : '';
-
-// radio (하나만 선택되도록 그룹화된 라디오에서 선택된 값 찾기)
-    const payMethod = container.querySelector('input[name="payMethod"]:checked')?.value || '';
-    const payDocument = container.querySelector('input[name="payDocument"]:checked')?.value || '';
-
-// 유효성 체크
-    if (!oNum || !oTotalPrice || !oExpectDate || !perPrice || !orderAddress || !payDate ||
-        !payMethod || !payDocument) {
-        alert('필수 정보를 입력해주세요');
+document.getElementById('openPiModal').addEventListener('click', function () {
+    const selectedRows = Array.from(document.querySelectorAll('.selectPlan:checked'))
+        .map(cb => cb.closest('tr')); // 체크된 체크박스의 행 가져오기
+    if (selectedRows.length === 0) {
+        alert('하나 이상의 항목을 선택해주세요.');
         return;
     }
 
+    const tbody = document.getElementById('piBody');
+    tbody.innerHTML = ''; // 기존 내용 비우기
 
-    // 데이터 객체 생성
-    const item = {
-        mName,
-        oNum,
-        oExpectDate,
-        sName,
-        orderAddress,
-        oRemarks,
-        payDate,
-        perPrice,
-        oTotalPrice,
-        payMethod,
-        payDocument
-    };
-    const item2 = {
-        dppCode,
-        oNum,
-        oExpectDate,
-        sName,
-        orderAddress,
-        oRemarks,
-        payDate,
-        payMethod,
-        payDocument,
-        uId
-    };
+    selectedRows.forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        const cells = row.querySelectorAll('td');
+        const newRow = document.createElement('tr');
 
-    planForPDF.push(item2);
+        newRow.innerHTML = `
+            <td>${cells[1].textContent.trim()}</td>
+            <td>${cells[2].textContent.trim()}</td>
+            <td>${cells[3].textContent.trim()}</td>
+            <td>${cells[4].textContent.trim()}</td>
+            <td>${cells[5].textContent.trim()}</td>
+            <td>${cells[6].textContent.trim()}</td>
+            <td>${cells[7].textContent.trim()}</td>
+        `;
 
-    console.log(planForPDF);
-
-    orderByList.push(item);
-
-    renderOrderByTable();
-}
-
-
-function renderOrderByTable() {
-    const tbody = document.getElementById('orderByBody');
-    tbody.innerHTML = ''; // 초기화
-    let rowIndex = 0;
-
-    orderByList.forEach((item, index) => {
-        const row = document.createElement('tr');
-        //이런식으로 input값 넣어줄거임
-        row.innerHTML = `
-      <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
-      <td>
-      <input type="hidden" name="orders[${rowIndex}].dppCode" value="${dppCode}">
-      <input type="hidden" name="orders[${rowIndex}].oNum" value="${item.oNum}">
-        ${item.oNum}
-        </td>
-      <td><input type="hidden" name="orders[${rowIndex}].oTotalPrice" value="${item.oTotalPrice}">${item.oTotalPrice}</td>
-      <td><input type="hidden" name="orders[${rowIndex}].oExpectDate" value="${item.oExpectDate}">${item.oExpectDate}</td>
-      <td><input type="hidden" name="orders[${rowIndex}].oRemarks" value="${item.oRemarks}">${item.oRemarks}</td>
-      <td class="text-center">
-        <button class="btn btn-sm btn-outline-danger" onclick="removeOrderBy(${index})">삭제</button>
-      </td>
-    `;
-        tbody.appendChild(row);
-        rowIndex++;
+        tbody.appendChild(newRow);
     });
-}
 
-function removeOrderBy(index) {
-    orderByList.splice(index, 1);
-    renderOrderByTable();
-}
-
-function resetView() {
-    const modal = bootstrap.Modal.getInstance(document.getElementById('orderByModal'));
-
-    const tbody = document.getElementById('orderByBody');
-    if (tbody) tbody.innerHTML = '';
-    orderByList.length = 0;
-
-    if (modal) modal.hide();
-}
+    const modal = new bootstrap.Modal(document.getElementById('piModal'));
+    modal.show();
+});
