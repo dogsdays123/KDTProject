@@ -102,15 +102,16 @@
                             <th>리드 타임</th>
                             <th>발주자</th>
                             <th>상태</th>
+                            <th>수정</th>
                         </tr>
                         </thead>
-                      <tbody>
-                      <tr th:if="${responseDTO.dtoList == null or #lists.isEmpty(responseDTO.dtoList)}">
+                      <tbody id="plansTable" th:with="link = ${pageRequestDTO.getLink()}">
+                      <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
                         <td colspan="15" class="text-center" style="padding: 20px 0;">
                           등록된 구매 발주서가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
                         </td>
                       </tr>
-                      <tr th:each="dto:${responseDTO.dtoList}">
+                      <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
                         <td><input type="checkbox" class="selectPlan"></td>
                         <td th:text="${dto.getOCode()}"></td>
                         <td th:text="${#temporals.format(dto.getORegDate(), 'yyyy-MM-dd')}"></td>
@@ -121,7 +122,13 @@
                         <td th:text="${dto.getOExpectDate()}"></td>
                         <td th:text="${dto.getLeadTime()}"></td>
                         <td th:text="${dto.getUId()}"></td>
-                        <td th:text="${dto.getOState()}"></td>
+                          <td class="CheckState"
+                              th:data-state="${dto.getOState() != null ? dto.getOState() : 'UNKNOWN'}"></td>
+                          <td>
+                              <button type="button" class="icon-button openOrderByModal">
+                                  <i class="bi bi-pencil fs-6"></i>
+                              </button>
+                          </td>
                       </tr>
                       </tbody>
                     </table>

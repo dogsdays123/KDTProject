@@ -164,7 +164,8 @@
                                 <td th:text="${dto.getSName()}"></td>
                                 <td th:text="${dto.getUId()}"></td>
                                 <td th:text="${#temporals.format(dto.getDppRegDate(), 'yyyy-MM-dd')}"></td>
-                                <td th:text="${dto.getDppState()}"></td>
+                                <td class="CheckState"
+                                    th:data-state="${dto.getDppState() != null ? dto.getDppState() : 'UNKNOWN'}"></td>
                                 <td>
                                     <button type="button" class="icon-button" id="openModifyModal" title="부품 정보 수정">
                                         <i class="bi bi-pencil fs-6"></i>
