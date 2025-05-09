@@ -1,5 +1,7 @@
 package org.zerock.b01.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -10,12 +12,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
+import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Log4j2
@@ -26,6 +32,7 @@ import java.util.Map;
 public class PageController {
 
     private final UserByService userByService;
+    private final ProductionPlanService productionPlanService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -54,22 +61,51 @@ public class PageController {
     }
 
     @GetMapping("/main")
-    public RedirectView mainView(Authentication auth) {
+    public RedirectView mainView(Authentication auth, Model model, HttpServletRequest request) throws JsonProcessingException {
 
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) auth;
         UserBySecurityDTO principal = (UserBySecurityDTO) token.getPrincipal();
         String status = principal.getStatus(); // MemberSecurityDTO에서 사용자 이름 가져오기
+        String userJob = principal.getUserJob();
 
         if (!("승인".equals(status) || "관리자".equals(status))) {
             // '승인'이 아니면 /beforeApproval로 리다이렉트
             return new RedirectView("/mainPage/beforeApproval");
         }
 
+        if ("승인".equals(status) && "생산부서".equals(userJob)) {
+            List<Map<String, Object>> eventList = getProductionPlanEvents();
+            String eventJson = new ObjectMapper().writeValueAsString(eventList);
+            model.addAttribute("events", eventJson);
+        }
+
         log.info("layout page test...");
-        return null; // 정상적인 flow에서는 null을 반환
+        return null;
     }
 
 
+    public List<Map<String, Object>> getProductionPlanEvents() {
+        List<ProductionPlan> plans = productionPlanService.getPlans(); // pp 테이블 데이터
+        List<Map<String, Object>> events = new ArrayList<>();
+
+        for (ProductionPlan plan : plans) {
+            Map<String, Object> event = new HashMap<>();
+            event.put("title", plan.getPName()); // 예: 제품명
+            event.put("start", plan.getPpStart().toString()); // 날짜는 ISO 8601 형식으로
+            event.put("end", plan.getPpEnd().toString());
+            event.put("textColor", "black");
+            if ("전기자전거A".equals(plan.getPName())) {
+                event.put("color", "#a5d8e6"); // 전기자전거A 색상
+            } else if ("전기자전거B".equals(plan.getPName())) {
+                event.put("color", "#f5ccbc"); // 전기자전거B 색상
+            } else {
+                event.put("color", "#c3f5bc"); // 기본 색상
+            }
+            events.add(event);
+        }
+
+        return events;
+    }
 
     @GetMapping("/guide")
     public void guide() {
@@ -104,7 +140,7 @@ public class PageController {
 
         log.info("email체크" + uEmail);
 
-        return response; // JSON 형식으로 반환
+        return response;
     }
 
     // 전화번호 포맷팅 메서드
