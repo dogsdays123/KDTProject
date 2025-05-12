@@ -13,6 +13,10 @@ import org.zerock.b01.repository.OrderByRepository;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.OrderByService;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 @Log4j2
 @Service
 public class OrderByServiceImpl implements OrderByService {
@@ -37,5 +41,19 @@ public class OrderByServiceImpl implements OrderByService {
         orderBy.setOState(CurrentStatus.ON_HOLD);
 
         orderByRepository.save(orderBy);
+    }
+
+    @Override
+    public Map<String, Double> getMonthlyOrderSummary() {
+        List<Object[]> rawData = orderByRepository.findMonthlyTotals();
+        Map<String, Double> summary = new LinkedHashMap<>();
+
+        for (Object[] row : rawData) {
+            String month = (String) row[0];
+            Double total = ((Number) row[1]).doubleValue();
+            summary.put(month, total);
+        }
+
+        return summary;
     }
 }
