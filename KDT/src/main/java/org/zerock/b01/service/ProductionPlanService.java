@@ -6,6 +6,7 @@ import org.zerock.b01.dto.PageResponseDTO;
 import org.zerock.b01.dto.ProductionPlanDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductionPlanService {
     String registerProductionPlan(ProductionPlanDTO productionPlanDTO, String uName);
@@ -14,4 +15,5 @@ public interface ProductionPlanService {
     void modifyProductionPlan(ProductionPlanDTO productionPlanDTO, String uName);
     void removeProductionPlan(List<String> ppCodes);
     PageResponseDTO<ProductionPlanDTO> list(PageRequestDTO pageRequestDTO);
+    Map<String, Map<String, Integer>> getMonthlyProductionSummary();
 }

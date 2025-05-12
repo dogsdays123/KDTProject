@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
+import org.zerock.b01.service.OrderByService;
 import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
 
@@ -33,6 +35,7 @@ public class PageController {
 
     private final UserByService userByService;
     private final ProductionPlanService productionPlanService;
+    private final OrderByService orderByService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -73,10 +76,23 @@ public class PageController {
             return new RedirectView("/mainPage/beforeApproval");
         }
 
-        if ("승인".equals(status) && "생산부서".equals(userJob)) {
+        if ("승인".equals(status) && "생산부서".equals(userJob) || "관리자".equals(status)) {
             List<Map<String, Object>> eventList = getProductionPlanEvents();
             String eventJson = new ObjectMapper().writeValueAsString(eventList);
             model.addAttribute("events", eventJson);
+        }
+
+        if ("승인".equals(status) && "생산부서".equals(userJob) || "관리자".equals(status)) {
+            Map<String, Double> eventMap = orderByService.getMonthlyOrderSummary();
+            String eventJson = new ObjectMapper().writeValueAsString(eventMap);
+            model.addAttribute("orderByEvents", eventJson);
+        }
+
+        if ("승인".equals(status) && "생산부서".equals(userJob) || "관리자".equals(status)) {
+            // 월별 생산 계획 제품 수를 가져오는 서비스 메서드 호출
+            Map<String, Map<String, Integer>> productCountMap = productionPlanService.getMonthlyProductionSummary();
+            String productCountJson = new ObjectMapper().writeValueAsString(productCountMap);
+            model.addAttribute("productCountEvents", productCountJson);
         }
 
         log.info("layout page test...");
@@ -95,17 +111,19 @@ public class PageController {
             event.put("end", plan.getPpEnd().toString());
             event.put("textColor", "black");
             if ("전기자전거A".equals(plan.getPName())) {
-                event.put("color", "#a5d8e6"); // 전기자전거A 색상
+                event.put("color", "#FF8C9D"); // 전기자전거A 색상
             } else if ("전기자전거B".equals(plan.getPName())) {
-                event.put("color", "#f5ccbc"); // 전기자전거B 색상
+                event.put("color", "#6EB4F7"); // 전기자전거B 색상
             } else {
-                event.put("color", "#c3f5bc"); // 기본 색상
+                event.put("color", "#FFD97F"); // 기본 색상
             }
             events.add(event);
         }
 
         return events;
     }
+
+
 
     @GetMapping("/guide")
     public void guide() {

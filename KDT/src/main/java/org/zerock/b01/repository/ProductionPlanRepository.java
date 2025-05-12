@@ -34,4 +34,13 @@ public interface ProductionPlanRepository extends JpaRepository<ProductionPlan, 
 
     boolean existsByProduct_pCode(String pCode);
 
+    @Query(
+            value = "SELECT DATE_FORMAT(reg_date, '%Y-%m') AS month, p_name, SUM(pp_num) AS total, " +
+                    "LAG(SUM(pp_num)) OVER (PARTITION BY p_name ORDER BY DATE_FORMAT(reg_date, '%Y-%m')) AS previous_total " +
+                    "FROM production_plan " +
+                    "GROUP BY month, p_name " +
+                    "ORDER BY month",
+            nativeQuery = true
+    )
+    List<Object[]> findMonthlyProductPlanCountsByProduct();
 }

@@ -18,9 +18,12 @@ import org.zerock.b01.repository.ProductionPlanRepository;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.ProductionPlanService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -125,5 +128,25 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
                 .dtoList(dtoList)
                 .total((int)result.getTotalElements())
                 .build();
+    }
+
+    @Override
+    public Map<String, Map<String, Integer>> getMonthlyProductionSummary() {
+        List<Object[]> resultList = productionPlanRepository.findMonthlyProductPlanCountsByProduct();
+
+        Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
+
+        for (Object[] row : resultList) {
+            String month = (String) row[0];
+            String product = (String) row[1];
+            BigDecimal countDecimal = (BigDecimal) row[2];  // BigDecimal로 받아야 함
+            int count = countDecimal.intValue();            // 또는 longValue()
+
+            result
+                    .computeIfAbsent(month, k -> new LinkedHashMap<>())
+                    .put(product, count);
+        }
+
+        return result;
     }
 }

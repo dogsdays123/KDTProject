@@ -41,153 +41,94 @@
             </div>
         </div>
     </div>
-    <div th:if="${(userBy.status == '관리자') || (userBy.userJob == '관리자')}">
-        <div class="container-fluid">
-            <div class="container" style="max-width: 1000px; margin-left: 0;">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="row g-4">
-                        <!-- 사원 가입 승인 대기 -->
-                        <div class="col-md-6">
-                            <div class="card border-start border-4 border-primary shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">사원 가입 승인 대기</h5>
-                                    <p class="card-text fs-1 fw-bold text-primary">
-                                        8명
-                                    </p>
-                                    <a href="/memberManagement/employeeApproval" class="btn btn-sm btn-outline-primary">관리 바로가기</a>
-                                </div>
-                            </div>
-                        </div>
+<!--    <div th:if="${(userBy.status == '관리자') || (userBy.userJob == '관리자')}">-->
+<!--        <div class="container-fluid">-->
+<!--            <div class="container" style="max-width: 1000px; margin-left: 0;">-->
+<!--                <div class="d-flex align-items-center mb-3">-->
+<!--                    <div class="row g-4">-->
+<!--                        &lt;!&ndash; 사원 가입 승인 대기 &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <div class="card border-start border-4 border-primary shadow-sm">-->
+<!--                                <div class="card-body">-->
+<!--                                    <h5 class="card-title">사원 가입 승인 대기</h5>-->
+<!--                                    <p class="card-text fs-1 fw-bold text-primary">-->
+<!--                                        8명-->
+<!--                                    </p>-->
+<!--                                    <a href="/memberManagement/employeeApproval" class="btn btn-sm btn-outline-primary">관리 바로가기</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
-                        <!-- 업체 가입 승인 대기 -->
-                        <div class="col-md-6">
-                            <div class="card border-start border-4 border-success shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">업체 가입 승인 대기</h5>
-                                    <p class="card-text fs-1 fw-bold text-success">
-                                        3개
-                                    </p>
-                                    <a href="/memberManagement/supplierApproval" class="btn btn-sm btn-outline-success">관리 바로가기</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div th:if="${(userBy.status == '승인') || (userBy.userJob == '생산부서')}">
+<!--                        &lt;!&ndash; 업체 가입 승인 대기 &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <div class="card border-start border-4 border-success shadow-sm">-->
+<!--                                <div class="card-body">-->
+<!--                                    <h5 class="card-title">업체 가입 승인 대기</h5>-->
+<!--                                    <p class="card-text fs-1 fw-bold text-success">-->
+<!--                                        3개-->
+<!--                                    </p>-->
+<!--                                    <a href="/memberManagement/supplierApproval" class="btn btn-sm btn-outline-success">관리 바로가기</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div th:if="${(userBy.status == '승인') || (userBy.userJob == '생산부서')
+                ||(userBy.status == '관리자') || (userBy.userJob == '관리자')}">
         <div class="container-fluid">
             <div class="container" style="max-width: 1600px;">
                 <!-- 카드 영역 -->
-                <div class="row g-3 justify-content-center text-center mb-4">
-                    <div class="col-12 col-sm-6 col-lg-2">
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <!--                        <h6 class="mb-3">월별 총 발주 금액</h6>-->
+<!--                        <div class="card p-2">-->
+                            <div id="orderSummaryCards" class="row"></div>
+<!--                        </div>-->
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+<!--                        <h6 class="mb-3">월별 제품 생산 계획</h6>-->
                         <div class="card p-2">
                             <div class="card-body py-2 px-1">
-                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
-                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
+                                <p class="card-title mb-1 fs-6">월별 총 발주 금액</p>
+                                <canvas id="orderChart" width="600" height="250px"></canvas>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-lg-2">
-                        <div class="card p-2">
-                            <div class="card-body py-2 px-1">
-                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
-                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-2">
-                        <div class="card p-2">
-                            <div class="card-body py-2 px-1">
-                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
-                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-2">
-                        <div class="card p-2">
-                            <div class="card-body py-2 px-1">
-                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
-                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-2">
-                        <div class="card p-2">
-                            <div class="card-body py-2 px-1">
-                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
-                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-2">
-                        <div class="card p-2">
-                            <div class="card-body py-2 px-1">
-                                <p class="card-title mb-1 fs-6">🔧 진행 중 생산 계획</p>
-                                <p class="card-text fs-5 fw-semibold text-primary mb-0">5건</p>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
                 <div class="row">
-                    <!-- 달력 -->
-                    <div class="col-lg-6 mb-4">
-                        <h6 class="mb-3" style="font-weight: bold">생산 계획 일정</h6>
-                        <div class="card p-2">
-                        <div id="calendar" style="min-width: 100%; min-height: 400px;"></div>
+                    <!-- 왼쪽 열 전체를 하나의 카드로 묶음 -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card p-2" style="height: 700px;">
+                            <div class="card-body py-2 px-1 d-flex flex-column" style="height: 100%;">
+                                <!-- 도넛 차트 -->
+                                <div class="d-flex flex-column" style="flex: 0 0 350px;">
+                                    <p class="card-title mb-1 fs-6">월별 제품 생산 계획</p>
+                                    <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                                        <canvas id="productionPlanChart" width="200" height="200"></canvas>
+                                    </div>
+                                </div>
+                                <br>
+                                <!-- 월별 생산 계획 수량 (요약) -->
+                                <div id="ppSummaryCards" class="row g-2" style="margin-top: 10px; flex: 1; overflow: hidden;">
+                                    <!-- 요약 카드 아이템들 -->
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 발주 목록 테이블 -->
-                    <div class="col-lg-6 mb-4">
-                        <h6 class="mb-3">발주 목록</h6>
-                        <div class="card p-2">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered">
-                                <thead class="table-light small text-center">
-                                <tr>
-                                    <th>발주 번호</th>
-                                    <th>품목</th>
-                                    <th>수량</th>
-                                    <th>상태</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>PO-001</td>
-                                    <td>알루미늄 바</td>
-                                    <td>100</td>
-                                    <td><span class="badge bg-warning text-dark">대기</span></td>
-                                </tr>
-                                <tr>
-                                    <td>PO-002</td>
-                                    <td>강철 프레임</td>
-                                    <td>50</td>
-                                    <td><span class="badge bg-success">완료</span></td>
-                                </tr>
-                                <tr>
-                                    <td>PO-002</td>
-                                    <td>강철 프레임</td>
-                                    <td>50</td>
-                                    <td><span class="badge bg-success">완료</span></td>
-                                </tr>
-                                <tr>
-                                    <td>PO-002</td>
-                                    <td>강철 프레임</td>
-                                    <td>50</td>
-                                    <td><span class="badge bg-success">완료</span></td>
-                                </tr>
-                                <tr>
-                                    <td>PO-002</td>
-                                    <td>강철 프레임</td>
-                                    <td>50</td>
-                                    <td><span class="badge bg-success">완료</span></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <!-- 오른쪽 열: 달력 -->
+                    <div class="col-lg-8 mb-4">
+                        <div class="card p-2" style="height: 700px;">
+                            <div class="card-body py-2 px-1">
+                                <p class="card-title mb-1 fs-6">생산 계획 일정</p>
+                                <div id="calendar" style="width: 100%; height: 100%;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -197,26 +138,24 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script th:src="@{/js/mainPage/productionDept.js}"></script>
     <script th:inline="javascript">
 
-       var events = /*[[${events}]]*/ '[]';  // Thymeleaf에서 전달받은 이벤트 데이터
-       console.log('events:', events);  // 'events' 출력, 데이터가 제대로 넘어오는지 확인
-       events = JSON.parse(events);  // JSON을 JavaScript 객체로 변환
-       console.log('parsed events:', events);  // 파싱된 이벤트 확인
+        // 생산 계획 일정 (달력)
+       var events = /*[[${events}]]*/ '[]';
+       console.log('events:', events);
+       events = JSON.parse(events);
+       console.log('parsed events:', events);
 
        document.addEventListener('DOMContentLoaded', function() {
            var calendarEl = document.getElementById('calendar');
            var calendar = new FullCalendar.Calendar(calendarEl, {
-               initialView: 'dayGridMonth',  // 기본 뷰 설정
-               locale: 'ko',  // 한국어 설정
-               events: events,  // Thymeleaf로 전달된 events 데이터 사용
-               // validRange: { // 현재 월만 보여줌
-               //     start: new Date().toISOString().slice(0, 10), // 오늘 날짜 이후부터
-               //     end: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().slice(0, 10) // 한 달 뒤까지
-               // },
-               dayHeaderClassNames: ['fc-weekend'],  // 주말 클래스 추가
-               eventColor: '#0d6efd',  // 기본 이벤트 색상
+               initialView: 'dayGridMonth',
+               locale: 'ko',
+               events: events,
+               dayHeaderClassNames: ['fc-weekend'],
+               eventColor: '#0d6efd',
                eventDidMount: function(info) {
                    const color = info.event.extendedProps.color;
                    if (color) {
@@ -226,17 +165,224 @@
                dayCellDidMount: function(info) {
                    const day = info.date.getDay();
                    if (day === 0) {
-                       info.el.style.color = 'red';   // 일요일
+                       info.el.style.color = 'red';
                    } else if (day === 6) {
-                       info.el.style.color = 'blue';  // 토요일
+                       info.el.style.color = 'blue';
                    } else {
-                       info.el.style.color = 'black'; // 평일
+                       info.el.style.color = 'black';
                    }
                }
            });
-           calendar.render();  // 캘린더 렌더링
+           calendar.render();
        });
        /*]]>*/
+
+        // 발주 금액 막대 차트
+       const orderByEvents = JSON.parse(/*[[${orderByEvents}]]*/ '{}');
+
+       const labels = Object.keys(orderByEvents);
+       const allMonths = Array.from({ length: 12 }, (_, i) => `2025-${(i + 1).toString().padStart(2, '0')}`);
+
+       const values = allMonths.map(month => orderByEvents[month] || 0);
+       console.log(orderByEvents);
+
+       const ctx = document.getElementById('orderChart').getContext('2d');
+       const chart = new Chart(ctx, {
+           type: 'bar',
+           data: {
+               labels: allMonths,  //
+               datasets: [{
+                   label: '총 발주 금액 (₩)',
+                   data: values,
+                   backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                   borderColor: 'rgba(54, 162, 235, 1)',
+                   borderWidth: 1
+               }]
+           },
+           options: {
+               scales: {
+                   x: {
+                       title: {
+                           display: true,
+                           text: '월별'
+                       },
+                       ticks: {
+                           autoSkip: false,
+                           maxRotation: 0
+                       }
+                   },
+                   y: {
+                       beginAtZero: true,
+                       ticks: {
+                           callback: function(value) {
+                               return value.toLocaleString('ko-KR') + '₩';
+                           }
+                       }
+                   }
+               }
+           }
+       });
+
+       // 발주 금액 최근 3개월 카드
+       const now = new Date();
+       const cardContainer = document.getElementById('orderSummaryCards');
+
+       const recentMonths = [];
+       for (let i = 0; i < 3; i++) {
+           const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+           const label = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+           recentMonths.push(label);
+       }
+
+       recentMonths.forEach((month, index) => {
+           const currentValue = orderByEvents[month] || 0;
+
+           let compareValue = 0;
+           let arrow = '';
+           let changeAmountText = '';
+           let arrowColor = 'gray';
+
+           if (index < recentMonths.length - 1) {
+               const prevMonth = recentMonths[index + 1];
+               compareValue = orderByEvents[prevMonth] || 0;
+               const diff = currentValue - compareValue;
+
+               if (diff > 0) {
+                   arrow = '▲';
+                   arrowColor = 'red';
+               } else if (diff < 0) {
+                   arrow = '▼';
+                   arrowColor = 'blue';
+               }
+
+               changeAmountText = `${Math.abs(diff).toLocaleString('ko-KR')} 원`;
+           }
+
+           const cardHtml = `
+                <div class="col-12 mb-2">
+                  <div class="card p-2" style="height: 118px;"> <!-- 고정 높이 -->
+                    <div class="card-body py-2 px-2 d-flex flex-column justify-content-between h-100">
+                      <!-- 제목: 좌측 상단 -->
+                      <p class="card-title mb-1 fs-6">${parseInt(month.split('-')[1])}월 총 발주 금액</p>
+
+                      <!-- 오른쪽: 금액 -->
+                      <div class="d-flex justify-content-end flex-column align-items-end">
+                        <p class="mb-0 fs-5 text-primary fw-bold">${currentValue.toLocaleString('ko-KR')} 원</p>
+                        ${index < recentMonths.length - 1 ? `
+                          <p class="mb-0 fs-8">
+                            <span class="badge" style="color: ${arrowColor};">${arrow}</span>
+                            <span>${changeAmountText}</span>
+                          </p>` : ''}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                    `;
+
+
+           cardContainer.insertAdjacentHTML('beforeend', cardHtml);
+       });
+
+       //  생산 계획 수량 도넛 차트
+       const productCountData = JSON.parse(/*[[${productCountEvents}]]*/ '{}');
+       console.log(productCountData);
+
+       const today = new Date();
+       const currentMonth = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, '0');
+       const monthlyData = productCountData[currentMonth];
+       console.log(monthlyData);  /
+
+       if (monthlyData) {
+           const labels2 = Object.keys(monthlyData);
+           const values2 = Object.values(monthlyData);
+
+           const ctx2 = document.getElementById('productionPlanChart').getContext('2d');
+           const productDonutChart = new Chart(ctx2, {
+               type: 'doughnut',
+               data: {
+                   labels: labels2,
+                   datasets: [{
+                       label: `${currentMonth} 생산계획`,
+                       data: values2,
+                       backgroundColor: [
+                           '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                       ],
+                       borderWidth: 1
+                   }]
+               },
+               options: {
+                   responsive: true,
+                   plugins: {
+                       legend: {
+                           position: 'bottom',
+                       },
+                       title: {
+                           display: true,
+                           text: `${currentMonth} 생산계획`
+                       }
+                   }
+               }
+           });
+       } else {
+           console.log('선택한 월에 대한 데이터가 없습니다.');
+       }
+
+       // 해당 월 생산 계획 수량 전월 비교 카드
+       const previousMonth = today.getFullYear() + '-' + (today.getMonth()).toString().padStart(2, '0');
+       
+       function getTotalProductionForMonth(monthData) {
+           return Object.values(monthData).reduce((sum, num) => sum + num, 0);
+       }
+
+       const currentMonthData = productCountData[currentMonth] || {};
+       const previousMonthData = productCountData[previousMonth] || {};
+
+       const currentMonthTotal = getTotalProductionForMonth(currentMonthData);
+       const previousMonthTotal = getTotalProductionForMonth(previousMonthData);
+
+       console.log(`이번 달 총 생산 계획: ${currentMonthTotal}`);
+       console.log(`전월 총 생산 계획: ${previousMonthTotal}`);
+
+       let arrow = '';
+       let changeAmountText = '';
+       let arrowColor = 'gray';
+
+       const diff = currentMonthTotal - previousMonthTotal;
+
+       if (diff > 0) {
+           arrow = '▲';
+           arrowColor = 'red';
+       } else if (diff < 0) {
+           arrow = '▼';
+           arrowColor = 'blue';
+       }
+
+       changeAmountText = `${Math.abs(diff).toLocaleString('ko-KR')} 개`;
+
+       const ppCardContainer = document.getElementById('ppSummaryCards');
+
+       const cardHtml = `
+            <div class="col-12 mb-2">
+                <div class="card p-2" style="height: 118px;">
+                    <div class="card-body py-2 px-2 d-flex flex-column justify-content-between h-100">
+
+                        <p class="card-title mb-1 fs-6">${parseInt(currentMonth.split('-')[1])}월 총 생산 계획 수량</p>
+
+
+                        <div class="d-flex justify-content-end flex-column align-items-end">
+                            <p class="mb-0 fs-5 text-primary fw-bold">${currentMonthTotal.toLocaleString('ko-KR')} 개</p>
+                            ${previousMonthTotal ? `
+                                <p class="mb-0 fs-8">
+                                    <span class="badge" style="color: ${arrowColor};">${arrow}</span>
+                                    <span>${changeAmountText}</span>
+                                </p>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+
+       ppCardContainer.innerHTML = cardHtml;
     </script>
 </div>
 </body>
