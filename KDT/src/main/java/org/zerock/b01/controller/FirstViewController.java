@@ -3,12 +3,20 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.b01.domain.MemberRole;
+import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.SupplierDTO;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -16,6 +24,7 @@ import org.zerock.b01.service.UserByService;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Log4j2
 @Controller
@@ -24,6 +33,8 @@ import java.util.Map;
 public class FirstViewController {
 
     private final UserByService userByService;
+    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -150,5 +161,97 @@ public class FirstViewController {
     public String find(@ModelAttribute("userByDTO") UserByDTO userByDTO, Model model, RedirectAttributes redirectAttributes) {
 
         return "redirect:/firstView/login";
+    }
+
+    @GetMapping("/admin")
+    public String startDataGeneration() {
+        // 이 요청은 일단 로딩 페이지로 리턴만 함
+        return "firstView/loading";
+    }
+
+    @GetMapping("/loading")
+    public void loading() {
+
+    }
+
+    @PostMapping("/generate-data")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> generate() throws UserByService.MidExistException {
+        testRegister();
+        testRegisterUnit();
+        Map<String, String> result = new HashMap<>();
+        result.put("status", "ok");
+        return ResponseEntity.ok(result);
+    }
+
+    public void testRegister(){
+        UserBy user = UserBy.builder()
+                .uId("Admin")
+                .uPassword(passwordEncoder.encode("1234"))
+                .uName("관리자")
+                .uEmail("Admin@admin.admin")
+                .roleSet(Set.of(MemberRole.ADMIN))
+                .userJob("관리자")
+                .status("관리자")
+                .uPhone("01000000000")
+                .build();
+
+        SupplierDTO supplierDTO = SupplierDTO.builder()
+                .sName("admin")
+                .sRegNum("12345678")
+                .sManager("admin")
+                .sStatus("관리자")
+                .build();
+
+        userByService.registerAdmin(user, supplierDTO);
+    }
+
+    public void testRegisterUnit() throws UserByService.MidExistException {
+        String tester[] = {"", "", ""};
+        int regNum = 100;
+        for (int i = 0; i < regNum; i++) {
+            if (i < regNum / 2) {
+                tester[0] = "생산부서";
+                tester[1] = "our";
+                UserBy user = UserBy.builder()
+                        .uId("testUnit" + i)
+                        .uPassword(passwordEncoder.encode("1234"))
+                        .uName("테스터" + i)
+                        .userType(tester[1])
+                        .userJob(tester[0])
+                        .uEmail("Admin" + i + "@admin.admin")
+                        .roleSet(Set.of(MemberRole.USER))
+                        .uPhone("01000000000")
+                        .build();
+
+                UserByDTO userDTO = modelMapper.map(user, UserByDTO.class);
+                userByService.join(userDTO, null);
+            } else {
+                tester[0] = "협력회사";
+                tester[1] = "other";
+                tester[2] = "오리배";
+                UserBy user = UserBy.builder()
+                        .uId("testUnit" + i)
+                        .uPassword(passwordEncoder.encode("1234"))
+                        .uName("테스터" + i)
+                        .userType(tester[1])
+                        .userJob(tester[0])
+                        .uEmail("Admin" + i + "@admin.admin")
+                        .roleSet(Set.of(MemberRole.USER))
+                        .uPhone("01000000000")
+                        .build();
+
+                UserByDTO userDTO = modelMapper.map(user, UserByDTO.class);
+
+                SupplierDTO supplierDTO = SupplierDTO.builder()
+                        .sName(tester[2] + i)
+                        .sRegNum("12345678" + i)
+                        .sManager(tester[2] + i)
+                        .sStatus("대기중")
+                        .build();
+
+                userByService.join(userDTO, supplierDTO);
+            }
+        }
     }
 }
