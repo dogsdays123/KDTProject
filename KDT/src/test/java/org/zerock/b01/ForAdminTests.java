@@ -55,15 +55,15 @@ public class ForAdminTests {
     @Test
     public void testRegisterUnit() throws UserByService.MidExistException {
         String tester[] = {"", "", ""};
-        int regNum = 100;
+        int regNum = 10;
         for(int i=0; i < regNum; i++) {
             if(i < regNum/2){
                 tester[0] = "생산부서";
                 tester[1] = "our";
                 UserBy user = UserBy.builder()
-                        .uId("testUnit"+i)
+                        .uId("S"+i)
                         .uPassword(passwordEncoder.encode("1234"))
-                        .uName("테스터"+i)
+                        .uName("김생산"+i)
                         .userType(tester[1])
                         .userJob(tester[0])
                         .uEmail("Admin"+i+"@admin.admin")

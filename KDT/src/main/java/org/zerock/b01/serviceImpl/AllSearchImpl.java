@@ -969,4 +969,55 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
         return new PageImpl<>(dtoList, pageable, total);
     }
+
+    @Override
+    public Page<ProgressInspectionDTO> progressInspectionSearchWithAll(String[] types, String keyword, String mName, LocalDate psDate, Long sId, Pageable pageable) {
+
+        QProgressInspection progressInspection = QProgressInspection.progressInspection;
+        JPQLQuery<ProgressInspection> query = from(progressInspection);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (sId != null) {
+            booleanBuilder.and(progressInspection.supplierStock.supplier.sId.eq(sId));
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(progressInspection.supplierStock.material.mName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(progressInspection.supplierStock.material.mName.contains(mName));
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(progressInspection.regDate.desc());
+
+        List<ProgressInspection> resultList = query.fetch();
+
+        List<ProgressInspectionDTO> dtoList = resultList.stream()
+                .map(prod -> ProgressInspectionDTO.builder()
+                        .psId(prod.getPsId())
+                        .psNum(prod.getPsNum())
+                        .oCode(prod.getOrderBy().getOCode())
+                        .psDate(prod.getPsDate())
+                        .psRemarks(prod.getPsRemarks())
+                        .ssId(prod.getSupplierStock().getSsId())
+                        .regDate(prod.getRegDate().toLocalDate())
+                        .mCode(prod.getSupplierStock().getMaterial().getMCode())
+                        .mName(prod.getSupplierStock().getMaterial().getMName())
+                        .oState(prod.getOrderBy().getOState())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<ProgressInspection> countQuery = from(progressInspection).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
 }

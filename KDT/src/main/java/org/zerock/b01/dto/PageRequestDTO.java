@@ -95,6 +95,9 @@ public class PageRequestDTO {
     private LocalDate dppDate;
     private String dppState;
 
+    //진척검수
+    private LocalDate psDate;
+
     public String[] getTypes() {
         if(type == null || type.isEmpty()) {
             return null;

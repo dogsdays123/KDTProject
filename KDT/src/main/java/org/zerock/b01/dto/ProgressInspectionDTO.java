@@ -16,4 +16,10 @@ public class ProgressInspectionDTO {
     private String uId;
     private String oCode;
     private String psRemarks;
+    private Long ssId;
+    private LocalDate regDate;
+    private String mName;
+    private String mCode;
+    private CurrentStatus psState;
+    private CurrentStatus oState;
 }

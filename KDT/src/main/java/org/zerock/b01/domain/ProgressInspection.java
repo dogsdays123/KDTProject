@@ -23,6 +23,9 @@ public class ProgressInspection extends BaseEntity {
 
     private String psRemarks;
 
+    @Enumerated(EnumType.STRING)
+    private CurrentStatus psState;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "oCode", nullable = false)
     private OrderBy orderBy; // 발주서 외래키

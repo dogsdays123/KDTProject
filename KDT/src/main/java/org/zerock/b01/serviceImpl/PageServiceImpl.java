@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Material;
+import org.zerock.b01.domain.SupplierStock;
 import org.zerock.b01.dto.*;
 
 import org.zerock.b01.dto.allDTO.*;
@@ -63,6 +64,8 @@ public class PageServiceImpl implements PageService {
 
     @Autowired
     private SupplierStockRepository supplierStockRepository;
+    @Autowired
+    private ProgressInspectionRepository progressInspectionRepository;
 
     @Override
     public PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO){
@@ -409,5 +412,36 @@ public class PageServiceImpl implements PageService {
     @Override
     public PageResponseDTO<SupplierStockDTO> adminSupplierStockWithAll(PageRequestDTO pageRequestDTO) {
         return supplierStockWithAll(pageRequestDTO, null);
+    }
+
+
+    @Override
+    public PageResponseDTO<ProgressInspectionDTO> progressInspectionWithAll(PageRequestDTO pageRequestDTO, Long sId){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+        LocalDate psDate = pageRequestDTO.getPsDate();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<ProgressInspectionDTO> result = progressInspectionRepository.progressInspectionSearchWithAll(types, keyword, mName, psDate, sId, pageable);
+//
+//        for(ProgressInspectionDTO progressInspectionDTO : result.getContent()) {
+//            SupplierStock supplierStock = supplierStockRepository.f
+//            Material material = materialRepository.findByMaterialCode(progressInspectionDTO.get.getMCode())
+//                    .orElseThrow(() -> new RuntimeException("Material not found"));
+//            supplierStockDTO.setMName(material.getMName()); //
+//        }
+
+        return PageResponseDTO.<ProgressInspectionDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<ProgressInspectionDTO> adminProgressInspectionWithAll(PageRequestDTO pageRequestDTO) {
+        return progressInspectionWithAll(pageRequestDTO, null);
     }
 }

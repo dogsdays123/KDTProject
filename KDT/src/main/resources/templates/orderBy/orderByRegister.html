@@ -134,8 +134,8 @@
             <div class="modal-dialog modal-xl modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header" style="margin-left: 10px">
-                        <h4 class="mb-0 me-2">구매 발주서 등록</h4>
-                        <i class="bi bi-question-circle-fill fs-6 text-secondary" role="button" title="도움말"></i>
+                        <h5 class="mb-0 me-2">구매 발주서 등록</h5>
+                        <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 필수 입력 항목입니다</small>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
                     </div>
                     <div class="modal-body p-4">
@@ -179,23 +179,22 @@
                                                            readonly>
                                                 </div>
                                                 <div style="width: 100px;">
-                                                    <label class="form-label small">발주 주문 수량</label>
+                                                    <label class="form-label small"><span class="text-danger">*</span> 주문 수량</label>
                                                     <input type="number" id="orderInput"
                                                            class="form-control form-control-sm">
                                                 </div>
                                                 <div style="width: 100px;">
-                                                    <label class="form-label small">총 금액</label>
+                                                    <label class="form-label small"><span class="text-danger">*</span> 총 금액</label>
                                                     <input type="number" id="totalPrice"
                                                            class="form-control form-control-sm" readonly>
                                                 </div>
                                                 <div style="width: 150px;">
-                                                    <label class="form-label small">예상 납기일</label>
+                                                    <label class="form-label small"><span class="text-danger">*</span> 희망 납기일</label>
                                                     <input type="date" class="form-control form-control-sm">
                                                 </div>
-                                                <div style="width: 150px;">
-                                                    <label class="form-label small">비고</label>
-                                                    <textarea class="form-control form-control-sm" rows="2"
-                                                              id="oRemarks" placeholder="비고 기입"></textarea>
+                                                <div style="width: 300px;">
+                                                    <label class="form-label small"><span class="text-danger">*</span> 비고</label>
+                                                    <input type="text" class="form-control form-control-sm" id="oRemarks" placeholder="비고 기입">
                                                 </div>
                                             </div>
                                             <div class="col-12">
@@ -209,18 +208,18 @@
                                             <div class="col-12">
                                                 <label class="form-label d-block"><span class="text-danger">*</span> 결제 방법</label>
                                                 <div class="form-check form-check-inline">
-                                                    <label><input type="radio" name="payMethod" value="계좌이체" class="form-check-input">계좌이체(입금자명 : DG전동)</label>
+                                                    <label class="form-check-label small"><input type="radio" name="payMethod" value="계좌이체" class="form-check-input">계좌이체(입금자명 : DG전동)</label>
                                                     <br>
-                                                    <label><input type="radio" name="payMethod" value="신용카드" class="form-check-input">신용카드결제</label>
+                                                    <label class="form-check-label small"><input type="radio" name="payMethod" value="신용카드" class="form-check-input">신용카드결제</label>
                                                 </div>
                                             </div>
 
                                             <div class="col-12">
                                                 <label class="form-label d-block"><span class="text-danger">*</span> 증빙 서류 요청</label>
                                                 <div class="form-check form-check-inline">
-                                                    <label><input type="radio" name="payDocument" value="세금계산서" class="form-check-input">세금계산서</label>
+                                                    <label class="form-check-label small"><input type="radio" name="payDocument" value="세금계산서" class="form-check-input">세금계산서</label>
                                                     <br>
-                                                    <label><input type="radio" name="payDocument" value="현금영수증" class="form-check-input">현금영수증</label>
+                                                    <label class="form-check-label small"><input type="radio" name="payDocument" value="현금영수증" class="form-check-input">현금영수증</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -267,10 +266,10 @@
                                         <button type="submit" class="btn btn-primary btn-sm px-3">일괄 등록</button>
                                     </div>
                                     <div class="col-auto">
-                                        <button type="button" class="btn btn-outline-secondary btn-sm" title="발주서 pdf 파일로 미리보기" onclick="previewOrderPDF()">
-                                            미리보기
+                                        <button type="button" class="btn btn-outline-primary btn-sm" title="발주서 pdf 파일로 미리보기" onclick="previewOrderPDF()">
+                                            발주서 미리보기
                                         </button>
-                                        <button type="button" class="btn btn-outline-secondary btn-sm" title="해당 공급 업체로 발주서가 발송됩니다." onclick="generateOrderPDF()">PDF 발행 및 발주서 전송</button>
+                                        <button type="button" class="btn btn-success btn-sm" title="해당 공급 업체로 발주서가 발송됩니다." onclick="generateOrderPDF()">PDF 발행 및 발주서 전송</button>
                                     </div>
                                 </div>
                             </form>

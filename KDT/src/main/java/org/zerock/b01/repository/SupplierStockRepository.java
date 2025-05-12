@@ -27,4 +27,7 @@ public interface SupplierStockRepository extends JpaRepository<SupplierStock, Lo
 
     @Query("SELECT ss.leadTime FROM SupplierStock ss WHERE ss.supplier.sName=:sName and ss.material.mCode = :mCode")
     String findLeadTimeByETC(@Param("sName") String sName, @Param("mCode") String mCode);
+
+    @Query("select sm.ssId from SupplierStock sm where sm.supplier.sId = :sid")
+    List<Long> findSsidBySid(@Param("sid") String sid);
 }

@@ -21,4 +21,6 @@ public interface PageService {
     PageResponseDTO<DppListAllDTO> dppListWithAll(PageRequestDTO pageRequestDTO);
     PageResponseDTO<SupplierStockDTO> supplierStockWithAll(PageRequestDTO pageRequestDTO, Long sId);
     PageResponseDTO<SupplierStockDTO> adminSupplierStockWithAll(PageRequestDTO pageRequestDTO);
+    PageResponseDTO<ProgressInspectionDTO> progressInspectionWithAll(PageRequestDTO pageRequestDTO, Long sId);
+    PageResponseDTO<ProgressInspectionDTO> adminProgressInspectionWithAll(PageRequestDTO pageRequestDTO);
 }

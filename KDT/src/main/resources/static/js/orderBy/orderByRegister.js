@@ -22,8 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const mName = row.children[3].textContent.trim();
             const dppNum = row.children[4].textContent.trim();
             const rqNum = row.children[5].textContent.trim();
+            const today = new Date().toISOString().split('T')[0];
             uId = row.children[8].textContent.trim();
 
+            document.getElementById('payDate').value = today;
             sName = sName1;
             dppCode = dppCode1;
 

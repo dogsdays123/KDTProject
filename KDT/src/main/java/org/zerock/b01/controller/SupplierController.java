@@ -44,6 +44,7 @@ public class SupplierController {
     private final ProductService productService;
     private final SupplierStockService supplierStockService;
     private final PageService pageService;
+    private final ProgressInspectionService progressInspectionService;
 
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
@@ -80,9 +81,6 @@ public class SupplierController {
     @GetMapping("/transactionHistory")
     public void transactionHistory() { log.info("##SUPPLIER :: TRANSACTION HISTORY PAGE GET....##");}
 
-    @GetMapping("/progressInspection")
-    public void progressInspection() { log.info("##SUPPLIER :: PROGRESS INSPECTION PAGE GET....##");}
-
     @GetMapping("/requestDelivery")
     public void requestDelivery() { log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");}
 
@@ -115,6 +113,46 @@ public class SupplierController {
         return materials.stream()
                 .map(material -> new MaterialDTO(material.getMCode(), material.getMName()))
                 .collect(Collectors.toList());
+    }
+
+
+    @GetMapping("/progressInspection")
+    public void progressInspection(PageRequestDTO pageRequestDTO, Model model,  Authentication auth) {
+        log.info("##SUPPLIER :: PROGRESS INSPECTION PAGE GET....##");
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        UserBySecurityDTO principal = (UserBySecurityDTO) auth.getPrincipal();
+        String uId = principal.getUId();
+        String role = principal.getUserJob();
+
+        PageResponseDTO<ProgressInspectionDTO> responseDTO;
+        List<ProgressInspectionDTO> progressInspectionList;
+
+
+        if ("관리자".equals(role)) {
+
+            responseDTO = pageService.adminProgressInspectionWithAll(pageRequestDTO);
+        } else {
+
+            SupplierDTO supplierDTO = supplierService.findByUserId(uId);
+            Long sId = supplierDTO.getSId();
+            log.info("#### sId: " + sId);
+
+
+            responseDTO = pageService.progressInspectionWithAll(pageRequestDTO, sId);
+        }
+
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+
+        model.addAttribute("responseDTO", responseDTO);
+        log.info("Progress Inspection ResponseDTO : " + responseDTO);
     }
 
     @GetMapping("/sInventoryList")
@@ -282,5 +320,20 @@ public class SupplierController {
         supplierStockService.removeSupplierStock(ssIds);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
         return "redirect:/supplier/sInventoryList";
+    }
+
+    @PostMapping("/piAgree")
+    public String piAgree(@ModelAttribute ProgressInspectionDTO progressInspectionDTO, RedirectAttributes redirectAttributes,  @RequestParam List<Long> psIds) {
+        progressInspectionService.piAgree(progressInspectionDTO, psIds);
+        redirectAttributes.addFlashAttribute("message", "검수 완료 처리 되었습니다.");
+        return "redirect:/supplier/progressInspection";
+    }
+
+    @PostMapping("/piRemove")
+    public String piRemove(@ModelAttribute ProgressInspectionDTO progressInspectionDTO, @RequestParam List<Long> psIdss, RedirectAttributes redirectAttributes) {
+        log.info("psIds: {}", psIdss);
+        progressInspectionService.piRemove(progressInspectionDTO, psIdss);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/supplier/progressInspection";
     }
 }
