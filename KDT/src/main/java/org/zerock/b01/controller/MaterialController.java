@@ -9,6 +9,11 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,8 +53,8 @@ public class MaterialController {
     private final SupplierService supplierService;
     private final MaterialRepository materialRepository;
 
-    @Value("${org.zerock.upload.readyPlanPath}")
-    private String readyPath;
+    @Value("${org.zerock.upload.awsPath}")
+    private String awsPath;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -233,5 +238,30 @@ public class MaterialController {
     public List<String> getComponentTypesByProductCode(@PathVariable String pName) {
         List<String> componentTypes = materialRepository.findComponentTypesByProductName(pName);
         return componentTypes != null ? componentTypes : Collections.emptyList();
+    }
+
+    @GetMapping("/downloadTemplate/{isTemplate}")
+    public ResponseEntity<Resource> download(@PathVariable("isTemplate") boolean isTemplate) {
+        try {
+            // 실제 파일명은 필요에 따라 조건 처리
+            String fileName = "testMaterial.xlsx";
+
+            // classpath에서 리소스 로드
+            Resource resource = new ClassPathResource(awsPath + fileName);
+
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

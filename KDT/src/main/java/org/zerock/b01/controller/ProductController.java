@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -43,8 +44,8 @@ import java.util.stream.Collectors;
 public class ProductController {
 
 
-    @Value("${org.zerock.upload.readyProductPath}")
-    private String readyPath;
+    @Value("${org.zerock.upload.awsPath}")
+    private String awsPath;
 
     private final UserByService userByService;
     private final ProductService productService;
@@ -100,27 +101,29 @@ public class ProductController {
         log.info("##PRODUCT REGISTER PAGE GET....##");
     }
 
-    @GetMapping("/downloadProductPlan/{isTemplate}")
+    @GetMapping("/downloadTemplate/{isTemplate}")
     public ResponseEntity<Resource> downloadProductPlan(@PathVariable("isTemplate") boolean isTemplate) {
-        // 요청에 따라 파일을 결정
-        String filePath = isTemplate ? (readyPath + "/template.xlsx") : (readyPath + "/data.xlsx");
+        try {
+            // 실제 파일명은 필요에 따라 조건 처리
+            String fileName = "testProduct.xlsx";
 
-        // 파일 시스템에서 파일을 찾음
-        Resource resource = new FileSystemResource(filePath);
+            // classpath에서 리소스 로드
+            Resource resource = new ClassPathResource("static/upload/" + fileName);
 
-        // 파일이 없으면 404 반환
-        if (!resource.exists()) {
-            return ResponseEntity.notFound().build();
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
-
-        // 응답 헤더 설정 (파일 다운로드를 위해 Content-Disposition 설정)
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resource.getFilename());
-
-        // 파일 반환
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(resource);
     }
 
     //제품 직접 등록
