@@ -3,10 +3,12 @@ package org.zerock.b01.serviceImpl;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.result.Output;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +16,14 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.allDTO.*;
+import org.zerock.b01.repository.SupplierStockRepository;
 import org.zerock.b01.service.AllSearch;
 import org.zerock.b01.service.OutputService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -845,7 +850,15 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         QOrderBy orderBy = QOrderBy.orderBy;
         JPQLQuery<OrderBy> query = from(orderBy);
         BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QSupplierStock supplierStock = QSupplierStock.supplierStock;
 
+        BooleanExpression leadTimeGte10 = orderBy.deliveryProcurementPlan.material.mCode.in(
+                JPAExpressions
+                        .select(supplierStock.material.mCode)
+                        .from(supplierStock)
+                        .where(supplierStock.leadTime.goe(String.valueOf(10)))
+        );
+        booleanBuilder.and(leadTimeGte10);
 
         if (keyword != null && !keyword.isEmpty()) {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
@@ -878,12 +891,12 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             }
         }
 
-
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
         query.orderBy(orderBy.regDate.desc());
         List<OrderBy> resultList = query.fetch();
+
         // DTO로 변환
         List<OrderByListAllDTO> dtoList = resultList.stream()
                 .map(ob -> OrderByListAllDTO.builder()
@@ -894,6 +907,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .oRegDate(ob.getRegDate())
                         .sName(ob.getDeliveryProcurementPlan().getSupplier().getSName())
                         .mName(ob.getDeliveryProcurementPlan().getMaterial().getMName())
+                        .mCode(ob.getDeliveryProcurementPlan().getMaterial().getMCode())
                         .oExpectDate(ob.getOExpectDate())
                         .oState(ob.getOState().toString())
                         .uId(ob.getUserBy().getUId())

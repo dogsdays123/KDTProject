@@ -1,0 +1,97 @@
+C:\Users\mit-305>docker version
+Client:
+ Version:           28.0.4
+ API version:       1.48
+ Go version:        go1.23.7
+ Git commit:        b8034c0
+ Built:             Tue Mar 25 15:07:48 2025
+ OS/Arch:           windows/amd64
+ Context:           desktop-linux
+
+Server: Docker Desktop 4.40.0 (187762)
+ Engine:
+  Version:          28.0.4
+  API version:      1.48 (minimum version 1.24)
+  Go version:       go1.23.7
+  Git commit:       6430e49
+  Built:            Tue Mar 25 15:07:22 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.7.26
+  GitCommit:        753481ec61c7c8955a23d6ff7bc8e4daed455734
+ runc:
+  Version:          1.2.5
+  GitCommit:        v1.2.5-0-g59923ef
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+
+C:\Users\mit-305> docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+C:\Users\mit-305>docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+nginx        latest    4e1b6bae1e48   5 days ago     192MB
+mysql        latest    4b2d796bebc2   7 days ago     859MB
+httpd        latest    10fd72f437c4   2 months ago   148MB
+
+C:\Users\mit-305>docker pull httpd
+Using default tag: latest
+latest: Pulling from library/httpd
+Digest: sha256:4564ca7604957765bd2598e14134a1c6812067f0daddd7dc5a484431dd03832b
+Status: Image is up to date for httpd:latest
+docker.io/library/httpd:latest
+
+C:\Users\mit-305>docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+nginx        latest    4e1b6bae1e48   5 days ago     192MB
+mysql        latest    4b2d796bebc2   7 days ago     859MB
+httpd        latest    10fd72f437c4   2 months ago   148MB
+
+C:\Users\mit-305>docker run -d -p 8081:80 --name myhttpd1 httpd
+508b807cc7a69e0978ed63f99602481eea7bcff2064b8a5d111846b42acc8f01
+
+C:\Users\mit-305> docker ps
+CONTAINER ID   IMAGE     COMMAND              CREATED          STATUS          PORTS                  NAMES
+508b807cc7a6   httpd     "httpd-foreground"   13 seconds ago   Up 12 seconds   0.0.0.0:8081->80/tcp   myhttpd1
+
+C:\Users\mit-305>mkdir docker
+
+C:\Users\mit-305>cd docker
+
+C:\Users\mit-305>chcp 65001
+
+
+Active code page: 65001
+
+C:\Users\mit-305\docker>type index.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+  </head>
+  <body>
+    <h1>XXX의 도커 테스트</h1>
+    <hr>
+    <h3>호스트 파일시스템에서 도커 컨테이너로 복사된 파일</h3>
+  </body>
+</html>
+
+C:\Users\mit-305\docker>docker exec -it myhttpd1 bash
+root@508b807cc7a6:/usr/local/apache2# whoami
+root
+root@508b807cc7a6:/usr/local/apache2# pwd
+/usr/local/apache2
+root@508b807cc7a6:/usr/local/apache2# ls
+bin  build  cgi-bin  conf  error  htdocs  icons  include  logs  modules
+root@508b807cc7a6:/usr/local/apache2#
+C:\Users\mit-305\docker>docker cp index.html myhttpd1:/usr/local/apache2/htdocs/
+Successfully copied 2.05kB to myhttpd1:/usr/local/apache2/htdocs/
+
+C:\Users\mit-305\docker>docker exec -it myhttpd1 bash
+root@508b807cc7a6:/usr/local/apache2# cd htdocs
+root@508b807cc7a6:/usr/local/apache2/htdocs# ls
+index.html
+root@508b807cc7a6:/usr/local/apache2/htdocs#

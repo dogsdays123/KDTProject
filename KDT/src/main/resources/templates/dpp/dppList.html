@@ -136,8 +136,8 @@
                                 <th>조달 계획 코드</th>
                                 <th>자재 코드</th>
                                 <th>자재명</th>
-                                <th>필요 수량</th>
                                 <th>조달 수량</th>
+                                <th>요구 수량</th>
                                 <th>조달 납기일</th>
                                 <th>공급 업체</th>
                                 <th>등록자</th>
@@ -158,13 +158,14 @@
                                 <td th:text="${dto.getDppCode()}"></td>
                                 <td th:text="${dto.getMCode()}"></td>
                                 <td th:text="${dto.getMName()}"></td>
-                                <td th:text="${dto.getDppRequireNum()}"></td>
                                 <td th:text="${dto.getDppNum()}"></td>
+                                <td th:text="${dto.getDppRequireNum()}"></td>
                                 <td th:text="${#temporals.format(dto.getDppDate(), 'yyyy-MM-dd')}"></td>
                                 <td th:text="${dto.getSName()}"></td>
                                 <td th:text="${dto.getUId()}"></td>
                                 <td th:text="${#temporals.format(dto.getDppRegDate(), 'yyyy-MM-dd')}"></td>
-                                <td th:text="${dto.getDppState()}"></td>
+                                <td class="CheckState"
+                                    th:data-state="${dto.getDppState() != null ? dto.getDppState() : 'UNKNOWN'}"></td>
                                 <td>
                                     <button type="button" class="icon-button" id="openModifyModal" title="부품 정보 수정">
                                         <i class="bi bi-pencil fs-6"></i>

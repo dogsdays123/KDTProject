@@ -146,6 +146,12 @@ public class DeliveryProcurementPlanController {
         return ss != null ? ss : Collections.emptyList();
     }
 
+    @GetMapping("/{sup}/{mCode}/leadTime")
+    @ResponseBody
+    public String getDppCodeByPpCode(@PathVariable String sup, @PathVariable String mCode) {
+        return supplierStockRepository.findLeadTimeByETC(sup, mCode);
+    }
+
 
     @PostMapping("/register")
     public String register(@RequestParam("uId") String uId, @ModelAttribute DppFormDTO form,

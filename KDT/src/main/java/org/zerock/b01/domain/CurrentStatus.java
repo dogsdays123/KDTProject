@@ -11,5 +11,6 @@ public enum CurrentStatus {
     DELIVERED, //배달 됨
     ARRIVED, //도착함
     NOT_REMAINING, // 남은 게 없음
-
+    SUCCESS_INSPECTION, //"검수 완료"
+    SUCCESS //"전체 완료"
 }

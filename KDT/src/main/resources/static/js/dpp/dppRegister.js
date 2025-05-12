@@ -1,5 +1,6 @@
 let dppList = [];
 let ppCode;
+let mCodeForLeadTime;
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('dppForm');
@@ -130,7 +131,13 @@ $(document).ready(function () {
 
     $('#mCode').on('change', function () {
         const input = $(this).val();  // 선택된 상품 값
+        mCodeForLeadTime = input;
         loadSup(input);
+    });
+
+    $('#sup').on('change', function () {
+        const input = $(this).val();  // 선택된 상품 값
+        loadLeadTime(input, mCodeForLeadTime);
     });
 
 });
@@ -212,6 +219,34 @@ function loadSup(mCode) {
         },
         error: function (error) {
             console.error('목록을 가져오는 중 오류 발생:', error);
+        }
+    });
+}
+
+function loadLeadTime(sup, mCode) {
+    if (!sup) {return;}
+
+    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+    const encodes = [];
+    encodes[0] = encodeURIComponent(sup);
+    encodes[1] = encodeURIComponent(mCode);
+
+    // AJAX를 사용하여 부품 목록을 가져오는 코드
+    $.ajax({
+        url: `/dpp/${encodes[0]}/${encodes[1]}/leadTime`,  // URL 인코딩 적용
+        method: 'GET',  // HTTP GET 요청
+        success: function (leadTime) {
+            console.log(leadTime);
+            // 리드타임 입력 필드에 값 설정
+            const leadTimeInput = $('#leadTime');
+            if (leadTime) {
+                leadTimeInput.val(leadTime);
+            } else {
+                leadTimeInput.val('미배정');
+            }
+        },
+        error: function (error) {
+            console.error('리드타임 가져오다가 오류 발생:', error);
         }
     });
 }
