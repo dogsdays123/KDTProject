@@ -23,6 +23,8 @@ import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.allDTO.OrderByListAllDTO;
 import org.zerock.b01.dto.allDTO.PlanListAllDTO;
+import org.zerock.b01.dto.formDTO.DppFormDTO;
+import org.zerock.b01.dto.formDTO.ProgressInspectionFormDTO;
 import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.OrderByRepository;
 import org.zerock.b01.repository.SupplierStockRepository;
@@ -50,6 +52,7 @@ public class SupplyController {
     private final PageService pageService;
     private final UserByRepository userByRepository;
     private final SupplierStockRepository supplierStockRepository;
+    private final ProgressInspectionService progressInspectionService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -95,13 +98,15 @@ public class SupplyController {
         // ✅ leadTime 추가 로직 (Material 기준으로 조회)
         List<OrderByListAllDTO> dtoList = responseDTO.getDtoList();
 
-        for (OrderByListAllDTO dto : dtoList) {
-            String leadTime = supplierStockRepository.findLeadTimeByMCode(dto.getMCode());
-            log.info("mCode {} / leadTime {}", dto.getMCode(), leadTime);
-            if (leadTime != null) {
-                dto.setLeadTime(leadTime);
-            } else {
-                dto.setLeadTime("미배정");
+        if(dtoList != null && !dtoList.isEmpty()) {
+            for (OrderByListAllDTO dto : dtoList) {
+                String leadTime = supplierStockRepository.findLeadTimeByMCode(dto.getMCode());
+                log.info("mCode {} / leadTime {}", dto.getMCode(), leadTime);
+                if (leadTime != null) {
+                    dto.setLeadTime(leadTime);
+                } else {
+                    dto.setLeadTime("미배정");
+                }
             }
         }
 
@@ -110,6 +115,31 @@ public class SupplyController {
         }
 
         model.addAttribute("responseDTO", responseDTO);
+    }
+
+    @PostMapping("/register")
+    public String postPi(@ModelAttribute ProgressInspectionFormDTO form,
+                       Model model,
+                       RedirectAttributes redirectAttributes,
+                       HttpServletRequest request) throws IOException {
+
+        List<ProgressInspectionDTO> psDTOs = form.getPss();
+        String message = "";
+
+        for(ProgressInspectionDTO psDTO : psDTOs) {
+            if(progressInspectionService.register(psDTO)){
+                message = "등록이 완료되었습니다.";
+                log.info("Test true ");
+            } else {
+                message = "이미 등록된 검수입니다.";
+                log.info("Test false ");
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/supply/progressInspection";
+            }
+        }
+
+        redirectAttributes.addFlashAttribute("message", message);
+        return "redirect:/supply/progressInspection";
     }
 
     @GetMapping("/requestDelivery")

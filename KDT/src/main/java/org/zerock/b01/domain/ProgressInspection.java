@@ -7,20 +7,19 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProgressInspection extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long psId;
 
     private String psNum;
 
     private LocalDate psDate;
-
-    @Enumerated(EnumType.STRING)
-    private CurrentStatus psState;
 
     private String psRemarks;
 

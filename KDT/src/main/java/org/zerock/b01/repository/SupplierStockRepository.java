@@ -14,6 +14,8 @@ public interface SupplierStockRepository extends JpaRepository<SupplierStock, Lo
     @Query("SELECT ss FROM SupplierStock ss WHERE ss.supplier.sId = :sId")
     List<SupplierStock> findAllBySupplierId(@Param("sId") Long sId);
 
+    @Query("select ss from SupplierStock ss where ss.supplier.sId = :sId and ss.material.mCode=:mCode")
+    SupplierStock findBySupplierId(@Param("sId") Long sId, @Param("mCode") String mCode);
 
     boolean existsBySupplier_sIdAndMaterial_mCode(Long sId, String mCode);
 
