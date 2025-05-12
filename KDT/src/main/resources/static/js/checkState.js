@@ -6,9 +6,11 @@ const stateMap = {
     RETURNED: "반품",
     FINISHED: "종료",
     REJECT: "거절",
-    DELIVERED: "배달 완료",
     ARRIVED: "도착",
-    NOT_REMAINING: "재고 없음"
+    NOT_REMAINING: "재고 없음",
+    DELIVERED: "배달 완료",
+    SUCCESS_INSPECTION: "검수 완료",
+    SUCCESS: "전체 완료"
 };
 
     document.querySelectorAll(".CheckState").forEach(td => {
