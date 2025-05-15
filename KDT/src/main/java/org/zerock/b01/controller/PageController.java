@@ -139,7 +139,7 @@ public class PageController {
     public String myPagePost(@ModelAttribute UserByDTO userByDTO, Model model) {
         userByService.changeUser(userByDTO);
         // POST 처리 후 마이페이지 GET으로 리다이렉트
-        return "redirect:/mainPage/myPage";
+        return "redirect:myPage";
     }
 
     @PostMapping("/checkEmail")

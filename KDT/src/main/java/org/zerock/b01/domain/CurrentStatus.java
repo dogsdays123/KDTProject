@@ -8,8 +8,8 @@ public enum CurrentStatus {
     RETURNED, //반품
     FINISHED, //종료
     REJECT, //거절
-    DELIVERED, //배달 됨
-    ARRIVED, //도착함
+    DELIVERED, //배달 완료
+    ARRIVED, //도착
     NOT_REMAINING, // 남은 게 없음
     SUCCESS_INSPECTION, //"검수 완료"
     SUCCESS //"전체 완료"

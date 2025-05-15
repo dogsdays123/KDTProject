@@ -149,7 +149,7 @@ public class ProductController {
         String messageString = String.join(",", message);
 
         redirectAttributes.addFlashAttribute("message", messageString);
-        return "redirect:/product/goodsRegister";
+        return "redirect:goodsRegister";
     }
 
 
@@ -217,7 +217,7 @@ public class ProductController {
         log.info("pp modify post.....#@" + productDTO);
         productService.modifyProduct(productDTO, uName);
         redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
-        return "redirect:/product/goodsList";
+        return "redirect:goodsList";
     }
 
     @PostMapping("/remove")
@@ -226,16 +226,16 @@ public class ProductController {
         for (String pCode : pCodes) {
             if (productionPlanRepository.existsByProduct_pCode(pCode)) {
                 redirectAttributes.addFlashAttribute("message", "생산 계획이 등록된 상품이 있어 삭제할 수 없습니다.");
-                return "redirect:/product/goodsList";
+                return "redirect:goodsList";
             }
             if (materialRepository.existsByProduct_pCode(pCode)) {
                 redirectAttributes.addFlashAttribute("message", "부품 등록된 상품이 있어 삭제할 수 없습니다.");
-                return "redirect:/product/goodsList";
+                return "redirect:goodsList";
             }
         }
 
         productService.removeProduct(pCodes);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/product/goodsList";
+        return "redirect:goodsList";
     }
 }

@@ -104,7 +104,7 @@ public class InPutController {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
 
-        return "redirect:/inPut/inPutManage";
+        return "redirect:inPutManage";
     }
 
     @GetMapping("/inPutList")
@@ -161,6 +161,6 @@ public class InPutController {
         log.info("pp remove post.....#@" + inputDTO);
         inputService.removeInput(ipIds);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/inPut/inPutList";
+        return "redirect:inPutList";
     }
 }

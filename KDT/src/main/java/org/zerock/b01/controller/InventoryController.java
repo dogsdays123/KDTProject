@@ -76,7 +76,7 @@ public class InventoryController {
         model.addAttribute("productList", productList);
         List<Material> materialList = materialService.getMaterials();
         model.addAttribute("materialList", materialList);
-        return "/inventory/inventoryRegister";
+        return "inventory/inventoryRegister";
 
     }
 
@@ -120,7 +120,7 @@ public class InventoryController {
 //            inventoryStockService.registerIS(inventoryStockDTO);
 //        }
 //        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
-        return "redirect:/inventory/inventoryRegister";
+        return "redirect:inventoryRegister";
     }
 
 
@@ -177,11 +177,11 @@ public class InventoryController {
 
         if (where.equals("dataUpload")) {
             redirectAttributes.addFlashAttribute("successMessage", "(특정)데이터 업로드가 성공적으로 완료되었습니다.");
-            return "redirect:/inventory/inventoryRegister";
+            return "redirect:inventoryRegister";
         } else {
             log.info("데이터넘겨주기");
             redirectAttributes.addFlashAttribute("successMessage", "데이터 업로드가 성공적으로 완료되었습니다.");
-            return "redirect:/inventory/inventoryRegister";
+            return "redirect:inventoryRegister";
         }
     }
 
@@ -240,7 +240,7 @@ public class InventoryController {
         log.info("pp modify post.....#@" + inventoryStockDTO);
         inventoryStockService.modifyIS(inventoryStockDTO, isId);
         redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
-        return "redirect:/inventory/inventoryList";
+        return "redirect:inventoryList";
     }
 
     @PostMapping("/remove")
@@ -248,7 +248,7 @@ public class InventoryController {
         log.info("pp remove post.....#@" + inventoryStockDTO);
         inventoryStockService.removeIS(isIds);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/inventory/inventoryList";
+        return "redirect:inventoryList";
     }
 
 

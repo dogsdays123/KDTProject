@@ -95,7 +95,7 @@ public class SupplierController {
         model.addAttribute("productList", productList);
         List<Material> materialList = materialService.getMaterials();
         model.addAttribute("materialList", materialList);
-        return "/supplier/sInventoryRegister";
+        return "supplier/sInventoryRegister";
     }
 
     @GetMapping("/api/products/{pCode}/component-types")
@@ -206,7 +206,7 @@ public class SupplierController {
             supplierDTO = supplierService.findByUserId(uId);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("message", "공급업체 회원만 재고 등록이 가능합니다.");
-            return "redirect:/supplier/sInventoryRegister";
+            return "redirect:sInventoryRegister";
         }
         Long sId = supplierDTO.getSId();
 
@@ -232,7 +232,7 @@ public class SupplierController {
             redirectAttributes.addFlashAttribute("message", e.getMessage()); // 중복 알림
         }
 
-        return "redirect:/supplier/sInventoryRegister";
+        return "redirect:sInventoryRegister";
     }
 
     @PostMapping("/addSStock")
@@ -311,7 +311,7 @@ public class SupplierController {
         log.info("ss modify post.....#@" + supplierStockDTO);
         supplierStockService.modifySupplierStock(supplierStockDTO, ssId);
         redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
-        return "redirect:/supplier/sInventoryList";
+        return "redirect:sInventoryList";
     }
 
     @PostMapping("/remove")
@@ -319,14 +319,14 @@ public class SupplierController {
         log.info("pp remove post.....#@" + supplierStockDTO);
         supplierStockService.removeSupplierStock(ssIds);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/supplier/sInventoryList";
+        return "redirect:sInventoryList";
     }
 
     @PostMapping("/piAgree")
     public String piAgree(@ModelAttribute ProgressInspectionDTO progressInspectionDTO, RedirectAttributes redirectAttributes,  @RequestParam List<Long> psIds) {
         progressInspectionService.piAgree(progressInspectionDTO, psIds);
         redirectAttributes.addFlashAttribute("message", "검수 완료 처리 되었습니다.");
-        return "redirect:/supplier/progressInspection";
+        return "redirect:progressInspection";
     }
 
     @PostMapping("/piRemove")
@@ -334,6 +334,6 @@ public class SupplierController {
         log.info("psIds: {}", psIdss);
         progressInspectionService.piRemove(progressInspectionDTO, psIdss);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/supplier/progressInspection";
+        return "redirect:progressInspection";
     }
 }

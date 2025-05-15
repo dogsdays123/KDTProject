@@ -123,9 +123,9 @@ public class MemberManagementController {
         }
 
         if (pageType.equals("a"))
-            return "redirect:/memberManagement/employeeApproval";
+            return "redirect:employeeApproval";
         else
-            return "redirect:/memberManagement/employeeList";
+            return "redirect:employeeList";
     }
 
     @PostMapping("/employeeApprovalDisAgree")
@@ -140,7 +140,7 @@ public class MemberManagementController {
             userByService.disAgreeEmployee(id, ur);
         }
 
-        return "redirect:/memberManagement/employeeApproval";
+        return "redirect:employeeApproval";
     }
 
 
@@ -179,9 +179,9 @@ public class MemberManagementController {
         }
 
         if(pageType.equals("a")){
-            return "redirect:/memberManagement/supplierApproval";
+            return "redirect:supplierApproval";
         } else{
-            return "redirect:/memberManagement/supplierList";
+            return "redirect:supplierList";
         }
     }
 
@@ -194,6 +194,6 @@ public class MemberManagementController {
             userByService.disAgreeSupplier(uid);
         }
 
-        return "redirect:/memberManagement/supplierApproval";
+        return "redirect:supplierApproval";
     }
 }

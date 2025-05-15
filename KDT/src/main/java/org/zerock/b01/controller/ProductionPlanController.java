@@ -89,7 +89,7 @@ public class ProductionPlanController {
         log.info("$$$$" + productList);
 
         // 반환할 뷰 이름을 명시합니다.
-        return "/productionPlan/ppRegister";
+        return "productionPlan/ppRegister";
     }
 
     @GetMapping("/ppOrderPlan")
@@ -160,7 +160,7 @@ public class ProductionPlanController {
             productionPlanService.registerProductionPlan(productionPlanDTO, productionPlanDTO.getUId());
         }
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
-        return "redirect:/productionPlan/ppRegister";
+        return "redirect:ppRegister";
     }
 
     //생산계획 자동 등록
@@ -226,7 +226,7 @@ public class ProductionPlanController {
         log.info("pp modify post.....#@" + productionPlanDTO);
         productionPlanService.modifyProductionPlan(productionPlanDTO, uName);
         redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
-        return "redirect:/productionPlan/ppList";
+        return "redirect:ppList";
     }
 
     @PostMapping("/remove")
@@ -234,6 +234,6 @@ public class ProductionPlanController {
         log.info("pp remove post.....#@" + productionPlanDTO);
         productionPlanService.removeProductionPlan(ppCodes);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/productionPlan/ppList";
+        return "redirect:ppList";
     }
 }

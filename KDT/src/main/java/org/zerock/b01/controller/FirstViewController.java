@@ -82,12 +82,12 @@ public class FirstViewController {
             userByService.join(userByDTO, supplierDTO);
         } catch (UserByService.MidExistException e) {
             redirectAttributes.addFlashAttribute("error", "uId");
-            return "redirect:/firstView/join";
+            return "redirect:join";
         }
         redirectAttributes.addFlashAttribute("result", "success");
         model.addAttribute("userDTO", userByDTO);
 
-        return "redirect:/firstView/login";
+        return "redirect:login";
     }
 
     @PostMapping("/checkId")
@@ -160,7 +160,7 @@ public class FirstViewController {
     @PostMapping("/find")
     public String find(@ModelAttribute("userByDTO") UserByDTO userByDTO, Model model, RedirectAttributes redirectAttributes) {
 
-        return "redirect:/firstView/login";
+        return "redirect:login";
     }
 
     @GetMapping("/admin")

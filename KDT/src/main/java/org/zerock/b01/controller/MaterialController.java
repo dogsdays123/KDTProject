@@ -145,7 +145,7 @@ public class MaterialController {
         model.addAttribute("supplierList", supplierList);
 
         // 반환할 뷰 이름을 명시합니다.
-        return "/material/materialRegister";
+        return "material/materialRegister";
     }
 
     //부품 직접 등록
@@ -163,7 +163,7 @@ public class MaterialController {
         }
 
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
-        return "redirect:/material/materialRegister";
+        return "redirect:materialRegister";
     }
 
     //부품 자동 등록
@@ -222,7 +222,7 @@ public class MaterialController {
         log.info("pp modify post.....#@" + materialDTO);
         materialService.modifyMaterial(materialDTO, uName);
         redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
-        return "redirect:/material/materialList";
+        return "redirect:materialList";
     }
 
     @PostMapping("/remove")
@@ -230,7 +230,7 @@ public class MaterialController {
         log.info("pp remove post.....#@" + materialDTO);
         materialService.removeMaterial(pCodes);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/material/materialList";
+        return "redirect:materialList";
     }
 
     @GetMapping("/{pName}/cType")
