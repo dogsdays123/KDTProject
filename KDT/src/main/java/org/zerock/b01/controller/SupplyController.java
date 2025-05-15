@@ -135,12 +135,12 @@ public class SupplyController {
                 message = "이미 등록된 검수입니다.";
                 log.info("Test false ");
                 redirectAttributes.addFlashAttribute("message", message);
-                return "redirect:/supply/progressInspection";
+                return "redirect:progressInspection";
             }
         }
 
         redirectAttributes.addFlashAttribute("message", message);
-        return "redirect:/supply/progressInspection";
+        return "redirect:progressInspection";
     }
 
     @GetMapping("/requestDelivery")

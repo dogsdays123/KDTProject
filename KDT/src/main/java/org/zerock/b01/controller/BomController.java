@@ -149,7 +149,7 @@ public class BomController {
         List<Material> materialList = materialService.getMaterials();
         model.addAttribute("materialList", materialList);
         // 반환할 뷰 이름을 명시합니다.
-        return "/bom/bomRegister";
+        return "bom/bomRegister";
     }
 
     //붐 직접 등록
@@ -167,6 +167,7 @@ public class BomController {
         redirectAttributes.addFlashAttribute("errorCheck", bomObj.get("errorCheck"));
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/bom/bomRegister";
+
     }
 
     //붐 자동 등록
@@ -226,7 +227,7 @@ public class BomController {
         log.info("pp modify post.....#@" + bomDTO);
         bomService.modifyBOM(bomDTO, bId);
         redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
-        return "redirect:/bom/bomList";
+        return "redirect:bomList";
     }
 
     @PostMapping("/remove")
@@ -234,7 +235,7 @@ public class BomController {
         log.info("pp remove post.....#@" + bomDTO);
         bomService.removeBOM(bIds);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/bom/bomList";
+        return "redirect:bomList";
     }
 
     @GetMapping("/downloadTemplate/{isTemplate}")

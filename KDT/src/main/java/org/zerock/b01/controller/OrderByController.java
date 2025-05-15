@@ -99,7 +99,7 @@ public class OrderByController {
         }
 
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
-        return "redirect:/orderBy/orderByRegister";
+        return "redirect:orderByRegister";
     }
 
     @GetMapping("orderByList")

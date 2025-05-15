@@ -153,7 +153,7 @@ public class OutPutController {
 
         outputService.registerOutput(outPutDTO);
         redirectAttributes.addFlashAttribute("message", "출고 처리가 완료되었습니다.");
-        return "redirect:/outPut/outPutManage";
+        return "redirect:outPutManage";
     }
 
     @PostMapping("/remove")
@@ -161,7 +161,7 @@ public class OutPutController {
         log.info("pp remove post.....#@" + outPutDTO);
         outputService.removeOutput(opIds);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
-        return "redirect:/outPut/outPutList";
+        return "redirect:outPutList";
     }
 
     @PostMapping("/confirm")
@@ -169,6 +169,6 @@ public class OutPutController {
         log.info("pp remove post.....#@" + outPutDTO);
         outputService.confirmOutput(opIds);
         redirectAttributes.addFlashAttribute("message", "출고 처리 확정이 완료되었습니다.");
-        return "redirect:/outPut/outPutList";
+        return "redirect:outPutList";
     }
 }

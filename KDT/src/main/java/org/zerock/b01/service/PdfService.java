@@ -572,7 +572,7 @@ public class PdfService {
                 deliveryDateCell.setColspan(2);
                 deliveryLocationCell.setMinimumHeight(5f);
 
-                PdfPCell deliveryDateCellInfo = createCenteredCell(item.getOExpectDate(), contentTitleFont1);
+                PdfPCell deliveryDateCellInfo = createCenteredCell(item.getOExpectDate(), font);
                 deliveryDateCellInfo.setColspan(5);
                 deliveryLocationCell.setMinimumHeight(5f);
 

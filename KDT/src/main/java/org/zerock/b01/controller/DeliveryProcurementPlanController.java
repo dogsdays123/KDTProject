@@ -168,6 +168,6 @@ public class DeliveryProcurementPlanController {
         }
 
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
-        return "redirect:/dpp/dppRegister";
+        return "redirect:dppRegister";
     }
 }
