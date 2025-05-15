@@ -257,6 +257,13 @@ public class MaterialController {
         return componentTypes != null ? componentTypes : Collections.emptyList();
     }
 
+    @GetMapping("/{mType}/{pName}/mName")
+    @ResponseBody
+    public List<String> getMNamesByMType(@PathVariable String mType, @PathVariable String pName) {
+        List<String> mNames = materialRepository.findMNameByETC(pName, mType);
+        return mNames != null ? mNames : Collections.emptyList();
+    }
+
     @GetMapping("/downloadTemplate/{isTemplate}")
     public ResponseEntity<Resource> download(@PathVariable("isTemplate") boolean isTemplate) {
         try {
