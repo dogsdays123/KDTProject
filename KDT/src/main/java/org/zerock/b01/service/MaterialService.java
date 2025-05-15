@@ -10,10 +10,10 @@ import java.util.Map;
 
 public interface MaterialService {
     List<Material> getMaterials();
-    void registerMaterial(MaterialDTO materialDTO, String uId);
+    String registerMaterial(MaterialDTO materialDTO, String uId);
     void modifyMaterial(MaterialDTO materialDTO, String uName);
     void removeMaterial(List<String> mCodes);
-    Map<String, String[]> registerMaterialEasy(List<MaterialDTO> materialDTOs, String uId);
+    Map<String, Object> registerMaterialEasy(List<MaterialDTO> materialDTOs, String uId, boolean check);
     List<Material> getMaterialByPName(String pCode);
     List<String> getComponentTypesByProductCode(String pCode);
     List<Material> getMaterialByComponentType(String componentType);

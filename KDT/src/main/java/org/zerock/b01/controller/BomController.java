@@ -159,12 +159,22 @@ public class BomController {
                                   RedirectAttributes redirectAttributes,
                                   HttpServletRequest request) throws IOException {
 
-        log.info("$$$$ + {}", form.getBoms());
-        Map<String, String[]> bomObj;
+        List<String> errors = new ArrayList<>();
         List<BomDTO> bomDTOs = form.getBoms();
-        bomObj = bomService.registerBOM(bomDTOs, bomDTOs.get(0).getUId());
+        String message;
 
-        redirectAttributes.addFlashAttribute("errorCheck", bomObj.get("errorCheck"));
+        for(BomDTO bomDTO : bomDTOs) {
+            String error = bomService.registerBOM(bomDTO, bomDTO.getUId());
+            if (error != null) {errors.add(error);}
+        }
+
+        if(!errors.isEmpty()) {
+            message = String.join(", ", errors) + " 이 중복 되었습니다.\n중복되지 않은 BOM은 등록됩니다.";
+        } else{
+            message = "등록이 완료되었습니다.";
+        }
+
+        redirectAttributes.addFlashAttribute("message", message);
         return "redirect:bomRegister";
     }
 
@@ -176,27 +186,28 @@ public class BomController {
         log.info("uuuu " + uId);
 
         Map<String, Object> response = new HashMap<>();
-        Map<String, String[]> bomObj = new HashMap<>();
+        List<Map<String, String>> totalDuplicateList = new ArrayList<>();
+        List<String> totalErrorCheckList = new ArrayList<>();
 
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            bomObj = registerBomOnController(uId, worksheet, check);
+            Map<String, Object> bomObj = registerBomOnController(uId, worksheet, check);
+
+            // 중복과 에러 체크 리스트 병합
+            totalDuplicateList.addAll((List<Map<String, String>>) bomObj.get("duplicate"));
+            totalErrorCheckList.addAll((List<String>) bomObj.get("errorCheck"));
         }
 
-        //materialService 에서 가져온 mCodes
-        if(check.equals("true")){
-            response.put("pNames", bomObj.get("pNames"));
-            response.put("mCodes", bomObj.get("mCodes"));
-        } else {
-            response.put("errorCheck", bomObj.get("errorCheck"));
-        }
+        response.put("duplicate", totalDuplicateList);
+        response.put("errorCheck", totalErrorCheckList);
 
         return response;
     }
 
 
-    private Map<String, String[]> registerBomOnController(String uId, XSSFSheet worksheet, String check) {
+    private Map<String, Object> registerBomOnController(String uId, XSSFSheet worksheet, String check) {
+
         List<BomDTO> bomDTOs = new ArrayList<>();
 
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
@@ -205,19 +216,16 @@ public class BomController {
             XSSFRow row = worksheet.getRow(i);
 
             bomDTO.setPName(formatter.formatCellValue(row.getCell(0)));
-            bomDTO.setMCode(formatter.formatCellValue(row.getCell(1)));
-            bomDTO.setMName(formatter.formatCellValue(row.getCell(2)));
-            bomDTO.setMComponentType(formatter.formatCellValue(row.getCell(3)));
-            bomDTO.setBRequireNum(formatter.formatCellValue(row.getCell(4)));
+            bomDTO.setMName(formatter.formatCellValue(row.getCell(1)));
+            bomDTO.setMComponentType(formatter.formatCellValue(row.getCell(2)));
+            bomDTO.setBRequireNum(formatter.formatCellValue(row.getCell(3)));
 
             bomDTOs.add(bomDTO);
         }
 
-        if(check.equals("true")){
-            return bomService.checkBOM(bomDTOs);
-        } else{
-            return bomService.registerBOM(bomDTOs, uId);
-        }
+        boolean result = Boolean.parseBoolean(check);
+
+        return bomService.registerBomEasy(bomDTOs, uId, result);
     }
 
     @PostMapping("/modify")

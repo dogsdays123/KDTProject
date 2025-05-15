@@ -41,7 +41,6 @@ public class BomServiceImpl implements BomService {
         for (Bom bom : bomList) {
             BomDTO bomDTO = new BomDTO();
             bomDTO.setPName(bom.getProduct().getPName());
-            bomDTO.setMCode(bom.getMaterial().getMCode());
             bomDTO.setMName(bom.getMaterial().getMName());
             bomDTO.setMComponentType(bom.getMaterial().getMComponentType());
             bomDTO.setBRequireNum(bom.getBRequireNum());
@@ -53,9 +52,30 @@ public class BomServiceImpl implements BomService {
     }
 
     @Override
-    public Map<String, String[]> registerBOM(List<BomDTO> bomDTOs, String uId){
-        List<String> errorCheck = new ArrayList<>();
+    public String registerBOM(BomDTO bomDTO, String uId){
+        Bom bom = modelMapper.map(bomDTO, Bom.class);
+        Product product = productRepository.findByProductName(bomDTO.getPName()).orElseThrow();
+        Material material = materialRepository.findByMaterialName(bomDTO.getMName()).orElseThrow();
+        bom.setUserBy(userByRepository.findByUId(uId));
 
+        String errorMessage = null;
+
+        if(bomRepository.findByOthers(bomDTO.getPName(), bomDTO.getMName()) != null){
+            errorMessage = "[" + bomDTO.getMName() + "]";
+        }
+        else{
+            bom.setMaterial(material);
+            bom.setProduct(product);
+            bomRepository.save(bom);
+        }
+
+        return errorMessage;
+    }
+
+    @Override
+    public Map<String, Object> registerBomEasy(List<BomDTO> bomDTOs, String uId, boolean check){
+        List<Map<String, String>> duplicate = new ArrayList<>();
+        List<String> errorCheck = new ArrayList<>();
         UserBy user = userByRepository.findByUId(uId);
 
         //돌아라돌아라
@@ -63,51 +83,35 @@ public class BomServiceImpl implements BomService {
             Bom bom = modelMapper.map(bomDTO, Bom.class);
             bom.setUserBy(user);
 
+            //붐에 중복된 값과, 저장할 값을 각각 찾을
+            Bom duplicateB = bomRepository.findByOthers(bomDTO.getPName(), bomDTO.getMName());
+            Material saveM =materialRepository.findByOtherName(bomDTO.getPName(), bomDTO.getMName());
+
             //만약 엑셀에 들어온 제품이 등록되지 않은 제품이라면 error로 저장
-            if (bomRepository.findByProductByPName(bomDTO.getPName()) == null) {
+            if (productRepository.findByProductNameObj(bomDTO.getPName()) == null) {
                 errorCheck.add(bomDTO.getPName());
                 continue;
-            } else{
-                bom.setProduct(productRepository.findByProductNameObj(bomDTO.getPName()));
             }
 
-            Material m = materialRepository.findByMaterialCode(bomDTO.getMCode()).orElse(null);
-
-            if (m == null) {
-                errorCheck.add(bomDTO.getMName());
-            } else {
-                bom.setMaterial(m);
-                bomRepository.save(bom);
-            }
-        }
-
-        Map<String, String[]> result = new HashMap<>();
-        result.put("errorCheck", errorCheck.toArray(new String[0]));
-
-        return result;
-    }
-
-    @Override
-    public Map<String, String[]> checkBOM(List<BomDTO> bomDTOs){
-        List<String> pNames = new ArrayList<>();
-        List<String> mCodes = new ArrayList<>();
-
-        //돌아라돌아라
-        for (BomDTO bomDTO : bomDTOs) {
-
-            if(bomRepository.findByProductByPName(bomDTO.getPName()) == null){
-                pNames.add(bomDTO.getPName());
+            //중복된 경우가 있으면 중복체크
+            if(duplicateB != null){
+                Map<String, String> dupEntry = new HashMap<>();
+                dupEntry.put("pName", bomDTO.getPName());
+                dupEntry.put("mName", bomDTO.getMName());
+                duplicate.add(dupEntry);
                 continue;
             }
 
-            if(materialRepository.findByMaterialCode(bomDTO.getMCode()).orElse(null) == null){
-                mCodes.add(bomDTO.getMCode());
+            if(!check){
+                bom.setProduct(productRepository.findByProductNameObj(bomDTO.getPName()));
+                bom.setMaterial(saveM);
+                bomRepository.save(bom);
+                }
             }
-        }
 
-        Map<String, String[]> result = new HashMap<>();
-        result.put("pNames", pNames.toArray(new String[0]));
-        result.put("mCodes", mCodes.toArray(new String[0]));
+        Map<String, Object> result = new HashMap<>();
+        result.put("errorCheck", errorCheck);
+        result.put("duplicate", duplicate);
 
         return result;
     }
@@ -117,7 +121,7 @@ public class BomServiceImpl implements BomService {
         Optional<Bom> result = bomRepository.findById(bId);
         Bom bom = result.orElseThrow();
 
-        Optional<Material> materialOptional = materialRepository.findById(bomDTO.getMCode());
+        Optional<Material> materialOptional = materialRepository.findByMaterialName(bomDTO.getMName());
         Material material = materialOptional.orElseThrow(() -> new EntityNotFoundException("Material not found"));
         bom.change(bomDTO.getBRequireNum(), material);
         bomRepository.save(bom);

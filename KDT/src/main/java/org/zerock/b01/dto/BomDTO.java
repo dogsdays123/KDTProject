@@ -24,9 +24,6 @@ public class BomDTO {
     @JsonProperty("pName")
     private String pName;
 
-    @JsonProperty("mCode")
-    private String mCode;
-
     @JsonProperty("mName")
     private String mName;
 
