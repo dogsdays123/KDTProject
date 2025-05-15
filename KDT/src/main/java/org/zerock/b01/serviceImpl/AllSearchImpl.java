@@ -21,6 +21,7 @@ import org.zerock.b01.service.AllSearch;
 import org.zerock.b01.service.OutputService;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -518,7 +519,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(inventoryStock.regDate.desc());
+                .orderBy(inventoryStock.isNum.desc());
 
         if (keyword != null && !keyword.isEmpty()) {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
@@ -988,6 +989,11 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
             log.info("Received pName: " + mName);
             booleanBuilder.and(progressInspection.supplierStock.material.mName.contains(mName));
+        }
+
+        if (psDate != null) {
+            log.info("Received psDate: " + psDate);
+            booleanBuilder.and(progressInspection.psDate.eq(psDate));
         }
 
         query.where(booleanBuilder);

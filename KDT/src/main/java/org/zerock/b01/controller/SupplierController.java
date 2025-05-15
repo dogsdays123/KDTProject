@@ -192,6 +192,15 @@ public class SupplierController {
 
         model.addAttribute("responseDTO", responseDTO);
         log.info("Progress Inspection ResponseDTO : " + responseDTO);
+
+        List<String> mNameList = orderByRepository.findMaterialNamesDistinct();
+        model.addAttribute("mNameList", mNameList);
+
+        List<CurrentStatus> drStateList = orderByRepository.findDistinctOrderStates();
+        model.addAttribute("drStateList", drStateList);
+
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedDrState", pageRequestDTO.getDrState() != null ? pageRequestDTO.getDrState() : "");
     }
 
 
