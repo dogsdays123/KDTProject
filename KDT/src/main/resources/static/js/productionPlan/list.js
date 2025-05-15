@@ -4,6 +4,16 @@ document.getElementById('selectAll').addEventListener('change', function () {
     });
 });
 
+document.getElementById('ppEnd').addEventListener('change', function () {
+    const ppStart = new Date(document.getElementById('ppStart').value);
+    const ppEnd = new Date(this.value);
+
+    if (ppEnd < ppStart) {
+        alert("종료일은 시작일보다 이전일 수 없습니다.");
+        this.value = '';
+    }
+});
+
 document.querySelectorAll('.icon-button').forEach(button => {
     button.addEventListener('click', function () {
         const row = this.closest('tr'); // 클릭한 버튼이 속한 tr
@@ -15,6 +25,8 @@ document.querySelectorAll('.icon-button').forEach(button => {
         const pStart = row.querySelector('td:nth-child(5)').innerText;
         const pEnd = row.querySelector('td:nth-child(6)').innerText;
         const pNum = row.querySelector('td:nth-child(7)').innerText;
+
+
 
 
         document.getElementById('planCodeInput').value = ppCode;

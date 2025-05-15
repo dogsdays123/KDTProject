@@ -12,5 +12,8 @@ public enum CurrentStatus {
     ARRIVED, //도착
     NOT_REMAINING, // 남은 게 없음
     SUCCESS_INSPECTION, //"검수 완료"
-    SUCCESS //"전체 완료"
+    SUCCESS, //"전체 완료"
+    READY_SUCCESS, //"준비 완료"
+    DELIVERY_REQUESTED, // 납품 요청됨
+    DELIVERY_DELIVERED // 납품 완료
 }

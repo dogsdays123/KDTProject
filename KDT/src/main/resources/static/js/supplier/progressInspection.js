@@ -143,3 +143,66 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));
     modal.show();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const states = {
+        ON_HOLD: "대기",
+        APPROVAL: "승인",
+        IN_PROGRESS: "진행 중",
+        UNDER_INSPECTION: "검수 중",
+        RETURNED: "반품",
+        FINISHED: "종료",
+        REJECT: "거절",
+        ARRIVED: "도착",
+        NOT_REMAINING: "재고 없음",
+        DELIVERED: "배달 완료",
+        SUCCESS_INSPECTION: "검수 완료",
+        SUCCESS: "전체 완료",
+        READY_SUCCESS: "준비 완료",
+        DELIVERY_REQUESTED: "납품 요청됨",
+        DELIVERY_DELIVERED: "납품 완료"
+    };
+
+    // 드롭다운 option에 텍스트 설정
+    document.querySelectorAll(".drState option").forEach(option => {
+        const state = option.dataset.state;
+        if (!state) {
+            option.textContent = "전체";
+        } else {
+            option.textContent = states[state] || "알 수 없음";
+        }
+    });
+
+    // 테이블 내 표시용
+    document.querySelectorAll('[data-state]').forEach(function (td) {
+        const stateKey = td.getAttribute('data-state');
+        const text = states[stateKey] || "알 수 없음";
+        td.innerHTML = `<span class="state-${stateKey}">${text}</span>`;
+    });
+});
+
+document.querySelector(".clearBtn").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    self.location = '/supplier/progressInspection'
+}, false)
+
+document.querySelector(".pagination").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const target = e.target
+
+    if (target.tagName !== 'A') {
+        return
+    }
+
+    const num = target.getAttribute("data-num")
+
+    const formObj = document.querySelector("form")
+
+    formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+    formObj.submit()
+}, false)

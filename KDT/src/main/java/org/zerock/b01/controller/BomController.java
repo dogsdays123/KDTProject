@@ -162,7 +162,7 @@ public class BomController {
         List<String> errors = new ArrayList<>();
         List<BomDTO> bomDTOs = form.getBoms();
         String message;
-
+        
         for(BomDTO bomDTO : bomDTOs) {
             String error = bomService.registerBOM(bomDTO, bomDTO.getUId());
             if (error != null) {errors.add(error);}

@@ -22,30 +22,20 @@
             <form>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label for="materialName" class="form-label small">자재명</label>
-                        <select class="form-select form-select-sm" id="materialName" title="자재명">
-                            <option selected>전체</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
-                            <option value="-">-</option>
+                        <label class="form-label small">자재명</label>
+                        <select class="form-select form-select-sm" name="mName" title="자재명">
+                            <option value="" th:selected="${selectedMName == ''}">전체</option>
+                            <th:block th:each="p : ${mNameList}">
+                                <option th:value="${p}" th:text="${p}" th:selected="${p == selectedMName}"></option>
+                            </th:block>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label for="supplyDate" class="form-label small">검수 요청일</label>
-                        <input type="date" class="form-control form-control-sm" id="supplyDate" title="검수 요청일">
-                    </div>
-                    <div class="col-md-1">
-                        <label for="status" class="form-label small">검수 상태</label>
-                        <select class="form-select form-select-sm" id="status" title="상태">
-                            <option selected>전체</option>
-                            <option value="-">검수 대기</option>
-                            <option value="-">검수중</option>
-                            <option value="-">검수완료</option>
-                            <option value="-">반려</option>
-                        </select>
+                        <label for="psDate" class="form-label small">희망 검수일</label>
+                        <input type="date" th:value="${pageRequestDTO.psDate}" class="form-control form-control-sm" name="psDate" id="psDate">
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                        <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
                         <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                     </div>
                 </div>
@@ -56,7 +46,7 @@
                     <div class="col-md-6">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text bg-white"><i class="fas fa-search text-secondary"></i></span>
-                            <input type="text" class="form-control" id="keyword" title="검색어 입력" placeholder="검색어 입력">
+                            <input type="text" class="form-control" name="keyword" id="keyword" th:value="${pageRequestDTO.keyword}" placeholder="검색할 항목을 입력하세요 (예: 자재명)">
                         </div>
                     </div>
                 </div>
@@ -66,11 +56,11 @@
             <div class="d-flex justify-content-end mb-2">
                 <form>
                     <div class="col-auto">
-                        <select class="form-select form-select-sm" title="정렬 갯수 필터">
-                            <option selected>전체</option>
-                            <option value="20">20개씩</option>
-                            <option value="30">30개씩</option>
-                            <option value="50">50개씩</option>
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size" onchange="this.form.submit()">
+                            <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                            <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                            <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                            <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
                         </select>
                     </div>
                 </form>
@@ -95,7 +85,7 @@
                         <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
                             <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 진척 검수 요청 정보가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
-                        <tr th:each="dto:${responseDTO.dtoList}">
+                        <tr th:each="dto:${responseDTO.dtoList}" style="height: 40px;">
                             <td><input type="checkbox" class="selectPlan"></td>
                             <td th:text="${dto.psId}" style="display: none"></td>
                             <td th:text="${dto.oCode}"></td>
@@ -120,6 +110,23 @@
                             선택 항목 삭제
                         </button>
                     </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <ul class="pagination flex-wrap">
+                        <li class="page-item" th:if="${responseDTO.prev}">
+                            <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                        </li>
+
+                        <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                            </li>
+                        </th:block>
+
+                        <li class="page-item" th:if="${responseDTO.next}">
+                            <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

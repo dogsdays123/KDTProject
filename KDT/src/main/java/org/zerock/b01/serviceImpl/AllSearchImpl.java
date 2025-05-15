@@ -21,6 +21,7 @@ import org.zerock.b01.service.AllSearch;
 import org.zerock.b01.service.OutputService;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -518,7 +519,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(inventoryStock.regDate.desc());
+                .orderBy(inventoryStock.isNum.desc());
 
         if (keyword != null && !keyword.isEmpty()) {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
@@ -625,6 +626,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .drState(prod.getDrState())
                         .oCode(prod.getOrderBy().getOCode())
                         .oNum(prod.getOrderBy().getONum())
+                        .oTotalPrice(prod.getOrderBy().getOTotalPrice())
                         .sId(prod.getSupplier().getSId())
                         .sName(prod.getSupplier().getSName())
                         .mCode(prod.getMaterial().getMCode())
@@ -865,7 +867,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             keywordBuilder.or(orderBy.oCode.contains(keyword));
             keywordBuilder.or(orderBy.deliveryProcurementPlan.supplier.sName.contains(keyword));
             keywordBuilder.or(orderBy.deliveryProcurementPlan.material.mName.contains(keyword));
-            keywordBuilder.or(orderBy.deliveryProcurementPlan.userBy.uId.contains(keyword));
             booleanBuilder.and(keywordBuilder);
         }
 
@@ -879,16 +880,8 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         }
 
         if (oState != null && !oState.isEmpty() && !"전체".equals(oState)) {
-            switch (oState){
-                case "대기": booleanBuilder.and(orderBy.oState.in(CurrentStatus.ON_HOLD));
-                    break;
-                case "진행": booleanBuilder.and(orderBy.oState.in(CurrentStatus.IN_PROGRESS));
-                    break;
-                case "종료": booleanBuilder.and(orderBy.oState.in(CurrentStatus.FINISHED));
-                    break;
-                case "거절": booleanBuilder.and(orderBy.oState.in(CurrentStatus.REJECT));
-                    break;
-            }
+            CurrentStatus status = CurrentStatus.valueOf(oState);
+            booleanBuilder.and(orderBy.oState.eq(status));
         }
 
         query.where(booleanBuilder);
@@ -897,7 +890,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         query.orderBy(orderBy.regDate.desc());
         List<OrderBy> resultList = query.fetch();
 
-        // DTO로 변환
         List<OrderByListAllDTO> dtoList = resultList.stream()
                 .map(ob -> OrderByListAllDTO.builder()
                         .oCode(ob.getOCode())
@@ -908,9 +900,15 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                         .sName(ob.getDeliveryProcurementPlan().getSupplier().getSName())
                         .mName(ob.getDeliveryProcurementPlan().getMaterial().getMName())
                         .mCode(ob.getDeliveryProcurementPlan().getMaterial().getMCode())
+                        .mDepth(ob.getDeliveryProcurementPlan().getMaterial().getMDepth())
+                        .mHeight(ob.getDeliveryProcurementPlan().getMaterial().getMHeight())
+                        .mWeight(ob.getDeliveryProcurementPlan().getMaterial().getMWeight())
+                        .mWidth(ob.getDeliveryProcurementPlan().getMaterial().getMWidth())
+                        .mUnitPrice(ob.getDeliveryProcurementPlan().getMaterial().getMUnitPrice())
                         .oExpectDate(ob.getOExpectDate())
                         .oState(ob.getOState().toString())
                         .uId(ob.getUserBy().getUId())
+                        .sId(ob.getDeliveryProcurementPlan().getSupplier().getSId())
                         .build())
                 .collect(Collectors.toList());
 
@@ -993,6 +991,11 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(progressInspection.supplierStock.material.mName.contains(mName));
         }
 
+        if (psDate != null) {
+            log.info("Received psDate: " + psDate);
+            booleanBuilder.and(progressInspection.psDate.eq(psDate));
+        }
+
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
@@ -1016,6 +1019,156 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<ProgressInspection> countQuery = from(progressInspection).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public Page<OrderByListAllDTO> orderBySearchSidWithAll(String[] types, String keyword, LocalDate oRegDate, LocalDate oExpectDate,
+                                                           String sName, String mName, String oState, Long sId, Pageable pageable) {
+
+
+        QOrderBy orderBy = QOrderBy.orderBy;
+        JPQLQuery<OrderBy> query = from(orderBy);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QSupplierStock supplierStock = QSupplierStock.supplierStock;
+
+        BooleanExpression leadTimeGte10 = orderBy.deliveryProcurementPlan.material.mCode.in(
+                JPAExpressions
+                        .select(supplierStock.material.mCode)
+                        .from(supplierStock)
+                        .where(supplierStock.leadTime.goe(String.valueOf(10)))
+        );
+        booleanBuilder.and(leadTimeGte10);
+
+        if (sId != null) {
+            booleanBuilder.and(orderBy.deliveryProcurementPlan.supplier.sId.eq(sId));
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(orderBy.oCode.contains(keyword));
+            keywordBuilder.or(orderBy.deliveryProcurementPlan.supplier.sName.contains(keyword));
+            keywordBuilder.or(orderBy.deliveryProcurementPlan.material.mName.contains(keyword));
+            keywordBuilder.or(orderBy.deliveryProcurementPlan.userBy.uId.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+        if (sName != null && !sName.isEmpty() && !"전체".equals(sName)) {
+            booleanBuilder.and(orderBy.deliveryProcurementPlan.supplier.sName.contains(sName));
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            booleanBuilder.and(orderBy.deliveryProcurementPlan.material.mName.contains(mName));
+        }
+
+        if (oState != null && !oState.isEmpty() && !"전체".equals(oState)) {
+            switch (oState){
+                case "대기": booleanBuilder.and(orderBy.oState.in(CurrentStatus.ON_HOLD));
+                    break;
+                case "진행": booleanBuilder.and(orderBy.oState.in(CurrentStatus.IN_PROGRESS));
+                    break;
+                case "종료": booleanBuilder.and(orderBy.oState.in(CurrentStatus.FINISHED));
+                    break;
+                case "거절": booleanBuilder.and(orderBy.oState.in(CurrentStatus.REJECT));
+                    break;
+            }
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(orderBy.regDate.desc());
+        List<OrderBy> resultList = query.fetch();
+
+        List<OrderByListAllDTO> dtoList = resultList.stream()
+                .map(ob -> OrderByListAllDTO.builder()
+                        .oCode(ob.getOCode())
+                        .dppDate(ob.getDeliveryProcurementPlan().getDppDate())
+                        .oNum(ob.getONum())
+                        .oTotalPrice(ob.getOTotalPrice())
+                        .oRegDate(ob.getRegDate())
+                        .sName(ob.getDeliveryProcurementPlan().getSupplier().getSName())
+                        .mName(ob.getDeliveryProcurementPlan().getMaterial().getMName())
+                        .mCode(ob.getDeliveryProcurementPlan().getMaterial().getMCode())
+                        .mUnitPrice(ob.getDeliveryProcurementPlan().getMaterial().getMUnitPrice())
+                        .mWidth(ob.getDeliveryProcurementPlan().getMaterial().getMWidth())
+                        .mHeight(ob.getDeliveryProcurementPlan().getMaterial().getMHeight())
+                        .mDepth(ob.getDeliveryProcurementPlan().getMaterial().getMDepth())
+                        .mWeight(ob.getDeliveryProcurementPlan().getMaterial().getMWeight())
+                        .oExpectDate(ob.getOExpectDate())
+                        .oState(ob.getOState().toString())
+                        .uId(ob.getUserBy().getUId())
+                        .sId(ob.getDeliveryProcurementPlan().getSupplier().getSId())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<OrderBy> countQuery = from(orderBy).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public  Page<DeliveryRequestDTO> supplierDeliveryRequestSearchWithAll(String[] types, String keyword,
+                                                                  String mName, String sName, Long sId, String drState, Pageable pageable){
+
+        QDeliveryRequest deliveryRequest = QDeliveryRequest.deliveryRequest;
+        JPQLQuery<DeliveryRequest> query = from(deliveryRequest);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (sId != null) {
+            booleanBuilder.and(deliveryRequest.supplier.sId.eq(sId));
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(deliveryRequest.material.mName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(deliveryRequest.material.mName.contains(mName));
+        }
+
+        if (drState != null && !drState.isEmpty() && !"전체".equals(drState)) {
+            log.info("Received pName: " + drState);
+            try {
+                CurrentStatus status = CurrentStatus.valueOf(drState); // 문자열을 enum 값으로 변환
+                booleanBuilder.and(deliveryRequest.drState.eq(status)); // enum 값을 비교
+            } catch (IllegalArgumentException e) {
+                log.error("Invalid drState value: " + drState);
+            }
+        }
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(deliveryRequest.regDate.desc());
+
+        List<DeliveryRequest> resultList = query.fetch();
+
+        List<DeliveryRequestDTO> dtoList = resultList.stream()
+                .map(prod -> DeliveryRequestDTO.builder()
+                        .drCode(prod.getDrCode())
+                        .drNum(Integer.parseInt(prod.getDrNum()))
+                        .drDate(prod.getDrDate())
+                        .drState(prod.getDrState())
+                        .oCode(prod.getOrderBy().getOCode())
+                        .oNum(prod.getOrderBy().getONum())
+                        .oTotalPrice(prod.getOrderBy().getOTotalPrice())
+                        .sId(prod.getSupplier().getSId())
+                        .sName(prod.getSupplier().getSName())
+                        .mCode(prod.getMaterial().getMCode())
+                        .mName(prod.getMaterial().getMName())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<DeliveryRequest> countQuery = from(deliveryRequest).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

@@ -28,6 +28,13 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
     const regDateInput = document.getElementById("regDate");
     const currentDate = new Date().toISOString().split('T')[0];
 
+    const currentState = firstRow[8].innerText.trim();
+
+    if (currentState !== '납품 완료') {
+        alert('선택한 항목은 아직 납품 준비가 완료되지 않았습니다.');
+        return;
+    }
+
     console.log("납품 수량 (drNum):", drNum);
     document.getElementById('drCode').innerText = drCode;
     document.getElementById('hiddenDrCode').value = drCode;
@@ -90,24 +97,28 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
 
 document.addEventListener("DOMContentLoaded", function () {
     const states = {
-        ON_HOLD:      { text: "대기", class: "badge bg-secondary" },
-        APPROVAL:     { text: "승인", class: "badge bg-success" },
-        IN_PROGRESS:  { text: "진행 중", class: "badge bg-info" },
-        UNDER_INSPECTION: { text: "검수중", class: "badge bg-warning text-dark" },
-        RETURNED:     { text: "반품", class: "badge bg-danger" },
-        FINISHED:     { text: "종료", class: "badge bg-dark" },
-        REJECT:       { text: "거절", class: "badge bg-danger" },
-        DELIVERED:    { text: "배달 됨", class: "badge bg-primary" },
-        ARRIVED:      { text: "도착함", class: "badge bg-success" },
-        NOT_REMAINING: { text: "남은 게 없음", class: "badge bg-light text-dark" },
-        UNKNOWN:      { text: "알 수 없음", class: "badge bg-secondary" }
+        ON_HOLD: "대기",
+        APPROVAL: "승인",
+        IN_PROGRESS: "진행 중",
+        UNDER_INSPECTION: "검수 중",
+        RETURNED: "반품",
+        FINISHED: "종료",
+        REJECT: "거절",
+        ARRIVED: "도착",
+        NOT_REMAINING: "재고 없음",
+        DELIVERED: "배달 완료",
+        SUCCESS_INSPECTION: "검수 완료",
+        SUCCESS: "전체 완료",
+        READY_SUCCESS: "준비 완료",
+        DELIVERY_REQUESTED: "납품 요청됨",
+        DELIVERY_DELIVERED: "납품 완료"
     };
 
+    // 테이블 내 표시용
     document.querySelectorAll('[data-state]').forEach(function (td) {
         const stateKey = td.getAttribute('data-state');
-        const state = states[stateKey] || states["UNKNOWN"];
-
-        td.innerHTML = `<span class="${state.class}">${state.text}</span>`;
+        const text = states[stateKey] || "알 수 없음";
+        td.innerHTML = `<span class="state-${stateKey}">${text}</span>`;
     });
 });
 

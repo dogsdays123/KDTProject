@@ -75,7 +75,7 @@ public class PageRequestDTO {
     //납품
     private String drCode;
     private String drNum;
-    private String drDate;
+    private LocalDate drDate;
     private String drState;
 
     //발주서

@@ -25,6 +25,7 @@ public class DeliveryRequestDTO {
 
     private String oCode; // 발주코드
     private String oNum; // 발주 수량
+    private String oTotalPrice;
 
     private Long sId; // 공급업체 ID
     private String sName; // 공급업체 이름

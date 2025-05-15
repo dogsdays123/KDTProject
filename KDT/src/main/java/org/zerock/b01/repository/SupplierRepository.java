@@ -13,6 +13,9 @@ import java.util.Optional;
 
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
+    @Query("select s from Supplier s where s.sId=:sId")
+    Supplier findSupplierBySId(Long sId);
+
     @Query("select s from Supplier s where s.sName=:sName")
     Supplier findSupplierBySName(String sName);
 

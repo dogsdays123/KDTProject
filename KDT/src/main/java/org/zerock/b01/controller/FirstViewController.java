@@ -79,6 +79,7 @@ public class FirstViewController {
         }
 
         try {
+            redirectAttributes.addFlashAttribute("message", "회원가입이 완료되었습니다.");
             userByService.join(userByDTO, supplierDTO);
         } catch (UserByService.MidExistException e) {
             redirectAttributes.addFlashAttribute("error", "uId");

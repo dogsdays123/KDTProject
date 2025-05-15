@@ -23,4 +23,8 @@ public interface PageService {
     PageResponseDTO<SupplierStockDTO> adminSupplierStockWithAll(PageRequestDTO pageRequestDTO);
     PageResponseDTO<ProgressInspectionDTO> progressInspectionWithAll(PageRequestDTO pageRequestDTO, Long sId);
     PageResponseDTO<ProgressInspectionDTO> adminProgressInspectionWithAll(PageRequestDTO pageRequestDTO);
+
+
+    PageResponseDTO<OrderByListAllDTO> orderByWithSidAll(PageRequestDTO pageRequestDTO, Long sId);
+    PageResponseDTO<DeliveryRequestDTO> supplierDeliveryRequestWithAll(PageRequestDTO pageRequestDTO, Long sId);
 }

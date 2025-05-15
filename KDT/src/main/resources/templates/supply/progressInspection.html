@@ -102,7 +102,7 @@
                                 등록된 구매 발주서가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
                             </td>
                         </tr>
-                        <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
+                        <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="height: 40px; position: relative;">
                             <td><input type="checkbox" class="selectPlan"></td>
                             <td th:text="${dto.getOCode()}"></td>
                             <td th:text="${#temporals.format(dto.getORegDate(), 'yyyy-MM-dd')}"></td>

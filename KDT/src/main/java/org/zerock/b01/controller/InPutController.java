@@ -56,7 +56,7 @@ public class InPutController {
         log.info("##MATERIAL RECEIPT PAGE GET....##");
 
         if (pageRequestDTO.getSize() == 0) {
-            pageRequestDTO.setSize(10); // 기본값 10
+            pageRequestDTO.setSize(10);
         }
 
         PageResponseDTO<DeliveryRequestDTO> responseDTO = pageService.deliveryRequestWithAll(pageRequestDTO);
@@ -69,7 +69,10 @@ public class InPutController {
                 .orElse(Collections.emptyList())
                 .stream()
                 .filter(dto -> dto.getDrNum() != 0)
-                .collect(Collectors.toList());
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(DeliveryRequestDTO::getMName))),
+                        ArrayList::new
+                ));
 
         List<DeliveryRequestDTO> deliveryRequestList = inputService.getDeliveryRequest();
 
