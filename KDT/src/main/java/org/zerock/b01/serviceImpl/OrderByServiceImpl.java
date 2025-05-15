@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.domain.DeliveryProcurementPlan;
 import org.zerock.b01.domain.OrderBy;
@@ -55,5 +56,16 @@ public class OrderByServiceImpl implements OrderByService {
         }
 
         return summary;
+    }
+
+    @Override
+    @Transactional
+    public void setOrderReady(OrderByDTO orderByDTO, List<String> oCodes){
+        for(String oCode : oCodes){
+            OrderBy orderBy = orderByRepository.findByOrderByCode(oCode)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 발주 정보가 존재하지 않습니다: " + oCode));
+            orderBy.setOState(CurrentStatus.READY_SUCCESS);
+            orderByRepository.save(orderBy);
+        }
     }
 }

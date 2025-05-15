@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/supply")
 public class SupplyController {
 
+    private final DeliveryRequestService deliveryRequestService;
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
@@ -143,8 +144,39 @@ public class SupplyController {
     }
 
     @GetMapping("/requestDelivery")
-    public void requestDelivery() {
+    public void requestDelivery(PageRequestDTO pageRequestDTO, Model model) {
+
         log.info("##REQUEST DELIVERY PAGE GET....##");
+
+        List<String> sNameList = orderByRepository.findSupplierNamesDistinct();
+        model.addAttribute("sNameList", sNameList);
+
+        List<String> mNameList = orderByRepository.findMaterialNamesDistinct();
+        model.addAttribute("mNameList", mNameList);
+
+        List<CurrentStatus> oStateList = orderByRepository.findDistinctOrderStates();
+        model.addAttribute("oStateList", oStateList);
+
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<OrderByListAllDTO> responseDTO =
+                pageService.orderByWithAll(pageRequestDTO);
+
+        model.addAttribute("selectedSName", pageRequestDTO.getSName() != null ? pageRequestDTO.getSName() : "");
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedOState", pageRequestDTO.getOState() != null ? pageRequestDTO.getOState() : "");
+        log.info("OSTATE### " + oStateList);
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        model.addAttribute("responseDTO", responseDTO);
+        log.info("##REQUEST DELIVERY ResponseDTO##" + responseDTO);
+
     }
 
 
@@ -156,5 +188,17 @@ public class SupplyController {
     @GetMapping("/transactionStatement")
     public void transactionStatement() {
         log.info("##TRANSACTION STATEMENT PAGE GET....##");
+    }
+
+    @PostMapping("/deliveryRequestRegister")
+    public String deliveryRequestRegister(DeliveryRequestDTO deliveryRequestDTO, RedirectAttributes redirectAttributes){
+        try {
+            deliveryRequestService.registerDeliveryRequest(deliveryRequestDTO);
+            redirectAttributes.addFlashAttribute("message", "납품 요청이 완료되었습니다.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
+
+        return "redirect:/supply/requestDelivery";
     }
 }

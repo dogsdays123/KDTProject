@@ -37,4 +37,8 @@ public interface AllSearch {
     Page<SupplierStockDTO> supplierStockSearchWithAll(String[] types, String keyword, String pName, String mName, Long sId, Pageable pageable);
 
     Page<ProgressInspectionDTO> progressInspectionSearchWithAll(String[] types, String keyword, String mName, LocalDate psDate, Long sId, Pageable pageable);
+
+    Page<OrderByListAllDTO> orderBySearchSidWithAll(String[] types, String keyword, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, Long sId, Pageable pageable);
+
+    Page<DeliveryRequestDTO> supplierDeliveryRequestSearchWithAll(String[] types, String keyword, String mName, String sName, Long sId, String drState, Pageable pageable);
 }

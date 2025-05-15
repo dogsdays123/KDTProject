@@ -20,8 +20,14 @@ public class OrderByListAllDTO {
     private String sName;
     private String mName;
     private String mCode;
+    private String mUnitPrice;
+    private Float mDepth;
+    private Float mHeight;
+    private Float mWidth;
+    private Float mWeight;
     private LocalDate oExpectDate;
     private String oState;
     private String leadTime;
     private String uId;
+    private Long sId;
 }

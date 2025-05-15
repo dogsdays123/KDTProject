@@ -1,13 +1,26 @@
+document.getElementById('ppEnd').addEventListener('change', function () {
+    const ppStart = new Date(document.getElementById('ppStart').value);
+    const ppEnd = new Date(this.value);
+
+    if (ppEnd < ppStart) {
+        alert("종료일은 시작일보다 이전일 수 없습니다.");
+        this.value = '';
+    }
+});
+
 function addPlan() {
     const ppStart = document.getElementById('ppStart').value;
     const ppEnd = document.getElementById('ppEnd').value;
     const pName = document.getElementById('pName').value;
     const ppNum = document.getElementById('ppNum').value;
     const uId = document.getElementById("uId").value;
+
+
+
     let rowIndex = 0;
 
     if (!ppStart || !ppEnd || !pName || !ppNum) {
-        alert('모든 항목을 입력해 주세요!');
+        alert('모든 항목을 입력해 주세요');
         return;
     }
 
@@ -165,7 +178,7 @@ function loadFileContent(file, index) {
         // 날짜 변환: rows 에 직접 적용
         rows.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
-                if (colIndex === 3 || colIndex === 4) { // 3, 4번 컬럼
+                if (colIndex === 1 || colIndex === 2) { // 3, 4번 컬럼
                     if (cell instanceof Date) {
                         row[colIndex] = cell.toISOString().split('T')[0]; // yyyy-mm-dd 형태로 변환
                     }

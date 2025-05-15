@@ -24,22 +24,29 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
     }
 
     if (selectedRows.length > 1) {
-        alert('납입 처리는 검수 요청은 1개 항목만 선택 가능합니다.');
+        alert('거래명세서 발급은 1개 항목만 선택 가능합니다.');
         return;
     }
 
-    const firstRow = selectedRows[0].children;
+    const tbody = document.getElementById('purchaseOrderModalBody');
+    tbody.innerHTML = ''; // 기존 내용 비우기
 
-    const planCodeInput = firstRow[1].innerText;
-    const productSupplier = firstRow[2].innerText;
-    const productNameInput = firstRow[6].innerText;
-    const productQuantityInput = firstRow[3].innerText;
+    selectedRows.forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        const cells = row.querySelectorAll('td');
+        const newRow = document.createElement('tr');
 
+        newRow.innerHTML = `
+            <td>${cells[1].textContent.trim()}</td>
+            <td>${cells[2].textContent.trim()}</td>
+            <td>${cells[3].textContent.trim()}</td>
+            <td>${cells[4].textContent.trim()}</td>
+            <td>${cells[5].textContent.trim()}</td>
+            <td>${cells[6].textContent.trim()}</td>
+        `;
 
-    document.getElementById('planCodeInput').innerText = planCodeInput;
-    document.getElementById('productSupplier').innerText = productSupplier;
-    document.getElementById('productNameInput').innerText = productNameInput;
-    document.getElementById('productQuantityInput').innerText = productQuantityInput;
+        tbody.appendChild(newRow);
+    });
 
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModal'));
     modal.show();
@@ -55,13 +62,13 @@ function collectSelectedPlans() {
         console.log("추출된 셀 수:", cells.length);
         cells.forEach((c, idx) => console.log(`셀 ${idx}:`, c.textContent.trim()));
         plans.push({
-            materialName: cells[2].textContent.trim(),
-            quantity: cells[3].textContent.trim(),
-            unitPrice: cells[4].textContent.trim(),
-            dueDate: cells[6].textContent.trim(),
-            width: cells[10].textContent.trim(), // 가로
-            depth: cells[11].textContent.trim(), // 깊이
-            height: cells[12].textContent.trim() // 높이세로 규격 가로x깊이x높이
+            materialName: cells[3].textContent.trim(),
+            quantity: cells[4].textContent.trim(),
+            unitPrice: cells[5].textContent.trim(),
+            dueDate: cells[7].textContent.trim(),
+            width: cells[9].textContent.trim(), // 가로
+            depth: cells[10].textContent.trim(), // 깊이
+            height: cells[11].textContent.trim() // 높이세로 규격 가로x깊이x높이
         });
     });
 
@@ -156,3 +163,114 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
     const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalDel'));
     modal.show();
 });
+
+document.getElementById('openPurchaseReadyModal').addEventListener('click', function () {
+
+    const selectedRows = document.querySelectorAll('.selectPlan:checked');
+    if (selectedRows.length === 0) {
+        alert('삭제할 항목을 선택해 주세요.');
+        return;
+    }
+
+    const oCodes = new Set();
+
+    const tbody = document.getElementById('readyTableBody');
+    tbody.innerHTML = ''; // 기존 내용 비우기
+
+    selectedRows.forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        const cells = row.querySelectorAll('td');
+        const newRow = document.createElement('tr');
+
+        const oCode = cells[1].textContent.trim();
+        oCodes.add(oCode);
+
+        newRow.innerHTML = `
+            <td>${cells[1].textContent.trim()}</td>
+            <td>${cells[2].textContent.trim()}</td>
+            <td>${cells[3].textContent.trim()}</td>
+            <td>${cells[4].textContent.trim()}</td>
+            <td>${cells[5].textContent.trim()}</td>
+            <td>${cells[6].textContent.trim()}</td>
+        `;
+
+        tbody.appendChild(newRow);
+    });
+
+    const form = document.getElementById('purchaseOrderReadyModalForm');
+    form.querySelectorAll('input[name="oCodes"]').forEach(input => input.remove());
+    console.log(oCodes);
+    oCodes.forEach(oCode => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'oCodes';
+        hiddenInput.value = oCode;
+        form.appendChild(hiddenInput);
+    });
+
+    const modal = new bootstrap.Modal(document.getElementById('purchaseOrderModalReady'));
+    modal.show();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const states = {
+        ON_HOLD: "대기",
+        APPROVAL: "승인",
+        IN_PROGRESS: "진행 중",
+        UNDER_INSPECTION: "검수 중",
+        RETURNED: "반품",
+        FINISHED: "종료",
+        REJECT: "거절",
+        ARRIVED: "도착",
+        NOT_REMAINING: "재고 없음",
+        DELIVERED: "배달 완료",
+        SUCCESS_INSPECTION: "검수 완료",
+        SUCCESS: "전체 완료",
+        READY_SUCCESS: "준비 완료",
+        DELIVERY_REQUESTED: "납품 요청됨",
+        DELIVERY_DELIVERED: "납품 완료"
+    };
+
+    // 드롭다운 option에 텍스트 설정
+    document.querySelectorAll(".drState option").forEach(option => {
+        const state = option.dataset.state;
+        if (!state) {
+            option.textContent = "전체";
+        } else {
+            option.textContent = states[state] || "알 수 없음";
+        }
+    });
+
+    // 테이블 내 표시용
+    document.querySelectorAll('[data-state]').forEach(function (td) {
+        const stateKey = td.getAttribute('data-state');
+        const text = states[stateKey] || "알 수 없음";
+        td.innerHTML = `<span class="state-${stateKey}">${text}</span>`;
+    });
+});
+
+document.querySelector(".clearBtn").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    self.location = '/supplier/purchaseOrderList'
+}, false)
+
+document.querySelector(".pagination").addEventListener("click", function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const target = e.target
+
+    if (target.tagName !== 'A') {
+        return
+    }
+
+    const num = target.getAttribute("data-num")
+
+    const formObj = document.querySelector("form")
+
+    formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+    formObj.submit()
+}, false)

@@ -116,10 +116,6 @@ public class InventoryController {
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage()); // 중복 알림
         }
-//        for(InventoryStockDTO inventoryStockDTO : inventoryStockDTOS){
-//            inventoryStockService.registerIS(inventoryStockDTO);
-//        }
-//        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/inventory/inventoryRegister";
     }
 
@@ -207,15 +203,18 @@ public class InventoryController {
 
             try {
                 Optional<String> optionalPCode = productRepository.findPCodeByPName(productName);
-                String mCode = materialRepository.findMCodeByMName(materialName)
-                        .orElseThrow(() -> new IllegalArgumentException("해당 자재명을 가진 자재 코드가 없습니다: " + materialName));
-                entity.setMCode(mCode);
-
-                if (optionalPCode.isPresent()) {
-                    entity.setPCode(optionalPCode.get());
-                } else {
+                if (optionalPCode.isEmpty()) {
                     throw new IllegalArgumentException("해당 제품명을 가진 제품 코드가 없습니다: " + productName);
                 }
+                entity.setPCode(optionalPCode.get());
+
+                // 자재 코드 찾기 (중복 체크 포함)
+                List<String> mCodes = materialRepository.findMCodesByMName(materialName); // List로 수정
+                if (mCodes.isEmpty()) {
+                    throw new IllegalArgumentException("해당 자재명을 가진 자재 코드가 없습니다: " + materialName);
+                }
+
+                entity.setMCode(mCodes.get(0)); // 단일 값 설정
 
                 entity.setPName(productName);
                 entity.setIsComponentType(componentType);

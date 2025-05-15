@@ -95,6 +95,10 @@ public class PageController {
             model.addAttribute("productCountEvents", productCountJson);
         }
 
+        if ("승인".equals(status) || "협력회사".equals(userJob)) {
+            return new RedirectView("/supplier/purchaseOrderList");
+        }
+
         log.info("layout page test...");
         return null;
     }

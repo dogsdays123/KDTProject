@@ -4,6 +4,7 @@ import org.hibernate.query.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.domain.DeliveryRequest;
 import org.zerock.b01.domain.OrderBy;
 import org.zerock.b01.service.AllSearch;
@@ -26,4 +27,13 @@ public interface OrderByRepository extends JpaRepository<OrderBy, String>, AllSe
             "SUM(CAST(o.oTotalPrice AS double)) " +
             "FROM OrderBy o GROUP BY month ORDER BY o.regDate ASC")
     List<Object[]> findMonthlyTotals();
+
+    @Query("SELECT DISTINCT m.mName FROM OrderBy o JOIN o.deliveryProcurementPlan.material m GROUP BY m.mCode")
+    List<String> findMaterialNamesDistinct();
+
+    @Query("SELECT DISTINCT o.deliveryProcurementPlan.supplier.sName FROM OrderBy o")
+    List<String> findSupplierNamesDistinct();
+
+    @Query("SELECT DISTINCT o.oState FROM OrderBy o")
+    List<CurrentStatus> findDistinctOrderStates();
 }

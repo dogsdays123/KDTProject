@@ -20,4 +20,7 @@ public interface CountBy extends JpaRepository<UserBy, String> {
 
     @Query("SELECT MAX(ob.oCode) FROM OrderBy ob WHERE ob.oCode LIKE CONCAT(:prefix, '%')")
     String findMaxOCode(String prefix);
+
+    @Query("SELECT MAX(dr.drCode) FROM DeliveryRequest dr WHERE dr.drCode LIKE CONCAT(:prefix, '%')")
+    String findMaxDrCode(String prefix);
 }

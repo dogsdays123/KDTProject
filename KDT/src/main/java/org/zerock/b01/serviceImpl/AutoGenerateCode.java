@@ -27,6 +27,9 @@ public class AutoGenerateCode {
     @Autowired
     CountBy countBy;
 
+    @Autowired
+    DeliveryRequestRepository deliveryRequestRepository;
+
     public String generateCode(String type, String name) {
 
         String dateToString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
@@ -38,6 +41,7 @@ public class AutoGenerateCode {
         List<Material> m = materialRepository.findAll();
         List<DeliveryProcurementPlan> dpp = dppRepository.findAll();
         List<OrderBy> ob = orderByRepository.findAll();
+        List<DeliveryRequest> dr = deliveryRequestRepository.findAll();
 
         switch (type) {
             case "p":
@@ -83,6 +87,15 @@ public class AutoGenerateCode {
             case "ob":
                 if(!ob.isEmpty()){
                     String maxCode = countBy.findMaxOCode(prefix);
+                    String[] parts = maxCode.split("-");
+                    if (parts.length == 3) {
+                        count = Integer.parseInt(parts[2]) + 1;
+                    }
+                }
+                break;
+            case "dr":
+                if(!dr.isEmpty()){
+                    String maxCode = countBy.findMaxDrCode(prefix);
                     String[] parts = maxCode.split("-");
                     if (parts.length == 3) {
                         count = Integer.parseInt(parts[2]) + 1;

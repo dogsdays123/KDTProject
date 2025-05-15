@@ -17,11 +17,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.b01.domain.Material;
-import org.zerock.b01.domain.Product;
-import org.zerock.b01.domain.Supplier;
+import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.*;
-import org.zerock.b01.repository.MaterialRepository;
+import org.zerock.b01.dto.allDTO.OrderByListAllDTO;
+import org.zerock.b01.repository.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
@@ -40,11 +39,15 @@ import static org.zerock.b01.domain.QSupplier.supplier;
 public class SupplierController {
 
     private final MaterialRepository materialRepository;
+    private final DeliveryRequestRepository deliveryRequestRepository;
 
     private final ProductService productService;
     private final SupplierStockService supplierStockService;
     private final PageService pageService;
     private final ProgressInspectionService progressInspectionService;
+    private final OrderByService orderByService;
+    private final InputService inputService;
+    private final DeliveryRequestService deliveryRequestService;
 
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
@@ -55,7 +58,7 @@ public class SupplierController {
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if(auth == null) {
+        if (auth == null) {
             log.info("aaaaaa 인증정보 없음");
             model.addAttribute("userBy", null);
         } else {
@@ -75,16 +78,52 @@ public class SupplierController {
         }
     }
 
+    private final OrderByRepository orderByRepository;
+    private final UserByRepository userByRepository;
+    private final SupplierStockRepository supplierStockRepository;
+
     @GetMapping("/purchaseOrderList")
-    public void purchaseOrderList() { log.info("##SUPPLIER :: PURCHASE ORDER LIST PAGE GET....##");}
+    public void purchaseOrderList(PageRequestDTO pageRequestDTO, Authentication auth,
+                                    RedirectAttributes redirectAttributes, Model model) {
+        log.info("##SUPPLIER :: PURCHASE ORDER LIST PAGE GET....##");
 
-    @GetMapping("/transactionHistory")
-    public void transactionHistory() { log.info("##SUPPLIER :: TRANSACTION HISTORY PAGE GET....##");}
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
 
-    @GetMapping("/requestDelivery")
-    public void requestDelivery() { log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");}
+        UserBySecurityDTO principal = (UserBySecurityDTO) auth.getPrincipal();
+        String uId = principal.getUId();
+        String role = principal.getUserJob();
 
+        PageResponseDTO<OrderByListAllDTO> responseDTO;
 
+        if ("관리자".equals(role)) {
+            responseDTO = pageService.orderByWithAll(pageRequestDTO);
+        } else {
+            SupplierDTO supplierDTO = supplierService.findByUserId(uId);
+            Long sId = supplierDTO.getSId();
+            log.info("#### sId: " + sId);
+
+            responseDTO = pageService.orderByWithSidAll(pageRequestDTO, sId);
+
+        }
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        model.addAttribute("responseDTO", responseDTO);
+        log.info("Supplier OrderBy ResponseDTO : " + responseDTO);
+
+        List<String> mNameList = orderByRepository.findMaterialNamesDistinct();
+        model.addAttribute("mNameList", mNameList);
+
+        List<CurrentStatus> drStateList = orderByRepository.findDistinctOrderStates();
+        model.addAttribute("drStateList", drStateList);
+
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedDrState", pageRequestDTO.getDrState() != null ? pageRequestDTO.getDrState() : "");
+
+    }
 
     @GetMapping("/sInventoryRegister")
     public String inventoryRegister(Model model) {
@@ -154,6 +193,10 @@ public class SupplierController {
         model.addAttribute("responseDTO", responseDTO);
         log.info("Progress Inspection ResponseDTO : " + responseDTO);
     }
+
+
+
+
 
     @GetMapping("/sInventoryList")
     public void inventoryList(PageRequestDTO pageRequestDTO, Model model,  Authentication auth) {
@@ -335,5 +378,110 @@ public class SupplierController {
         progressInspectionService.piRemove(progressInspectionDTO, psIdss);
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
         return "redirect:/supplier/progressInspection";
+    }
+
+    @PostMapping("/orderReady")
+    public String orderReady(@ModelAttribute OrderByDTO orderByDTO, @RequestParam List<String> oCodes, RedirectAttributes redirectAttributes) {
+        log.info("psIds: {}", oCodes);
+        orderByService.setOrderReady(orderByDTO, oCodes);
+        redirectAttributes.addFlashAttribute("message", "납품 준비 완료 처리가 완료되었습니다.");
+        return "redirect:/supplier/purchaseOrderList";
+    }
+
+    @GetMapping("/requestDelivery")
+    public void requestDelivery(PageRequestDTO pageRequestDTO, Model model,  Authentication auth) {
+        log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        UserBySecurityDTO principal = (UserBySecurityDTO) auth.getPrincipal();
+        String uId = principal.getUId();
+        String role = principal.getUserJob();
+
+        PageResponseDTO<DeliveryRequestDTO> responseDTO;
+
+        if ("관리자".equals(role)) {
+            responseDTO = pageService.deliveryRequestWithAll(pageRequestDTO);
+        } else {
+
+            SupplierDTO supplierDTO = supplierService.findByUserId(uId);
+            Long sId = supplierDTO.getSId();
+            log.info("#### sId: " + sId);
+
+            responseDTO = pageService.supplierDeliveryRequestWithAll(pageRequestDTO, sId);
+
+        }
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<String> mNameList = deliveryRequestRepository.findDistinctMaterialNames();
+        model.addAttribute("mNameList", mNameList);
+
+        List<CurrentStatus> drStateList = deliveryRequestRepository.findDistinctDrStates();
+        model.addAttribute("drStateList", drStateList);
+
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedDrState", pageRequestDTO.getDrState() != null ? pageRequestDTO.getDrState() : "");
+
+        model.addAttribute("responseDTO", responseDTO);
+        log.info("SDelivery Request ResponseDTO : " + responseDTO);
+    }
+
+    @PostMapping("/drAgree")
+    public String piAgree(@ModelAttribute DeliveryRequestDTO deliveryRequestDTO, RedirectAttributes redirectAttributes,  @RequestParam List<String> drCodes) {
+        deliveryRequestService.drAgree(deliveryRequestDTO, drCodes);
+        redirectAttributes.addFlashAttribute("message", "납품 완료 처리 되었습니다.");
+        return "redirect:/supplier/requestDelivery";
+    }
+
+    @PostMapping("/drRemove")
+    public String piRemove(@RequestParam List<String> drCodes, RedirectAttributes redirectAttributes) {
+        log.info("psIds: {}", drCodes);
+        deliveryRequestService.drRemove(drCodes);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/supplier/requestDelivery";
+    }
+
+    @GetMapping("/transactionHistory")
+    public void transactionHistory(PageRequestDTO pageRequestDTO, Model model,  Authentication auth) {
+        log.info("##SUPPLIER :: TRANSACTION HISTORY PAGE GET....##");
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        UserBySecurityDTO principal = (UserBySecurityDTO) auth.getPrincipal();
+        String uId = principal.getUId();
+        String role = principal.getUserJob();
+
+        PageResponseDTO<DeliveryRequestDTO> responseDTO;
+
+        if ("관리자".equals(role)) {
+            responseDTO = pageService.deliveryRequestWithAll(pageRequestDTO);
+        } else {
+
+            SupplierDTO supplierDTO = supplierService.findByUserId(uId);
+            Long sId = supplierDTO.getSId();
+            log.info("#### sId: " + sId);
+
+            responseDTO = pageService.supplierDeliveryRequestWithAll(pageRequestDTO, sId);
+
+        }
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        List<String> mNameList = deliveryRequestRepository.findDistinctMaterialNames();
+        model.addAttribute("mNameList", mNameList);
+
+        List<CurrentStatus> drStateList = deliveryRequestRepository.findDistinctDrStates();
+        model.addAttribute("drStateList", drStateList);
+
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+        model.addAttribute("selectedDrState", pageRequestDTO.getDrState() != null ? pageRequestDTO.getDrState() : "");
+
+        model.addAttribute("responseDTO", responseDTO);
+        log.info("SDelivery Request ResponseDTO : " + responseDTO);
     }
 }

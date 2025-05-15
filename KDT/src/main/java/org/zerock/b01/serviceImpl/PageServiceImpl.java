@@ -444,4 +444,54 @@ public class PageServiceImpl implements PageService {
     public PageResponseDTO<ProgressInspectionDTO> adminProgressInspectionWithAll(PageRequestDTO pageRequestDTO) {
         return progressInspectionWithAll(pageRequestDTO, null);
     }
+
+    @Override
+    public PageResponseDTO<OrderByListAllDTO> orderByWithSidAll(PageRequestDTO pageRequestDTO, Long sId){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+        LocalDate oRegDate = pageRequestDTO.getORegDate();
+        LocalDate oExpectDate = pageRequestDTO.getOExpectDate();
+        String sName = pageRequestDTO.getSName();
+        String oState = pageRequestDTO.getOState();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<OrderByListAllDTO> result =
+                orderByRepository.orderBySearchSidWithAll(types, keyword, oRegDate, oExpectDate, sName, mName, oState, sId, pageable);
+
+        return PageResponseDTO.<OrderByListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<DeliveryRequestDTO> supplierDeliveryRequestWithAll(PageRequestDTO pageRequestDTO, Long sId) {
+        String[] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+        String sName = pageRequestDTO.getSName();
+        String drState = pageRequestDTO.getDrState();
+        LocalDate regDate = pageRequestDTO.getIsRegDate();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<DeliveryRequestDTO> result = deliveryRequestRepository.supplierDeliveryRequestSearchWithAll(types, keyword,
+                mName, sName, sId, drState, pageable);
+
+        for (DeliveryRequestDTO deliveryRequestDTO : result.getContent()) {
+            Material material = materialRepository.findByMaterialCode(deliveryRequestDTO.getMCode())
+                    .orElseThrow(() -> new RuntimeException("Material not found"));
+            deliveryRequestDTO.setMName(material.getMName()); //
+
+        }
+
+        return PageResponseDTO.<DeliveryRequestDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int) result.getTotalElements())
+                .build();
+    }
 }

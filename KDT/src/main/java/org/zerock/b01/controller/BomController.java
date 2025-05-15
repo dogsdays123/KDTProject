@@ -165,6 +165,7 @@ public class BomController {
         bomObj = bomService.registerBOM(bomDTOs, bomDTOs.get(0).getUId());
 
         redirectAttributes.addFlashAttribute("errorCheck", bomObj.get("errorCheck"));
+        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/bom/bomRegister";
     }
 

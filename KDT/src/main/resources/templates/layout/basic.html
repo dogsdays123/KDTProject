@@ -61,6 +61,13 @@
         </th:block>
         <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '생산부서'}">
             <li class="nav-item">
+                <a href="#" class="nav-link" title="제품 관리" onclick="toggleSubmenu('submenu-document')"><i class="bi bi-file-earmark-text"></i>&nbsp;&nbsp;문서 관리&nbsp;&nbsp;<span>▾</span></a>
+                <ul id="submenu-document" class="submenu">
+                    <li><a href="/document/orderDoc" class="nav-link">발주서 목록</a></li>
+                    <li><a href="/document/tStateDoc" class="nav-link">거래명세서 목록</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
                 <a href="#" class="nav-link" title="제품 관리" onclick="toggleSubmenu('submenu-product')"><i
                         class="bi bi-box2"></i>&nbsp;&nbsp;제품 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-product" class="submenu">
@@ -106,8 +113,8 @@
                     <li><a href="/orderBy/orderByList" title="구매 발주서 목록" class="nav-link">구매 발주서 목록</a></li>
                     <li><a href="/supply/progressInspection" title="진척 검수 관리" class="nav-link">진척 검수 관리</a></li>
                     <li><a href="/supply/requestDelivery" title="납품 지시 요청" class="nav-link">납품 지시 요청</a></li>
-                    <li><a href="/supply/purchaseOrderStatus" title="발주 진행 현황" class="nav-link">발주 진행 현황</a></li>
-                    <li><a href="/supply/transactionStatement" title="거래 명세서 목록" class="nav-link">거래 명세서 목록</a></li>
+<!--                    <li><a href="/supply/purchaseOrderStatus" title="발주 진행 현황" class="nav-link">발주 진행 현황</a></li>-->
+<!--                    <li><a href="/supply/transactionStatement" title="거래 명세서 목록" class="nav-link">거래 명세서 목록</a></li>-->
                 </ul>
             </li>
         </th:block>
@@ -132,11 +139,11 @@
                 <a href="#" class="nav-link" title="거래 관리" onclick="toggleSubmenu('submenu-supplier')"><i
                         class="bi bi-wallet2"></i>&nbsp;&nbsp;거래 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-supplier" class="submenu">
-                    <li><a href="/supplier/purchaseOrderList" title="발주서 목록" class="nav-link">발주서 목록</a></li>
-                    <li><a href="/supplier/transactionHistory" class="nav-link">거래 내역 목록</a></li>
+                    <li><a href="/supplier/purchaseOrderList" title="발주 목록" class="nav-link">발주 목록</a></li>
                     <li><a href="/supplier/progressInspection" class="nav-link">진척 검수 관리</a></li>
-                    <li><a href="/supplier/requestDelivery" class="nav-link">납품 지시 요청</a></li>
-                    <li><a href="#" class="nav-link">거래 명세서 관리</a></li>
+                    <li><a href="/supplier/requestDelivery" class="nav-link">납품 요청 관리</a></li>
+<!--                    <li><a href="/supplier/transactionHistory" class="nav-link">거래 내역 목록</a></li>-->
+<!--                    <li><a href="#" class="nav-link">거래 명세서 관리</a></li>-->
                 </ul>
             </li>
             <li class="nav-item">
@@ -234,6 +241,10 @@
     <div layout:fragment="slRDeli"></div>
     <div layout:fragment="slIList"></div>
     <div layout:fragment="slIRegi"></div>
+
+    <!-- 문서 관리 페이지 -->
+    <div layout:fragment="orderDoc"></div>
+    <div layout:fragment="tStateDoc"></div>
 </main>
 
 </body>

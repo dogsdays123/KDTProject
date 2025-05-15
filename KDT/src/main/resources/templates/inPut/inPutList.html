@@ -95,7 +95,7 @@
                         </thead>
                         <tbody th:with="link = ${pageRequestDTO.getLink()}">
                         <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
-                            <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 입고 검수가 완료된 항목이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
+                            <td colspan="11" class="text-center" style="padding: 20px 0;">등록된 입고 검수 완료 항목이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
                         <tr th:each="dto:${responseDTO.dtoList}">
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
