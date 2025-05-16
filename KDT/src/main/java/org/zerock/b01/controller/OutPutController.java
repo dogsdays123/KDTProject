@@ -66,7 +66,10 @@ public class OutPutController {
 
         PageResponseDTO<InventoryStockDTO> responseDTO = pageService.inventoryStockWithAll(pageRequestDTO);
 
-        List<InventoryStockDTO> filteredList = responseDTO.getDtoList().stream()
+
+        List<InventoryStockDTO> filteredList = Optional.ofNullable(responseDTO.getDtoList())
+                .orElse(Collections.emptyList())
+                .stream()
                 .filter(dto -> dto.getIsNum() != null && dto.getIsNum() > 0)
                 .collect(Collectors.toList());
 
