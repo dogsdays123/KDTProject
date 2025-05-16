@@ -11,7 +11,7 @@ public interface PageService {
     PageResponseDTO<SupplierAllDTO> supplierWithAll(PageRequestDTO pageRequestDTO, String pageType);
     PageResponseDTO<UserByAllDTO> userByWithAllList(PageRequestDTO pageRequestDTO);
     PageResponseDTO<BomDTO> bomListWithAll(PageRequestDTO pageRequestDTO);
-    PageResponseDTO<OrderByListAllDTO> orderByWithAll(PageRequestDTO pageRequestDTO);
+    PageResponseDTO<OrderByListAllDTO> orderByWithAll(PageRequestDTO pageRequestDTO, String labels);
 
     PageResponseDTO<InventoryStockDTO> inventoryStockWithAll(PageRequestDTO pageRequestDTO);
     PageResponseDTO<DeliveryRequestDTO> deliveryRequestWithAll(PageRequestDTO pageRequestDTO);

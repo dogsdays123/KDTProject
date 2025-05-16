@@ -227,7 +227,7 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public PageResponseDTO<OrderByListAllDTO> orderByWithAll(PageRequestDTO pageRequestDTO){
+    public PageResponseDTO<OrderByListAllDTO> orderByWithAll(PageRequestDTO pageRequestDTO, String labels){
         String [] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
         LocalDate oRegDate = pageRequestDTO.getORegDate();
@@ -240,7 +240,7 @@ public class PageServiceImpl implements PageService {
         Pageable pageable = pageRequestDTO.getPageable("uId");
 
         Page<OrderByListAllDTO> result = orderByRepository.orderBySearchWithAll
-                (types, keyword, oRegDate, oExpectDate, sName, mName, oState, uId, pageable);
+                (types, keyword, labels, oRegDate, oExpectDate, sName, mName, oState, uId, pageable);
 
         return PageResponseDTO.<OrderByListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

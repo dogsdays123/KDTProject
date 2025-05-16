@@ -94,7 +94,7 @@ public class SupplyController {
         }
 
         PageResponseDTO<OrderByListAllDTO> responseDTO =
-                pageService.orderByWithAll(pageRequestDTO);
+                pageService.orderByWithAll(pageRequestDTO, "ps");
 
         // ✅ leadTime 추가 로직 (Material 기준으로 조회)
         List<OrderByListAllDTO> dtoList = responseDTO.getDtoList();
@@ -164,7 +164,7 @@ public class SupplyController {
         }
 
         PageResponseDTO<OrderByListAllDTO> responseDTO =
-                pageService.orderByWithAll(pageRequestDTO);
+                pageService.orderByWithAll(pageRequestDTO, "dr");
 
         model.addAttribute("selectedSName", pageRequestDTO.getSName() != null ? pageRequestDTO.getSName() : "");
         model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");

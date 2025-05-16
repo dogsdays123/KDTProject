@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -801,16 +802,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(outPut.material.mName.contains(mName));
         }
 
-//        if (ipState != null && !ipState.isEmpty() && !"전체".equals(ipState)) {
-//            log.info("Received pName: " + ipState);
-//            try {
-//                CurrentStatus status = CurrentStatus.valueOf(ipState); // 문자열을 enum 값으로 변환
-//                booleanBuilder.and(inPut.ipState.eq(status)); // enum 값을 비교
-//            } catch (IllegalArgumentException e) {
-//                log.error("Invalid drState value: " + ipState);
-//            }
-//        }
-
         if (opState != null && !opState.isEmpty() && !"전체".equals(opState)) {
             log.info("Received pName: " + opState);
             try {
@@ -847,7 +838,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     public Page<OrderByListAllDTO> orderBySearchWithAll
-            (String[] types, String keyword, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, String uId, Pageable pageable){
+            (String[] types, String keyword, String label, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, String uId, Pageable pageable){
 
         QOrderBy orderBy = QOrderBy.orderBy;
         JPQLQuery<OrderBy> query = from(orderBy);
@@ -885,6 +876,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(orderBy.oState.eq(status));
         }
 
+        if(label.equals("progressInspection"))
         booleanBuilder.and(
                 orderBy.oState.eq(CurrentStatus.HOLD_PROGRESS)
                         .or(orderBy.oState.eq(CurrentStatus.UNDER_INSPECTION))

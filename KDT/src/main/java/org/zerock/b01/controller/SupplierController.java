@@ -98,7 +98,7 @@ public class SupplierController {
         PageResponseDTO<OrderByListAllDTO> responseDTO;
 
         if ("관리자".equals(role)) {
-            responseDTO = pageService.orderByWithAll(pageRequestDTO);
+            responseDTO = pageService.orderByWithAll(pageRequestDTO, "po");
         } else {
             SupplierDTO supplierDTO = supplierService.findByUserId(uId);
             Long sId = supplierDTO.getSId();

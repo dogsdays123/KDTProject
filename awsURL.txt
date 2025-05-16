@@ -32,3 +32,10 @@ DROP TABLE IF EXISTS `supplier`;
 DROP TABLE IF EXISTS `material`;
 
 SET FOREIGN_KEY_CHECKS = 1;
+-------------------------------------------------------
+mysql -h kdtdb.ctcao2uq4cvl.ap-northeast-2.rds.amazonaws.com -u seo -p
+
+
+use database;
+
+SELECT * FROM userBy WHERE uId = 'admin';

@@ -122,7 +122,7 @@ public class OrderByController {
         }
 
         PageResponseDTO<OrderByListAllDTO> responseDTO =
-                pageService.orderByWithAll(pageRequestDTO);
+                pageService.orderByWithAll(pageRequestDTO, "ob");
 
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
