@@ -2,6 +2,8 @@ package org.zerock.b01.domain;
 
 public enum CurrentStatus {
     ON_HOLD, //대기
+    HOLD_PROGRESS, //검수 대기
+    HOLD_DELIVERY, //납품 대기
     APPROVAL, //승인
     IN_PROGRESS,    //진행 중
     UNDER_INSPECTION, //검수중

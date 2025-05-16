@@ -44,7 +44,7 @@ public class ProgressInspectionServiceImpl implements ProgressInspectionService 
         if(piRepository.findByOCode(psDTO.getOCode()) == null){
             piRepository.save(progressInspection);
 
-            if(orderBy.getOState() == CurrentStatus.ON_HOLD){
+            if(orderBy.getOState() == CurrentStatus.HOLD_PROGRESS){
                 orderBy.setOState(CurrentStatus.UNDER_INSPECTION);
                 orderByRepository.save(orderBy);
             }

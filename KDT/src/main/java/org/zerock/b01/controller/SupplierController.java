@@ -394,7 +394,7 @@ public class SupplierController {
         log.info("psIds: {}", oCodes);
         orderByService.setOrderReady(orderByDTO, oCodes);
         redirectAttributes.addFlashAttribute("message", "납품 준비 완료 처리가 완료되었습니다.");
-        return "redirect:/supplier/purchaseOrderList";
+        return "redirect:purchaseOrderList";
     }
 
     @GetMapping("/requestDelivery")

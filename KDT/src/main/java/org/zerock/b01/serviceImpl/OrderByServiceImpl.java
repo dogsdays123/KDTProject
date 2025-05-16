@@ -11,6 +11,7 @@ import org.zerock.b01.domain.OrderBy;
 import org.zerock.b01.dto.OrderByDTO;
 import org.zerock.b01.repository.DeliveryProcurementPlanRepository;
 import org.zerock.b01.repository.OrderByRepository;
+import org.zerock.b01.repository.SupplierStockRepository;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.OrderByService;
 
@@ -32,6 +33,8 @@ public class OrderByServiceImpl implements OrderByService {
     OrderByRepository orderByRepository;
     @Autowired
     AutoGenerateCode autoGenerateCode;
+    @Autowired
+    SupplierStockRepository supplierStockRepository;
 
     public void orderByRegister(OrderByDTO orderByDTO, String uId) {
         DeliveryProcurementPlan dpp = dppRepository.findById(orderByDTO.getDppCode()).orElseThrow();
@@ -39,7 +42,11 @@ public class OrderByServiceImpl implements OrderByService {
         orderBy.setOCode(autoGenerateCode.generateCode("ob", ""));
         orderBy.setUserBy(userByRepository.findById(uId).orElseThrow());
         orderBy.setDeliveryProcurementPlan(dpp);
-        orderBy.setOState(CurrentStatus.ON_HOLD);
+        if(Integer.parseInt(supplierStockRepository.findLeadTimeByETC(dpp.getSupplier().getSName(), dpp.getMaterial().getMCode())) < 10)
+        {orderBy.setOState(CurrentStatus.HOLD_DELIVERY);}
+        else {
+            orderBy.setOState(CurrentStatus.HOLD_PROGRESS);
+        }
 
         orderByRepository.save(orderBy);
     }

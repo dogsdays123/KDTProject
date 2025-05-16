@@ -8,6 +8,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.domain.Supplier;
@@ -24,6 +26,7 @@ import org.zerock.b01.repository.SupplierRepository;
 import org.zerock.b01.repository.UserByRepository;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +37,9 @@ import static java.awt.SystemColor.text;
 @Service
 public class PdfService {
 
+    @Value("${pdf.font.malgun}")
+    private Resource malgunFontResource;
+
     @Autowired
     MaterialRepository materialRepository;
     @Autowired
@@ -43,22 +49,23 @@ public class PdfService {
     @Autowired
     SupplierRepository supplierRepository;
 
+    public BaseFont getKoreanFont() {
+        try (InputStream fontStream = malgunFontResource.getInputStream()) {
+            byte[] fontBytes = fontStream.readAllBytes();
+            return BaseFont.createFont("malgun.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, false, fontBytes, null);
+        } catch (Exception e) {
+            throw new RuntimeException("한글 폰트 로딩 실패: " + e.getMessage(), e);
+        }
+    }
+
     public byte[] createSupplierPdf(TransactionStatementDTO request) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+        BaseFont baseFont = getKoreanFont();
 
         try {
             Document document = new Document(PageSize.A4.rotate()); // A4 가로
-//            Document document = new Document(); // A4 가로
-//            document.setMargins(0f, 0f, 0f, 0f);  // 모든 여백을 0으로 설정
             PdfWriter.getInstance(document, out);
             document.open();
-
-            // 한글 폰트
-            BaseFont baseFont = BaseFont.createFont(
-                    "src/main/resources/fonts/malgun.ttf",
-                    BaseFont.IDENTITY_H,
-                    BaseFont.EMBEDDED
-            );
 
             //  PDF 에 작성될 폰트 설정
             Font font = new Font(baseFont, 9);
@@ -337,18 +344,12 @@ public class PdfService {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         UserBy userBy = userByRepository.findById(request.getPdfs().get(0).getUId()).orElseThrow();
         Supplier sup = supplierRepository.findSupplierBySName(request.getPdfs().get(0).getSName());
+        BaseFont baseFont = getKoreanFont();
 
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, out);
             document.open();
-
-            // 한글 폰트
-            BaseFont baseFont = BaseFont.createFont(
-                    "src/main/resources/fonts/malgun.ttf",
-                    BaseFont.IDENTITY_H,
-                    BaseFont.EMBEDDED
-            );
 
             //  PDF 에 작성될 폰트 설정
             Font font = new Font(baseFont, 9);
