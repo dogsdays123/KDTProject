@@ -28,7 +28,7 @@ document.getElementById('openRemoveModal').addEventListener('click', function ()
         return;
     }
 
-    const tbody = document.getElementById('procureTableBody');
+    const tbody = document.getElementById('deleteTableBody');
     tbody.innerHTML = ''; // 기존 내용 비우기
 
     selectedRows.forEach(checkbox => {
