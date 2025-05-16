@@ -103,7 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
         SUCCESS: "전체 완료",
         READY_SUCCESS: "준비 완료",
         DELIVERY_REQUESTED: "납품 요청됨",
-        DELIVERY_DELIVERED: "납품 완료"
+        DELIVERY_DELIVERED: "납품 완료",
+        HOLD_DELIVERY: "납품 대기"
     };
 
     // 드롭다운 option에 텍스트 설정

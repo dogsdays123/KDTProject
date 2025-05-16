@@ -22,13 +22,19 @@
                 <form>
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2" style="width: 150px">
-                            <label for="pName" class="form-label small">상품 선택</label>
-                            <select id="pName" name="pName" class="form-select form-select-sm">
+                            <label for="pName" class="form-label small">상품명</label>
+                            <select id="pName" name="pName" class="form-select form-select-sm searchSelect">
                                 <option value="" selected>선택</option>
-                                <th:block th:each="product : ${productList}">
-                                    <option th:value="${product.pName}" th:text="${product.pName}" th:data-code="${product.pName}"></option>
+                                <th:block th:each="dto : ${productList}">
+                                    <option th:value="${dto.getPName()}" th:text="${dto.getPName()}" th:data-code="${dto.getPName()}"></option>
                                 </th:block>
                             </select>
+                            <!-- 서버에서 렌더링된 mComponentListHTML HTML을 숨겨두는 div -->
+                            <div id="pNameListHTML" style="display: none;">
+                                <th:block th:each="dto : ${productList}">
+                                    <option th:value="${dto.getPName()}" th:text="${dto.getPName()}" th:data-code="${dto.getPName()}"></option>
+                                </th:block>
+                            </div>
                         </div>
                         <div class="col-md-2" style="width: 150px">
                             <label for="mComponentType" class="form-label small">부품 선택</label>
@@ -47,7 +53,7 @@
                         </div>
                         <div class="col-md-2">
                             <label for="mName" class="form-label small">자재명</label>
-                            <select class="form-select form-select-sm searchSelect" name="mName" id="mName" title="자재명">
+                            <select class="form-select form-select-sm searchSelect" id="mName" title="자재명">
                                 <th:block th:each="mNames : ${mNameList}">
                                     <option value="" selected>선택</option>
                                     <option th:value="${mNames}" th:text="${mNames}" th:data-code="${mNames}"></option>
@@ -55,8 +61,8 @@
                             </select>
                             <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
                             <div id="mNameListHTML" style="display: none;">
-                                <th:block th:each="mTypes : ${componentTypeList}">
-                                    <option th:value="${mTypes}" th:text="${mTypes}" th:data-code="${mTypes}"></option>
+                                <th:block th:each="mNames : ${mNameList}">
+                                    <option th:value="${mNames}" th:text="${mNames}" th:data-code="${mNames}"></option>
                                 </th:block>
                             </div>
                         </div>

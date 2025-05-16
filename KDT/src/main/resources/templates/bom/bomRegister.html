@@ -26,18 +26,24 @@
           <input type="hidden" name="uId" th:value="${userBy.uId}">
           <div style="max-width: 1200px; margin-left: 0;">
             <div class="row g-2 mb-2">
-              <div class="col-md-2">
-                <label for="productName" class="form-label small">상품 선택</label>
-                <select id="productName" class="form-select form-select-sm">
+              <div class="col-md-2" style="width: 150px">
+                <label for="productName" class="form-label small">상품명</label>
+                <select id="productName" class="form-select form-select-sm searchSelect">
                   <option value="" selected>선택</option>
-                  <th:block th:each="product : ${productList}">
-                    <option th:value="${product.pName}" th:text="${product.pName}" th:data-code="${product.pCode}"></option>
+                  <th:block th:each="dto : ${productList}">
+                    <option th:value="${dto.getPName()}" th:text="${dto.getPName()}" th:data-code="${dto.getPName()}"></option>
                   </th:block>
                 </select>
+                <!-- 서버에서 렌더링된 mComponentListHTML HTML을 숨겨두는 div -->
+                <div id="pNameListHTML" style="display: none;">
+                  <th:block th:each="dto : ${productList}">
+                    <option th:value="${dto.getPName()}" th:text="${dto.getPName()}" th:data-code="${dto.getPName()}"></option>
+                  </th:block>
+                </div>
               </div>
               <div class="col-md-2">
                 <label for="componentType" class="form-label small">부품 종류</label>
-                <select class="form-select form-select-sm" id="componentType">
+                <select class="form-select form-select-sm searchSelect" id="componentType">
                   <option value="" selected>전체</option>
                   <th:block th:each="m : ${materialList}">
                     <option th:value="${m.getMComponentType()}" th:text="${m.getMComponentType()}"></option>
@@ -54,7 +60,7 @@
               </div>
               <div class="col-md-2">
                 <label for="materialName" class="form-label small">부품 이름</label>
-                <select class="form-select form-select-sm" id="materialName">
+                <select class="form-select form-select-sm searchSelect" id="materialName">
                   <option value="" selected>전체</option>
                   <th:block th:each="m : ${materialList}">
                     <option th:value="${m.mName}" th:text="${m.mName}"></option>
@@ -71,7 +77,7 @@
               </div>
               <div class="col-md-2">
                 <label for="materialCode" class="form-label small">부품 코드</label>
-                <select class="form-select form-select-sm" id="materialCode">
+                <select class="form-select form-select-sm searchSelect" id="materialCode">
                   <option value="" selected>전체</option>
                   <th:block th:each="m : ${materialList}">
                     <option th:value="${m.mCode}" th:text="${m.mCode}"></option>

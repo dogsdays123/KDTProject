@@ -113,7 +113,7 @@ $(document).ready(function () {
         loadComponentTypes(input, "in");
     });
 
-    $('#mType').on('change', function () {
+    $('#componentType').on('change', function () {
         const input = $(this).val();
         loadMName(worlds[0], input, "in");
     });
@@ -121,10 +121,9 @@ $(document).ready(function () {
 
 function loadComponentTypes(pName, position) {
 
-    if (!pName) return;
-
     let innerValue;
 
+    if(pName){
     switch (position){
         case "out": innerValue = "[name=\"componentType\"]"; break;
         case "in" : innerValue = "#mType"; break;
@@ -133,7 +132,7 @@ function loadComponentTypes(pName, position) {
     const pNameEncode = encodeURIComponent(pName);
 
     $.ajax({
-        url: `/bom/${pNameEncode}/forComponentType`,
+        url: `/bom/${pNameEncode}/forMType`,
         method: 'GET',
         success: function (componentTypes) {
 
@@ -149,10 +148,15 @@ function loadComponentTypes(pName, position) {
             console.error('부품 목록을 가져오는 중 오류 발생:', error);
         }
     });
+    } else{
+        $('#componentType').empty();  // 부품 목록 초기화
+        var mComponentListHTML = $('#mComponentListHTML').html();  // 서버에서 렌더링된 HTML 가져오기
+        $('#componentType').append(mComponentListHTML);  // mNameList의 option을 append
+        $('#componentType').trigger('change');  // 변경 이벤트 트리거
+    }
 }
 
 function loadMName(pName, mType, position) {
-    if (!mType || !pName) return;
 
     let innerValue;
 
@@ -161,12 +165,13 @@ function loadMName(pName, mType, position) {
         case "in" : innerValue = "#mName"; break;
     }
 
+    if(mType && pName){
     const encode = [];
     encode[0] = encodeURIComponent(pName);
     encode[1] = encodeURIComponent(mType);
 
     $.ajax({
-        url: `/bom/${encode[0]}/${encode[1]}`,
+        url: `/bom/${encode[0]}/${encode[1]}/forMName`,
         method: 'GET',
         success: function (mNames) {
 
@@ -182,4 +187,10 @@ function loadMName(pName, mType, position) {
             console.error('부품 목록을 가져오는 중 오류 발생:', error);
         }
     });
+    } else{
+        $('#mName').empty();  // 부품 목록 초기화
+        var mComponentListHTML = $('#mNameListHTML').html();  // 서버에서 렌더링된 HTML 가져오기
+        $('#mName').append(mComponentListHTML);  // mNameList의 option을 append
+        $('#mName').trigger('change');  // 변경 이벤트 트리거
+    }
 }

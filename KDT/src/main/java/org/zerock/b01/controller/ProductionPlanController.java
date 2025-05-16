@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.Product;
 import org.zerock.b01.domain.ProductionPlan;
+import org.zerock.b01.domain.Supplier;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.allDTO.PlanListAllDTO;
 import org.zerock.b01.dto.formDTO.ProductionPlanFormDTO;
@@ -99,6 +100,9 @@ public class ProductionPlanController {
 
     @GetMapping("/ppList")
     public void planList(PageRequestDTO pageRequestDTO, Model model) {
+
+        List<Product> productList = productService.getProducts();
+        model.addAttribute("productList", productList);
 
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10

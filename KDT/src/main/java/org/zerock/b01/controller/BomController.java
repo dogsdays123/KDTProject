@@ -81,6 +81,7 @@ public class BomController {
 
     @GetMapping("/bomList")
     public void bomList(PageRequestDTO pageRequestDTO, Model model) {
+
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
         }
@@ -94,6 +95,18 @@ public class BomController {
         List<BomDTO> bomList = bomService.getBoms();
         List<Product> productList = productRepository.findAll();
         List<Material> materialList = materialRepository.findAll();
+
+        Set<String> componentTypeSet = materialList.stream()
+                .filter(m -> m.getMComponentType() != null)
+                .map(Material::getMComponentType)
+                .collect(Collectors.toSet());
+        model.addAttribute("componentTypeList", componentTypeSet);
+
+        Set<String> mNameSet = materialList.stream()
+                .filter(m -> m.getMName() != null)
+                .map(Material::getMName)
+                .collect(Collectors.toSet());
+        model.addAttribute("mNameList", mNameSet);
 
         model.addAttribute("productList", productList);
         model.addAttribute("materialList", materialList);

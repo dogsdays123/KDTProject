@@ -23,25 +23,20 @@
                 <form th:action="@{/product/goodsList}" method="get">
                     <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
                     <div class="row g-2 align-items-end">
-                        <div class="col-md-2">
-                            <label for="productCode" class="form-label small">상품 코드</label>
-                            <select class="form-select form-select-sm" name="pCode" id="productCode">
-                                <option value="" th:selected="${selectedPCode == ''}">전체</option>
-                                <option th:each="dto : ${productList}"
-                                        th:value="${dto.getPCode()}"
-                                        th:text="${dto.getPCode()}"
-                                        th:selected="${dto.getPCode() == selectedPCode}"></option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" style="width: 150px">
                             <label for="productName" class="form-label small">상품명</label>
-                            <select id="productName" name="pName" class="form-select form-select-sm" title="상품 선택">
-                                <option value="" th:selected="${selectedPName == ''}">전체</option>
-                                <option th:each="dto : ${productList}"
-                                        th:value="${dto.getPName()}"
-                                        th:text="${dto.getPName()}"
-                                        th:selected="${dto.getPName() == selectedPName}"></option>
+                            <select id="productName" name="pName" class="form-select form-select-sm searchSelect">
+                                <option value="" selected>선택</option>
+                                <th:block th:each="dto : ${productList}">
+                                    <option th:value="${dto.getPName()}" th:text="${dto.getPName()}" th:data-code="${dto.getPName()}"></option>
+                                </th:block>
                             </select>
+                            <!-- 서버에서 렌더링된 mComponentListHTML HTML을 숨겨두는 div -->
+                            <div id="pNameListHTML" style="display: none;">
+                                <th:block th:each="dto : ${productList}">
+                                    <option th:value="${dto.getPName()}" th:text="${dto.getPName()}" th:data-code="${dto.getPName()}"></option>
+                                </th:block>
+                            </div>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
                             <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
