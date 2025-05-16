@@ -58,35 +58,32 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public void registerMaterial(MaterialDTO materialDTO, String uId){
+    public String registerMaterial(MaterialDTO materialDTO, String uId){
         Material material = modelMapper.map(materialDTO, Material.class);
         Product product = materialRepository.findByProduct(materialDTO.getPName());
-
         material.setUserBy(userByRepository.findByUId(uId));
-        log.info("&&&& " + uId);
+        log.info(uId);
 
-        if(materialDTO.getMCode() == null){
+        String errorMessage = null;
+
+        if(materialRepository.findByOtherName(materialDTO.getPName(), materialDTO.getMName()) != null){
+            errorMessage = "[" + materialDTO.getMName() + "]";
+        }
+        else{
             log.info("NewNoHave " + material.getMCode());
-            String productionPlanCode =  autoGenerateCode.generateCode("m", "");
-            material.setOneCode(productionPlanCode);
-        }
-        else if(materialRepository.findByMaterialCode(materialDTO.getMCode()).isEmpty()){
-            log.info("NewHave " + material.getMCode());
-        } else {
-            log.info("haveOld " + material.getMCode());
+            String mCode =  autoGenerateCode.generateCode("m", "");
+            material.setOneCode(mCode);
+            material.setProduct(product);
+            materialRepository.save(material);
         }
 
-        material.setProduct(product);
-        log.info("materialDTO = " + materialDTO.getPName());
-        materialRepository.save(material);
+        return errorMessage;
     }
 
     @Override
-    public Map<String, String[]> registerMaterialEasy(List<MaterialDTO> materialDTOs, String uId){
-        List<String> duplicatedCodes = new ArrayList<>();
+    public Map<String, Object> registerMaterialEasy(List<MaterialDTO> materialDTOs, String uId, boolean check){
+        List<Map<String, String>> duplicate = new ArrayList<>();
         List<String> errorCheck = new ArrayList<>();
-
-        UserBy user = userByRepository.findByUId(uId);
 
         //돌아라돌아라
         for (MaterialDTO materialDTO : materialDTOs) {
@@ -95,19 +92,30 @@ public class MaterialServiceImpl implements MaterialService {
                 errorCheck.add(materialDTO.getPName());
                 continue;
             }
+
+            //만약 이미 존재하는 부품 이름이라면 duplicate에 이름 저장
+            if(materialRepository.findByOtherName(materialDTO.getPName(), materialDTO.getMName()) != null){
+                Map<String, String> dupEntry = new HashMap<>();
+                dupEntry.put("pName", materialDTO.getPName());
+                dupEntry.put("mName", materialDTO.getMName());
+                duplicate.add(dupEntry);
+                continue;
+            }
+
             //그게 아니면 정상영업합니다.
-            Material material = modelMapper.map(materialDTO, Material.class);
-            material.setProduct(productRepository.findByProductNameObj(materialDTO.getPName()));
-            material.setUserBy(userByRepository.findByUId(uId));
+            if(!check){
+                Material material = modelMapper.map(materialDTO, Material.class);
+                material.setProduct(productRepository.findByProductNameObj(materialDTO.getPName()));
+                material.setUserBy(userByRepository.findByUId(uId));
 
-            boolean isDuplicated = false;
-
-            material.setMCode(autoGenerateCode.generateCode("m", ""));
-            materialRepository.save(material);
+                material.setMCode(autoGenerateCode.generateCode("m", ""));
+                materialRepository.save(material);
+            }
         }
 
-        Map<String, String[]> result = new HashMap<>();
-        result.put("errorCheck", errorCheck.toArray(new String[0]));
+        Map<String, Object> result = new HashMap<>();
+        result.put("errorCheck", errorCheck);
+        result.put("duplicate", duplicate);
 
         return result;
     }

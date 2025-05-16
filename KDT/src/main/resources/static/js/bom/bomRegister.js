@@ -1,6 +1,5 @@
-let pNameChecks = null;
-let mCodeChecks = null;
 let errorChecks = null;
+let duplicates = null;
 let selectedFiles = []; // 전역 변수로 따로 관리
 let worlds = [];
 
@@ -156,10 +155,10 @@ function updateFileListUI() {
         processData: false,
         contentType: false,
         success: function(response) {
-            mCodeChecks = response.mCodes;
-            pNameChecks = response.pNames;
-            console.log(mCodeChecks);
-            console.log(pNameChecks);
+            errorChecks = response.errorCheck;
+            duplicates = response.duplicate;
+            console.log(errorChecks);
+            console.log(duplicates);
         },
         error: function(xhr, status, error) {
             alert("파일 읽기에 실패했습니다. : " + error);
@@ -219,25 +218,11 @@ function loadFileContent(file, index) {
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-        // 날짜 변환: rows 에 직접 적용
-        rows.forEach((row, rowIndex) => {
-            row.forEach((cell, colIndex) => {
-                if (colIndex === 3 || colIndex === 4) { // 3, 4번 컬럼
-                    if (cell instanceof Date) {
-                        row[colIndex] = cell.toISOString().split('T')[0]; // yyyy-mm-dd 형태로 변환
-                    }
-                }
-            });
-        });
-
         const tableHeader = document.getElementById('tableHeader');
         const tableBody = document.getElementById('tableBody');
 
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
-
-        let pCodes = [];
-        let pNames = [];
 
         rows[0]?.forEach(header => {
             const th = document.createElement('th');
@@ -249,15 +234,26 @@ function loadFileContent(file, index) {
             const tr = document.createElement('tr');
             tr.setAttribute('data-file-name', file.name);
 
-            const productCode = row[0];
-            const productName = row[1];
-
-            pCodes.push(productCode);
-            pNames.push(productName);
-
-            row.forEach(cell => {
+            row.forEach((cell, colIndex) => {
                 const td = document.createElement('td');
                 td.textContent = cell;
+
+                if (colIndex === 0 && errorChecks.includes(cell)) {
+                    td.style.color = 'red';
+                    td.style.fontWeight = 'bold';
+                } else if (colIndex === 1) {
+                    const currentPName = row[0]; // 상품명은 0번째 열
+                    const currentMName = cell;   // 3번째 열: 부품명
+                    const isDuplicate = duplicates?.some(d =>
+                        d.pName === currentPName && d.mName === currentMName
+                    );
+
+                    if (isDuplicate) {
+                        td.style.color = 'red';
+                        td.style.fontWeight = 'bold';
+                    }
+                }
+
                 tr.appendChild(td);
             });
             tableBody.appendChild(tr);
@@ -307,7 +303,7 @@ $('#excelUpload').on('click', function (e) {
         contentType: false,
         success: function(response) {
             errorChecks = response.errorCheck;
-            console.log(errorChecks);
+            duplicates = response.duplicate;
 
             document.getElementById('fileList').innerHTML = '';
             document.getElementById('uploadedFileList').style.display = 'none';

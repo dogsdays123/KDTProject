@@ -10,8 +10,8 @@ import java.util.Map;
 
 public interface BomService {
     List<BomDTO> getBoms();
-    Map<String, String[]> registerBOM(List<BomDTO> bomDTOs, String uId);
-    Map<String, String[]> checkBOM(List<BomDTO> bomDTOs);
+    String registerBOM(BomDTO bomDTO, String uId);
+    Map<String, Object> registerBomEasy(List<BomDTO> bomDTOs, String uId, boolean check);
     void modifyBOM(BomDTO bomDTO, Long bId);
     void removeBOM(List<Long> bIds);
 }

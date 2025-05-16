@@ -1,5 +1,7 @@
 let errorChecks = null;
+let duplicates = null;
 let selectedFiles = []; // 전역 변수로 따로 관리
+let rowIndex = 0;
 
 function addPlan() {
     const pName = document.getElementById('pName').value;
@@ -13,7 +15,6 @@ function addPlan() {
     const unitPrice = document.getElementById('unitPrice').value;
     const mMinNum = document.getElementById('mMinNum').value;
     const uId = document.getElementById("uId").value;
-    let rowIndex = 0;
     //uId는 따로 받아온다.
 
     if (!pName || !mType || !mName
@@ -85,7 +86,6 @@ function addPlan() {
     document.getElementById('weight').value = '';
     document.getElementById('unitPrice').value = '';
     document.getElementById('mMinNum').value = '';
-    document.getElementById("uId").value = '';
 }
 
 // 삭제 버튼 클릭 시 해당 행 삭제
@@ -149,7 +149,7 @@ function updateFileListUI() {
         contentType: false,
         success: function (response) {
             errorChecks = response.errorCheck;
-            console.log(errorChecks);
+            duplicates = response.duplicate;
         },
         error: function (xhr, status, error) {
             alert("파일 확인에 실패. : " + error);
@@ -225,9 +225,26 @@ function loadFileContent(file, index) {
             const tr = document.createElement('tr');
             tr.setAttribute('data-file-name', file.name);
 
-            row.forEach((cell) => {
+            row.forEach((cell, colIndex) => {
                 const td = document.createElement('td');
                 td.textContent = cell;
+
+                if (colIndex === 0 && errorChecks.includes(cell)) {
+                    td.style.color = 'red';
+                    td.style.fontWeight = 'bold';
+                } else if (colIndex === 3) {
+                    const currentPName = row[0]; // 상품명은 0번째 열
+                    const currentMName = cell;   // 3번째 열: 부품명
+                    const isDuplicate = duplicates?.some(d =>
+                        d.pName === currentPName && d.mName === currentMName
+                    );
+
+                    if (isDuplicate) {
+                        td.style.color = 'red';
+                        td.style.fontWeight = 'bold';
+                    }
+                }
+
                 tr.appendChild(td);
             });
             tableBody.appendChild(tr);
@@ -276,12 +293,8 @@ $('#excelUpload').on('click', function (e) {
         contentType: false,
         success: function (response) {
             errorChecks = response.errorCheck;
-            console.log(errorChecks);
-            if (response.isAvailable) {
-                alert("파일 업로드에 성공했습니다.(특정)");
-            } else {
-                alert("파일 업로드에 성공했습니다.");
-            }
+            duplicates = response.duplicate;
+
             document.getElementById('fileList').innerHTML = '';
             document.getElementById('uploadedFileList').style.display = 'none';
             document.getElementById('fileTable').style.display = 'none';

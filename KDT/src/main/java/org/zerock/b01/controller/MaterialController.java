@@ -155,14 +155,23 @@ public class MaterialController {
                                   RedirectAttributes redirectAttributes,
                                   HttpServletRequest request) throws IOException {
 
-
+        List<String> errors = new ArrayList<>();
         List<MaterialDTO> materialDTOs = form.getMaterials();
+        String message;
 
         for(MaterialDTO materialDTO : materialDTOs) {
-            materialService.registerMaterial(materialDTO, materialDTO.getUId());
+            String error = materialService.registerMaterial(materialDTO, materialDTO.getUId());
+            if (error != null) {errors.add(error);}
         }
 
-        redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
+        if(!errors.isEmpty()) {
+            message = String.join(", ", errors) + " 이 중복 되었습니다.\n중복되지 않은 부품은 등록됩니다.";
+        } else{
+            message = "등록이 완료되었습니다.";
+        }
+
+        redirectAttributes.addFlashAttribute("message", message);
+
         return "redirect:materialRegister";
     }
 
@@ -172,26 +181,32 @@ public class MaterialController {
     public Map<String, Object> addMaterial(String uId, @RequestParam("file") MultipartFile[] files,
                                              @RequestParam("check") String check,
                                               Model model, RedirectAttributes redirectAttributes) throws IOException {
-        log.info("test ");
 
         Map<String, Object> response = new HashMap<>();
-        Map<String, String[]> materialObj = new HashMap<>();
+        List<Map<String, String>> totalDuplicateList = new ArrayList<>();
+        List<String> totalErrorCheckList = new ArrayList<>();
 
         // 엑셀 파일 처리
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            materialObj = registerMaterialForExel(worksheet, uId, check);
+            Map<String, Object> materialObj = registerMaterialForExel(worksheet, uId, check);
+
+            // 중복과 에러 체크 리스트 병합
+            totalDuplicateList.addAll((List<Map<String, String>>) materialObj.get("duplicate"));
+            totalErrorCheckList.addAll((List<String>) materialObj.get("errorCheck"));
         }
 
-        //materialService 에서 가져온 mCodes
-        response.put("mCodes", materialObj.get("mCodes"));
-        response.put("errorCheck", materialObj.get("errorCheck"));
+        response.put("duplicate", totalDuplicateList);
+        response.put("errorCheck", totalErrorCheckList);
+
+        log.info("중복 부품: {}", totalDuplicateList);
+        log.info("등록되지 않은 상품: {}", totalErrorCheckList);
 
         return response;
     }
 
-    private Map<String, String[]> registerMaterialForExel(XSSFSheet worksheet, String uId, String check) {
+    private Map<String, Object> registerMaterialForExel(XSSFSheet worksheet, String uId, String check) {
 
         List<MaterialDTO> materialDTOs = new ArrayList<>();
 
@@ -214,7 +229,9 @@ public class MaterialController {
             materialDTOs.add(materialDTO);
         }
 
-        return materialService.registerMaterialEasy(materialDTOs, uId);
+        boolean result = Boolean.parseBoolean(check);
+
+        return materialService.registerMaterialEasy(materialDTOs, uId, result);
     }
 
     @PostMapping("/modify")
@@ -238,6 +255,13 @@ public class MaterialController {
     public List<String> getComponentTypesByProductCode(@PathVariable String pName) {
         List<String> componentTypes = materialRepository.findComponentTypesByProductName(pName);
         return componentTypes != null ? componentTypes : Collections.emptyList();
+    }
+
+    @GetMapping("/{mType}/{pName}/mName")
+    @ResponseBody
+    public List<String> getMNamesByMType(@PathVariable String mType, @PathVariable String pName) {
+        List<String> mNames = materialRepository.findMNameByETC(pName, mType);
+        return mNames != null ? mNames : Collections.emptyList();
     }
 
     @GetMapping("/downloadTemplate/{isTemplate}")
