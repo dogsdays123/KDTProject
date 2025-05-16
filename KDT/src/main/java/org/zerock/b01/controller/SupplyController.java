@@ -101,7 +101,8 @@ public class SupplyController {
 
         if(dtoList != null && !dtoList.isEmpty()) {
             for (OrderByListAllDTO dto : dtoList) {
-                String leadTime = supplierStockRepository.findLeadTimeByMCode(dto.getMCode());
+                String leadTime = supplierStockRepository.findLeadTimeByMCodeSName
+                        (dto.getMCode(), dto.getSId());
                 log.info("mCode {} / leadTime {}", dto.getMCode(), leadTime);
                 if (leadTime != null) {
                     dto.setLeadTime(leadTime);

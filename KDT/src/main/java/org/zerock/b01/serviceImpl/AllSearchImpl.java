@@ -879,10 +879,16 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(orderBy.deliveryProcurementPlan.material.mName.contains(mName));
         }
 
+        //없앨 예정
         if (oState != null && !oState.isEmpty() && !"전체".equals(oState)) {
             CurrentStatus status = CurrentStatus.valueOf(oState);
             booleanBuilder.and(orderBy.oState.eq(status));
         }
+
+        booleanBuilder.and(
+                orderBy.oState.eq(CurrentStatus.HOLD_PROGRESS)
+                        .or(orderBy.oState.eq(CurrentStatus.UNDER_INSPECTION))
+        );
 
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
@@ -969,7 +975,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     @Override
-    public Page<ProgressInspectionDTO> progressInspectionSearchWithAll(String[] types, String keyword, String mName, LocalDate psDate, Long sId, Pageable pageable) {
+    public Page<ProgressInspectionDTO> progressInspectionSearchWithAll(String[] types, String keyword, String mName, LocalDate psDate, String psState, Long sId, Pageable pageable) {
 
         QProgressInspection progressInspection = QProgressInspection.progressInspection;
         JPQLQuery<ProgressInspection> query = from(progressInspection);

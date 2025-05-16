@@ -421,17 +421,11 @@ public class PageServiceImpl implements PageService {
         String keyword = pageRequestDTO.getKeyword();
         String mName = pageRequestDTO.getMName();
         LocalDate psDate = pageRequestDTO.getPsDate();
+        String psState = pageRequestDTO.getPsState();
 
         Pageable pageable = pageRequestDTO.getPageable("regDate");
 
-        Page<ProgressInspectionDTO> result = progressInspectionRepository.progressInspectionSearchWithAll(types, keyword, mName, psDate, sId, pageable);
-//
-//        for(ProgressInspectionDTO progressInspectionDTO : result.getContent()) {
-//            SupplierStock supplierStock = supplierStockRepository.f
-//            Material material = materialRepository.findByMaterialCode(progressInspectionDTO.get.getMCode())
-//                    .orElseThrow(() -> new RuntimeException("Material not found"));
-//            supplierStockDTO.setMName(material.getMName()); //
-//        }
+        Page<ProgressInspectionDTO> result = progressInspectionRepository.progressInspectionSearchWithAll(types, keyword, mName, psDate, psState, sId, pageable);
 
         return PageResponseDTO.<ProgressInspectionDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
