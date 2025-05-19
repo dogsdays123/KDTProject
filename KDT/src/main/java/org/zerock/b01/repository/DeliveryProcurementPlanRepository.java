@@ -16,4 +16,6 @@ public interface DeliveryProcurementPlanRepository extends JpaRepository<Deliver
 
     @Query("select dpp.material.mName from DeliveryProcurementPlan dpp where dpp.dppCode =:dppCode")
     List<String> findMNameByDppCode(@Param("dppCode") String dppCode);
+
+
 }
