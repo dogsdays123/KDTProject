@@ -86,4 +86,9 @@ public class SupplierStockServiceImpl implements SupplierStockService {
             supplierStockRepository.deleteById(ssId);
         }
     }
+
+    @Override
+    public List<String> findMaterialNamesBySupplierId(Long sId) {
+        return supplierStockRepository.findDistinctMaterialNamesBySupplierId(sId);
+    }
 }

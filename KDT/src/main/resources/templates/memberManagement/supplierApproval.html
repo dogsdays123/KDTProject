@@ -76,6 +76,9 @@
                         </tr>
                         </thead>
                         <tbody id="userWaitTable" th:with="link = ${pageRequestDTO.getLink()}" style="height: 40px">
+                        <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
+                            <td colspan="10" class="text-center" style="padding: 20px 0;">승인 대기중인 업체가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
+                        </tr>
                         <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="height: 40px; position: relative;">
                             <td><input type="checkbox" class="selectApproval" title="해당 행 선택"></td>
                             <td th:text="${dto.getUId()}"></td>
@@ -204,6 +207,11 @@
                 </div>
             </form>
         </div>
+        <script th:if="${message != null}" th:inline="javascript">
+            /*<![CDATA[*/
+            alert([[${message}]]);
+            /*]]>*/
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script th:src="@{/js/memberManagement/supplierApproval.js}"></script>
     </div>

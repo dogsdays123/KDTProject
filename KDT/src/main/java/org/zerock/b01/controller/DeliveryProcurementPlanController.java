@@ -39,6 +39,7 @@ public class DeliveryProcurementPlanController {
     private final DeliveryProcurementPlanRepository deliveryProcurementPlanRepository;
     private final ProductionPlanRepository productionPlanRepository;
     private final SupplierStockRepository supplierStockRepository;
+    private final BomRepository bomRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -150,6 +151,19 @@ public class DeliveryProcurementPlanController {
     @ResponseBody
     public String getLeadTimeByETC(@PathVariable String sup, @PathVariable String mCode) {
         return supplierStockRepository.findLeadTimeByETC(sup, mCode);
+    }
+
+    @GetMapping("/{mCode}/rn")
+    @ResponseBody
+    public String getRequireNum(@PathVariable String mCode) {
+        log.info("Requested mCode: " + mCode); // mCode 확인
+        String requireNum = bomRepository.findRequireNumByMaterialCode(mCode);
+        if (requireNum == null) {
+            log.info("Require Number is null for mCode: " + mCode); // null일 경우에 대한 로그 추가
+        } else {
+            log.info("Require Number: " + requireNum); // 정상적으로 값이 반환될 경우 로그 추가
+        }
+        return requireNum != null ? requireNum : "정보 없음";
     }
 
 //    @GetMapping("/{ppCode}/dppCode")

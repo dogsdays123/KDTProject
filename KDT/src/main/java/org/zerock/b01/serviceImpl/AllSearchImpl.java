@@ -501,7 +501,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     @Override
-
     public Page<InventoryStockDTO> inventoryStockSearchWithAll(String[] types, String keyword,
                                                                String pName, String componentType, String mName, String isLocation, LocalDate isRegDate, String uId, Pageable pageable) {
 
@@ -513,11 +512,13 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 //        JPQLQuery<InventoryStock> query = from(inventoryStock);
 
         JPQLQuery<Tuple> query = from(inventoryStock)
+                .distinct()
                 .join(inventoryStock.material, material)
                 .leftJoin(dpp).on(inventoryStock.material.mCode.eq(dpp.material.mCode))
                 .leftJoin(dpp.productionPlan, pp)
                 .select(inventoryStock, dpp)
                 .where(booleanBuilder)
+                .groupBy(inventoryStock.isId)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(inventoryStock.isNum.desc());

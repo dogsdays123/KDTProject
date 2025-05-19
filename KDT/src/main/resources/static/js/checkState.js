@@ -15,7 +15,9 @@ const stateMap = {
     SUCCESS: "전체 완료",
     READY_SUCCESS: "준비 완료",
     DELIVERY_REQUESTED: "납품 요청됨",
-    DELIVERY_DELIVERED: "납품 완료"
+    DELIVERY_DELIVERED: "납품 완료",
+    DPP_SUCCESS: "등록 완료"  // 등록 완료
+
 };
 
     document.querySelectorAll(".CheckState").forEach(td => {

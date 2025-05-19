@@ -33,6 +33,17 @@ function toggleUserDropdown() {
     dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 }
 
+function toggleAlertDropdown() {
+    var alertDropdown = document.getElementById("alertDropdown");
+
+    // 알림이 이미 보이고 있다면 숨기고, 아니면 보여준다
+    if (alertDropdown.style.display === "none") {
+        alertDropdown.style.display = "block";
+    } else {
+        alertDropdown.style.display = "none";
+    }
+}
+
 window.addEventListener('click', function(e) {
     const dropdown = document.querySelector('.user-dropdown');
     const icon = document.querySelector('.bi-person-circle');

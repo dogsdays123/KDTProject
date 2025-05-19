@@ -31,4 +31,6 @@ public class Custom403Handler implements AccessDeniedHandler {
             response.sendRedirect("/mainPage/main?error=ACCESS_DENIED");
         }
     }
+
+
 }

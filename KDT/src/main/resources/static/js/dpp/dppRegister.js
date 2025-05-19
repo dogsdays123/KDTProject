@@ -138,6 +138,7 @@ $(document).ready(function () {
     $('#sup').on('change', function () {
         const input = $(this).val();  // 선택된 상품 값
         loadLeadTime(input, mCodeForLeadTime);
+        loadRequireNum(mCodeForLeadTime);
     });
 
 });
@@ -251,6 +252,32 @@ function loadLeadTime(sup, mCode) {
     });
 }
 
+function loadRequireNum(mCode) {
+    const encodes = [];
+
+    encodes[1] = encodeURIComponent(mCode);
+
+    $.ajax({
+        url: `/dpp/${encodes[1]}/rn`,
+        method: 'GET',
+        success: function (data) {
+            const leadTimeInput = $('#requireNumInput');
+            const productQtyInput = $('#productQtyInput');
+
+            const productQty = parseFloat(productQtyInput.text()) || 0;
+            const leadTime = parseFloat(data) || 0;  // 서버에서 받은 값도 숫자로 처리
+            if (data) {
+                leadTimeInput.val(productQty * leadTime);
+            } else {
+                leadTimeInput.val('미배정');
+            }
+        },
+        error: function () {
+            $('#requireNum').text('에러');
+        }
+    });
+}
+
 function resetView() {
     const modal = bootstrap.Modal.getInstance(document.getElementById('procurementModal'));
 
@@ -260,3 +287,4 @@ function resetView() {
 
     if (modal) modal.hide();
 }
+

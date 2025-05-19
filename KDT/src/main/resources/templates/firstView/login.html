@@ -240,14 +240,18 @@
                     <form action="/firstView/forgot" method="post">
                         <label for="checkEmail" class="form-label">이메일 입력</label>
                         <input type="email" id="checkEmail" name="checkEmail" required>
-                        <button type="button" id="checkPassword">비밀번호 찾기</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="checkPassword">비밀번호 찾기</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- 찾기 모달창 end -->
+<script th:if="${param.message != null}" th:inline="javascript">
+    /*<![CDATA[*/
+    alert([[${param.message}]]);
+    /*]]>*/
+</script>
 <script th:if="${message != null}" th:inline="javascript">
     /*<![CDATA[*/
     alert([[${message}]]);

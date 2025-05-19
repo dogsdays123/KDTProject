@@ -41,43 +41,12 @@
             </div>
         </div>
     </div>
-<!--    <div th:if="${(userBy.status == '관리자') || (userBy.userJob == '관리자')}">-->
-<!--        <div class="container-fluid">-->
-<!--            <div class="container" style="max-width: 1000px; margin-left: 0;">-->
-<!--                <div class="d-flex align-items-center mb-3">-->
-<!--                    <div class="row g-4">-->
-<!--                        &lt;!&ndash; 사원 가입 승인 대기 &ndash;&gt;-->
-<!--                        <div class="col-md-6">-->
-<!--                            <div class="card border-start border-4 border-primary shadow-sm">-->
-<!--                                <div class="card-body">-->
-<!--                                    <h5 class="card-title">사원 가입 승인 대기</h5>-->
-<!--                                    <p class="card-text fs-1 fw-bold text-primary">-->
-<!--                                        8명-->
-<!--                                    </p>-->
-<!--                                    <a href="/memberManagement/employeeApproval" class="btn btn-sm btn-outline-primary">관리 바로가기</a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        &lt;!&ndash; 업체 가입 승인 대기 &ndash;&gt;-->
-<!--                        <div class="col-md-6">-->
-<!--                            <div class="card border-start border-4 border-success shadow-sm">-->
-<!--                                <div class="card-body">-->
-<!--                                    <h5 class="card-title">업체 가입 승인 대기</h5>-->
-<!--                                    <p class="card-text fs-1 fw-bold text-success">-->
-<!--                                        3개-->
-<!--                                    </p>-->
-<!--                                    <a href="/memberManagement/supplierApproval" class="btn btn-sm btn-outline-success">관리 바로가기</a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-    <div th:if="${(userBy.status == '승인') || (userBy.userJob == '생산부서')
-                ||(userBy.status == '관리자') || (userBy.userJob == '관리자')}">
+    <div th:if="${userBy.status == '승인'
+            || userBy.status == '관리자'
+            || userBy.userJob == '관리자'
+            || userBy.userJob == '생산부서'
+            || userBy.userJob == '구매부서'
+            || userBy.userJob == '자재부서'}">
         <div class="container-fluid">
             <div class="container" style="max-width: 1600px;">
                 <!-- 카드 영역 -->

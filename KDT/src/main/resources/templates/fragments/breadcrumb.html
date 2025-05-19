@@ -2,7 +2,7 @@
 <div th:fragment="breadcrumb(breadcrumbLevel1, breadcrumbCurrent)">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb mb-0">
-      <li class="breadcrumb-item"><a href="/">홈</a></li>
+<!--      <li class="breadcrumb-item"><a href="/mainPage/guide">홈</a></li>-->
       <li class="breadcrumb-item" th:if="${breadcrumbLevel1}" th:text="${breadcrumbLevel1}"></li>
       <li class="breadcrumb-item active" th:if="${breadcrumbCurrent}" th:text="${breadcrumbCurrent}" style="color:black;"></li>
     </ol>

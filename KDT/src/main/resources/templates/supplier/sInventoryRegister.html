@@ -41,39 +41,33 @@
                                 <option value="" selected>상품을 선택하세요</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="materialList" class="form-label small">자재 선택</label>
                             <select id="materialList" class="form-select form-select-sm">
                                 <option value="" selected>부품을 선택하세요</option>
                             </select>
                         </div>
-                        <div class="col-md-3" style="display: none;">
+                        <div class="col-md-1" style="display: none;">
                             <label for="materialCode" class="form-label small">자재 코드</label>
                             <input type="text" id="materialCode" class="form-control form-control-sm" readonly>
                         </div>
-                    </div>
-
-                    <div class="row g-2 mb-2 align-items-end">
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <label for="ssNum" class="form-label small">현재 수량</label>
                             <input type="number" id="ssNum" name="ssNum" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" style="width: 100px;">
                             <label for="ssMinOrderQty" class="form-label small">최소 발주 수량</label>
                             <input type="number" id="ssMinOrderQty" name="ssMinOrderQty" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-2">
-                            <label for="unitPrice" class="form-label small">공급 단가</label>
-                            <input type="number" id="unitPrice" name="unitPrice" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <label for="leadTime" class="form-label small">리드 타임</label>
                             <input type="number" id="leadTime" name="leadTime" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-2 d-flex gap-1">
-                            <button type="button" class="btn btn-dark btn-sm w-50" onclick="addPlan()">+ 추가</button>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-dark btn-sm w-100" onclick="addPlan()">+ 추가</button>
                         </div>
                     </div>
+
                 </div>
                 <div style="width: 1600px">
                     <div class="table-responsive mt-3">
@@ -86,7 +80,6 @@
                                 <th>자재 코드</th>
                                 <th>현재 수량</th>
                                 <th>최소 발주 수량</th>
-                                <th>공급 단가</th>
                                 <th>리드 타임</th>
                                 <th>삭제</th>
                             </tr>
@@ -169,10 +162,6 @@
                 <button type="button" id="tempDownload" class="btn btn-outline-dark btn-sm"
                         onclick="location.href='/test/downloadProductPlan/true'">
                     <i class="bi bi-download me-1"></i> 템플릿 다운로드
-                </button>
-                <button type="button" id="dataDownload" class="btn btn-outline-dark btn-sm"
-                        onclick="location.href='/test/downloadProductPlan/false'">
-                    <i class="bi bi-database-down me-1"></i> 데이터 다운로드
                 </button>
             </div>
             <small class="text-muted mt-2 d-block">

@@ -98,6 +98,19 @@ public class ProductionPlanServiceImpl implements ProductionPlanService {
     }
 
     @Override
+    public ProductionPlanDTO getOldPlans(String ppCode) {
+        Optional<ProductionPlan> optionalPlan = productionPlanRepository.findByProductionPlanCode(ppCode);
+        ProductionPlan plan = optionalPlan.orElseThrow(() -> new IllegalArgumentException("생산 계획을 찾을 수 없습니다: " + ppCode));
+        return modelMapper.map(plan, ProductionPlanDTO.class);
+    }
+
+    @Override
+    public void handlePlanQuantityChange(String ppCode, int oldQty, int newQty, String updatedBy) {
+        log.info("[수량 변경 처리] 생산계획: {}, {} → {}, 변경자: {}", ppCode, oldQty, newQty, updatedBy);
+
+    }
+
+    @Override
     public void removeProductionPlan(List<String> ppCodes){
         if (ppCodes == null || ppCodes.isEmpty()) {
             throw new IllegalArgumentException("삭제할 생산 계획 코드가 없습니다.");

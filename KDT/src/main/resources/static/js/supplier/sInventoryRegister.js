@@ -10,13 +10,13 @@ function addPlan() {
     const materialCode = document.getElementById('materialCode').value;
     const ssNum = document.getElementById('ssNum').value;
     const ssMinOrderQty = document.getElementById('ssMinOrderQty').value;
-    const unitPrice = document.getElementById('unitPrice').value;
+    // const unitPrice = document.getElementById('unitPrice').value;
     const leadTime = document.getElementById('leadTime').value;
 
     const materialName = materialList.options[materialList.selectedIndex].text;
 
     if (!productName || !componentType || !componentType || !materialList || !materialCode
-        || !ssNum || !ssMinOrderQty || !unitPrice || !leadTime) {
+        || !ssNum || !ssMinOrderQty || !leadTime) {
         alert('모든 항목을 입력해 주세요!');
         return;
     }
@@ -31,7 +31,6 @@ function addPlan() {
         <td><input type="hidden" name="mCodes[]" value="${materialCode}">${materialCode}</td> 
         <td><input type="hidden" name="ssNums[]" value="${ssNum}">${ssNum}</td> 
         <td><input type="hidden" name="ssMinOrderQty[]" value="${ssMinOrderQty}">${ssMinOrderQty}</td> 
-        <td><input type="hidden" name="unitPrices[]" value="${unitPrice}">${unitPrice}</td> 
         <td><input type="hidden" name="leadTimes[]" value="${leadTime}">${leadTime}</td> 
         <td>
           <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
@@ -79,7 +78,6 @@ function addPlan() {
     document.getElementById('materialCode').value = '';
     document.getElementById('ssNum').value = '';
     document.getElementById('ssMinOrderQty').value = '';
-    document.getElementById('unitPrice').value = '';
     document.getElementById('leadTime').value = '';
 }
 
