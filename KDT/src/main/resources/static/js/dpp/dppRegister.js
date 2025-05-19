@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     $(document).ready(function () {
         $('#procuredQty').on('input', function () {
-            const required = parseInt($('#requiredQty').val(), 10);
+            const required = parseInt($('#requireNumInput').val(), 10);
             const procured = parseInt($(this).val(), 10);
 
             if (!isNaN(required) && !isNaN(procured) && procured > required) {
@@ -194,8 +194,8 @@ $(document).ready(function () {
         if (!input) defaultValue("leadTime");
         else {
             loadLeadTime(input, mCodeForLeadTime);
+            loadRequireNum(mCodeForLeadTime);
         }
-        //loadRequireNum(mCodeForLeadTime);
     });
 });
 
@@ -360,31 +360,32 @@ function loadLeadTime(sup, mCode) {
     });
 }
 
-// function loadRequireNum(mCode) {
-//     const encodes = [];
-//
-//     encodes[1] = encodeURIComponent(mCode);
-//
-//     $.ajax({
-//         url: `/dpp/${encodes[1]}/rn`,
-//         method: 'GET',
-//         success: function (data) {
-//             const leadTimeInput = $('#requireNumInput');
-//             const productQtyInput = $('#productQtyInput');
-//
-//             const productQty = parseFloat(productQtyInput.text()) || 0;
-//             const leadTime = parseFloat(data) || 0;  // 서버에서 받은 값도 숫자로 처리
-//             if (data) {
-//                 leadTimeInput.val(productQty * leadTime);
-//             } else {
-//                 leadTimeInput.val('미배정');
-//             }
-//         },
-//         error: function () {
-//             $('#requireNum').text('에러');
-//         }
-//     });
-// }
+function loadRequireNum(mCode) {
+    const encodes = [];
+    encodes[1] = encodeURIComponent(mCode);
+
+    console.log(mCode, encodes[1]);
+
+    $.ajax({
+        url: `/dpp/${encodes[1]}/rn`,
+        method: 'GET',
+        success: function (data) {
+            const leadTimeInput = $('#requireNumInput');
+            const productQtyInput = $('#productQtyInput');
+
+            const productQty = parseFloat(productQtyInput.text()) || 0;
+            const leadTime = parseFloat(data) || 0;  // 서버에서 받은 값도 숫자로 처리
+            if (data) {
+                leadTimeInput.val(productQty * leadTime);
+            } else {
+                leadTimeInput.val('미배정');
+            }
+        },
+        error: function () {
+            $('#requireNum').text('에러');
+        }
+    });
+}
 
 function resetView() {
     const modal = bootstrap.Modal.getInstance(document.getElementById('procurementModal'));
