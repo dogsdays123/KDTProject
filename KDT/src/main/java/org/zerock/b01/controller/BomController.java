@@ -123,6 +123,7 @@ public class BomController {
     @ResponseBody
     public List<String> getComponentTypesByProductCode(@PathVariable String pName) {
         List<String> componentTypes = materialRepository.findComponentTypesByProductName(pName);
+        log.info("mTypes {} / {}", componentTypes.size(), componentTypes);
         return componentTypes != null ? componentTypes : Collections.emptyList();
     }
 

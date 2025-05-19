@@ -55,8 +55,8 @@
                         <div class="col-md-2">
                             <label for="mNames" class="form-label small">자재명</label>
                             <select class="form-select form-select-sm searchSelect" name="mNames" id="mNames" title="자재명">
+                                <option value="" selected>선택</option>
                                 <th:block th:each="mNames : ${mNameList}">
-                                    <option value="" selected>선택</option>
                                     <option th:value="${mNames}" th:text="${mNames}" th:data-code="${mNames}"></option>
                                 </th:block>
                             </select>

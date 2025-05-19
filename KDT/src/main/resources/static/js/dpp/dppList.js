@@ -88,37 +88,29 @@ function loadMName(pName) {
     });
 }
 
+function loadDppCode(ppCode) {
+    if (!ppCode) {return;}
 
-// $(document).ready(function () {
-//     $('#ppCode').on('change', function () {
-//         const ppCode = $(this).val();  // 선택된 상품 값
-//
-//         if (ppCode) {
-//             const ppCodeEncode = encodeURIComponent(ppCode);
-//
-//             $.ajax({
-//                 url: `/dpp/${ppCodeEncode}/ppCode`,  // URL 인코딩 적용
-//                 method: 'GET',  // HTTP GET 요청
-//                 success: function (ppCode) {
-//
-//                     const dppCodeSelect = $('#dppCode');
-//                     dppCodeSelect.empty();  // 기존 옵션 제거
-//                     dppCodeSelect.append('<option value="" selected>전체</option>');
-//                     ppCode.forEach(type => {
-//                         dppCodeSelect.append(`<option value="${type}">${type}</option>`);
-//                     });
-//                     dppCodeSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
-//                 },
-//                 error: function (error) {
-//                     console.error('부품 목록을 가져오는 중 오류 발생:', error);
-//                 }
-//             });
-//         } else {
-//             $('#dppCode').empty();  // 부품 목록 초기화
-//             var dppCodeHTML = $('#dppCodeHTML').html();  // 서버에서 렌더링된 HTML 가져오기
-//             $('#dppCode').append(dppCodeHTML);  // mNameList의 option을 append
-//             $('#dppCode').trigger('change');  // 변경 이벤트 트리거
-//         }
-//     });
-// });
+    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+    const encodes = encodeURIComponent(ppCode);
+
+    // AJAX를 사용하여 부품 목록을 가져오는 코드
+    $.ajax({
+        url: `/dpp/${encodes}/dppCode`,  // URL 인코딩 적용
+        method: 'GET',  // HTTP GET 요청
+        success: function (dppCodes) {
+            // 부품명 선택 요소 초기화
+            const mNameSelect = $('#mName');
+            mNameSelect.empty();  // 기존 옵션 제거
+            mNameSelect.append('<option value="" selected>선택</option>');
+            mNames.forEach(type => {
+                mNameSelect.append(`<option value="${type}">${type}</option>`);
+            });
+            mNameSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+        },
+        error: function (error) {
+            console.error('목록을 가져오는 중 오류 발생:', error);
+        }
+    });
+}
 

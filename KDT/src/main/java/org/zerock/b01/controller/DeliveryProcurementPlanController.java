@@ -141,16 +141,23 @@ public class DeliveryProcurementPlanController {
 
     @GetMapping("/{mCode}/ss")
     @ResponseBody
-    public List<String> getDppCodeByPpCode(@PathVariable String mCode) {
+    public List<String> getSsByMCode(@PathVariable String mCode) {
         List<String> ss = supplierStockRepository.findSNameByMCode(mCode);
         return ss != null ? ss : Collections.emptyList();
     }
 
     @GetMapping("/{sup}/{mCode}/leadTime")
     @ResponseBody
-    public String getDppCodeByPpCode(@PathVariable String sup, @PathVariable String mCode) {
+    public String getLeadTimeByETC(@PathVariable String sup, @PathVariable String mCode) {
         return supplierStockRepository.findLeadTimeByETC(sup, mCode);
     }
+
+//    @GetMapping("/{ppCode}/dppCode")
+//    @ResponseBody
+//    public String getDppCodeByPpCode(@PathVariable String ppCode) {
+//        List<String> dppCodes = deliveryProcurementPlanRepository.findDppCodeByPpCode(ppCode);
+//        return dppCodes != null ? dppCodes : Collections.emptyList();
+//    }
 
 
     @PostMapping("/register")
