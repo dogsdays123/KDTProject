@@ -193,6 +193,20 @@ public class UserByServiceImpl implements UserByService {
         return msg;
     }
 
+    @Override
+    public boolean checkEmailExists(String email){
+        // 이메일 유효성 검사
+        Optional<UserBy> user = userByRepository.findByuEmail(email);
+        boolean check;
+
+        if (user.isEmpty()) {
+            check = false;
+        } else {
+            check = true;
+        }
+        return check;
+    }
+
     public void sendPasswordResetEmail(String toEmail, String tempPassword){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
