@@ -128,6 +128,11 @@ body {
   font-size: 1.8rem;
   cursor: pointer;
 }
+
+.bi-bell-fill{
+  font-size: 1.8rem;
+  cursor: pointer;
+}
 .user-dropdown {
   position: absolute;
   top: 50px; /* 헤더 높이만큼 아래에 위치 */
@@ -147,6 +152,29 @@ body {
   text-decoration: none;
 }
 .user-dropdown a:hover {
+  background-color: #f8f9fa;
+}
+
+.alert-dropdown {
+  position: absolute;
+  top: 50px; /* 헤더 높이만큼 아래에 위치 */
+  right: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  max-width: 400px;
+  min-width: 150px;
+  z-index: 1000;
+}
+.alert-dropdown a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+}
+.alert-dropdown a:hover {
   background-color: #f8f9fa;
 }
 

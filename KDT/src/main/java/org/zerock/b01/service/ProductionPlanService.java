@@ -16,4 +16,6 @@ public interface ProductionPlanService {
     void removeProductionPlan(List<String> ppCodes);
     PageResponseDTO<ProductionPlanDTO> list(PageRequestDTO pageRequestDTO);
     Map<String, Map<String, Integer>> getMonthlyProductionSummary();
+    ProductionPlanDTO getOldPlans(String ppCode);
+    void handlePlanQuantityChange(String ppCode, int oldQty, int newQty, String updatedBy);
 }

@@ -206,45 +206,27 @@
                                                             th:data-code="${m.getMCode()}"></option>
                                                 </th:block>
                                             </div>
-                                        </div>
-                                        <div style="width: 150px;">
-                                            <label class="form-label small">공급업체</label>
-                                            <select class="form-select form-select-sm" name="sup" id="sup">
-                                                <option selected>전체</option>
-                                                <th:block th:each="sup : ${supplierList}">
-                                                    <option th:value="${sup.getSName()}"
-                                                            th:text="${sup.getSName()}"></option>
-                                                </th:block>
-                                            </select>
-                                            <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
-                                            <div id="supHTML" style="display: none;">
-                                                <th:block th:each="sup : ${supplierList}">
-                                                    <option th:value="${sup.getSName()}" th:text="${sup.getSName()}"
-                                                            th:data-code="${sup.getSName()}"></option>
-                                                </th:block>
+                                            <div style="width: 100px;">
+                                                <label class="form-label small">리드타임</label>
+                                                <input type="text" id="leadTime" class="form-control form-control-sm" readonly>
                                             </div>
-                                        </div>
-                                        <div style="width: 100px;">
-                                            <label class="form-label small">리드타임</label>
-                                            <input type="text" id="leadTime" class="form-control form-control-sm"
-                                                   readonly>
-                                        </div>
-                                        <div style="width: 100px;">
-                                            <label class="form-label small">요구수량</label>
-                                            <input type="number" id="requiredQty" class="form-control form-control-sm">
-                                        </div>
-                                        <div style="width: 100px;">
-                                            <label class="form-label small">조달수량</label>
-                                            <input type="number" id="procuredQty" class="form-control form-control-sm">
-                                        </div>
-                                        <div style="width: 150px;">
-                                            <label class="form-label small">납기일</label>
-                                            <input type="date" class="form-control form-control-sm">
-                                        </div>
-                                        <div style="width: 100px;" class="d-flex">
-                                            <button type="button" class="btn btn-dark btn-sm w-100"
-                                                    onclick="addProcurement(this)">추가
-                                            </button>
+                                            <div style="width: 100px;">
+                                                <label class="form-label small">필요수량</label>
+                                                <input type="number" id="requireNumInput" class="form-control form-control-sm">
+                                            </div>
+                                            <div style="width: 100px;">
+                                                <label class="form-label small">조달수량</label>
+                                                <input type="number" class="form-control form-control-sm">
+                                            </div>
+                                            <div style="width: 150px;">
+                                                <label class="form-label small">납기일</label>
+                                                <input type="date" class="form-control form-control-sm">
+                                            </div>
+                                            <div style="width: 100px;" class="d-flex">
+                                                <button type="button" class="btn btn-dark btn-sm w-100"
+                                                        onclick="addProcurement(this)">추가
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

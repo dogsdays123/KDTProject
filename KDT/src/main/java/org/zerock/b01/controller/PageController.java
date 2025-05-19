@@ -76,26 +76,29 @@ public class PageController {
             return new RedirectView("/mainPage/beforeApproval");
         }
 
-        if ("승인".equals(status) && "생산부서".equals(userJob) || "관리자".equals(status)) {
+        if ("승인".equals(status) || "생산부서".equals(userJob) || "구매부서".equals(userJob)
+                || "자재부서".equals(userJob) || "관리자".equals(status)) {
             List<Map<String, Object>> eventList = getProductionPlanEvents();
             String eventJson = new ObjectMapper().writeValueAsString(eventList);
             model.addAttribute("events", eventJson);
         }
 
-        if ("승인".equals(status) && "생산부서".equals(userJob) || "관리자".equals(status)) {
+        if ("승인".equals(status) || "생산부서".equals(userJob) || "구매부서".equals(userJob)
+                || "자재부서".equals(userJob) || "관리자".equals(status)) {
             Map<String, Double> eventMap = orderByService.getMonthlyOrderSummary();
             String eventJson = new ObjectMapper().writeValueAsString(eventMap);
             model.addAttribute("orderByEvents", eventJson);
         }
 
-        if ("승인".equals(status) && "생산부서".equals(userJob) || "관리자".equals(status)) {
+        if ("승인".equals(status) || "생산부서".equals(userJob) || "구매부서".equals(userJob)
+                || "자재부서".equals(userJob) || "관리자".equals(status)) {
             // 월별 생산 계획 제품 수를 가져오는 서비스 메서드 호출
             Map<String, Map<String, Integer>> productCountMap = productionPlanService.getMonthlyProductionSummary();
             String productCountJson = new ObjectMapper().writeValueAsString(productCountMap);
             model.addAttribute("productCountEvents", productCountJson);
         }
 
-        if ("승인".equals(status) || "협력회사".equals(userJob)) {
+        if ("승인".equals(status) && "협력회사".equals(userJob)) {
             return new RedirectView("/supplier/purchaseOrderList");
         }
 

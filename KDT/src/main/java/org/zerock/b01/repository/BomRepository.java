@@ -25,4 +25,8 @@ public interface BomRepository extends JpaRepository<Bom, Long>, AllSearch {
     @Query("SELECT m FROM Material m WHERE m.product.pCode = :pCode")
     List<Product> findByProductCode(@Param("pCode") String pCode);
 
+    @Query("SELECT DISTINCT b.bRequireNum FROM Bom b WHERE b.material.mCode = :mCode")
+    String findRequireNumByMaterialCode(@Param("mCode") String mCode);
+
+
 }

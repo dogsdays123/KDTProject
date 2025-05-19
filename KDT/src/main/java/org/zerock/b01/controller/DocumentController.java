@@ -23,7 +23,11 @@ import java.util.List;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || (authentication.principal.status == '승인' && authentication.principal.userJob == '생산부서'))")
+@PreAuthorize("isAuthenticated() && (hasRole('ADMIN') || (authentication.principal.status == '승인' && " +
+        "(authentication.principal.userJob == '생산부서' || " +
+        "authentication.principal.userJob == '구매부서' || " +
+        "authentication.principal.userJob == '자재부서' || " +
+        "authentication.principal.userJob == '협력회사')))")
 @RequestMapping("/document")
 public class DocumentController {
 

@@ -42,6 +42,7 @@ public class DppServiceImpl implements DppService {
         dpp.setMaterial(materialRepository.findByMaterialCode(dppDTO.getMCode()).orElseThrow());
         dpp.setProductionPlan(productionPlanRepository.findByProductionPlanCode(dppDTO.getPpCode()).orElseThrow());
         dpp.setDppState(CurrentStatus.ON_HOLD);
+        dpp.getProductionPlan().setPpState(CurrentStatus.DPP_SUCCESS);
         dpp.setSupplier(supplierRepository.findSupplierBySName(dppDTO.getSName()));
         dpp.setOneCode(autoGenerateCode.generateCode("dpp", ""));
 

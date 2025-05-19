@@ -27,12 +27,12 @@ document.getElementById('openPurchaseDelModal').addEventListener('click', functi
         ssIds.push(ssId);
 
         newRow.innerHTML = `
-            <td>${cells[1].textContent.trim()}</td>
             <td>${cells[2].textContent.trim()}</td>
             <td>${cells[3].textContent.trim()}</td>
             <td>${cells[4].textContent.trim()}</td>
             <td>${cells[5].textContent.trim()}</td>
-            <td>${cells[8].textContent.trim()}</td>
+            <td>${cells[6].textContent.trim()}</td>
+            <td>${cells[7].textContent.trim()}</td>
         `;
 
         tbody.appendChild(newRow);
@@ -62,8 +62,8 @@ document.querySelectorAll('.icon-button').forEach(button => {
         const mName = row.querySelector('td:nth-child(4)').innerText;
         const ssNum = row.querySelector('td:nth-child(5)').innerText;
         const ssMinOrderQty = row.querySelector('td:nth-child(6)').innerText;
-        const unitPrice = row.querySelector('td:nth-child(7)').innerText;
-        const leadTime = row.querySelector('td:nth-child(8)').innerText;
+        // const unitPrice = row.querySelector('td:nth-child(7)').innerText;
+        const leadTime = row.querySelector('td:nth-child(7)').innerText;
 
 
         document.getElementById('ssId').value = ssId;
@@ -71,7 +71,7 @@ document.querySelectorAll('.icon-button').forEach(button => {
         document.getElementById('mName').value = mName;
         document.getElementById('ssNum').value = ssNum;
         document.getElementById('ssMinOrderQty').value = ssMinOrderQty;
-        document.getElementById('unitPrice').value = unitPrice;
+        // document.getElementById('unitPrice').value = unitPrice;
         document.getElementById('leadTime').value = leadTime;
 
         // 모달 띄우기

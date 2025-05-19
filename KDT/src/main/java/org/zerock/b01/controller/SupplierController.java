@@ -220,6 +220,8 @@ public class SupplierController {
         PageResponseDTO<SupplierStockDTO> responseDTO;
         List<SupplierStockDTO> supplierStockList;
 
+
+
         if ("관리자".equals(role)) {
             responseDTO = pageService.adminSupplierStockWithAll(pageRequestDTO);
         } else {
@@ -229,12 +231,13 @@ public class SupplierController {
             log.info("#### sId: " + sId);
 
             responseDTO = pageService.supplierStockWithAll(pageRequestDTO, sId);
-
+            List<String> materialNames = supplierStockService.findMaterialNamesBySupplierId(sId);
+            model.addAttribute("materialNames", materialNames);
         }
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
-
+        model.addAttribute("selectedMaterial", pageRequestDTO.getMName());
         model.addAttribute("responseDTO", responseDTO);
         log.info("SStock ResponseDTO : " + responseDTO);
     }
@@ -245,7 +248,7 @@ public class SupplierController {
                                       @RequestParam("mNames[]") List<String> mNames,
                                       @RequestParam("ssNums[]") List<String> ssNums,
                                       @RequestParam("ssMinOrderQty[]") List<String> ssMinOrderQty,
-                                      @RequestParam("unitPrices[]") List<String> unitPrices,
+//                                      @RequestParam("unitPrices[]") List<String> unitPrices,
                                       @RequestParam("leadTimes[]") List<String> leadTimes,
                                       Model model, RedirectAttributes redirectAttributes,
                                       HttpServletRequest request){
@@ -269,7 +272,7 @@ public class SupplierController {
             supplierStockDTO.setMCode(materialRepository.findMCodeByMName(mNames.get(i)));
             supplierStockDTO.setSsNum(ssNums.get(i));
             supplierStockDTO.setSsMinOrderQty(ssMinOrderQty.get(i));
-            supplierStockDTO.setUnitPrice(unitPrices.get(i));
+//            supplierStockDTO.setUnitPrice(unitPrices.get(i));
             supplierStockDTO.setLeadTime(leadTimes.get(i));
             supplierStockDTOS.add(supplierStockDTO);
         }

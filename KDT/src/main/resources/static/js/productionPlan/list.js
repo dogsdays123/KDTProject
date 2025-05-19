@@ -21,16 +21,15 @@ document.querySelectorAll('.icon-button').forEach(button => {
         // 각 td 값을 가져오기
         const ppCode = row.querySelector('td:nth-child(2)').innerText;
         const pCode = row.querySelector('td:nth-child(3)').innerText;
-        const pName = row.querySelector('td:nth-child(4)').innerText;
-        const pStart = row.querySelector('td:nth-child(5)').innerText;
-        const pEnd = row.querySelector('td:nth-child(6)').innerText;
-        const pNum = row.querySelector('td:nth-child(7)').innerText;
+        const pName = row.querySelector('td:nth-child(3)').innerText;
+        const pStart = row.querySelector('td:nth-child(4)').innerText;
+        const pEnd = row.querySelector('td:nth-child(5)').innerText;
+        const pNum = row.querySelector('td:nth-child(6)').innerText;
 
 
 
 
         document.getElementById('planCodeInput').value = ppCode;
-        document.getElementById('ppProductCode').value = pCode;
         document.getElementById('ppProductName').value = pName;
         document.getElementById('ppStartDay').value = pStart;
         document.getElementById('ppEndDay').value = pEnd;

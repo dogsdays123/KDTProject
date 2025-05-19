@@ -122,10 +122,14 @@ public class MemberManagementController {
             userByService.agreeEmployee(id, ur, uj, st);
         }
 
-        if (pageType.equals("a"))
+        if (pageType.equals("a")) {
+            redirectAttributes.addFlashAttribute("message", "가입 승인이 완료되었습니다.");
             return "redirect:employeeApproval";
-        else
+        }
+        else {
+            redirectAttributes.addFlashAttribute("message", "정보 변경이 완료되었습니다.");
             return "redirect:employeeList";
+        }
     }
 
     @PostMapping("/employeeApprovalDisAgree")
@@ -138,9 +142,10 @@ public class MemberManagementController {
             String ur = userRank.get(i);
 
             userByService.disAgreeEmployee(id, ur);
+            redirectAttributes.addFlashAttribute("message", "정보 삭제가 완료되었습니다.");
         }
 
-        return "redirect:employeeApproval";
+        return "redirect:employeeList";
     }
 
 
@@ -179,12 +184,27 @@ public class MemberManagementController {
         }
 
         if(pageType.equals("a")){
+            redirectAttributes.addFlashAttribute("message", "가입 승인이 완료되었습니다.");
             return "redirect:supplierApproval";
         } else{
+            redirectAttributes.addFlashAttribute("message", "정보 변경이 완료되었습니다.");
             return "redirect:supplierList";
         }
     }
 
+    @PostMapping("/supplierApprovalRmvAgree")
+    public String supplierApprovalRmvAgree(@RequestParam("uId") List<String> uId,
+                                           Model model, RedirectAttributes redirectAttributes,
+                                           HttpServletRequest request) throws IOException {
+
+        for (String uid : uId) {
+            userByService.disAgreeSupplier(uid);
+        }
+        redirectAttributes.addFlashAttribute("message", "완료되었습니다.");
+        return "redirect:supplierList";
+    }
+
+    // 반려
     @PostMapping("/supplierApprovalDisAgree")
     public String supplierApprovalDisAgree(@RequestParam("uId") List<String> uId,
                                            Model model, RedirectAttributes redirectAttributes,
@@ -193,7 +213,7 @@ public class MemberManagementController {
         for (String uid : uId) {
             userByService.disAgreeSupplier(uid);
         }
-
-        return "redirect:supplierApproval";
+        redirectAttributes.addFlashAttribute("message", "완료되었습니다.");
+        return "redirect:supplierList";
     }
 }

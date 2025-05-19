@@ -10,7 +10,7 @@
 <body>
 <div layout:fragment="slRDeli">
     <div class="container-fluid">
-        <div class="container" style="max-width: 1600px; margin-left: 0;">
+        <div class="container" style="max-width: 1200px; margin-left: 0;">
             <div class="d-flex align-items-center mb-3">
                 <h4 class="mb-0 me-2">납품 요청 관리</h4>
                 <div class="tooltip-wrap">
@@ -20,7 +20,7 @@
             </div>
             <form>
                 <div class="row g-2 align-items-end">
-                    <div class="col-md-2">
+                    <div class="col-md-2" style="width: 255px;">
                         <label class="form-label small">자재명</label>
                         <select class="form-select form-select-sm searchSelect" name="mName" title="자재명">
                             <option value="" th:selected="${selectedMName == ''}">전체</option>

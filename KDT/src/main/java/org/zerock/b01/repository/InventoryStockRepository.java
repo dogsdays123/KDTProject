@@ -15,4 +15,7 @@ public interface InventoryStockRepository extends JpaRepository<InventoryStock, 
     List<InventoryStock> findByMaterialCode(@Param("mCode") String mCode);
 
     boolean existsByMaterial_mCode(String mCode);
+
+    @Query("SELECT DISTINCT is.isAvailable FROM InventoryStock is WHERE is.material.mCode = :mCode")
+    String findAvailableNumByMaterialCode(@Param("mCode") String mCode);
 }
