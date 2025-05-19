@@ -1,20 +1,28 @@
-$(document).ready(function() {
-    $('#checkPassword').on('click', function(e) {
+$(document).ready(function () {
+    $('#checkPassword').on('click', function (e) {
         e.preventDefault();
-
         const email = $('#checkEmail').val();
 
-        // AJAX 요청 보내기
+        const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+
         $.ajax({
-            url: '/firstView/forgot', // Controller의 URL로 수정 (예: '/user/checkId')
+            url: '/firstView/forgot',
             type: 'POST',
-            data: { checkEmail: email }, // 전송할 데이터
-            success: function(response) {
-                // 서버에서 응답이 성공적으로 왔을 때 처리
+            data: { checkEmail: email },
+            beforeSend: function () {
+                loadingModal.show();
+            },
+            success: function (response) {
                 alert(response.msg);
             },
-            error: function(xhr, status, error) {
-                alert("서버 오류" + error);
+            complete: function () {
+                loadingModal.hide();
+            },
+            error: function (xhr, status, error) {
+                alert("서버 오류: " + error);
             }
         });
     });
