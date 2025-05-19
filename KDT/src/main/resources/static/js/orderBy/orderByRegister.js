@@ -17,11 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
             // 클릭된 버튼의 부모 <tr>을 찾음
             const row = button.closest('tr');
             const dppCode1 = row.children[0].textContent.trim();
-            const pName = row.children[1].textContent.trim();
-            const sName1 = row.children[2].textContent.trim();
-            const mName = row.children[3].textContent.trim();
-            const dppNum = row.children[4].textContent.trim();
-            const rqNum = row.children[5].textContent.trim();
+            const leadTime = row.children[1].textContent.trim();
+            const pName = row.children[2].textContent.trim();
+            const sName1 = row.children[3].textContent.trim();
+            const mName = row.children[4].textContent.trim();
+            const dppNum = row.children[5].textContent.trim();
+            const rqNum = row.children[6].textContent.trim();
             const today = new Date().toISOString().split('T')[0];
             uId = row.children[8].textContent.trim();
 
