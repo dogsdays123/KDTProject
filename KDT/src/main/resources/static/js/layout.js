@@ -58,7 +58,7 @@ function confirmSubmit(message) {
 //이 부분에서 모든 searchSelect 클래스는 검색찾기가 가능
 $(document).ready(function () {
     $('.searchSelect').select2({
-        placeholder: "검색 또는 직접 입력",
+        placeholder: "선택 또는 직접 입력",
         tags: true, // ← 이게 핵심! 직접 입력 허용
         allowClear: true,
         createTag: function (params) {

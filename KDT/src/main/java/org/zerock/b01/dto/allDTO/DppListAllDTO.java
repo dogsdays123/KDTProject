@@ -28,6 +28,8 @@ public class DppListAllDTO {
 
     private String ppCode; // 생산계획코드 외래키
 
+    private String leadTime;
+
     private String pName;
 
     private String mName;

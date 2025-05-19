@@ -22,20 +22,20 @@
             <form>
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label for="pName" class="form-label small">상품명</label>
-                        <select class="form-select form-select-sm" id="pName">
+                        <label for="pName" class="form-label small">자재명</label>
+                        <select class="form-select form-select-sm searchSelect" id="pName">
                             <option value="" selected>선택</option>
-                            <th:block th:each="p : ${productList}">
-                                <option th:value="${p.pName}" th:text="${p.pName}"></option>
+                            <th:block th:each="m : ${mNameList}">
+                                <option th:value="${m.mName}" th:text="${m.mName}"></option>
                             </th:block>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <label for="uId" class="form-label small">사원번호</label>
-                        <select class="form-select form-select-sm" id="uId">
+                        <select class="form-select form-select-sm searchSelect" id="uId">
                             <option value="" selected>선택</option>
-                            <th:block th:each="pp : ${userList}">
-                                <option th:value="${pp.getUId()}" th:text="${pp.getUId()}"></option>
+                            <th:block th:each="u : ${userByList}">
+                                <option th:value="${u.getUId()}" th:text="${u.getUId()}"></option>
                             </th:block>
                         </select>
                     </div>

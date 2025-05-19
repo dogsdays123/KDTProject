@@ -21,7 +21,7 @@
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
                         <label  class="form-label small">상품 선택</label>
-                        <select name="pName" class="form-select form-select-sm">
+                        <select name="pName" class="form-select form-select-sm searchSelect">
                             <option value="" th:selected="${selectedPName == ''}">전체</option>
                             <option th:each="p:${pNameList}"
                                     th:value="${p}"
@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-md-2">
                         <label  class="form-label small">부품 선택</label>
-                        <select name="componentType" class="form-select form-select-sm">
+                        <select name="componentType" class="form-select form-select-sm searchSelect">
                             <option value="" th:selected="${selectedCType == ''}">전체</option>
                             <option th:each="dto:${inventoryStockList}"
                                     th:value="${dto.getIsComponentType()}"
@@ -41,7 +41,7 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label small">자재 선택</label>
-                        <select name="mName" class="form-select form-select-sm">
+                        <select name="mName" class="form-select form-select-sm searchSelect">
                             <option value="" th:selected="${selectedMName == ''}">전체</option>
                             <option th:each="dto:${inventoryStockList}"
                                     th:value="${dto.getMName()}"
@@ -51,7 +51,7 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label small">창고 위치</label>
-                        <select name="isLocation" class="form-select form-select-sm">
+                        <select name="isLocation" class="form-select form-select-sm searchSelect">
                             <option value="" th:selected="${selectedIsLocal == ''}">전체</option>
                             <option th:each="i:${isLocationList}"
                                     th:value="${i}"

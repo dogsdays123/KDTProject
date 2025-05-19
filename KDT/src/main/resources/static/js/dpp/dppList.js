@@ -54,22 +54,54 @@ document.getElementById('openRemoveModal').addEventListener('click', function ()
 
 $(document).ready(function () {
 
-    $('#mName').on('change', function () {
+    $('#ppCode').on('change', function () {
         const input = $(this).val();  // 선택된 상품 값
-        loadMCode(input);
+        loadDppCode(input);
+    });
+
+    $('#dppCode').on('change', function () {
+        const input = $(this).val();  // 선택된 상품 값
+        loadMName(input);
     });
 
 });
 
-function loadMName(pName) {
-    if (!pName) {return;}
+function loadDppCode(ppCode) {
+    if (!ppCode) {return;}
 
     // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
-    const encodes = encodeURIComponent(pName);
+    const encodes = encodeURIComponent(ppCode);
 
     // AJAX를 사용하여 부품 목록을 가져오는 코드
     $.ajax({
-        url: `/dpp/${encodes}/mName`,  // URL 인코딩 적용
+        url: `/dpp/${encodes}/dppCode`,  // URL 인코딩 적용
+        method: 'GET',  // HTTP GET 요청
+        success: function (dppCodes) {
+            console.log(dppCodes);
+            // 부품명 선택 요소 초기화
+            const dppCodeSelect = $('#dppCode');
+            dppCodeSelect.empty();  // 기존 옵션 제거
+            dppCodeSelect.append('<option value="" selected>선택</option>');
+            dppCodes.forEach(type => {
+                dppCodeSelect.append(`<option value="${type}">${type}</option>`);
+            });
+            dppCodeSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+        },
+        error: function (error) {
+            console.error('목록을 가져오는 중 오류 발생:', error);
+        }
+    });
+}
+
+function loadMName(dppCode) {
+    if (!dppCode) {return;}
+
+    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+    const encodes = encodeURIComponent(dppCode);
+
+    // AJAX를 사용하여 부품 목록을 가져오는 코드
+    $.ajax({
+        url: `/dpp/${encodes}/mNameList`,  // URL 인코딩 적용
         method: 'GET',  // HTTP GET 요청
         success: function (mNames) {
             console.log(mNames);
@@ -87,30 +119,3 @@ function loadMName(pName) {
         }
     });
 }
-
-function loadDppCode(ppCode) {
-    if (!ppCode) {return;}
-
-    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
-    const encodes = encodeURIComponent(ppCode);
-
-    // AJAX를 사용하여 부품 목록을 가져오는 코드
-    $.ajax({
-        url: `/dpp/${encodes}/dppCode`,  // URL 인코딩 적용
-        method: 'GET',  // HTTP GET 요청
-        success: function (dppCodes) {
-            // 부품명 선택 요소 초기화
-            const mNameSelect = $('#mName');
-            mNameSelect.empty();  // 기존 옵션 제거
-            mNameSelect.append('<option value="" selected>선택</option>');
-            mNames.forEach(type => {
-                mNameSelect.append(`<option value="${type}">${type}</option>`);
-            });
-            mNameSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
-        },
-        error: function (error) {
-            console.error('목록을 가져오는 중 오류 발생:', error);
-        }
-    });
-}
-

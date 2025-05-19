@@ -99,6 +99,9 @@ public class PageRequestDTO {
     private LocalDate psDate;
     private String psState;
 
+    //업체 창고
+    private String leadTime;
+
     public String[] getTypes() {
         if(type == null || type.isEmpty()) {
             return null;

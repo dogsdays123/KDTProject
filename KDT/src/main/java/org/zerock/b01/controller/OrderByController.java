@@ -19,6 +19,7 @@ import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -33,10 +34,11 @@ public class OrderByController {
     private final SupplierService supplierService;
     private final ProductionPlanService productionPlanService;
     private final PageService pageService;
-    private final MaterialRepository materialRepository;
+    private final SupplierStockRepository supplierStockRepository;
     private final UserByRepository userByRepository;
     private final OrderByService orderByService;
     private final OrderByRepository orderByRepository;
+    private final SupplierRepository supplierRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -76,6 +78,10 @@ public class OrderByController {
         PageResponseDTO<DppListAllDTO> responseDTO =
                 pageService.dppListWithAll(pageRequestDTO);
 
+        for (DppListAllDTO dto : responseDTO.getDtoList()) {
+            dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+        }
+
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
@@ -108,7 +114,7 @@ public class OrderByController {
         List<OrderBy> orderByList = orderByRepository.findAll();
         model.addAttribute("orderByList", orderByList);
 
-        List<String> sNameList = orderByRepository.findSupplierNames();
+        List<String> sNameList = orderByRepository.findSNames();
         model.addAttribute("sNameList", sNameList);
 
         List<String> mNameList = orderByRepository.findMaterialNames();
@@ -123,6 +129,10 @@ public class OrderByController {
 
         PageResponseDTO<OrderByListAllDTO> responseDTO =
                 pageService.orderByWithAll(pageRequestDTO, "ob");
+
+        for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
+            dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+        }
 
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());

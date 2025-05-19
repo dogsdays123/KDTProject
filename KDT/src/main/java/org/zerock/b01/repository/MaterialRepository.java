@@ -44,6 +44,9 @@ public interface MaterialRepository extends JpaRepository<Material, String>, All
     @Query("select m.mName from Material m where m.product.pName = :pName")
     List<String> findMNameByPName(@Param("pName") String pName);
 
+    @Query("select DISTINCT m.mComponentType from Material m where m.product.pName = :pName")
+    List<String> findMComponentTypeByPName(@Param("pName") String pName);
+
     @Query("select m.mCode from Material m where m.mName = :mName")
     List<String> findMCodeByMNameList(@Param("mName") String mName);
 
@@ -60,5 +63,6 @@ public interface MaterialRepository extends JpaRepository<Material, String>, All
     List<String> findMCodesByMName(@Param("mName") String mName);
 
     @Query("select m.mCode from Material m where m.mName = :mName")
-    List<String> findMCodeByMNameDomain(@Param("mName") String mName);
+    String findMCodeByMName(@Param("mName") String mName);
+
 }

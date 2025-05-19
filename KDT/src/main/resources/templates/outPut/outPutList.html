@@ -22,7 +22,7 @@
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
                         <label class="form-label small">자재명</label>
-                        <select name="mName" class="form-select form-select-sm" title="자재명">
+                        <select name="mName" class="form-select form-select-sm searchSelect" title="자재명">
                             <option value="" th:selected="${selectedMName == ''}">전체</option>
                             <option th:each="dto : ${uniqueMNameList}"
                                     th:value="${dto}"

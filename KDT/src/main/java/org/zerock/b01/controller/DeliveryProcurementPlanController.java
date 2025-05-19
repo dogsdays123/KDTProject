@@ -118,6 +118,10 @@ public class DeliveryProcurementPlanController {
         PageResponseDTO<DppListAllDTO> responseDTO =
                 pageService.dppListWithAll(pageRequestDTO);
 
+        for (DppListAllDTO dto : responseDTO.getDtoList()) {
+            dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+        }
+
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
@@ -125,10 +129,18 @@ public class DeliveryProcurementPlanController {
         model.addAttribute("responseDTO", responseDTO);
     }
 
-    @GetMapping("/{pName}/mName")
+    //Register
+    @GetMapping("/{pName}/mComponentType")
     @ResponseBody
-    public List<String> getMNameByPName(@PathVariable String pName) {
-        List<String> mNames = materialRepository.findMNameByPName(pName);
+    public List<String> getMTypeByPName(@PathVariable String pName) {
+        List<String> mComponentTypes = materialRepository.findMComponentTypeByPName(pName);
+        return mComponentTypes != null ? mComponentTypes : Collections.emptyList();
+    }
+
+    @GetMapping("/{mComponentType}/{pName}/mName")
+    @ResponseBody
+    public List<String> getMNameByPName(@PathVariable String mComponentType, @PathVariable String pName) {
+        List<String> mNames = materialRepository.findMNameByETC(pName, mComponentType);
         return mNames != null ? mNames : Collections.emptyList();
     }
 
@@ -152,12 +164,20 @@ public class DeliveryProcurementPlanController {
         return supplierStockRepository.findLeadTimeByETC(sup, mCode);
     }
 
-//    @GetMapping("/{ppCode}/dppCode")
-//    @ResponseBody
-//    public String getDppCodeByPpCode(@PathVariable String ppCode) {
-//        List<String> dppCodes = deliveryProcurementPlanRepository.findDppCodeByPpCode(ppCode);
-//        return dppCodes != null ? dppCodes : Collections.emptyList();
-//    }
+    //List
+    @GetMapping("/{ppCode}/dppCode")
+    @ResponseBody
+    public List<String> getDppCodeByPpCode(@PathVariable String ppCode) {
+        List<String> dppCodes = deliveryProcurementPlanRepository.findDppCodeByPpCode(ppCode);
+        return dppCodes != null ? dppCodes : Collections.emptyList();
+    }
+
+    @GetMapping("/{dppCode}/mNameList")
+    @ResponseBody
+    public List<String> getMNameByDppCode(@PathVariable String dppCode) {
+        List<String> mNames = deliveryProcurementPlanRepository.findMNameByDppCode(dppCode);
+        return mNames != null ? mNames : Collections.emptyList();
+    }
 
 
     @PostMapping("/register")

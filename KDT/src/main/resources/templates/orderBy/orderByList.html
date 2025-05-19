@@ -25,7 +25,7 @@
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small">공급 업체명</label>
-                            <select class="form-select form-select-sm" name="sName">
+                            <select class="form-select form-select-sm searchSelect" name="sName">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="s : ${sNameList}">
                                     <option th:value="${s}" th:text="${s}"></option>
@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small">자재명</label>
-                            <select class="form-select form-select-sm" name="mName">
+                            <select class="form-select form-select-sm searchSelect" name="mName">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="m : ${mNameList}">
                                     <option th:value="${m}" th:text="${m}"></option>
@@ -105,6 +105,7 @@
                                 <th>발주 코드</th>
                                 <th>발주일</th>
                                 <th>자재명</th>
+                                <th>리드 타임</th>
                                 <th>발주 수량</th>
                                 <th>공급 업체</th>
                                 <th>총 금액</th>
@@ -125,6 +126,7 @@
                                 <td th:text="${dto.getOCode()}"></td>
                                 <td th:text="${#temporals.format(dto.getORegDate(), 'yyyy-MM-dd')}"></td>
                                 <td th:text="${dto.getMName()}"></td>
+                                <td th:text="${dto.getLeadTime()}"></td>
                                 <td th:text="${dto.getONum()}"></td>
                                 <td th:text="${dto.getSName()}"></td>
                                 <td th:text="${dto.getOTotalPrice()}"></td>

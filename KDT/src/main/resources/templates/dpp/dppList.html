@@ -31,7 +31,7 @@
 <!--                        </div>-->
                         <div class="col-md-2">
                             <label class="form-label small">생산 계획 코드</label>
-                            <select class="form-select form-select-sm searchSelect"  name="ppCode">
+                            <select class="form-select form-select-sm searchSelect"  id="ppCode">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="pp : ${ppList}">
                                     <option th:value="${pp.ppCode}" th:text="${pp.ppCode}"></option>
@@ -40,7 +40,7 @@
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small">조달 계획 코드</label>
-                            <select class="form-select form-select-sm searchSelect" id="dppCode" name="dppCode">
+                            <select class="form-select form-select-sm searchSelect" id="dppCode">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="dpp : ${dppList}">
                                     <option th:value="${dpp.dppCode}" th:text="${dpp.dppCode}"></option>
@@ -58,34 +58,13 @@
 
                         <div class="col-md-2">
                             <label for="mName" class="form-label small">자재명</label>
-                            <select class="form-select form-select-sm searchSelect" id="mName" name="mName">
+                            <select class="form-select form-select-sm searchSelect" id="mName">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="m : ${materialList}">
                                     <option th:value="${m.mName}" th:text="${m.mName}"></option>
                                 </th:block>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label for="mCode" class="form-label small">자재코드</label>
-                            <select class="form-select form-select-sm searchSelect" id="mCode" name="mCode">
-                                <option value="" selected>전체</option>
-                                <th:block th:each="m : ${materialList}">
-                                    <option th:value="${m.mCode}" th:text="${m.mCode}"></option>
-                                </th:block>
-                            </select>
-                            <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
-                            <div id="mCodeHTML" style="display: none;">
-                                <option value="" selected>전체</option>
-                                <th:block th:each="m : ${materialList}">
-                                    <option th:value="${m.mCode}" th:text="${m.mCode}"
-                                            th:data-code="${m.mCode}"></option>
-                                </th:block>
-                            </div>
-                        </div>
-<!--                        <div class="col-md-2">-->
-<!--                            <label for="pruocureDate" class="form-label small">조달 납기일</label>-->
-<!--                            <input type="date" class="form-control form-control-sm" id="pruocureDate">-->
-<!--                        </div>-->
                         <div class="col-md-1">
                             <label for="dppState" class="form-label small">상태</label>
                             <select class="form-select form-select-sm" id="dppState" name="dppState" title="상태">
@@ -136,7 +115,7 @@
                                 <th><input type="checkbox" id="selectAll"></th>
                                 <th>생산 계획 코드</th>
                                 <th>조달 계획 코드</th>
-                                <th>자재 코드</th>
+                                <th>리드 타임</th>
                                 <th>자재명</th>
                                 <th>조달 수량</th>
                                 <th>요구 수량</th>
@@ -158,7 +137,7 @@
                                 <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
                                 <td th:text="${dto.getPpCode()}"></td>
                                 <td th:text="${dto.getDppCode()}"></td>
-                                <td th:text="${dto.getMCode()}"></td>
+                                <td th:text="${dto.getLeadTime()}"></td>
                                 <td th:text="${dto.getMName()}"></td>
                                 <td th:text="${dto.getDppNum()}"></td>
                                 <td th:text="${dto.getDppRequireNum()}"></td>

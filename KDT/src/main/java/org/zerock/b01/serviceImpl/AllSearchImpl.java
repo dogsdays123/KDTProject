@@ -876,10 +876,11 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(orderBy.oState.eq(status));
         }
 
-        if(label.equals("progressInspection"))
+        if(label.equals("ps"))
         booleanBuilder.and(
                 orderBy.oState.eq(CurrentStatus.HOLD_PROGRESS)
                         .or(orderBy.oState.eq(CurrentStatus.UNDER_INSPECTION))
+                        .or(orderBy.oState.eq(CurrentStatus.SUCCESS_INSPECTION))
         );
 
         query.where(booleanBuilder);

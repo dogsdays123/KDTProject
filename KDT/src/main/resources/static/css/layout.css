@@ -353,3 +353,10 @@ body {
   color: black !important;
   text-decoration: none !important;
 }
+
+/* select2의 placeholder 텍스트 크기 조정 */
+.select2-container .select2-selection__placeholder {
+  font-size: 12px;         /* 원하는 크기로 설정 */
+  color: black;            /* 텍스트 색상을 검정색으로 설정 */
+  font-weight: bold;       /* 텍스트를 볼드로 설정 */
+}

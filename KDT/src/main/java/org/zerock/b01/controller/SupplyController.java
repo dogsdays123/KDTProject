@@ -25,10 +25,7 @@ import org.zerock.b01.dto.allDTO.OrderByListAllDTO;
 import org.zerock.b01.dto.allDTO.PlanListAllDTO;
 import org.zerock.b01.dto.formDTO.DppFormDTO;
 import org.zerock.b01.dto.formDTO.ProgressInspectionFormDTO;
-import org.zerock.b01.repository.MaterialRepository;
-import org.zerock.b01.repository.OrderByRepository;
-import org.zerock.b01.repository.SupplierStockRepository;
-import org.zerock.b01.repository.UserByRepository;
+import org.zerock.b01.repository.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
@@ -45,6 +42,7 @@ import java.util.stream.Collectors;
 public class SupplyController {
 
     private final DeliveryRequestService deliveryRequestService;
+    private final MaterialRepository materialRepository;
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
@@ -54,6 +52,7 @@ public class SupplyController {
     private final UserByRepository userByRepository;
     private final SupplierStockRepository supplierStockRepository;
     private final ProgressInspectionService progressInspectionService;
+    private final SupplierRepository supplierRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -80,10 +79,10 @@ public class SupplyController {
         List<OrderBy> orderByList = orderByRepository.findAll();
         model.addAttribute("orderByList", orderByList);
 
-        List<String> sNameList = orderByRepository.findSupplierNames();
+        List<Supplier> sNameList = supplierRepository.findAll();
         model.addAttribute("sNameList", sNameList);
 
-        List<String> mNameList = orderByRepository.findMaterialNames();
+        List<Material> mNameList = materialRepository.findAll();
         model.addAttribute("mNameList", mNameList);
 
         List<UserBy> userByList = userByRepository.findAll();

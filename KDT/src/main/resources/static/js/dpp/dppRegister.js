@@ -1,6 +1,7 @@
 let dppList = [];
 let ppCode;
 let mCodeForLeadTime;
+let pNameWorld;
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('dppForm');
@@ -22,8 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('productNameInput').textContent = pName;
             document.getElementById('productQtyInput').textContent = ppNum;
 
-            loadMName(pName);
-
             // 모달 열기
             const modal = new bootstrap.Modal(document.getElementById('procurementModal'));
             modal.show();
@@ -44,6 +43,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (tbody) tbody.innerHTML = '';
         orderByList.length = 0;
     });
+
+    $('#requiredQty').on('input', function () {
+        $('#procuredQty').trigger('input'); // 다시 한 번 조달수량 체크
+    });
+
+    $(document).ready(function () {
+        $('#procuredQty').on('input', function () {
+            const required = parseInt($('#requiredQty').val(), 10);
+            const procured = parseInt($(this).val(), 10);
+
+            if (!isNaN(required) && !isNaN(procured) && procured > required) {
+                alert('조달수량은 요구수량을 초과할 수 없습니다.');
+                $(this).val(required); // 조달수량을 요구수량으로 되돌림
+            }
+        });
+    });
 });
 
 function addProcurement(button) {
@@ -55,9 +70,9 @@ function addProcurement(button) {
     const dateInput = container.querySelector('input[type="date"]');
 
 // 공급업체, 자재명, 자재코드
-    const mName = selectElements.length > 0 ? selectElements[0].value : '';
-    const mCode = selectElements.length > 1 ? selectElements[1].value : '';
-    const supplier = selectElements.length > 2 ? selectElements[2].value : '';
+    const mName = selectElements.length > 1 ? selectElements[1].value : '';
+    const mCode = selectElements.length > 2 ? selectElements[2].value : '';
+    const supplier = selectElements.length > 3 ? selectElements[3].value : '';
 
 // 수량
     const needQty = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
@@ -122,27 +137,82 @@ function removeProcurement(index) {
     renderProcurementTable();
 }
 
+function resetModalFields() {
+    // select 초기화
+    $('#mComponentType').val('').trigger('change');
+    $('#mName').empty().append('<option value="" selected>선택</option>').trigger('change');
+    $('#mCode').empty().append('<option value="" selected>선택</option>').trigger('change');
+    $('#sup').empty().append('<option value="" selected>선택</option>').trigger('change');
+
+    // input 초기화
+    $('#needQty').val('');
+    $('#supplyQty').val('');
+    $('#dueDate').val('');
+    $('#leadTime').val('');
+
+    // 내부 테이블 초기화
+    const tbody = document.getElementById('dppListBody');
+    if (tbody) tbody.innerHTML = '';
+    dppList.length = 0;
+}
+
 $(document).ready(function () {
+
+    $('#procurementModal').on('show.bs.modal', function () {
+        resetModalFields();
+        pNameWorld = document.getElementById('productNameInput').textContent;  // 선택된 상품 값
+        loadMType(pNameWorld);
+    });
+
+    $('#mComponentType').on('change', function () {
+        const input = $(this).val();
+        if (!input) defaultValue("mName");
+        else{
+            loadMName(input, pNameWorld);
+        }
+    });
 
     $('#mName').on('change', function () {
         const input = $(this).val();  // 선택된 상품 값
-        loadMCode(input);
+        if (!input) defaultValue("mCode");
+        else {
+            loadMCode(input);
+        }
     });
 
     $('#mCode').on('change', function () {
         const input = $(this).val();  // 선택된 상품 값
-        mCodeForLeadTime = input;
-        loadSup(input);
+        if (!input) defaultValue("sup");
+        else{
+            mCodeForLeadTime = input;
+            loadSup(input);
+        }
     });
 
     $('#sup').on('change', function () {
         const input = $(this).val();  // 선택된 상품 값
-        loadLeadTime(input, mCodeForLeadTime);
+        if (!input) defaultValue("leadTime");
+        else {
+            loadLeadTime(input, mCodeForLeadTime);
+        }
     });
-
 });
 
-function loadMName(pName) {
+function defaultValue(id){
+    const mComponentTypeSelect = $(`#${id}`);
+    mComponentTypeSelect.empty();
+    mComponentTypeSelect.append('<option value="" selected>값을 선택</option>');
+    mComponentTypeSelect.trigger('change');
+}
+
+function defaultValueInner(id){
+    const mComponentTypeSelect = $(`#${id}`);
+    mComponentTypeSelect.empty();
+    mComponentTypeSelect.append('<option value="" selected>등록이 필요합니다.</option>');
+    mComponentTypeSelect.trigger('change');
+}
+
+function loadMType(pName) {
     if (!pName) {return;}
 
     // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
@@ -150,10 +220,43 @@ function loadMName(pName) {
 
     // AJAX를 사용하여 부품 목록을 가져오는 코드
     $.ajax({
-        url: `/dpp/${encodes}/mName`,  // URL 인코딩 적용
+        url: `/dpp/${encodes}/mComponentType`,  // URL 인코딩 적용
+        method: 'GET',  // HTTP GET 요청
+        success: function (mComponentTypes) {
+            if (!Array.isArray(mComponentTypes) || mComponentTypes.length === 0) {
+                defaultValueInner("mComponentType");
+                return;  // 이 시점에서 종료해주는 게 좋음
+            }
+            // 부품명 선택 요소 초기화
+            const mComponentTypeSelect = $('#mComponentType');
+            mComponentTypeSelect.empty();  // 기존 옵션 제거
+            mComponentTypeSelect.append('<option value="" selected>선택</option>');
+            mComponentTypes.forEach(type => {
+                mComponentTypeSelect.append(`<option value="${type}">${type}</option>`);
+            });
+            mComponentTypeSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+        },
+        error: function (error) {
+            console.error('목록을 가져오는 중 오류 발생:', error);
+        }
+    });
+}
+
+function loadMName(mComponentType, pName) {
+    if (!pName) {return;}
+
+    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+    const encodes = [encodeURIComponent(mComponentType), encodeURIComponent(pName)];
+
+    // AJAX를 사용하여 부품 목록을 가져오는 코드
+    $.ajax({
+        url: `/dpp/${encodes[0]}/${encodes[1]}/mName`,  // URL 인코딩 적용
         method: 'GET',  // HTTP GET 요청
         success: function (mNames) {
-            console.log(mNames);
+            if (!Array.isArray(mNames) || mNames.length === 0) {
+                defaultValueInner("mName");
+                return;  // 이 시점에서 종료해주는 게 좋음
+            }
             // 부품명 선택 요소 초기화
             const mNameSelect = $('#mName');
             mNameSelect.empty();  // 기존 옵션 제거
@@ -180,7 +283,10 @@ function loadMCode(mName) {
         url: `/dpp/${encodes}/mCode`,  // URL 인코딩 적용
         method: 'GET',  // HTTP GET 요청
         success: function (mCodes) {
-            console.log(mCodes);
+            if (!Array.isArray(mCodes) || mCodes.length === 0) {
+                defaultValueInner("mCode");
+                return;  // 이 시점에서 종료해주는 게 좋음
+            }
             // 부품명 선택 요소 초기화
             const mCodeSelect = $('#mCode');
             mCodeSelect.empty();  // 기존 옵션 제거
@@ -207,7 +313,10 @@ function loadSup(mCode) {
         url: `/dpp/${encodes}/ss`,  // URL 인코딩 적용
         method: 'GET',  // HTTP GET 요청
         success: function (sss) {
-            console.log(sss);
+            if (!Array.isArray(sss) || sss.length === 0) {
+                defaultValueInner("sup");
+                return;  // 이 시점에서 종료해주는 게 좋음
+            }
             // 부품명 선택 요소 초기화
             const sssSelect = $('#sup');
             sssSelect.empty();  // 기존 옵션 제거
@@ -236,7 +345,6 @@ function loadLeadTime(sup, mCode) {
         url: `/dpp/${encodes[0]}/${encodes[1]}/leadTime`,  // URL 인코딩 적용
         method: 'GET',  // HTTP GET 요청
         success: function (leadTime) {
-            console.log(leadTime);
             // 리드타임 입력 필드에 값 설정
             const leadTimeInput = $('#leadTime');
             if (leadTime) {

@@ -137,21 +137,19 @@ public class SupplierController {
         return "supplier/sInventoryRegister";
     }
 
-    @GetMapping("/api/products/{pCode}/component-types")
+    @GetMapping("/api/products/{pName}/component-types")
     @ResponseBody
-    public List<String> getComponentTypesByProductCode(@PathVariable String pCode) {
-        List<String> componentTypes = materialRepository.findComponentTypesByProductCode(pCode);
+    public List<String> getComponentTypesByProductCode(@PathVariable String pName) {
+        List<String> componentTypes = materialRepository.findComponentTypesByProductName(pName);
         return componentTypes != null ? componentTypes : Collections.emptyList();
     }
 
-    // 부품명을 선택하면 자재 목록을 반환
-    @GetMapping("/api/materials")
+    @GetMapping("/api/products/{mComponentType}/{pName}/mName")
     @ResponseBody
-    public List<MaterialDTO> getMaterialsByComponentType(String componentType) {
-        List<Material> materials = materialService.getMaterialByComponentType(componentType);
-        return materials.stream()
-                .map(material -> new MaterialDTO(material.getMCode(), material.getMName()))
-                .collect(Collectors.toList());
+    public List<String> getMNamesByETC(@PathVariable String mComponentType, @PathVariable String pName) {
+        List<String> mNames = materialRepository.findMNameByETC(pName, mComponentType);
+        log.info("dddd {}", mNames);
+        return mNames != null ? mNames : Collections.emptyList();
     }
 
 
@@ -243,7 +241,8 @@ public class SupplierController {
 
     //  직접 등록
     @PostMapping("/sInventoryRegister")
-    public String sStocksRegisterPost(@RequestParam("mCodes[]") List<String> mCodes,
+    public String sStocksRegisterPost(@RequestParam("pNames[]") List<String> pNames,
+                                      @RequestParam("mNames[]") List<String> mNames,
                                       @RequestParam("ssNums[]") List<String> ssNums,
                                       @RequestParam("ssMinOrderQty[]") List<String> ssMinOrderQty,
                                       @RequestParam("unitPrices[]") List<String> unitPrices,
@@ -264,10 +263,10 @@ public class SupplierController {
 
         List<SupplierStockDTO> supplierStockDTOS = new ArrayList<>();
 
-        for (int i = 0; i < mCodes.size(); i++) {
+        for (int i = 0; i < mNames.size(); i++) {
             SupplierStockDTO supplierStockDTO = new SupplierStockDTO();
             supplierStockDTO.setSId(sId);
-            supplierStockDTO.setMCode(mCodes.get(i));
+            supplierStockDTO.setMCode(materialRepository.findMCodeByMName(mNames.get(i)));
             supplierStockDTO.setSsNum(ssNums.get(i));
             supplierStockDTO.setSsMinOrderQty(ssMinOrderQty.get(i));
             supplierStockDTO.setUnitPrice(unitPrices.get(i));

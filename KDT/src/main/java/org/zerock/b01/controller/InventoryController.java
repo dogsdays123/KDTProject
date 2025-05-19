@@ -83,10 +83,8 @@ public class InventoryController {
     @PostMapping("/inventoryRegister")
     public String inventoryRegisterPost(String uId,
                                         @RequestParam("pNames[]") List<String> pNames,
-                                        @RequestParam("pCodes[]") List<String> pCodes,
                                         @RequestParam("cTypes[]") List<String> cTypes,
                                         @RequestParam("mNames[]") List<String> mNames,
-                                        @RequestParam("mCodes[]") List<String> mCodes,
                                         @RequestParam("isNums[]") List<String> isNums,
                                         @RequestParam("isLoca[]") List<String> isLoca,
                                         Model model, RedirectAttributes redirectAttributes,
@@ -96,9 +94,10 @@ public class InventoryController {
 
         List<InventoryStockDTO> inventoryStockDTOS = new ArrayList<>();
 
-        for (int i = 0; i < mCodes.size(); i++) {
+        for (int i = 0; i < mNames.size(); i++) {
             InventoryStockDTO inventoryStockDTO = new InventoryStockDTO();
-            inventoryStockDTO.setMCode(mCodes.get(i));
+            inventoryStockDTO.setMName(mNames.get(i));
+            inventoryStockDTO.setMCode(materialRepository.findByMaterialName(mNames.get(i)).orElseThrow().getMCode());
 
             int parsedNum = Integer.parseInt(isNums.get(i)); // 문자열 → 숫자
             inventoryStockDTO.setIsNum(parsedNum);
@@ -253,21 +252,18 @@ public class InventoryController {
     }
 
 
-    @GetMapping("/api/products/{pCode}/component-types")
+    @GetMapping("/api/products/{pName}/component-types")
     @ResponseBody
-    public List<String> getComponentTypesByProductCode(@PathVariable String pCode) {
-        List<String> componentTypes = materialRepository.findComponentTypesByProductCode(pCode);
+    public List<String> getComponentTypesByProductCode(@PathVariable String pName) {
+        List<String> componentTypes = materialRepository.findComponentTypesByProductName(pName);
         return componentTypes != null ? componentTypes : Collections.emptyList();
     }
 
-    // 부품명을 선택하면 자재 목록을 반환
-    @GetMapping("/api/materials")
+    @GetMapping("/api/products/{mComponentType}/{pName}/mName")
     @ResponseBody
-    public List<MaterialDTO> getMaterialsByComponentType(String componentType) {
-        List<Material> materials = materialService.getMaterialByComponentType(componentType);
-        return materials.stream()
-                .map(material -> new MaterialDTO(material.getMCode(), material.getMName()))
-                .collect(Collectors.toList());
+    public List<String> getMNamesByETC(@PathVariable String mComponentType, @PathVariable String pName) {
+        List<String> mNames = materialRepository.findMNameByETC(pName, mComponentType);
+        log.info("dddd {}", mNames);
+        return mNames != null ? mNames : Collections.emptyList();
     }
-
 }

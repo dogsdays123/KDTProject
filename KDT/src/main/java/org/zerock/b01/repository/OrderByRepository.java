@@ -20,8 +20,11 @@ public interface OrderByRepository extends JpaRepository<OrderBy, String>, AllSe
     @Query("select s.deliveryProcurementPlan.supplier.sName from OrderBy s")
     List<String> findSupplierNames();
 
-    @Query("select s.deliveryProcurementPlan.material.mName from OrderBy s")
+    @Query("select distinct ob.deliveryProcurementPlan.material.mName from OrderBy ob")
     List<String> findMaterialNames();
+
+    @Query("select distinct ob.deliveryProcurementPlan.supplier.sName from OrderBy ob")
+    List<String> findSNames();
 
     @Query("SELECT FUNCTION('DATE_FORMAT', o.regDate, '%Y-%m') AS month, " +
             "SUM(CAST(o.oTotalPrice AS double)) " +

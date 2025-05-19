@@ -1,13 +1,12 @@
 let mCodeChecks = null;
 let errorChecks = null;
 let selectedFiles = []; // 전역 변수로 따로 관리
+let pNameWorld;
 
 function addPlan() {
     const productName = document.getElementById('productName').value;
-    const productCode = document.getElementById('productCode').value;
     const componentType = document.getElementById('componentType').value;
     const materialList = document.getElementById('materialList');
-    const materialCode = document.getElementById('materialCode').value;
     const ssNum = document.getElementById('ssNum').value;
     const ssMinOrderQty = document.getElementById('ssMinOrderQty').value;
     const unitPrice = document.getElementById('unitPrice').value;
@@ -15,7 +14,7 @@ function addPlan() {
 
     const materialName = materialList.options[materialList.selectedIndex].text;
 
-    if (!productName || !componentType || !componentType || !materialList || !materialCode
+    if (!productName || !componentType || !componentType || !materialList
         || !ssNum || !ssMinOrderQty || !unitPrice || !leadTime) {
         alert('모든 항목을 입력해 주세요!');
         return;
@@ -28,7 +27,6 @@ function addPlan() {
         <td><input type="hidden" name="pNames[]" value="${productName}">${productName}</td> 
         <td><input type="hidden" name="cTypes[]" value="${componentType}">${componentType}</td> 
         <td><input type="hidden" name="mNames[]" value="${materialName}">${materialName}</td> 
-        <td><input type="hidden" name="mCodes[]" value="${materialCode}">${materialCode}</td> 
         <td><input type="hidden" name="ssNums[]" value="${ssNum}">${ssNum}</td> 
         <td><input type="hidden" name="ssMinOrderQty[]" value="${ssMinOrderQty}">${ssMinOrderQty}</td> 
         <td><input type="hidden" name="unitPrices[]" value="${unitPrice}">${unitPrice}</td> 
@@ -316,107 +314,88 @@ $('#excelUpload').on('click', function (e) {
     });
 });
 
-
 $(document).ready(function () {
-// 상품 선택 시 동적으로 부품 목록 업데이트
-    $('#pName').on('change', function () {
-        const pName = $(this).val();  // 선택된 상품 값
-
-        // 상품 선택 시 부품 목록을 업데이트
-        console.log('선택된 상품:', pName);
-
-        if (pName) {
-            // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
-            const pNameEncode = encodeURIComponent(pName);
-
-            // AJAX를 사용하여 부품 목록을 가져오는 코드
-            $.ajax({
-                url: `/material/${pNameEncode}/cType`,  // URL 인코딩 적용
-                method: 'GET',  // HTTP GET 요청
-                success: function(componentTypes) {
-                    // 부품명 선택 요소 초기화
-                    const componentSelect = $('#mComponentType');
-                    componentSelect.empty();  // 기존 옵션 제거
-
-                    // "선택" 옵션 추가
-                    componentSelect.append('<option value="" selected>선택</option>');
-
-                    // 받아온 부품 목록을 옵션으로 추가
-                    componentTypes.forEach(type => {
-                        componentSelect.append(`<option value="${type}">${type}</option>`);
-                    });
-
-                    // select2 업데이트
-                    componentSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
-                },
-                error: function(error) {
-                    console.error('부품 목록을 가져오는 중 오류 발생:', error);
-                }
-            });
-        } else {
-            // 상품이 선택되지 않은 경우
-            $('#mComponentType').empty();  // 부품 목록 초기화
-            $('#mComponentType').append('<option value="" selected>선택</option>');
-            $('#mComponentType').trigger('change');
+    $('#productName').on('change', function () {
+        const input = $(this).val();
+        pNameWorld = input;
+        if (!input) return;
+        else {
+            loadMType(input);
         }
     });
-});
 
-document.getElementById("productName").addEventListener("change", function() {
-    var selectedOption = this.options[this.selectedIndex];  // 선택한 상품 옵션
-    var productCode = selectedOption.getAttribute("data-code");  // 상품 코드 가져오기
-    document.getElementById("productCode").value = productCode;
+    $('#componentType').on('change', function () {
+        const input = $(this).val();
+        if (!input) return;
+        else {
+            loadMName(input, pNameWorld);
+        }
+    });
+})
 
-    if (productCode) {
-        // 상품코드에 맞는 부품명 목록을 가져옵니다.
-        fetch(`/supplier/api/products/${productCode}/component-types`)
-            .then(response => response.json())
-            .then(componentTypes => {
-                const componentSelect = document.getElementById("componentType");
-                componentSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
+function loadMType(pName) {
+    if (pName) {
+        // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+        const pNameEncode = encodeURIComponent(pName);
+
+        // AJAX를 사용하여 부품 목록을 가져오는 코드
+        $.ajax({
+            url: `/supplier/api/products/${pNameEncode}/component-types`,  // URL 인코딩 적용
+            method: 'GET',  // HTTP GET 요청
+            success: function (componentTypes) {
+                // 부품명 선택 요소 초기화
+                const componentSelect = $('#componentType');
+                componentSelect.empty();  // 기존 옵션 제거
+
+                // "선택" 옵션 추가
+                componentSelect.append('<option value="" selected>선택</option>');
+
+                // 받아온 부품 목록을 옵션으로 추가
                 componentTypes.forEach(type => {
-                    let option = document.createElement("option");
-                    option.value = type;
-                    option.textContent = type;
-                    componentSelect.appendChild(option);
+                    componentSelect.append(`<option value="${type}">${type}</option>`);
                 });
-            })
-            .catch(error => console.error('Error fetching component types:', error));
-    }// 상품 코드 입력란에 설정
-});
 
-
-document.getElementById("componentType").addEventListener("change", function() {
-    let componentType = this.value;
-    if (componentType) {
-        // 부품명에 맞는 자재 목록을 가져옵니다.
-        fetch(`/supplier/api/materials?componentType=${componentType}`)
-            .then(response => response.json())
-            .then(materials => {
-                console.log(materials);  // 응답 데이터 확인
-                const materialSelect = document.getElementById("materialList");
-                materialSelect.innerHTML = '<option value="" selected>선택</option>'; // 초기화
-
-                if (Array.isArray(materials) && materials.length > 0) {
-                    materials.forEach(material => {
-                        console.log(material);  // 각 material 객체 출력하여 mCode, mName 확인
-                        let option = document.createElement("option");
-                        option.value = material.mcode; // 자재 코드
-                        option.textContent = material.mname; // 자재 이름
-                        option.setAttribute("data-name", material.mname); // 자재 이름 저장
-                        option.setAttribute("data-code", material.mcode);
-
-                        materialSelect.appendChild(option);
-                    });
-                } else {
-                    console.error("Returned data is not an array or is empty:", materials);
-                }
-            })
-            .catch(error => console.error('Error fetching materials:', error));
+                // select2 업데이트
+                componentSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+            },
+            error: function (error) {
+                console.error('부품 목록을 가져오는 중 오류 발생:', error);
+            }
+        });
     }
-});
+}
 
-document.getElementById("materialList").addEventListener("change", function() {
+function loadMName(mComponentType, pName) {
+    if (!pName || !mComponentType) {return;}
+
+    // URL 인코딩을 통해 상품명이 URL로 안전하게 전달되도록 함
+    const encodes = [encodeURIComponent(mComponentType), encodeURIComponent(pName)];
+
+    // AJAX를 사용하여 부품 목록을 가져오는 코드
+    $.ajax({
+        url: `/supplier/api/products/${encodes[0]}/${encodes[1]}/mName`,  // URL 인코딩 적용
+        method: 'GET',  // HTTP GET 요청
+        success: function (mNames) {
+            if (!Array.isArray(mNames) || mNames.length === 0) {
+                defaultValueInner("mName");
+                return;  // 이 시점에서 종료해주는 게 좋음
+            }
+            // 부품명 선택 요소 초기화
+            const mNameSelect = $('#materialList');
+            mNameSelect.empty();  // 기존 옵션 제거
+            mNameSelect.append('<option value="" selected>선택</option>');
+            mNames.forEach(type => {
+                mNameSelect.append(`<option value="${type}">${type}</option>`);
+            });
+            mNameSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+        },
+        error: function (error) {
+            console.error('목록을 가져오는 중 오류 발생:', error);
+        }
+    });
+}
+
+document.getElementById("materialList").addEventListener("change", function () {
     let selectedMaterial = this.options[this.selectedIndex];
     let materialCode = selectedMaterial.getAttribute("data-code");  // 자재 코드
     let materialName = selectedMaterial.getAttribute("data-name");  // 자재 이름

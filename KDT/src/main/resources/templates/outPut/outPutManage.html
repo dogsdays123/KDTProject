@@ -22,7 +22,7 @@
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
                         <label class="form-label small">상품명</label>
-                        <select name="pName" class="form-select form-select-sm" title="자재명">
+                        <select name="pName" class="form-select form-select-sm searchSelect" title="자재명">
                             <option value="" th:selected="${selectedPName == ''}">전체</option>
                             <option th:each="pName : ${pNameList}"
                                     th:value="${pName}"
@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label small">자재명</label>
-                        <select name="mName" class="form-select form-select-sm" title="자재명">
+                        <select name="mName" class="form-select form-select-sm searchSelect" title="자재명">
                             <option value="" th:selected="${selectedMName == ''}">전체</option>
                             <option th:each="dto : ${inventoryStockList}"
                                     th:if="${dto.isNum > 0}"

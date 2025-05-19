@@ -25,7 +25,7 @@
                     <div class="row g-2 mb-2">
                         <div class="col-md-3" style="width: 200px">
                             <label for="productName" class="form-label small">상품</label>
-                            <select id="productName" class="form-select form-select-sm">
+                            <select id="productName" class="form-select form-select-sm searchSelect">
                                 <option value="" selected>선택</option>
                                 <th:block th:each="product : ${productList}">
                                     <option th:value="${product.pName}" th:text="${product.pName}" th:data-code="${product.pCode}"></option>
@@ -38,13 +38,13 @@
                         </div>
                         <div class="col-md-2">
                             <label for="componentType" class="form-label small">부품 선택</label>
-                            <select id="componentType" name="부품명" class="form-select form-select-sm">
+                            <select id="componentType" name="부품명" class="form-select form-select-sm searchSelect">
                                 <option value="" selected>선택</option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label for="materialList" class="form-label small">자재 선택</label>
-                            <select id="materialList" class="form-select form-select-sm">
+                            <select id="materialList" class="form-select form-select-sm searchSelect">
                                 <option value="" selected>선택</option>
                             </select>
                         </div>
@@ -82,10 +82,8 @@
                             <thead class="table-light small text-center">
                             <tr>
                                 <th>상품</th>
-                                <th>상품 코드</th>
                                 <th>부품</th>
                                 <th>자재명</th>
-                                <th>자재 코드</th>
                                 <th>수량</th>
                                 <th>창고 위치</th>
                                 <th>삭제</th>
