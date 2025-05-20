@@ -178,8 +178,11 @@ function renderOrderByTable(check) {
         <button class="btn btn-sm btn-outline-danger" onclick="removeOrderBy(${index}, ${item.oNum})">삭제</button>
       </td>
       <td>
-        <button type="button" class="btn btn-outline-primary btn-sm" onclick="previewOrderPDF(${index})">발주서 미리보기</button>
-      </td>
+         <div style="display: flex; gap: 8px; justify-content: center;">
+    <button type="button" class="btn btn-outline-primary btn-sm" onclick="previewOrderPDF(${index})">미리보기</button>
+    <button type="button" class="btn btn-success btn-sm" onclick="generateOrderPDF(${index})">발행</button>
+    </div>
+    </td>
     `;
         tbody.appendChild(row);
     });
@@ -221,7 +224,7 @@ $(document).ready(function () {
             alert(`입력값은 ${dppNum}보다 클 수 없습니다.`);
             $(this).val(dppNum);
             total = unitPrice * dppNum;
-        } else{
+        } else {
             total = unitPrice * orderInput;
         }
 
@@ -246,10 +249,6 @@ function previewOrderPDF(index) {
         pdfs: [selectedPlans[index]]
     };
 
-    console.log(selectedPlans);
-
-    console.log(JSON.stringify(formData));  // formData의 JSON 문자열로 출력
-
     fetch('/orderBy/pdf/preview', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -264,14 +263,17 @@ function previewOrderPDF(index) {
 }
 
 
-function generateOrderPDF() {
+function generateOrderPDF(index) {
     const selectedPlans = planForPDF;
+
     if (selectedPlans.length === 0) {
-        alert('조달계획을 최소 1개 이상 선택해주세요.');
+        alert('조달계획을 선택해주세요.');
         return;
     }
+
+    // const formData = collectFormData();
     const formData = {
-        pdfs: selectedPlans
+        pdfs: [selectedPlans[index]]
     };
 
     fetch('/orderBy/pdf/download', {
