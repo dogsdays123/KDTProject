@@ -147,9 +147,23 @@ public class FirstViewController {
         return response; // JSON 형식으로 반환
     }
 
-    @PostMapping("/forgot")
+    @PostMapping("/forgot/checkEmail")
     @ResponseBody
-    public Map<String, String> forgotPassword(@RequestParam("checkEmail") String email) {
+    public Map<String, Object> forgotCheckEmail(@RequestParam("checkEmail") String email) {
+        Map<String, Object> result = new HashMap<>();
+
+        boolean exists = userByService.checkEmailExists(email); // 이메일 존재 여부 확인
+        String msg = exists ? "이메일이 존재합니다." : "가입된 이메일이 아닙니다.";
+
+        result.put("exists", exists);  // 이메일 존재 여부
+        result.put("msg", msg);  // 메시지
+
+        return result; // JSON 형태로 응답
+    }
+
+    @PostMapping("/forgot/sendResetLink")
+    @ResponseBody
+    public Map<String, String> forgotSendResetLink(@RequestParam("checkEmail") String email) {
         Map<String, String> result = new HashMap<>();
 
         String msg = userByService.changeUserProfile(email); // ex: "임시 비밀번호를 전송했습니다."

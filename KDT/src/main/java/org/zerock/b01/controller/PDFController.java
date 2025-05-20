@@ -90,7 +90,7 @@ public class PDFController {
 
     @PostMapping("/orderBy/pdf/preview")
     public ResponseEntity<byte[]> previewPurchaseOrderPdf(@RequestBody OrderByPdfFormDTO form) {
-        log.info("pdfs: {}", form.getPdfs());
+        log.info("pdfsPreview: {}", form.getPdfs());
 
         if(form.getPdfs().isEmpty()){
             return null;

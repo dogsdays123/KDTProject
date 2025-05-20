@@ -13,6 +13,7 @@ public interface UserByService {
     UserByDTO readOneForEmail(String uEmail);
     void registerAdmin(UserBy user, SupplierDTO supplierDTO);
     String registerUser(UserByDTO userByDTO);
+    boolean checkEmailExists(String email);
     String changeUserProfile(String email);
     void changeUser(UserByDTO userByDTO);
     void agreeSupplier(String uId, String sStatus);
