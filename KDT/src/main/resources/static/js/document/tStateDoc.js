@@ -54,7 +54,7 @@ function generateOrderPDF() {
         type: "s"
     };
 
-    fetch('/document/pdf/sDownload', {
+    fetch('/document/pdf/s', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData)
@@ -79,7 +79,7 @@ function previewOrderPDF(obCode) {
         type: "s"
     };
 
-    fetch('/document/pdf/sPreview', {
+    fetch('/document/pdf/s', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData)
