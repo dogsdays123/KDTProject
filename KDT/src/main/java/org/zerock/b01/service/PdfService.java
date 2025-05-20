@@ -2,10 +2,7 @@ package org.zerock.b01.service;
 
 import com.itextpdf.text.*;
 
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,10 +23,12 @@ import org.zerock.b01.repository.SupplierRepository;
 import org.zerock.b01.repository.UserByRepository;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static java.awt.SystemColor.text;
 
@@ -336,9 +335,6 @@ public class PdfService {
 
         return out.toByteArray();
     }
-
-
-
 
     public byte[] createPdf(OrderByPdfFormDTO request) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -664,5 +660,25 @@ public class PdfService {
         cell.setBackgroundColor(bgColor);
         cell.setPadding(7f);
         return cell;
+    }
+
+    public byte[] mergePdfFiles(List<byte[]> pdfList) throws IOException, DocumentException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Document document = new Document();
+        PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+        document.open();
+
+        PdfContentByte content = writer.getDirectContent();
+
+        for (byte[] pdfBytes : pdfList) {
+            PdfReader reader = new PdfReader(pdfBytes);
+            for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+                document.newPage();
+                content.addTemplate(writer.getImportedPage(reader, i), 0, 0);
+            }
+        }
+
+        document.close();
+        return outputStream.toByteArray();
     }
 }

@@ -17,6 +17,11 @@ public class OrderByDTO {
     private String oTotalPrice;
     private LocalDate oExpectDate;
     private String oState;
+    private String orderAddress;
     private String oRemarks;
+    private String payDate;
+    private String payMethod;
+    private String payDocument;
+    private String uId;
     private String dppCode;
 }
