@@ -78,7 +78,6 @@ public class InPutController {
 
         model.addAttribute("deliveryRequestList", deliveryRequestList);
         model.addAttribute("responseDTO", responseDTO);
-
         log.info("## deliveryRequestList : " + deliveryRequestList);
         log.info("## DR responseDTO : " + responseDTO);
 
@@ -120,6 +119,16 @@ public class InPutController {
         }
 
         PageResponseDTO<InputDTO> responseDTO = pageService.inputWithAll(pageRequestDTO);
+
+        List<String> mNameList = Optional.ofNullable(responseDTO.getDtoList())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(dto -> dto.getMName())
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        model.addAttribute("mNameList", mNameList);
 
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());

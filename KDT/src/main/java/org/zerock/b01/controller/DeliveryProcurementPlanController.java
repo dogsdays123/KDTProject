@@ -19,8 +19,10 @@ import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @Controller
@@ -40,6 +42,9 @@ public class DeliveryProcurementPlanController {
     private final ProductionPlanRepository productionPlanRepository;
     private final SupplierStockRepository supplierStockRepository;
     private final BomRepository bomRepository;
+    private final InventoryStockRepository inventoryStockRepository;
+    private final InventoryStockService inventoryStockService;
+    private final OutputService outputService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -193,12 +198,28 @@ public class DeliveryProcurementPlanController {
         return requireNum != null ? requireNum : "정보 없음";
     }
 
+    @GetMapping("/{mCode}/an")
+    @ResponseBody
+    public String getAvailableNum(@PathVariable String mCode) {
+        log.info("Requested mCode: " + mCode); // mCode 확인
+        String availableNum = inventoryStockRepository.findAvailableNumByMaterialCode(mCode);
+        if (availableNum == null) {
+            log.info("availableNum Number is null for mCode: " + mCode);
+        } else {
+            log.info("availableNum Number: " + availableNum);
+        }
+        return availableNum != null ? availableNum : "정보 없음";
+    }
+
 
     @PostMapping("/register")
-    public String register(@RequestParam("uId") String uId, @ModelAttribute DppFormDTO form,
+    public String register(@RequestParam("uId") String uId,
+                           @ModelAttribute DppFormDTO form,
                            Model model,
                            RedirectAttributes redirectAttributes,
                            HttpServletRequest request) throws IOException {
+
+
 
         List<DeliveryProcurementPlanDTO> dppDTOs = form.getDpps();
         log.info("dto$ {}", form.getDpps());
@@ -206,9 +227,47 @@ public class DeliveryProcurementPlanController {
         for(DeliveryProcurementPlanDTO dppDTO : dppDTOs) {
             dppDTO.setUId(uId);
             dppService.registerDpp(dppDTO);
+
+
         }
 
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
+        return "redirect:dppRegister";
+    }
+
+    @PostMapping("/outPutRegister")
+    public String outPutRegisterByDPP(@RequestParam("uId") String uId,
+                                      @RequestParam("mCode") Optional<String> mCode,
+                           @RequestParam("planCode") Optional<String> planCode,
+                           @RequestParam("availableQty") Optional<String> availableQty,
+                           @ModelAttribute DppFormDTO form,
+                           Model model,
+                           RedirectAttributes redirectAttributes,
+                           HttpServletRequest request) throws IOException {
+
+        log.info("Received mCode: {}, planCode: {}, releaseQty: {}", mCode.orElse("No mCode"), planCode.orElse("No planCode"), availableQty.orElse("No releaseQty"));
+
+        if (mCode.isPresent() && planCode.isPresent() && availableQty.isPresent()) {
+            try {
+                int qty = Integer.parseInt(availableQty.get());
+                if (qty > 0) {
+                    OutPutDTO outPutDTO = new OutPutDTO();
+                    outPutDTO.setMCode(mCode.get());
+                    outPutDTO.setPpCode(planCode.get());
+                    outPutDTO.setOpANum(String.valueOf(qty));
+                    outputService.registerOutput(outPutDTO);
+                    redirectAttributes.addFlashAttribute("message", "출고가 정상 처리되었습니다.");
+                }
+            } catch (NumberFormatException e) {
+                redirectAttributes.addFlashAttribute("error", "출고 수량이 올바르지 않습니다.");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "출고 등록에 필요한 정보가 부족합니다.");
+        }
+
+        String actualPlanCode = planCode.orElse("DefaultPlanCode");
+        String actualReleaseQty = availableQty.orElse("0");
+
         return "redirect:dppRegister";
     }
 }

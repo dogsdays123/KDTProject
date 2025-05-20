@@ -154,6 +154,7 @@
                     <div class="card p-3">
                         <p class="text-muted small mb-2">
                             생산 계획 코드 : <strong><span id="planCodeInput"></span></strong>&nbsp;&nbsp;
+                            <input type="hidden" id="planCodeHidden">
                             생산 상품명 : <strong><span id="productNameInput"></span></strong>&nbsp;&nbsp;
                             생산 수량 : <strong><span id="productQtyInput"></span></strong>
                         </p>
@@ -230,12 +231,16 @@
                                                    readonly>
                                         </div>
                                         <div style="width: 100px;">
-                                            <label class="form-label small">요구수량</label>
-                                            <input type="number" id="requireNumInput" class="form-control form-control-sm">
+                                            <label class="form-label small">필요수량</label>
+                                            <input type="number" id="requireNumInput" class="form-control form-control-sm" readonly>
                                         </div>
                                         <div style="width: 100px;">
                                             <label class="form-label small">조달수량</label>
                                             <input type="number" id="procuredQty" class="form-control form-control-sm">
+                                        </div>
+                                        <div style="width: 100px;">
+                                            <label class="form-label small">출고수량</label>
+                                            <input type="number" id="outPutQty" class="form-control form-control-sm" readonly>
                                         </div>
                                         <div style="width: 150px;">
                                             <label class="form-label small">납기일</label>
@@ -260,16 +265,17 @@
                                         <th>공급 업체</th>
                                         <th>필요 수량</th>
                                         <th>조달 수량</th>
+                                        <th>출고 수량</th>
                                         <th>납기일</th>
                                         <th>삭제</th>
                                     </tr>
                                     </thead>
                                     <!--테이블 생성-->
-                                    <tbody id="dppListBody">
+                                    <tbody id="dppListBody"  class="small text-center">
                                     </tbody>
                                 </table>
                                 <!--보내는 값-->
-                                <table id="dppTable">
+                                <table id="dppTable"  class="small text-center">
                                     <tbody>
 
                                     </tbody>

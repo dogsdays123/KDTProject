@@ -18,6 +18,7 @@ import org.zerock.b01.service.InventoryStockService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -84,11 +85,25 @@ public class InventoryStockServiceImpl implements InventoryStockService {
     @Override
     public void removeIS(List<Long> isIds){
         if (isIds == null || isIds.isEmpty()) {
-            throw new IllegalArgumentException("삭제할 BOM이 없습니다.");
+            throw new IllegalArgumentException("삭제할 자재 정보가 없습니다.");
         }
 
         for (Long isId : isIds) {
             inventoryStockRepository.deleteById(isId);
         }
+    }
+
+    @Override
+    public List<InventoryStockDTO> findStockByMaterialCode(String mCode) {
+        return inventoryStockRepository.findByMaterialCode(mCode)
+                .stream()
+                .filter(stock -> stock.getMaterial() != null) // Null 방지
+                .map(stock -> new InventoryStockDTO(
+                        stock.getMaterial().getMCode(),
+                        stock.getMaterial().getMName(),
+                        Integer.parseInt(stock.getIsNum()),
+                        Integer.parseInt(stock.getIsAvailable())
+                ))
+                .collect(Collectors.toList());
     }
 }

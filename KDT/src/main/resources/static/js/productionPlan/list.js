@@ -16,8 +16,15 @@ document.getElementById('ppEnd').addEventListener('change', function () {
 
 document.querySelectorAll('.icon-button').forEach(button => {
     button.addEventListener('click', function () {
-        const row = this.closest('tr'); // 클릭한 버튼이 속한 tr
+        const row = this.closest('tr');
+        const cells = row.children;
+        const currentState = cells[7].innerText.trim();
+        console.log(currentState);
 
+        if (currentState == '등록 완료') {
+            alert('선택한 항목은 이미 조달 계획이 등록되어 수정이 불가능합니다.');
+            return;
+        }
         // 각 td 값을 가져오기
         const ppCode = row.querySelector('td:nth-child(2)').innerText;
         const pCode = row.querySelector('td:nth-child(3)').innerText;

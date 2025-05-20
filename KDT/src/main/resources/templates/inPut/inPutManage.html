@@ -93,10 +93,15 @@
             </tr>
             </thead>
             <tbody th:with="link = ${pageRequestDTO.getLink()}">
-            <tr th:if="${responseDTO.dtoList == null or #lists.isEmpty(responseDTO.dtoList)}">
-              <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 입고 대기 항목이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
+            <!-- 필터링된 리스트가 비어있으면 메시지 출력 -->
+            <tr th:if="${filteredDeliveryRequestList == null or #lists.isEmpty(filteredDeliveryRequestList)}">
+              <td colspan="10" class="text-center" style="padding: 20px 0;">
+                등록된 입고 대기 항목이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
+              </td>
             </tr>
-            <tr th:each="dto:${responseDTO.dtoList}" th:if="${dto.drNum != 0}" style="height: 40px;" >
+
+            <!-- 필터링된 리스트가 있으면 각 항목 출력 -->
+            <tr th:each="dto : ${filteredDeliveryRequestList}" style="height: 40px;">
               <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
               <td th:text="${dto.drCode}"></td>
               <td th:text="${dto.oCode}"></td>

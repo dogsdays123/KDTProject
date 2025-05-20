@@ -35,4 +35,11 @@ public class InventoryStockDTO {
 
     private LocalDate regDate;
 
+    public InventoryStockDTO(String mCode, String mName, Integer isNum, Integer isAvailable) {
+        this.mCode = mCode;
+        this.mName = mName;
+        this.isNum = isNum;
+        this.isAvailable = isAvailable;
+    }
+
 }

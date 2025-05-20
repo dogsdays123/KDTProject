@@ -31,6 +31,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // 기본 제출 막기
+        const mCode = document.getElementById('mCode').value;
+        const planCode = document.getElementById('planCodeInput').textContent;
+        const releaseQty = $('#procuredQty').val();
+        const uId = 'someUserId';
+
+        // submitDppForm 함수 호출
+        submitDppForm(mCode, planCode, releaseQty, uId);
 
         alert(`조달 계획이 등록되었습니다`);
 
@@ -40,8 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const modal = bootstrap.Modal.getInstance(document.getElementById('orderByModal'));
         if (modal) modal.hide();
 
-        if (tbody) tbody.innerHTML = '';
-        orderByList.length = 0;
+        // if (tbody) tbody.innerHTML = '';
+        // orderByList.length = 0;
     });
 
     $('#requiredQty').on('input', function () {
@@ -77,7 +84,7 @@ function addProcurement(button) {
 // 수량
     const needQty = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
     const supplyQty = numberInputs.length > 1 ? numberInputs[1].value.trim() : '';
-
+    const outputQty = numberInputs.length > 2 ? numberInputs[2].value.trim() : '';
 // 납기일
     const dueDate = dateInput ? dateInput.value.trim() : '';
 
@@ -94,6 +101,7 @@ function addProcurement(button) {
         mCode,
         needQty,
         supplyQty,
+        outputQty,
         ppCode,
         dueDate
     };
@@ -119,12 +127,17 @@ function renderProcurementTable() {
       <td><input type="hidden" name="dpps[${rowIndex}].mName" value="${item.mName}">${item.mName}</td>
       <td><input type="hidden" name="dpps[${rowIndex}].mCode" value="${item.mCode}">${item.mCode}</td>
       <td><input type="hidden" name="dpps[${rowIndex}].sName" value="${item.supplier}">${item.supplier}</td>
-      <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppRequireNum" value="${item.needQty}">${item.needQty}</td>
-      <td class="text-end"><input type="hidden" name="dpps[${rowIndex}].dppNum" value="${item.supplyQty}">${item.supplyQty}</td>
+      <td class="text-center"><input type="hidden" name="dpps[${rowIndex}].dppRequireNum" value="${item.needQty}">${item.needQty}</td>
+      <td class="text-center"><input type="hidden" name="dpps[${rowIndex}].dppNum" value="${item.supplyQty}">${item.supplyQty}</td>
+      <td class="text-center"><input type="hidden" name="dpps[${rowIndex}].outputQty" value="${item.outputQty}">${item.outputQty}</td>  
       <td class="text-center"><input type="hidden" name="dpps[${rowIndex}].dppDate" value="${item.dueDate}">${item.dueDate}</td>
       <td class="text-center">
-        <input type="hidden" name="dpps[${rowIndex}].ppCode" value="${item.ppCode}">
-        <button class="btn btn-sm btn-outline-danger" onclick="removeProcurement(${index})">삭제</button>
+              <input type="hidden" name="dpps[${rowIndex}].ppCode" value="${item.ppCode}">
+                <button type="button" class="icon-button"  onclick="removeProcurement(${index})" aria-label="삭제" title="해당 행 삭제">
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+
       </td>
     `;
         tbody.appendChild(row);
@@ -195,6 +208,7 @@ $(document).ready(function () {
         else {
             loadLeadTime(input, mCodeForLeadTime);
             loadRequireNum(mCodeForLeadTime);
+            loadProcureNum(mCodeForLeadTime);
         }
     });
 });
@@ -373,16 +387,72 @@ function loadRequireNum(mCode) {
             const leadTimeInput = $('#requireNumInput');
             const productQtyInput = $('#productQtyInput');
 
+
             const productQty = parseFloat(productQtyInput.text()) || 0;
             const leadTime = parseFloat(data) || 0;  // 서버에서 받은 값도 숫자로 처리
             if (data) {
                 leadTimeInput.val(productQty * leadTime);
+                loadProcureNum(mCode);
             } else {
                 leadTimeInput.val('미배정');
             }
         },
         error: function () {
             $('#requireNum').text('에러');
+        }
+    });
+}
+
+let availableQty = 0;
+
+function loadProcureNum(mCode) {
+    const encodes = [];
+    encodes[1] = encodeURIComponent(mCode);
+
+    $.ajax({
+        url: `/dpp/${encodes[1]}/an`, // 가용 수량 API
+        method: 'GET',
+        success: function (data) {
+            const procuredQtyInput = $('#procuredQty');          // 조달 수량 input
+            const requireNumInput = $('#requireNumInput');       // 총 필요 수량 input
+            const outPutQty = $('#outPutQty');
+
+            const requiredQty = parseFloat(requireNumInput.val()) || 0;
+            availableQty = parseFloat(data) || 0;
+
+            const procurementQty = Math.max(requiredQty - availableQty, 0);
+            outPutQty.val(availableQty);
+            procuredQtyInput.val(procurementQty);
+        },
+        error: function () {
+            $('#procuredQty').val('에러');
+        }
+    });
+}
+
+function submitDppForm(mCode, planCode, releaseQty, uId) {
+    const formData = {
+        uId: uId,
+        mCode: mCode,
+        planCode: planCode,
+        releaseQty: releaseQty,
+        availableQty: availableQty// 자동으로 계산된 출고 수량
+    };
+
+    console.log("Sending formData to server: ", formData);
+
+    $.ajax({
+        url: '/dpp/outPutRegister',  // 출고 등록 API
+        method: 'POST',
+        data: formData,
+        success: function(response) {
+            // 출고 등록 성공 후 처리
+            // alert('출고 등록이 완료되었습니다.');
+        },
+        error: function(xhr, status, error) {
+            console.log("에러 발생:", error);
+            console.log("xhr 상태:", xhr);
+            alert('출고 등록 중 오류가 발생했습니다.');
         }
     });
 }

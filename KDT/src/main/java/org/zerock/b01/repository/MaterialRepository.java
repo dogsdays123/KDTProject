@@ -63,6 +63,6 @@ public interface MaterialRepository extends JpaRepository<Material, String>, All
     List<String> findMCodesByMName(@Param("mName") String mName);
 
     @Query("select m.mCode from Material m where m.mName = :mName")
-    String findMCodeByMName(@Param("mName") String mName);
+    List<String> findMCodeByMName(@Param("mName") String mName);
 
 }
