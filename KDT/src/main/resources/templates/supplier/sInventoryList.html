@@ -67,13 +67,13 @@
                 </form>
             </div>
             <div class="bg-white rounded">
-                <div style="max-height: 550px; overflow-y: auto;">
+                <div style="max-height: 450px; overflow-y: auto;">
                     <table class="table table-sm table-bordered table-hover align-middle fs-6">
                         <thead class="table-light small text-center">
                         <tr>
                             <th><input type="checkbox" id="selectAll"></th>
                             <th>자재 코드</th>
-                            <th>자재명</th>
+                            <th style="width: 450px;">자재명</th>
                             <th>현재 수량</th>
                             <th>최소 발주 수량</th>
                             <th>리드타임</th>
@@ -82,7 +82,7 @@
                         </tr>
                         </thead>
                         <tbody th:with="link = ${pageRequestDTO.getLink()}">
-                        <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
+                        <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}" >
                             <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 자재 정보가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
                         <tr th:each="dto:${responseDTO.dtoList}">

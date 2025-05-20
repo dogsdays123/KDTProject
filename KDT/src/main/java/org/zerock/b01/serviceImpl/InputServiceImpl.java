@@ -107,9 +107,12 @@ public class InputServiceImpl implements InputService {
         input.setIpCode(newIpCode);
 
         DeliveryRequest deliveryRequest = deliveryRequestRepository.findByDeliveryRequestCode(inputDTO.getDrCode()).orElseThrow(() -> new RuntimeException("DR not found"));
+        deliveryRequest.setDrState(CurrentStatus.INPUT_SUCCESS);
         input.setDeliveryRequest(deliveryRequest);
 
         OrderBy orderBy = orderByRepository.findByOrderByCode(inputDTO.getOCode()).orElseThrow(() -> new RuntimeException("OCode not found"));
+        orderBy.getDeliveryProcurementPlan().setDppState(CurrentStatus.INPUT);
+        orderBy.getDeliveryProcurementPlan().getProductionPlan().setPpState(CurrentStatus.INPUT);
         input.setOrderBy(orderBy);
 
         int drNum = Integer.parseInt(deliveryRequest.getDrNum());
@@ -118,7 +121,7 @@ public class InputServiceImpl implements InputService {
         if (ipNum < drNum) {
             input.setIpState(CurrentStatus.IN_PROGRESS);
         } else {
-            input.setIpState(CurrentStatus.APPROVAL);
+            input.setIpState(CurrentStatus.INPUT_SUCCESS);
         }
 
         inputRepository.save(input);

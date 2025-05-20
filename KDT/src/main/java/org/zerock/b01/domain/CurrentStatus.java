@@ -16,7 +16,14 @@ public enum CurrentStatus {
     SUCCESS_INSPECTION, //"검수 완료"
     SUCCESS, //"전체 완료"
     READY_SUCCESS, //"준비 완료"
-    DELIVERY_REQUESTED, // 납품 요청됨
+    DELIVERY_REQUESTED, // 납품 요청
     DELIVERY_DELIVERED, // 납품 완료
-    DPP_SUCCESS  // 등록 완료
+    DPP_SUCCESS,  // 등록 완료
+    DPP,  // 조달
+    ORDER_BY,  // 발주
+    DELIVERY_REQUEST, // 납품
+    INPUT, // 입고
+    INPUT_SUCCESS, // 입고 완료
+    OUTPUT, // 출고
+    OUTPUT_SUCCESS // 출고 완료
 }

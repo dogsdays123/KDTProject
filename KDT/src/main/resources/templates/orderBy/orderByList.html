@@ -100,14 +100,14 @@
                     </form>
                 </div>
                 <div class="bg-white rounded">
-                    <div style="max-height: 550px; overflow-y: auto;">
+                    <div style="max-height: 450px; overflow-y: auto;">
                         <table class="table table-sm table-bordered table-hover align-middle fs-6">
                             <thead class="table-light small text-center">
                             <tr>
-                                <th><input type="checkbox" id="selectAll" title="전체선택"></th>
+                                <th style="width: 30px;"><input type="checkbox" id="selectAll" title="전체선택"></th>
                                 <th>발주 코드</th>
                                 <th>발주일</th>
-                                <th>자재명</th>
+                                <th style="width: 400px;">자재명</th>
                                 <th>리드 타임</th>
                                 <th>발주 수량</th>
                                 <th>공급 업체</th>
@@ -115,7 +115,7 @@
                                 <th>납기일</th>
                                 <th>발주자</th>
                                 <th>상태</th>
-                                <th>수정</th>
+                                <th style="width: 30px;">수정</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -146,28 +146,29 @@
                             </tr>
                             </tbody>
                         </table>
-                        <div class="text-start">
-                            <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
-                                선택 항목 삭제
-                            </button>
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <ul class="pagination flex-wrap">
-                                <li class="page-item" th:if="${responseDTO.prev}">
-                                    <a class="page-link" th:data-num="${responseDTO.start -1}"><</a>
-                                </li>
+                    </div>
+                    <br>
+                    <div class="text-start">
+                        <button type="button" class="btn btn-danger btn-sm" id="openPurchaseDelModal">
+                            선택 항목 삭제
+                        </button>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <ul class="pagination flex-wrap">
+                            <li class="page-item" th:if="${responseDTO.prev}">
+                                <a class="page-link" th:data-num="${responseDTO.start -1}"><</a>
+                            </li>
 
-                                <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
-                                    <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
-                                        <a class="page-link" th:data-num="${i}">[[${i}]]</a>
-                                    </li>
-                                </th:block>
-
-                                <li class="page-item" th:if="${responseDTO.next}">
-                                    <a class="page-link" th:data-num="${responseDTO.end +1}">></a>
+                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                    <a class="page-link" th:data-num="${i}">[[${i}]]</a>
                                 </li>
-                            </ul>
-                        </div>
+                            </th:block>
+
+                            <li class="page-item" th:if="${responseDTO.next}">
+                                <a class="page-link" th:data-num="${responseDTO.end +1}">></a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

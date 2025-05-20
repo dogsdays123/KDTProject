@@ -179,7 +179,7 @@ public class SupplierController {
             log.info("#### sId: " + sId);
 
 
-            responseDTO = pageService.progressInspectionWithAll(pageRequestDTO, sId);
+            responseDTO = pageService.supplierProgressInspectionWithAll(pageRequestDTO, sId);
         }
 
 

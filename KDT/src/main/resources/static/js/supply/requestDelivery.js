@@ -27,13 +27,13 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
     const availableQuantity = firstRow[6].innerText;
     const currentState = firstRow[9].innerText.trim();
 
-    if (currentState === '납품 요청됨') {
+    if (currentState === '납품 요청') {
         alert('선택한 항목은 이미 납품 요청이 완료되었습니다.');
         return;
     }
 
 
-    if (currentState !== '준비 완료') {
+    if (currentState !== '납품 준비') {
         alert('선택한 항목은 아직 납품 준비가 완료되지 않았습니다.');
         return;
     }
@@ -90,6 +90,8 @@ document.querySelector(".pagination").addEventListener("click", function (e) {
 document.addEventListener("DOMContentLoaded", () => {
     const states = {
         ON_HOLD: "대기",
+        HOLD_PROGRESS: "검수 대기",
+        HOLD_DELIVERY: "납품 대기",
         APPROVAL: "승인",
         IN_PROGRESS: "진행 중",
         UNDER_INSPECTION: "검수 중",
@@ -101,10 +103,15 @@ document.addEventListener("DOMContentLoaded", () => {
         DELIVERED: "배달 완료",
         SUCCESS_INSPECTION: "검수 완료",
         SUCCESS: "전체 완료",
-        READY_SUCCESS: "준비 완료",
-        DELIVERY_REQUESTED: "납품 요청됨",
+        READY_SUCCESS: "납품 준비",
+        DELIVERY_REQUESTED: "납품 요청",
         DELIVERY_DELIVERED: "납품 완료",
-        HOLD_DELIVERY: "납품 대기"
+        DPP_SUCCESS: "등록 완료"  ,
+        DPP: "조달",  // 조달
+        ORDER_BY: "발주",  // 발주
+        DELIVERY_REQUEST: "납품", // 납품
+        INPUT: "입고", // 입고
+        OUTPUT: "츨고" // 출고
     };
 
     // 드롭다운 option에 텍스트 설정

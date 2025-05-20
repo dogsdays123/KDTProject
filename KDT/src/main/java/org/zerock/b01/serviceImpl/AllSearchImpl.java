@@ -996,6 +996,8 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(progressInspection.psDate.eq(psDate));
         }
 
+
+
         query.where(booleanBuilder);
         query.offset(pageable.getOffset());
         query.limit(pageable.getPageSize());
@@ -1136,13 +1138,16 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         }
 
         if (drState != null && !drState.isEmpty() && !"전체".equals(drState)) {
-            log.info("Received pName: " + drState);
             try {
-                CurrentStatus status = CurrentStatus.valueOf(drState); // 문자열을 enum 값으로 변환
-                booleanBuilder.and(deliveryRequest.drState.eq(status)); // enum 값을 비교
+                CurrentStatus status = CurrentStatus.valueOf(drState);
+                booleanBuilder.and(deliveryRequest.drState.eq(status));
             } catch (IllegalArgumentException e) {
                 log.error("Invalid drState value: " + drState);
+                // 예외 시 기본값 적용 가능
+                booleanBuilder.and(deliveryRequest.drState.eq(CurrentStatus.ON_HOLD));
             }
+        } else {
+            booleanBuilder.and(deliveryRequest.drState.eq(CurrentStatus.ON_HOLD));
         }
 
         query.where(booleanBuilder);
@@ -1169,6 +1174,64 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
                 .collect(Collectors.toList());
 
         JPQLQuery<DeliveryRequest> countQuery = from(deliveryRequest).where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
+
+    @Override
+    public Page<ProgressInspectionDTO> supplierProgressInspectionSearchWithAll(String[] types, String keyword, String mName, LocalDate psDate, String psState, Long sId, Pageable pageable) {
+
+        QProgressInspection progressInspection = QProgressInspection.progressInspection;
+        JPQLQuery<ProgressInspection> query = from(progressInspection);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (sId != null) {
+            booleanBuilder.and(progressInspection.supplierStock.supplier.sId.eq(sId));
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(progressInspection.supplierStock.material.mName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(progressInspection.supplierStock.material.mName.contains(mName));
+        }
+
+        if (psDate != null) {
+            log.info("Received psDate: " + psDate);
+            booleanBuilder.and(progressInspection.psDate.eq(psDate));
+        }
+
+        booleanBuilder.and(progressInspection.orderBy.oState.eq(CurrentStatus.UNDER_INSPECTION));
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(progressInspection.regDate.desc());
+
+        List<ProgressInspection> resultList = query.fetch();
+
+        List<ProgressInspectionDTO> dtoList = resultList.stream()
+                .map(prod -> ProgressInspectionDTO.builder()
+                        .psId(prod.getPsId())
+                        .psNum(prod.getPsNum())
+                        .oCode(prod.getOrderBy().getOCode())
+                        .psDate(prod.getPsDate())
+                        .psRemarks(prod.getPsRemarks())
+                        .ssId(prod.getSupplierStock().getSsId())
+                        .regDate(prod.getRegDate().toLocalDate())
+                        .mCode(prod.getSupplierStock().getMaterial().getMCode())
+                        .mName(prod.getSupplierStock().getMaterial().getMName())
+                        .oState(prod.getOrderBy().getOState())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<ProgressInspection> countQuery = from(progressInspection).where(booleanBuilder);
         long total = countQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, total);

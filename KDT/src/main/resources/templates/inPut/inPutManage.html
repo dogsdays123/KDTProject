@@ -85,7 +85,7 @@
               <th>납품 코드</th>
               <th>발주 코드</th>
               <th>자재 코드</th>
-              <th>자재명</th>
+              <th style="width: 400px;">자재명</th>
               <th>공급업체</th>
               <th>납품 수량</th>
               <th>납품 예정일</th>
@@ -101,7 +101,7 @@
             </tr>
 
             <!-- 필터링된 리스트가 있으면 각 항목 출력 -->
-            <tr th:each="dto : ${filteredDeliveryRequestList}" style="height: 40px;">
+            <tr th:each="dto : ${filteredDeliveryRequestList}">
               <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
               <td th:text="${dto.drCode}"></td>
               <td th:text="${dto.oCode}"></td>

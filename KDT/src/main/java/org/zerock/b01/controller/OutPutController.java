@@ -170,8 +170,12 @@ public class OutPutController {
     @PostMapping("/confirm")
     public String confirm(@ModelAttribute OutPutDTO outPutDTO, RedirectAttributes redirectAttributes, @RequestParam List<String> opIds) {
         log.info("pp remove post.....#@" + outPutDTO);
-        outputService.confirmOutput(opIds);
-        redirectAttributes.addFlashAttribute("message", "출고 처리 확정이 완료되었습니다.");
+        try {
+            outputService.confirmOutput(opIds);
+            redirectAttributes.addFlashAttribute("message", "출고 처리 확정이 완료되었습니다.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
         return "redirect:outPutList";
     }
 }

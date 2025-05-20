@@ -42,6 +42,8 @@ public class OrderByServiceImpl implements OrderByService {
         orderBy.setOCode(autoGenerateCode.generateCode("ob", ""));
         orderBy.setUserBy(userByRepository.findById(uId).orElseThrow());
         orderBy.setDeliveryProcurementPlan(dpp);
+        orderBy.getDeliveryProcurementPlan().setDppState(CurrentStatus.ORDER_BY);
+        orderBy.getDeliveryProcurementPlan().getProductionPlan().setPpState(CurrentStatus.ORDER_BY);
         if(Integer.parseInt(supplierStockRepository.findLeadTimeByETC(dpp.getSupplier().getSName(), dpp.getMaterial().getMCode())) < 10)
         {orderBy.setOState(CurrentStatus.HOLD_DELIVERY);}
         else {
