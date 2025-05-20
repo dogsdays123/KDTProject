@@ -4,6 +4,8 @@ let dppCode;
 let planForPDF = [];
 let sName;
 let uId;
+let dppNum = 0;
+let orderNum = 0;
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('orderByForm');
@@ -21,14 +23,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const pName = row.children[2].textContent.trim();
             const sName1 = row.children[3].textContent.trim();
             const mName = row.children[4].textContent.trim();
-            const dppNum = row.children[5].textContent.trim();
+            const dppNum1 = row.children[5].textContent.trim();
             const rqNum = row.children[6].textContent.trim();
             const today = new Date().toISOString().split('T')[0];
-            uId = row.children[8].textContent.trim();
+            uId = row.children[9].textContent.trim();
 
             document.getElementById('payDate').value = today;
             sName = sName1;
             dppCode = dppCode1;
+            dppNum = parseInt(dppNum1, 10);
 
             // 모달에 값 주입
             document.getElementById('dppCodeInput').textContent = dppCode1;
@@ -78,13 +81,12 @@ function addOrderBy(button) {
     const dateInputs = container.querySelectorAll('input[type="date"]');
     const radioInputs = container.querySelectorAll('input[type="radio"]');
 
-    const oRemarks = document.getElementById('oRemarks').value;
     const mName = document.getElementById('mNameInput').textContent;
-    console.log(oRemarks);
 
 // text
     const perPrice = textInputs.length > 2 ? textInputs[2].value.trim() : '';
-    const orderAddress = textInputs.length > 3 ? textInputs[3].value.trim() : '';
+    const oRemarks = document.getElementById('oRemarks').value;
+    const orderAddress = textInputs.length > 4 ? textInputs[4].value.trim() : '';
 
 // number
     const oNum = numberInputs.length > 0 ? numberInputs[0].value.trim() : '';
@@ -139,40 +141,58 @@ function addOrderBy(button) {
 
     orderByList.push(item);
 
-    renderOrderByTable();
+    renderOrderByTable(false);
 }
 
 
-function renderOrderByTable() {
+function renderOrderByTable(check) {
     const tbody = document.getElementById('orderByBody');
     tbody.innerHTML = ''; // 초기화
-    let rowIndex = 0;
+    let tempOrderNum = 0;
 
     orderByList.forEach((item, index) => {
+        const currentNum = parseInt(item.oNum, 10);
+
+        if (!check) {
+            if (tempOrderNum + currentNum > dppNum) {
+                alert("조달 수량을 초과하여 주문할 수 없습니다.");
+                removeOrderBy(index, 0);
+                return; // 이 항목은 건너뜀
+            }
+            tempOrderNum += currentNum;
+        }
+
         const row = document.createElement('tr');
+
         //이런식으로 input값 넣어줄거임
         row.innerHTML = `
-      <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
       <td>
-      <input type="hidden" name="orders[${rowIndex}].dppCode" value="${dppCode}">
-      <input type="hidden" name="orders[${rowIndex}].oNum" value="${item.oNum}">
+      <input type="hidden" name="orders[${index}].dppCode" value="${dppCode}">
+      <input type="hidden" name="orders[${index}].oNum" value="${item.oNum}">
         ${item.oNum}
         </td>
-      <td><input type="hidden" name="orders[${rowIndex}].oTotalPrice" value="${item.oTotalPrice}">${item.oTotalPrice}</td>
-      <td><input type="hidden" name="orders[${rowIndex}].oExpectDate" value="${item.oExpectDate}">${item.oExpectDate}</td>
-      <td><input type="hidden" name="orders[${rowIndex}].oRemarks" value="${item.oRemarks}">${item.oRemarks}</td>
+      <td><input type="hidden" name="orders[${index}].oTotalPrice" value="${item.oTotalPrice}">${item.oTotalPrice}</td>
+      <td><input type="hidden" name="orders[${index}].oExpectDate" value="${item.oExpectDate}">${item.oExpectDate}</td>
+      <td><input type="hidden" name="orders[${index}].oRemarks" value="${item.oRemarks}">${item.oRemarks}</td>
       <td class="text-center">
-        <button class="btn btn-sm btn-outline-danger" onclick="removeOrderBy(${index})">삭제</button>
+        <button class="btn btn-sm btn-outline-danger" onclick="removeOrderBy(${index}, ${item.oNum})">삭제</button>
+      </td>
+      <td>
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="previewOrderPDF(${index})">발주서 미리보기</button>
       </td>
     `;
         tbody.appendChild(row);
-        rowIndex++;
     });
+    if (!check) {
+        orderNum = tempOrderNum; // 실제 누적은 여기서 반영
+    }
 }
 
-function removeOrderBy(index) {
+function removeOrderBy(index, oNum) {
+    orderNum -= parseInt(oNum, 10);
+    planForPDF.splice(index, 1);
     orderByList.splice(index, 1);
-    renderOrderByTable();
+    renderOrderByTable(true);
 }
 
 function resetView() {
@@ -187,46 +207,52 @@ function resetView() {
 
 $(document).ready(function () {
 
-    $('#orderInput').on('change', function () {
-        const input = $(this).val();  // 선택된 상품 값
-        loadTotalPrice(input);
+    $('#orderInput').on('input', function () {
+        const orderInput = $(this).val();  // 선택된 상품 값
+        let total;
+
+        if (!orderInput || isNaN(orderInput)) return;
+
+        const unitPrice = parseFloat($('.mPerPrice').val());  // 단가
+        if (isNaN(unitPrice)) return;
+
+        // orderInput이 dppNum보다 큰 경우 경고 메시지 출력하고 값을 제한
+        if (orderInput > dppNum) {
+            alert(`입력값은 ${dppNum}보다 클 수 없습니다.`);
+            $(this).val(dppNum);
+            total = unitPrice * dppNum;
+        } else{
+            total = unitPrice * orderInput;
+        }
+
+        const totalPrice = $('#totalPrice');
+        totalPrice.val(total);  // input 요소일 경우
+        totalPrice.trigger('change');  // 리스너가 있을 경우만 유효
     });
-
 });
-
-function loadTotalPrice(orderInput) {
-    if (!orderInput || isNaN(orderInput)) return;
-
-    const unitPrice = parseFloat($('.mPerPrice').val());  // 단가
-    if (isNaN(unitPrice)) return;
-
-    const total = unitPrice * orderInput;
-
-    const totalPrice = $('#totalPrice');
-    totalPrice.val(total);  // input 요소일 경우
-    totalPrice.trigger('change');  // 리스너가 있을 경우만 유효
-}
-
 
 
 //PDF용
-function previewOrderPDF() {
+function previewOrderPDF(index) {
     const selectedPlans = planForPDF;
+
     if (selectedPlans.length === 0) {
-        alert('조달계획을 최소 1개 이상 선택해주세요.');
+        alert('조달계획을 선택해주세요.');
         return;
     }
 
     // const formData = collectFormData();
     const formData = {
-        pdfs: selectedPlans
+        pdfs: [selectedPlans[index]]
     };
+
+    console.log(selectedPlans);
 
     console.log(JSON.stringify(formData));  // formData의 JSON 문자열로 출력
 
     fetch('/orderBy/pdf/preview', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData)
     })
         .then(res => res.blob())
@@ -238,8 +264,7 @@ function previewOrderPDF() {
 }
 
 
-
-function generateOrderPDF(){
+function generateOrderPDF() {
     const selectedPlans = planForPDF;
     if (selectedPlans.length === 0) {
         alert('조달계획을 최소 1개 이상 선택해주세요.');
@@ -251,7 +276,7 @@ function generateOrderPDF(){
 
     fetch('/orderBy/pdf/download', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData)
     })
         .then(res => res.blob())
