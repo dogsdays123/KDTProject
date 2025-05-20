@@ -88,6 +88,11 @@ public class SupplierStockServiceImpl implements SupplierStockService {
     }
 
     @Override
+    public List<String> findAllMaterialNames() {
+        return supplierStockRepository.findAllDistinctMaterialNames();
+    }
+
+    @Override
     public List<String> findMaterialNamesBySupplierId(Long sId) {
         return supplierStockRepository.findDistinctMaterialNamesBySupplierId(sId);
     }

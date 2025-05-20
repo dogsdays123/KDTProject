@@ -28,7 +28,7 @@
         <li class="nav-item"><a href="/mainPage/beforeApproval" class="nav-link" title="시작하기"><i
                 class="bi bi-stopwatch"></i>&nbsp;&nbsp;승인대기</a></li>
         </th:block>
-        <th:block th:if="${userBy.status == '승인' && userBy.userJob != '협력회사'}">
+        <th:block th:if="${userBy.status == '승인' && userBy.userJob != '협력회사' || userBy.status == '관리자'}">
         <li class="nav-item"><a href="/mainPage/main" class="nav-link" title="시작하기"><i
                 class="bi bi-skip-start-circle-fill"></i>&nbsp;&nbsp;시작하기</a></li>
         </th:block>
@@ -184,6 +184,7 @@
             </div>
         </div>
         <!-- 벨 아이콘 (알림 아이콘) -->
+        <th:block th:if="${userBy.userJob != '협력회사'}">
         <div class="user-info">
             <div class="tooltip-wrap-left">
                 <i class="bi bi-bell-fill" onclick="toggleAlertDropdown()" id="bellIcon" style="position: relative; font-size: 1.5rem;"></i>
@@ -204,9 +205,13 @@
             <div class="alert-dropdown" id="alertDropdown" style="display: none;">
                 <div id="headerAlert">
                     <a href="/dpp/dppRegister"><span th:if="${session.warnMessage}" th:text="${session.warnMessage}" style="color: red;"></span></a>
+                    <div th:if="${session.warnMessage == null}">
+                        <a><span style="color: gray;">알림이 없습니다</span></a>
+                    </div>
                 </div>
             </div>
         </div>
+        </th:block>
     </div>
 </div>
 <!-- header end -->

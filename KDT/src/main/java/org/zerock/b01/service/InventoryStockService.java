@@ -10,4 +10,5 @@ public interface InventoryStockService {
     void registerIS(InventoryStockDTO inventoryStockDTO);
     void modifyIS(InventoryStockDTO inventoryStockDTO, Long isId);
     void removeIS(List<Long> isIds);
+    List<InventoryStockDTO> findStockByMaterialCode(String mCode);
 }

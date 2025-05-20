@@ -31,13 +31,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // 기본 제출 막기
-
+        const mCode = document.getElementById('mCode').value;
         const planCode = document.getElementById('planCodeInput').textContent;
         const releaseQty = $('#procuredQty').val();
         const uId = 'someUserId';
 
         // submitDppForm 함수 호출
-        submitDppForm(planCode, releaseQty, uId);
+        submitDppForm(mCode, planCode, releaseQty, uId);
 
         alert(`조달 계획이 등록되었습니다`);
 
@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const modal = bootstrap.Modal.getInstance(document.getElementById('orderByModal'));
         if (modal) modal.hide();
 
-        if (tbody) tbody.innerHTML = '';
-        orderByList.length = 0;
+        // if (tbody) tbody.innerHTML = '';
+        // orderByList.length = 0;
     });
 
     $('#requiredQty').on('input', function () {
@@ -430,9 +430,10 @@ function loadProcureNum(mCode) {
     });
 }
 
-function submitDppForm(planCode, releaseQty, uId) {
+function submitDppForm(mCode, planCode, releaseQty, uId) {
     const formData = {
         uId: uId,
+        mCode: mCode,
         planCode: planCode,
         releaseQty: releaseQty,
         availableQty: availableQty// 자동으로 계산된 출고 수량
@@ -446,7 +447,7 @@ function submitDppForm(planCode, releaseQty, uId) {
         data: formData,
         success: function(response) {
             // 출고 등록 성공 후 처리
-            alert('출고 등록이 완료되었습니다.');
+            // alert('출고 등록이 완료되었습니다.');
         },
         error: function(xhr, status, error) {
             console.log("에러 발생:", error);

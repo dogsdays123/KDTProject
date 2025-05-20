@@ -225,15 +225,15 @@ public class SupplierController {
         if ("관리자".equals(role)) {
             responseDTO = pageService.adminSupplierStockWithAll(pageRequestDTO);
         } else {
-            // 일반 공급업체
             SupplierDTO supplierDTO = supplierService.findByUserId(uId);
             Long sId = supplierDTO.getSId();
             log.info("#### sId: " + sId);
 
             responseDTO = pageService.supplierStockWithAll(pageRequestDTO, sId);
-            List<String> materialNames = supplierStockService.findMaterialNamesBySupplierId(sId);
-            model.addAttribute("materialNames", materialNames);
         }
+        List<String> materialNames = supplierStockService.findAllMaterialNames();
+        model.addAttribute("materialNames", materialNames);
+
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
@@ -269,10 +269,13 @@ public class SupplierController {
         for (int i = 0; i < mNames.size(); i++) {
             SupplierStockDTO supplierStockDTO = new SupplierStockDTO();
             supplierStockDTO.setSId(sId);
-            supplierStockDTO.setMCode(materialRepository.findMCodeByMName(mNames.get(i)));
+            List<String> mCodes = materialRepository.findMCodeByMName(mNames.get(i));
+            if (mCodes.isEmpty()) {
+                throw new IllegalStateException("해당 자재명이 존재하지 않습니다: " + mNames.get(i));
+            }
+            supplierStockDTO.setMCode(mCodes.get(0)); // 첫 번째 mCode 사용
             supplierStockDTO.setSsNum(ssNums.get(i));
             supplierStockDTO.setSsMinOrderQty(ssMinOrderQty.get(i));
-//            supplierStockDTO.setUnitPrice(unitPrices.get(i));
             supplierStockDTO.setLeadTime(leadTimes.get(i));
             supplierStockDTOS.add(supplierStockDTO);
         }

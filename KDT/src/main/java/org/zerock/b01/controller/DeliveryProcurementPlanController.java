@@ -43,6 +43,8 @@ public class DeliveryProcurementPlanController {
     private final SupplierStockRepository supplierStockRepository;
     private final BomRepository bomRepository;
     private final InventoryStockRepository inventoryStockRepository;
+    private final InventoryStockService inventoryStockService;
+    private final OutputService outputService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -235,6 +237,7 @@ public class DeliveryProcurementPlanController {
 
     @PostMapping("/outPutRegister")
     public String outPutRegisterByDPP(@RequestParam("uId") String uId,
+                                      @RequestParam("mCode") Optional<String> mCode,
                            @RequestParam("planCode") Optional<String> planCode,
                            @RequestParam("availableQty") Optional<String> availableQty,
                            @ModelAttribute DppFormDTO form,
@@ -242,7 +245,25 @@ public class DeliveryProcurementPlanController {
                            RedirectAttributes redirectAttributes,
                            HttpServletRequest request) throws IOException {
 
-        log.info("Received planCode: {}, releaseQty: {}", planCode.orElse("No planCode"), availableQty.orElse("No releaseQty"));
+        log.info("Received mCode: {}, planCode: {}, releaseQty: {}", mCode.orElse("No mCode"), planCode.orElse("No planCode"), availableQty.orElse("No releaseQty"));
+
+        if (mCode.isPresent() && planCode.isPresent() && availableQty.isPresent()) {
+            try {
+                int qty = Integer.parseInt(availableQty.get());
+                if (qty > 0) {
+                    OutPutDTO outPutDTO = new OutPutDTO();
+                    outPutDTO.setMCode(mCode.get());
+                    outPutDTO.setPpCode(planCode.get());
+                    outPutDTO.setOpANum(String.valueOf(qty));
+                    outputService.registerOutput(outPutDTO);
+                    redirectAttributes.addFlashAttribute("message", "출고가 정상 처리되었습니다.");
+                }
+            } catch (NumberFormatException e) {
+                redirectAttributes.addFlashAttribute("error", "출고 수량이 올바르지 않습니다.");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("error", "출고 등록에 필요한 정보가 부족합니다.");
+        }
 
         String actualPlanCode = planCode.orElse("DefaultPlanCode");
         String actualReleaseQty = availableQty.orElse("0");

@@ -33,4 +33,7 @@ public interface SupplierStockRepository extends JpaRepository<SupplierStock, Lo
 
     @Query("SELECT DISTINCT s.material.mName FROM SupplierStock s WHERE s.supplier.sId = :sId")
     List<String> findDistinctMaterialNamesBySupplierId(@Param("sId") Long sId);
+
+    @Query("SELECT DISTINCT s.material.mName FROM SupplierStock s WHERE s.material.mName IS NOT NULL")
+    List<String> findAllDistinctMaterialNames();
 }

@@ -24,10 +24,10 @@
                         <label class="form-label small">자재명</label>
                         <select name="mName" class="form-select form-select-sm searchSelect" title="자재명">
                             <option value="" th:selected="${selectedMName == ''}">전체</option>
-                            <option th:each="dto : ${filteredDeliveryRequestList}"
-                                    th:value="${dto.mName}"
-                                    th:text="${dto.mName}"
-                                    th:selected="${dto.mName == selectedMName}">
+                            <option th:each="name : ${mNameList}"
+                                    th:value="${name}"
+                                    th:text="${name}"
+                                    th:selected="${name == selectedMName}">
                             </option>
                         </select>
                     </div>
