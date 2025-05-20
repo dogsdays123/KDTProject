@@ -97,8 +97,8 @@ function addOrderBy(button) {
     const payDate = dateInputs.length > 1 ? dateInputs[1].value.trim() : '';
 
 // radio (하나만 선택되도록 그룹화된 라디오에서 선택된 값 찾기)
-    const payMethod = container.querySelector('input[name="payMethod"]:checked')?.value || '';
-    const payDocument = container.querySelector('input[name="payDocument"]:checked')?.value || '';
+    const payMethod = container.querySelector('input[name="payMethods"]:checked')?.value || '';
+    const payDocument = container.querySelector('input[name="payDocuments"]:checked')?.value || '';
 
 // 유효성 체크
     if (!oNum || !oTotalPrice || !oExpectDate || !perPrice || !orderAddress || !payDate ||
@@ -169,6 +169,10 @@ function renderOrderByTable(check) {
       <td>
       <input type="hidden" name="orders[${index}].dppCode" value="${dppCode}">
       <input type="hidden" name="orders[${index}].oNum" value="${item.oNum}">
+      <input type="hidden" name="orders[${index}].orderAddress" value="${item.orderAddress}">
+      <input type="hidden" name="orders[${index}].payDate" value="${item.payDate}">
+      <input type="hidden" name="orders[${index}].payMethod" value="${item.payMethod}">
+      <input type="hidden" name="orders[${index}].payDocument" value="${item.payDocument}">
         ${item.oNum}
         </td>
       <td><input type="hidden" name="orders[${index}].oTotalPrice" value="${item.oTotalPrice}">${item.oTotalPrice}</td>
@@ -178,10 +182,7 @@ function renderOrderByTable(check) {
         <button class="btn btn-sm btn-outline-danger" onclick="removeOrderBy(${index}, ${item.oNum})">삭제</button>
       </td>
       <td>
-         <div style="display: flex; gap: 8px; justify-content: center;">
     <button type="button" class="btn btn-outline-primary btn-sm" onclick="previewOrderPDF(${index})">미리보기</button>
-    <button type="button" class="btn btn-success btn-sm" onclick="generateOrderPDF(${index})">발행</button>
-    </div>
     </td>
     `;
         tbody.appendChild(row);
@@ -240,7 +241,7 @@ function previewOrderPDF(index) {
     const selectedPlans = planForPDF;
 
     if (selectedPlans.length === 0) {
-        alert('조달계획을 선택해주세요.');
+        alert('발주를 선택해주세요.');
         return;
     }
 

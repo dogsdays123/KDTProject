@@ -21,36 +21,22 @@
             <form >
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
-                        <label class="form-label small">생산 계획 코드</label>
-                        <select class="form-select form-select-sm"  name="ppCode">
+                        <label class="form-label small">발주 코드</label>
+                        <select class="form-select form-select-sm searchSelect" id="obCode">
                             <option value="" selected>전체</option>
+                            <th:block th:each="ob : ${orderByList}">
+                                <option th:value="${ob.getOCode()}" th:text="${ob.getOCode()}"></option>
+                            </th:block>
                         </select>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label small">조달 계획 코드</label>
-                        <select class="form-select form-select-sm" id="dppCode" name="dppCode">
-                            <option value="" selected>전체</option>
-                        </select>
-                        <!-- 서버에서 렌더링된 mNameListHTML HTML을 숨겨두는 div -->
-                        <div id="dppCodeHTML" style="display: none;">
-                            <option value="" selected>전체</option>
-                        </div>
-                    </div>
-
                     <div class="col-md-2">
                         <label for="mName" class="form-label small">자재명</label>
-                        <select class="form-select form-select-sm" id="mName" name="mName">
+                        <select class="form-select form-select-sm searchSelect" id="mName">
                             <option value="" selected>전체</option>
+                            <th:block th:each="m : ${materialList}">
+                                <option th:value="${m.getMName()}" th:text="${m.getMName()}"></option>
+                            </th:block>
                         </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="mCode" class="form-label small">자재코드</label>
-                        <select class="form-select form-select-sm" id="mCode" name="mCode">
-                            <option value="" selected>전체</option>
-                        </select>
-                        <div id="mCodeHTML" style="display: none;">
-                            <option value="" selected>전체</option>
-                        </div>
                     </div>
                     <div class="col-md-1">
                         <label for="dppState" class="form-label small">상태</label>
@@ -84,13 +70,13 @@
             <div class="d-flex justify-content-end mb-2">
                 <form>
                     <div class="col-auto">
-<!--                        <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size"-->
-<!--                                onchange="this.form.submit()">-->
-<!--                            <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>-->
-<!--                            <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>-->
-<!--                            <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>-->
-<!--                            <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>-->
-<!--                        </select>-->
+                        <select class="form-select form-select-sm" title="정렬 갯수 필터" name="size"
+                                onchange="this.form.submit()">
+                            <option value="10" th:selected="${pageRequestDTO.size == 10}">10개씩</option>
+                            <option value="20" th:selected="${pageRequestDTO.size == 20}">20개씩</option>
+                            <option value="30" th:selected="${pageRequestDTO.size == 30}">30개씩</option>
+                            <option value="50" th:selected="${pageRequestDTO.size == 50}">50개씩</option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -100,28 +86,38 @@
                         <thead class="table-light small text-center">
                         <tr>
                             <th><input type="checkbox" id="selectAll"></th>
-                            <th>생산 계획 코드</th>
-                            <th>조달 계획 코드</th>
-                            <th>자재 코드</th>
+                            <th>발주 코드</th>
+                            <th>발주일</th>
                             <th>자재명</th>
-                            <th>조달 수량</th>
-                            <th>요구 수량</th>
-                            <th>조달 납기일</th>
+                            <th>리드 타임</th>
+                            <th>발주 수량</th>
                             <th>공급 업체</th>
-                            <th>등록자</th>
-                            <th>등록일</th>
+                            <th>총 금액</th>
+                            <th>납기일</th>
+                            <th>발주자</th>
                             <th>상태</th>
-                            <th>수정</th>
                         </tr>
                         </thead>
                         <tbody>
-<!--                        <tr th:if="${responseDTO.dtoList == null or #lists.isEmpty(responseDTO.dtoList)}">-->
-<!--                            <td colspan="15" class="text-center" style="padding: 20px 0;">-->
-<!--                                등록된 생산 계획이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.-->
-<!--                            </td>-->
-<!--                        </tr>-->
-                        <tr>
+                        <tr th:if="${responseDTO.dtoList == null or #lists.isEmpty(responseDTO.dtoList)}">
+                            <td colspan="15" class="text-center" style="padding: 20px 0;">
+                                등록된 구매 발주서가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
+                            </td>
+                        </tr>
+                        <tr th:each="dto:${responseDTO.dtoList}">
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
+                            <td th:text="${dto.getOCode()}"></td>
+                            <td th:text="${#temporals.format(dto.getORegDate(), 'yyyy-MM-dd')}"></td>
+                            <td th:text="${dto.getMName()}"></td>
+                            <td th:text="${dto.getLeadTime()}"></td>
+                            <td th:text="${dto.getONum()}"></td>
+                            <td th:text="${dto.getSName()}"></td>
+                            <td th:text="${dto.getOTotalPrice()}"></td>
+                            <td th:text="${dto.getOExpectDate()}"></td>
+                            <td th:text="${dto.getUId()}"></td>
+                            <td class="CheckState"
+                                th:data-state="${dto.getOState() != null ? dto.getOState() : 'UNKNOWN'}">
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -130,115 +126,55 @@
             <div>
                 <div class="text-start">
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-danger btn-sm" id="openRemoveModal">
-                            선택 항목 삭제
-                        </button>
+                        <button type="button" id="orderDocPDF" class="btn btn-success btn-sm">선택된 항목 PDF 발행</button>
                     </div>
-<!--                    <div class="d-flex justify-content-center">-->
-<!--                        <ul class="pagination flex-wrap">-->
-<!--                            <li class="page-item" th:if="${responseDTO.prev}">-->
-<!--                                <a class="page-link" th:data-num="${responseDTO.start -1}"><</a>-->
-<!--                            </li>-->
+                    <div class="d-flex justify-content-center">
+                        <ul class="pagination flex-wrap">
+                            <li class="page-item" th:if="${responseDTO.prev}">
+                                <a class="page-link" th:data-num="${responseDTO.start -1}"><</a>
+                            </li>
 
-<!--                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">-->
-<!--                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">-->
-<!--                                    <a class="page-link" th:data-num="${i}">[[${i}]]</a>-->
-<!--                                </li>-->
-<!--                            </th:block>-->
+                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
+                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                    <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                </li>
+                            </th:block>
 
-<!--                            <li class="page-item" th:if="${responseDTO.next}">-->
-<!--                                <a class="page-link" th:data-num="${responseDTO.end +1}">></a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
+                            <li class="page-item" th:if="${responseDTO.next}">
+                                <a class="page-link" th:data-num="${responseDTO.end +1}">></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="purchaseOrderModalLabel">구매 요청 등록</h5>&nbsp;&nbsp;
+                    <h5 class="modal-title" id="pdfModalLabel">PDF 발행</h5>&nbsp;&nbsp;
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="purchaseOrderForm">
+                    <form id="pdfModalForm">
                         <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                             <table class="table table-sm table-bordered table-hover align-middle fs-6">
                                 <thead class="table-light small text-center">
                                 <tr>
-                                    <th>조달 계획 코드</th>
+                                    <th>발주 코드</th>
+                                    <th>발주일</th>
                                     <th>자재명</th>
-                                    <th>조달 수량</th>
-                                    <th>조달 납기일</th>
+                                    <th>리드 타임</th>
+                                    <th>발주 수량</th>
                                     <th>공급 업체</th>
+                                    <th>총 금액</th>
+                                    <th>납기일</th>
+                                    <th>발주자</th>
+                                    <th>PDF</th>
                                 </tr>
                                 </thead>
-                                <tbody id="procureTableBody">
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary btn-sm">요청 등록</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="ModifyModal" tabindex="-1" aria-labelledby="ModifyModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ModifyModalLabel">조달 계획 수정</h5>&nbsp;&nbsp;
-                    <small class="text-muted mt-2 d-block"><span class="text-danger">*</span> 항목은 필수 입력 항목입니다</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="ModifyModalForm">
-                        <div class="row g-3 mb-3">
-                            <div class="col-12">
-                                <label class="form-label"><span class="text-danger">*</span> 자재 코드</label>
-                                <input type="text" id="ppProductCode" class="form-control form-control-sm" required>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label"><span class="text-danger">*</span> 상품명</label>
-                                <input type="text" id="ppProductName" class="form-control form-control-sm" required>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary btn-sm">수정</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="RemoveModal" tabindex="-1" aria-labelledby="RemoveModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="RemoveModalLabel">조달 계획 삭제</h5>&nbsp;&nbsp;
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="RemoveDelForm">
-                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                            <table class="table table-sm table-bordered table-hover align-middle fs-6">
-                                <thead class="table-light small text-center">
-                                <tr>
-                                    <th>조달 계획 코드</th>
-                                    <th>자재명</th>
-                                    <th>조달 수량</th>
-                                    <th>조달 납기일</th>
-                                    <th>공급 업체</th>
-                                </tr>
-                                </thead>
-                                <tbody id="deleteTableBody">
+                                <tbody id="pdfBody">
                                 <!-- JS로 선택된 사원 목록 추가 -->
                                 </tbody>
                             </table>
@@ -247,14 +183,39 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-danger btn-sm">삭제</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="generateOrderPDF()">발행</button>
                 </div>
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<!--    <script th:src="@{/js/dpp/dppList.js}"></script>-->
+    <script th:src="@{/js/document/orderDoc.js}"></script>
 </div>
 </body>
 <script layout:fragment="script" th:inline="javascript">
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if (target.tagName !== 'A') {
+            return
+        }
+
+        const num = target.getAttribute("data-num")
+
+        const formObj = document.querySelector("form")
+
+        formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+        formObj.submit()
+    }, false)
+
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location = '/orderBy/orderByRegister'
+    }, false)
 </script>

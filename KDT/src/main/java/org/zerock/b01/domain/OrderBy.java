@@ -1,5 +1,6 @@
 package org.zerock.b01.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +26,15 @@ public class OrderBy extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CurrentStatus oState;
 
+    private String orderAddress;
+
     private String oRemarks;
+
+    private String payDate;
+
+    private String payMethod;
+
+    private String payDocument;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uId", nullable = false)
