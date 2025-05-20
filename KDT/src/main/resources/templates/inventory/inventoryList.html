@@ -101,9 +101,9 @@
                             <th><input type="checkbox" id="selectAll"></th>
                             <th>상품코드</th>
                             <th>상품</th>
-                            <th>품목</th>
+                            <th style="width: 200px;">품목</th>
                             <th>자재 코드</th>
-                            <th>자재명</th>
+                            <th style="width: 400px;">자재명</th>
                             <th>재고 수량</th>
                             <th>가용 수량</th>
                             <th>위치</th>
@@ -145,7 +145,7 @@
                 <div class="d-flex justify-content-center">
                     <ul class="pagination flex-wrap">
                         <li class="page-item" th:if="${responseDTO.prev}">
-                            <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                            <a class="page-link" th:data-num="${responseDTO.start -1}">></a>
                         </li>
 
                         <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
@@ -155,7 +155,7 @@
                         </th:block>
 
                         <li class="page-item" th:if="${responseDTO.next}">
-                            <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                            <a class="page-link" th:data-num="${responseDTO.end +1}"><</a>
                         </li>
                     </ul>
                 </div>

@@ -82,7 +82,7 @@
                             <th><input type="checkbox" id="selectAll" title="전체선택"></th>
                             <th>출고 코드</th>
                             <th>자재 코드</th>
-                            <th>자재명</th>
+                            <th style="width: 400px;">자재명</th>
                             <th>출고 수량</th>
                             <th>출고일</th>
                             <th>상태</th>
@@ -90,9 +90,9 @@
                         </thead>
                         <tbody th:with="link = ${pageRequestDTO.getLink()}">
                         <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
-                            <td colspan="10" class="text-center" style="padding: 20px 0;">재고에 등록된 자재가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
+                            <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 출고 정보가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
-                        <tr th:each="dto:${responseDTO.dtoList}" style="height: 40px;">
+                        <tr th:each="dto:${responseDTO.dtoList}">
                             <td><input type="checkbox" class="selectPlan"></td>
                             <td th:text="${dto.opCode}"></td>
                             <td th:text="${dto.mCode}"></td>

@@ -84,7 +84,7 @@
                             <th>납품 코드</th>
                             <th>발주 코드</th>
                             <th>자재 코드</th>
-                            <th>자재명</th>
+                            <th style="width: 400px;">자재명</th>
                             <th>입고 수량</th>
                             <th>합격 수량</th>
                             <th>불량 수량</th>
@@ -97,7 +97,7 @@
                         <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
                             <td colspan="11" class="text-center" style="padding: 20px 0;">등록된 입고 검수 완료 항목이 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
-                        <tr th:each="dto:${responseDTO.dtoList}" style="height: 40px;">
+                        <tr th:each="dto:${responseDTO.dtoList}">
                             <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
                             <td th:text="${dto.ipCode}"></td>
                             <td th:text="${dto.drCode}"></td>
@@ -216,7 +216,7 @@
         </div>
     </div>
     <div class="modal fade" id="purchaseOrderModalDel" tabindex="-1" aria-labelledby="purchaseOrderModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <form th:action="@{/inPut/remove}" method="post" id="purchaseOrderDelForm">
             <div class="modal-content">
                 <div class="modal-header">

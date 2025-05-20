@@ -16,7 +16,13 @@ const stateMap = {
     READY_SUCCESS: "준비 완료",
     DELIVERY_REQUESTED: "납품 요청됨",
     DELIVERY_DELIVERED: "납품 완료",
-    DPP_SUCCESS: "등록 완료"  // 등록 완료
+    DPP_SUCCESS: "등록 완료"  ,
+    DPP: "조달",  // 조달
+    ORDER_BY: "발주",  // 발주
+    DELIVERY_REQUEST: "납품", // 납품
+    INPUT: "입고",
+    INPUT_SUCCESS: "입고 완료",// 입고
+    OUTPUT: "출고" // 출고
 
 };
 

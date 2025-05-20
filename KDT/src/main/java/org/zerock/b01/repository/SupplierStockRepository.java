@@ -8,6 +8,7 @@ import org.zerock.b01.domain.SupplierStock;
 import org.zerock.b01.service.AllSearch;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SupplierStockRepository extends JpaRepository<SupplierStock, Long>, AllSearch {
 
@@ -36,4 +37,8 @@ public interface SupplierStockRepository extends JpaRepository<SupplierStock, Lo
 
     @Query("SELECT DISTINCT s.material.mName FROM SupplierStock s WHERE s.material.mName IS NOT NULL")
     List<String> findAllDistinctMaterialNames();
+
+    @Query("SELECT s FROM SupplierStock s WHERE s.material.mCode = :mCode AND s.supplier.sId = :sId")
+    List<SupplierStock> findByMaterialMCodeAndSupplierSId(@Param("mCode") String mCode, @Param("sId") Long sId);
 }
+

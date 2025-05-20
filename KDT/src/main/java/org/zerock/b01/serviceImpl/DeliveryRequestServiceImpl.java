@@ -9,10 +9,7 @@ import org.zerock.b01.domain.*;
 import org.zerock.b01.dto.DeliveryRequestDTO;
 import org.zerock.b01.dto.InputDTO;
 import org.zerock.b01.dto.ProgressInspectionDTO;
-import org.zerock.b01.repository.DeliveryRequestRepository;
-import org.zerock.b01.repository.MaterialRepository;
-import org.zerock.b01.repository.OrderByRepository;
-import org.zerock.b01.repository.SupplierRepository;
+import org.zerock.b01.repository.*;
 import org.zerock.b01.service.DeliveryRequestService;
 
 import java.time.LocalDate;
@@ -40,6 +37,8 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
 
     @Autowired
     AutoGenerateCode autoGenerateCode;
+    @Autowired
+    private SupplierStockRepository supplierStockRepository;
 
 
     @Override
@@ -49,6 +48,8 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
         OrderBy orderBy = orderByRepository.findByOrderByCode(deliveryRequestDTO.getOCode()).orElseThrow(()->new RuntimeException("OrderBy not found"));
         deliveryRequest.setOrderBy(orderBy);
 
+        orderBy.getDeliveryProcurementPlan().getProductionPlan().setPpState(CurrentStatus.DELIVERY_REQUEST);
+        orderBy.getDeliveryProcurementPlan().setDppState(CurrentStatus.DELIVERY_REQUEST);
         orderBy.setOState(CurrentStatus.DELIVERY_REQUESTED);
         orderByRepository.save(orderBy);
 
@@ -78,6 +79,25 @@ public class DeliveryRequestServiceImpl implements DeliveryRequestService {
             deliveryRequest.setDrState(CurrentStatus.DELIVERY_DELIVERED);
             OrderBy orderBy = deliveryRequest.getOrderBy();
             orderBy.setOState(CurrentStatus.DELIVERY_DELIVERED);
+
+            String mCode = deliveryRequest.getMaterial().getMCode();
+            Long sId = deliveryRequest.getSupplier().getSId();
+            int deliveryQtyInt = Integer.parseInt(deliveryRequest.getDrNum());
+
+            List<SupplierStock> stocks = supplierStockRepository.findByMaterialMCodeAndSupplierSId(mCode, sId);
+
+            for (SupplierStock stock : stocks) {
+                int currentStock = Integer.parseInt(stock.getSsNum());
+
+                if (currentStock < deliveryQtyInt) {
+                    throw new RuntimeException("재고 부족: 현재 재고 " + currentStock + ", 요청 납품 수량 " + deliveryQtyInt);
+                }
+
+                stock.setSsNum(String.valueOf(currentStock - deliveryQtyInt));
+            }
+
+            deliveryRequestRepository.save(deliveryRequest);
+            orderByRepository.save(orderBy);
         }
     }
 

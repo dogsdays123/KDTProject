@@ -124,7 +124,8 @@ public class OutputServiceImpl implements OutputService {
             OutPut outPut = outputRepository.findById(opId)
                     .orElseThrow(() -> new RuntimeException("출고 항목을 찾을 수 없습니다: " + opId));
 
-            outPut.setOpState(CurrentStatus.APPROVAL);
+            outPut.getProductionPlan().setPpState(CurrentStatus.OUTPUT);
+            outPut.setOpState(CurrentStatus.OUTPUT_SUCCESS);
 
             int opANum = Integer.parseInt(outPut.getOpANum());
             String mCode = outPut.getMaterial().getMCode();

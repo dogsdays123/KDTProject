@@ -80,7 +80,7 @@
                 </form>
             </div>
             <div class="bg-white rounded">
-                <div style="max-height: 550px; overflow-y: auto;">
+                <div style="max-height: 450px; overflow-y: auto;">
                     <table class="table table-sm table-bordered table-hover align-middle fs-6">
                         <thead class="table-light small text-center">
                         <tr>
@@ -88,14 +88,14 @@
                             <th>리드 타임</th>
                             <th>생산 상품명</th>
                             <th>공급 업체</th>
-                            <th>자재명</th>
+                            <th style="width: 350px;">자재명</th>
                             <th>조달 수량</th>
                             <th>요구 수량</th>
                             <th>조달 납기일</th>
                             <th>등록일</th>
                             <th>작성자</th>
                             <th>상태</th>
-                            <th>신규 등록</th>
+                            <th>발주 등록</th>
                         </tr>
                         </thead>
                         <tbody id="plansTable" th:with="link = ${pageRequestDTO.getLink()}">
@@ -104,7 +104,7 @@
                                 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
                             </td>
                         </tr>
-                        <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;">
+                        <tr th:each="dto:${responseDTO.dtoList}" class="hover-row" style="position: relative;" >
                             <td th:text="${dto.getDppCode()}"></td>
                             <td th:text="${dto.getLeadTime()}"></td>
                             <td th:text="${dto.getPName()}"></td>

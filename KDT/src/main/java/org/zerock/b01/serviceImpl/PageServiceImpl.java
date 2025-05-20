@@ -488,4 +488,23 @@ public class PageServiceImpl implements PageService {
                 .total((int) result.getTotalElements())
                 .build();
     }
+
+    @Override
+    public PageResponseDTO<ProgressInspectionDTO> supplierProgressInspectionWithAll(PageRequestDTO pageRequestDTO, Long sId){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+        LocalDate psDate = pageRequestDTO.getPsDate();
+        String psState = pageRequestDTO.getPsState();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<ProgressInspectionDTO> result = progressInspectionRepository.supplierProgressInspectionSearchWithAll(types, keyword, mName, psDate, psState, sId, pageable);
+
+        return PageResponseDTO.<ProgressInspectionDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
 }

@@ -73,7 +73,7 @@
                 </form>
             </div>
             <div class="bg-white rounded">
-                <div style="max-height: 550px; overflow-y: auto;">
+                <div style="max-height: 450px; overflow-y: auto;">
                     <table class="table table-sm table-bordered table-hover align-middle fs-6">
                         <thead class="table-light small text-center">
                         <tr>
@@ -81,7 +81,7 @@
                             <th>발주 코드</th>
                             <th>납품 코드</th>
                             <th>자재 코드</th>
-                            <th>자재명</th>
+                            <th style="width: 500px;">자재명</th>
                             <th>요청 수량</th>
                             <th>희망 납기일</th>
                             <th>상태</th>
@@ -91,7 +91,7 @@
                         <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
                             <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 납품 요청 정보가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
-                        <tr th:each="dto:${responseDTO.dtoList}" style="height: 40px;">
+                        <tr th:each="dto:${responseDTO.dtoList}">
                             <td><input type="checkbox" class="selectPlan"></td>
                             <td th:text="${dto.oCode}"></td>
                             <td th:text="${dto.drCode}"></td>

@@ -114,9 +114,9 @@
                                 <th style="width: 20px;"><input type="checkbox" id="selectAll" title="전체선택"></th>
                                 <th style="width: 80px;">상품</th>
                                 <th style="width: 100px;">부품</th>
-                                <th style="width: 120px;">자재 코드</th>
+                                <th style="width: 90px;">자재 코드</th>
                                 <th style="width: 50px;">자재 유형</th>
-                                <th style="width: 190px;">자재명</th>
+                                <th style="width: 220px;">자재명</th>
                                 <th style="width: 70px;">최소 공급 수량</th>
                                 <th style="width: 100px;">규격</th>
                                 <th style="width: 40px;">무게</th>
@@ -164,7 +164,7 @@
                     <div class="d-flex justify-content-center">
                         <ul class="pagination flex-wrap">
                             <li class="page-item" th:if="${responseDTO.prev}">
-                                <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                                <a class="page-link" th:data-num="${responseDTO.start -1}"><</a>
                             </li>
 
                             <th:block th:each="i: ${#numbers.sequence(responseDTO.start,responseDTO.end)}">
@@ -174,7 +174,7 @@
                             </th:block>
 
                             <li class="page-item" th:if="${responseDTO.next}">
-                                <a class="page-link" th:data-num="${responseDTO.end +1}">Next</a>
+                                <a class="page-link" th:data-num="${responseDTO.end +1}">></a>
                             </li>
                         </ul>
                     </div>
