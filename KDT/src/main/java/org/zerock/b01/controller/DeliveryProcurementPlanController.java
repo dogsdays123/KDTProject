@@ -124,8 +124,11 @@ public class DeliveryProcurementPlanController {
         PageResponseDTO<DppListAllDTO> responseDTO =
                 pageService.dppListWithAll(pageRequestDTO);
 
-        for (DppListAllDTO dto : responseDTO.getDtoList()) {
-            dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+        // Null 체크를 추가하여 NullPointerException 방지
+        if (responseDTO.getDtoList() != null) {
+            for (DppListAllDTO dto : responseDTO.getDtoList()) {
+                dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+            }
         }
 
         if (pageRequestDTO.getTypes() != null) {

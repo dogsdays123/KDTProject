@@ -78,8 +78,10 @@ public class OrderByController {
         PageResponseDTO<DppListAllDTO> responseDTO =
                 pageService.dppListWithAll(pageRequestDTO);
 
-        for (DppListAllDTO dto : responseDTO.getDtoList()) {
-            dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+        if(responseDTO.getDtoList() != null){
+            for (DppListAllDTO dto : responseDTO.getDtoList()) {
+                dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+            }
         }
 
         if (pageRequestDTO.getTypes() != null) {
@@ -130,8 +132,10 @@ public class OrderByController {
         PageResponseDTO<OrderByListAllDTO> responseDTO =
                 pageService.orderByWithAll(pageRequestDTO, "ob");
 
-        for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
-            dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+        if(responseDTO.getDtoList() != null) {
+            for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
+                dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+            }
         }
 
         if (pageRequestDTO.getTypes() != null) {

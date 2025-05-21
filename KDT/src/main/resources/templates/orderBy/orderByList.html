@@ -118,7 +118,7 @@
                                 <th style="width: 30px;">수정</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody th:with="link = ${pageRequestDTO.getLink()}">
                             <tr th:if="${responseDTO.dtoList == null or #lists.isEmpty(responseDTO.dtoList)}">
                                 <td colspan="15" class="text-center" style="padding: 20px 0;">
                                     등록된 구매 발주서가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.

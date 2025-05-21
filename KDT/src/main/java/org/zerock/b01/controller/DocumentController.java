@@ -88,8 +88,10 @@ public class DocumentController {
         PageResponseDTO<OrderByListAllDTO> responseDTO =
                 pageService.orderByWithAll(pageRequestDTO, "obd");
 
-        for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
-            dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+        if(responseDTO.getDtoList() != null) {
+            for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
+                dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+            }
         }
 
         if (pageRequestDTO.getTypes() != null) {
@@ -155,7 +157,7 @@ public class DocumentController {
         return new ResponseEntity<>(mergedPdf, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/pdf/preview")
+    @PostMapping("/pdf/s")
     public ResponseEntity<byte[]> previewOrderPDF(@RequestBody Map<String, List<String>> pdfs, @RequestParam String type) {
         List<String> obCodes = pdfs.get("pdfs");
 
@@ -163,6 +165,7 @@ public class DocumentController {
             return ResponseEntity.badRequest().build();
         }
 
+        //여기를 supplierPDF에 맞게 수정하면 됨~!
         OrderByPdfFormDTO orderByPdfFormDTO = new OrderByPdfFormDTO();
         List<OrderByPdfDTO> orderByPdfDTOS = new ArrayList<>();
 
@@ -184,22 +187,31 @@ public class DocumentController {
 
         orderByPdfFormDTO.setPdfs(orderByPdfDTOS);
 
-        byte[] pdf = {};
+        List<byte[]> pdfList = new ArrayList<>();
 
-        switch (type) {
-            case "dg": pdf = pdfService.createPdf(orderByPdfFormDTO);
-            break;
-            case "s": pdf = pdfService.createPdf(orderByPdfFormDTO);
-            break;
-            default:
-                break;
+        for (OrderByPdfDTO order : orderByPdfFormDTO.getPdfs()) {
+            OrderByPdfFormDTO orderByPdfFormDTO2 = new OrderByPdfFormDTO();
+            List<OrderByPdfDTO> orderByPdfDTOS2 = new ArrayList<>();
+            orderByPdfDTOS2.add(order);
+            orderByPdfFormDTO2.setPdfs(orderByPdfDTOS2);
+            byte[] pdfBytes = pdfService.createPdf(orderByPdfFormDTO2); // PDF 생성
+            pdfList.add(pdfBytes);
+        }
+
+        // 여러 개의 PDF를 하나로 결합
+        byte[] mergedPdf;
+        try {
+            mergedPdf = pdfService.mergePdfFiles(pdfList); // mergePdfFiles 메서드 호출
+        } catch (IOException | DocumentException e) {
+            // 예외가 발생한 경우 적절한 처리를 하세요
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error merging PDFs".getBytes());
         }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDisposition(ContentDisposition.attachment().filename("purchase_order.pdf").build());
 
-        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+        return new ResponseEntity<>(mergedPdf, headers, HttpStatus.OK);
     }
 
     @GetMapping("/{obCode}/mNameList")
@@ -223,8 +235,10 @@ public class DocumentController {
         PageResponseDTO<OrderByListAllDTO> responseDTO =
                 pageService.orderByWithAll(pageRequestDTO, "obd");
 
-        for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
-            dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+        if(responseDTO.getDtoList() != null) {
+            for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
+                dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+            }
         }
 
         if (pageRequestDTO.getTypes() != null) {
