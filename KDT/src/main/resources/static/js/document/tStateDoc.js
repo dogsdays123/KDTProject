@@ -50,8 +50,7 @@ document.getElementById('orderDocPDF').addEventListener('click', function () {
 function generateOrderPDF() {
 
     const formData = {
-        pdfs: obCodes,
-        type: "s"
+        plans: obCodes
     };
 
     fetch('/document/pdf/s', {
@@ -64,19 +63,18 @@ function generateOrderPDF() {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `발주서_${formData.planCode}.pdf`;
+            a.download = `거래명세서_${formData.planCode}.pdf`;
             a.click();
-            alert('발주서가 PDF로 생성되어 메일로 전송되었습니다.');
+            alert('거래명세서가 PDF로 생성되어 메일로 전송되었습니다.');
             const modal = bootstrap.Modal.getInstance(document.getElementById('purchaseOrderModal'));
             if (modal) modal.hide();
         })
-        .catch(() => alert('발주서 생성에 실패했습니다.'));
+        .catch(() => alert('거래명세서 생성에 실패했습니다.'));
 }
 
 function previewOrderPDF(obCode) {
     const formData = {
-        pdfs: [obCode],
-        type: "s"
+        plans: [obCode]
     };
 
     fetch('/document/pdf/s', {
