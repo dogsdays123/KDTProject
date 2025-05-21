@@ -163,7 +163,10 @@ public class InputServiceImpl implements InputService {
         InventoryStock inventoryStock = inventoryStockRepository.findByMaterialCode(materialCode)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("재고 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> {
+                    System.out.println("재고 정보를 찾을 수 없습니다. materialCode: " + materialCode);
+                    return new RuntimeException("재고 정보를 찾을 수 없습니다.");
+                });
 
         int currentStock = Integer.parseInt(inventoryStock.getIsNum());
         inventoryStock.setIsNum(String.valueOf(currentStock + ipTrueNum));

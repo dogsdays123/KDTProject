@@ -80,8 +80,8 @@
             </li>
             <hr>
         </th:block>
-        <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '생산부서'}">
 
+            <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '생산부서' || userBy.userJob == '자재부서'}">
             <li class="nav-item">
                 <a href="#" class="nav-link" title="제품 관리" onclick="toggleSubmenu('submenu-product')"><i class="bi bi-box"></i>&nbsp;&nbsp;제품 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-product" class="submenu">
@@ -91,6 +91,8 @@
                     <li><a href="/material/materialList" title="부품 정보 목록" class="nav-link">부품 목록</a></li>
                 </ul>
             </li>
+            </th:block>
+            <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '생산부서'}">
             <li class="nav-item">
                 <a href="#" class="nav-link" title="생산 계획" onclick="toggleSubmenu('submenu-production-plan')"><i class="bi bi-calendar-check"></i>&nbsp;&nbsp;생산 계획&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-production-plan" class="submenu">
@@ -162,6 +164,7 @@
                 <ul id="submenu-price" class="submenu">
                     <li><a href="/supplier/sInventoryRegister" class="nav-link">자재 등록</a></li>
                     <li><a href="/supplier/sInventoryList" class="nav-link">자재 목록</a></li>
+                    <li><a href="/supplier/returnManage" class="nav-link">반품 목록</a></li>
                 </ul>
             </li>
         </th:block>
@@ -284,6 +287,7 @@
     <div layout:fragment="slRDeli"></div>
     <div layout:fragment="slIList"></div>
     <div layout:fragment="slIRegi"></div>
+    <div layout:fragment="slReList"></div>
 
     <!-- 문서 관리 페이지 -->
     <div layout:fragment="orderDoc"></div>

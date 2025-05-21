@@ -208,27 +208,28 @@ public class ProductionPlanController {
         log.info("pp modify post.....#@" + productionPlanDTO);
 
         // 1. 기존 계획 조회
-        ProductionPlanDTO oldPlan = productionPlanService.getOldPlans(productionPlanDTO.getPpCode());
-
-        // 2. 수량 변경 여부 확인
-        if (oldPlan != null && oldPlan.getPpNum() != productionPlanDTO.getPpNum()) {
-            log.info("🔄 생산 수량 변경 감지됨: {} → {}", oldPlan.getPpNum(), productionPlanDTO.getPpNum());
-
-            // 3. 수량 변경 시 후속 처리 (예: 조달/발주 재검토 요청 or 상태 업데이트)
-            productionPlanService.handlePlanQuantityChange(
-                    productionPlanDTO.getPpCode(),
-                    oldPlan.getPpNum(),
-                    productionPlanDTO.getPpNum(),
-                    uName
-            );
-
-            session.setAttribute("warnMessage", "생산 계획이 변경되었습니다. 이에 따라 관련 조달 계획과 발주 사항에 대한 재검토가 필요합니다.");
-        }
+//        ProductionPlanDTO oldPlan = productionPlanService.getOldPlans(productionPlanDTO.getPpCode());
+//
+//        // 2. 수량 변경 여부 확인
+//        if (oldPlan != null && oldPlan.getPpNum() != productionPlanDTO.getPpNum()) {
+//            log.info("🔄 생산 수량 변경 감지됨: {} → {}", oldPlan.getPpNum(), productionPlanDTO.getPpNum());
+//
+//            // 3. 수량 변경 시 후속 처리 (예: 조달/발주 재검토 요청 or 상태 업데이트)
+//            productionPlanService.handlePlanQuantityChange(
+//                    productionPlanDTO.getPpCode(),
+//                    oldPlan.getPpNum(),
+//                    productionPlanDTO.getPpNum(),
+//                    uName
+//            );
+//
+//            session.setAttribute("warnMessage", "생산 계획이 변경되었습니다. 이에 따라 관련 조달 계획과 발주 사항에 대한 재검토가 필요합니다.");
+//        }
 
         // 4. 생산 계획 수정 처리
         productionPlanService.modifyProductionPlan(productionPlanDTO, uName);
 
         // 5. 완료 메시지
+        noticeService.addNotice("ppm");
         redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
         return "redirect:ppList";
     }
