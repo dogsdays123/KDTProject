@@ -203,11 +203,11 @@ function updateFileListUI() {
 
 function loadFileContent(file, index) {
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
         const data = e.target.result;
-        const workbook = XLSX.read(data, {type: 'binary'});
+        const workbook = XLSX.read(data, { type: 'binary' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
         const tableHeader = document.getElementById('tableHeader');
         const tableBody = document.getElementById('tableBody');
