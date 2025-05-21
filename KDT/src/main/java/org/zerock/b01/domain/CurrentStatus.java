@@ -7,7 +7,10 @@ public enum CurrentStatus {
     APPROVAL, //승인
     IN_PROGRESS,    //진행 중
     UNDER_INSPECTION, //검수중
-    RETURNED, //반품
+    RETURNED, // 반품, // 반품
+    RETURNED_REQUESTED, // 반품 요청
+    RETURNED_ALL, // 전체 반품
+    PARTIAL_RETURN, // 부분 반품
     FINISHED, //종료
     REJECT, //거절
     DELIVERED, //배달 완료

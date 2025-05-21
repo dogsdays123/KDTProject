@@ -29,4 +29,6 @@ public interface PageService {
     PageResponseDTO<DeliveryRequestDTO> supplierDeliveryRequestWithAll(PageRequestDTO pageRequestDTO, Long sId);
 
     PageResponseDTO<ProgressInspectionDTO> supplierProgressInspectionWithAll(PageRequestDTO pageRequestDTO, Long sId);
+    PageResponseDTO<ReturnByDTO> supplierReturnByWithAll(PageRequestDTO pageRequestDTO, Long sId);
+    PageResponseDTO<ReturnByDTO> returnByWithAll(PageRequestDTO pageRequestDTO);
 }

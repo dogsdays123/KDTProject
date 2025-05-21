@@ -1,3 +1,9 @@
+document.getElementById('selectAll').addEventListener('change', function () {
+    document.querySelectorAll('.selectPlan').forEach(cb => {
+        cb.checked = this.checked;
+    });
+});
+
 document.querySelector(".clearBtn").addEventListener("click", function (e) {
     e.preventDefault()
     e.stopPropagation()

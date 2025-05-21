@@ -117,11 +117,17 @@ public class InputServiceImpl implements InputService {
 
         int drNum = Integer.parseInt(deliveryRequest.getDrNum());
         int ipNum = Integer.parseInt(input.getIpNum());
+        int ipFalseNum = Integer.parseInt(input.getIpFalseNum());
+        int totalReceived = ipNum + ipFalseNum;
 
-        if (ipNum < drNum) {
-            input.setIpState(CurrentStatus.IN_PROGRESS);
+        if (ipFalseNum == drNum) {
+            input.setIpState(CurrentStatus.RETURNED_ALL); // 전량 반품
+        } else if (ipFalseNum > 0 && totalReceived == drNum) {
+            input.setIpState(CurrentStatus.PARTIAL_RETURN); // 부분 반품
+        } else if (totalReceived < drNum) {
+            input.setIpState(CurrentStatus.IN_PROGRESS); // 입고 진행 중
         } else {
-            input.setIpState(CurrentStatus.INPUT_SUCCESS);
+            input.setIpState(CurrentStatus.INPUT_SUCCESS); // 입고 완료
         }
 
         inputRepository.save(input);

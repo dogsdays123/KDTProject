@@ -86,6 +86,9 @@ public class PageRequestDTO {
     //입고
     private String ipState;
 
+    //반품
+    private String rState;
+
     //출고
     private String opState;
 

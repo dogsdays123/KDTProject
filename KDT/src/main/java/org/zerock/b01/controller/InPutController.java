@@ -15,6 +15,7 @@ import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.InputService;
 import org.zerock.b01.service.PageService;
+import org.zerock.b01.service.ReturnService;
 import org.zerock.b01.service.UserByService;
 
 import java.util.*;
@@ -30,6 +31,7 @@ public class InPutController {
     private final UserByService userByService;
     private final PageService pageService;
     private final InputService inputService;
+    private final ReturnService returnService;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -69,10 +71,7 @@ public class InPutController {
                 .orElse(Collections.emptyList())
                 .stream()
                 .filter(dto -> dto.getDrNum() != 0)
-                .collect(Collectors.collectingAndThen(
-                        Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(DeliveryRequestDTO::getMName))),
-                        ArrayList::new
-                ));
+                .collect(Collectors.toList());
 
         List<DeliveryRequestDTO> deliveryRequestList = inputService.getDeliveryRequest();
 
@@ -175,4 +174,18 @@ public class InPutController {
         redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
         return "redirect:inPutList";
     }
+
+    @PostMapping("/return")
+    public String remove(String uId, ReturnByDTO returnByDTO, RedirectAttributes redirectAttributes) {
+        log.info("pp remove post.....#@" + returnByDTO);
+        log.info(" ^^^^ " + uId);
+        try {
+            returnService.returnInput(returnByDTO);
+            redirectAttributes.addFlashAttribute("message", "반품 처리가 완료되었습니다.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
+        return "redirect:inPutList";
+    }
+
 }

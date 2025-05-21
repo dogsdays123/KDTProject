@@ -1236,4 +1236,70 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
 
         return new PageImpl<>(dtoList, pageable, total);
     }
+
+    @Override
+    public Page<ReturnByDTO> supplierReturnByWithAll(String[] types, String keyword, String mName, Long sId, Pageable pageable) {
+
+        QReturnBy returnBy = QReturnBy.returnBy;
+        QInPut inPut = QInPut.inPut;
+        QDeliveryRequest deliveryRequest = QDeliveryRequest.deliveryRequest;
+        QSupplier supplier = QSupplier.supplier;
+        QMaterial material = QMaterial.material;
+
+        JPQLQuery<ReturnBy> query = from(returnBy);
+
+        query.leftJoin(returnBy.inPut, inPut);
+        query.leftJoin(inPut.deliveryRequest, deliveryRequest);
+        query.leftJoin(deliveryRequest.supplier, supplier);
+        query.leftJoin(deliveryRequest.material, material);
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+
+        if (sId != null) {
+            booleanBuilder.and(supplier.sId.eq(sId));
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(deliveryRequest.material.mName.contains(keyword));
+            booleanBuilder.and(keywordBuilder);
+        }
+
+
+        if (mName != null && !mName.isEmpty() && !"전체".equals(mName)) {
+            log.info("Received pName: " + mName);
+            booleanBuilder.and(deliveryRequest.material.mName.contains(mName)); // ← 이렇게 바꾸세요
+        }
+
+//        booleanBuilder.and(progressInspection.orderBy.oState.eq(CurrentStatus.UNDER_INSPECTION));
+
+        query.where(booleanBuilder);
+        query.offset(pageable.getOffset());
+        query.limit(pageable.getPageSize());
+        query.orderBy(returnBy.regDate.desc());
+
+        List<ReturnBy> resultList = query.fetch();
+
+        List<ReturnByDTO> dtoList = resultList.stream()
+                .map(prod -> ReturnByDTO.builder()
+                        .rId(prod.getRId())
+                        .rNum(prod.getRNum())
+                        .rState(prod.getRState())
+                        .ipCode(prod.getInPut().getIpCode())
+                        .mCode(prod.getInPut().getDeliveryRequest().getMaterial().getMCode())
+                        .mName(prod.getInPut().getDeliveryRequest().getMaterial().getMName())
+                        .regDate(prod.getRegDate().toLocalDate())
+                        .build())
+                .collect(Collectors.toList());
+
+        JPQLQuery<ReturnBy> countQuery = from(returnBy);
+        countQuery.leftJoin(returnBy.inPut, inPut);
+        countQuery.leftJoin(inPut.deliveryRequest, deliveryRequest);
+        countQuery.leftJoin(deliveryRequest.supplier, supplier);
+        countQuery.where(booleanBuilder);
+        long total = countQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, total);
+    }
 }

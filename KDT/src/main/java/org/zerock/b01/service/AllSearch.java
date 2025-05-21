@@ -44,4 +44,6 @@ public interface AllSearch {
 
 
     Page<ProgressInspectionDTO> supplierProgressInspectionSearchWithAll(String[] types, String keyword, String mName, LocalDate psDate, String psState, Long sId, Pageable pageable);
+
+    Page<ReturnByDTO> supplierReturnByWithAll(String[] types, String keyword, String mName, Long sId, Pageable pageable);
 }
