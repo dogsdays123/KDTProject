@@ -36,26 +36,6 @@ public class OutPutController {
     private final PageService pageService;
     private final OutputService outputService;
 
-    @ModelAttribute
-    public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if(auth == null) {
-            log.info("aaaaaa 인증정보 없음");
-            model.addAttribute("userBy", null);
-        } else {
-            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) auth;
-
-            // token.getPrincipal()이 MemberSecurityDTO 타입이라면, 이를 MemberSecurityDTO로 캐스팅
-            UserBySecurityDTO principal = (UserBySecurityDTO) token.getPrincipal();
-            String username = principal.getUId(); // MemberSecurityDTO에서 사용자 이름 가져오기
-
-            // 일반 로그인 사용자 정보 가져오기
-            userByDTO = userByService.readOne(username);
-            log.info("#### 일반 로그인 사용자 정보: " + userByDTO);
-
-            model.addAttribute("userBy", userByDTO);
-        }
-    }
-
     @GetMapping("/outPutManage")
     public void outPutInventoryList(PageRequestDTO pageRequestDTO, Model model){
         log.info("##OUTPUT INVENTORY LIST PAGE GET....##");

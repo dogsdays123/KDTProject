@@ -202,7 +202,6 @@ $(document).ready(function() {
     });
 });
 
-
 // 버튼의 상태를 업데이트하는 함수
 function toggleSignupButton() {
     // idCheck와 emailCheck가 모두 true일 때만 버튼을 활성화
@@ -211,4 +210,28 @@ function toggleSignupButton() {
     } else {
         signupButton.disabled = true;   // 하나라도 비어 있으면 버튼 비활성화
     }
+}
+
+function makeAdmin(){
+    // AJAX를 사용하여 부품 목록을 가져오는 코드
+    $.ajax({
+        url: `/firstView/admin`,  // URL 인코딩 적용
+        method: 'POST',  // HTTP GET 요청
+        beforeSend: function() {
+            $('#makeAdminModal').modal('show');  // 로딩 모달 띄우기
+        },
+        success: function () {
+            setTimeout(() => {
+                $('#makeAdminModal').modal('hide');
+            }, 500); // 0.5초 후에 닫기
+            alert("데이터 생성 완료")
+        },
+        error: function (error) {
+            setTimeout(() => {
+                $('#makeAdminModal').modal('hide');
+            }, 500); // 0.5초 후에 닫기
+            alert("이미 생성된 데이터입니다.")
+            console.error('errorMessage :', error);
+        }
+    });
 }

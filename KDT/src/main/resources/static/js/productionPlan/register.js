@@ -261,6 +261,9 @@ $('#excelUpload').on('click', function (e) {
         data: formData,
         processData: false,
         contentType: false,
+        beforeSend: function() {
+            $('#loadingModal').modal('show');  // 로딩 모달 띄우기
+        },
         success: function(response) {
             alert("파일 업로드에 성공했습니다. " + response.mg);
             document.getElementById('fileList').innerHTML = '';
@@ -277,6 +280,9 @@ $('#excelUpload').on('click', function (e) {
 
         },
         error: function(xhr, status, error) {
+            setTimeout(() => {
+                $('#loadingModal').modal('hide');
+            }, 500);
             alert("파일 업로드에 실패했습니다. : " + error);
         }
     });

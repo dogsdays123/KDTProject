@@ -14,6 +14,7 @@ import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.dto.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.InputService;
+import org.zerock.b01.service.NoticeService;
 import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.UserByService;
 
@@ -30,26 +31,7 @@ public class InPutController {
     private final UserByService userByService;
     private final PageService pageService;
     private final InputService inputService;
-
-    @ModelAttribute
-    public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if(auth == null) {
-            log.info("aaaaaa 인증정보 없음");
-            model.addAttribute("userBy", null);
-        } else {
-            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) auth;
-
-            // token.getPrincipal()이 MemberSecurityDTO 타입이라면, 이를 MemberSecurityDTO로 캐스팅
-            UserBySecurityDTO principal = (UserBySecurityDTO) token.getPrincipal();
-            String username = principal.getUId(); // MemberSecurityDTO에서 사용자 이름 가져오기
-
-            // 일반 로그인 사용자 정보 가져오기
-            userByDTO = userByService.readOne(username);
-            log.info("#### 일반 로그인 사용자 정보: " + userByDTO);
-
-            model.addAttribute("userBy", userByDTO);
-        }
-    }
+    private final NoticeService noticeService;
 
     @GetMapping("/inPutManage")
     public void inPut(PageRequestDTO pageRequestDTO, Model model){
@@ -105,6 +87,8 @@ public class InPutController {
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
+
+        noticeService.addNotice("ip");
 
         return "redirect:inPutManage";
     }

@@ -178,25 +178,17 @@ public class FirstViewController {
         return "redirect:login";
     }
 
-    @GetMapping("/admin")
-    public String startDataGeneration() {
-        // 이 요청은 일단 로딩 페이지로 리턴만 함
-        return "firstView/loading";
-    }
-
     @GetMapping("/loading")
     public void loading() {
 
     }
 
-    @PostMapping("/generate-data")
+    @PostMapping("/admin")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> generate() throws UserByService.MidExistException {
+    public String generate() throws UserByService.MidExistException {
         testRegister();
         testRegisterUnit();
-        Map<String, String> result = new HashMap<>();
-        result.put("status", "ok");
-        return ResponseEntity.ok(result);
+        return "firstView/login";
     }
 
     public void testRegister(){

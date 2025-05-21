@@ -54,26 +54,6 @@ public class SupplyController {
     private final ProgressInspectionService progressInspectionService;
     private final SupplierRepository supplierRepository;
 
-    @ModelAttribute
-    public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if (auth == null) {
-            log.info("aaaaaa 인증정보 없음");
-            model.addAttribute("userBy", null);
-        } else {
-            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) auth;
-
-            // token.getPrincipal()이 MemberSecurityDTO 타입이라면, 이를 MemberSecurityDTO로 캐스팅
-            UserBySecurityDTO principal = (UserBySecurityDTO) token.getPrincipal();
-            String username = principal.getUId(); // MemberSecurityDTO에서 사용자 이름 가져오기
-
-            // 일반 로그인 사용자 정보 가져오기
-            userByDTO = userByService.readOne(username);
-            log.info("#### 일반 로그인 사용자 정보: " + userByDTO);
-
-            model.addAttribute("userBy", userByDTO);
-        }
-    }
-
     @GetMapping("/progressInspection")
     public void progressInspection(PageRequestDTO pageRequestDTO, Model model) {
         List<OrderBy> orderByList = orderByRepository.findAll();

@@ -37,9 +37,15 @@ $(document).ready(function () {
                 $('#loadingModal').modal('show');  // 로딩 모달 띄우기
             },
             success: function(response) {
+                setTimeout(() => {
+                    $('#makeAdminModal').modal('hide');
+                }, 500); // 0.5초 후에 닫기
                 alert(response.msg);
             },
             error: function(xhr, status, error) {
+                setTimeout(() => {
+                    $('#loadingModal').modal('hide');
+                }, 500);
                 alert("서버 오류: " + error);
             },
             complete: function() {

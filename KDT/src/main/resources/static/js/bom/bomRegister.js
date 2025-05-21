@@ -1,3 +1,4 @@
+let bomList = [];
 let errorChecks = null;
 let duplicates = null;
 let selectedFiles = []; // 전역 변수로 따로 관리
@@ -11,7 +12,6 @@ function addPlan() {
     const mCode = document.getElementById('materialCode').value;
     const bRequireNum = document.getElementById('productQuantity').value;
     const uId = document.getElementById("uId").value;
-    let rowIndex = 0;
     //uId는 따로 받아온다.
 
     if (!pName || !mComponentType || !mName || !bRequireNum) {
@@ -19,16 +19,32 @@ function addPlan() {
         return;
     }
 
+    // 데이터 객체 생성
+    const item = {
+        pName,
+        mComponentType,
+        mName,
+        mCode,
+        bRequireNum,
+        uId
+    };
+
+    bomList.push(item);
+    renderBomTable();
+}
+
+function renderBomTable() {
     const tableBody = document.querySelector("#planTable tbody");
     const newRow = document.createElement('tr');
 
-    newRow.innerHTML = `
-        <td><input type="hidden" name="boms[${rowIndex}].pName" value="${pName}">${pName}</td>
-        <td><input type="hidden" name="boms[${rowIndex}].mComponentType" value="${mComponentType}">${mComponentType}</td>
-        <td><input type="hidden" name="boms[${rowIndex}].mName" value="${mName}">${mName}</td>
-        <td><input type="hidden" name="boms[${rowIndex}].mCode" value="${mCode}">${mCode}</td>
-        <td><input type="hidden" name="boms[${rowIndex}].bRequireNum" value="${bRequireNum}">${bRequireNum}</td>
-        <input type="hidden" name="boms[${rowIndex}].uId" value="${uId}">
+    bomList.forEach((item, index) => {
+        newRow.innerHTML = `
+        <td><input type="hidden" name="boms[${index}].pName" value="${item.pName}">${item.pName}</td>
+        <td><input type="hidden" name="boms[${index}].mComponentType" value="${item.mComponentType}">${item.mComponentType}</td>
+        <td><input type="hidden" name="boms[${index}].mName" value="${item.mName}">${item.mName}</td>
+        <td><input type="hidden" name="boms[${index}].mCode" value="${item.mCode}">${item.mCode}</td>
+        <td><input type="hidden" name="boms[${index}].bRequireNum" value="${item.bRequireNum}">${item.bRequireNum}</td>
+        <input type="hidden" name="boms[${index}].uId" value="${item.uId}">
         <td>
           <button type="button" class="icon-button" onclick="removeRow(this)" aria-label="삭제" title="해당 행 삭제">
             <i class="bi bi-x-lg"></i>
@@ -36,8 +52,8 @@ function addPlan() {
         </td>
     `;
 
-    tableBody.appendChild(newRow);
-    rowIndex++;
+        tableBody.appendChild(newRow);
+    });
 
     const planRows = tableBody.querySelectorAll('tr:not(#registerRow)');
     if (planRows.length === 0) {
@@ -72,7 +88,6 @@ function addPlan() {
     document.getElementById('materialCode').selectedIndex = 0;
     document.getElementById('productQuantity').value = '';
 }
-
 
 // 삭제 버튼 클릭 시 해당 행 삭제
 function removeRow(button) {
@@ -301,7 +316,13 @@ $('#excelUpload').on('click', function (e) {
         data: formData,
         processData: false,
         contentType: false,
+        beforeSend: function() {
+            $('#loadingModal').modal('show');  // 로딩 모달 띄우기
+        },
         success: function(response) {
+            setTimeout(() => {
+                $('#makeAdminModal').modal('hide');
+            }, 500); // 0.5초 후에 닫기
             errorChecks = response.errorCheck;
             duplicates = response.duplicate;
 
@@ -319,6 +340,9 @@ $('#excelUpload').on('click', function (e) {
 
         },
         error: function(xhr, status, error) {
+            setTimeout(() => {
+                $('#loadingModal').modal('hide');
+            }, 500);
             alert("파일 업로드에 실패했습니다. : " + error);
         }
     });

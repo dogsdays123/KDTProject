@@ -14,6 +14,7 @@ import org.zerock.b01.repository.MaterialRepository;
 import org.zerock.b01.repository.ProductRepository;
 import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.service.BomService;
+import org.zerock.b01.service.NoticeService;
 
 import java.util.*;
 
@@ -33,6 +34,9 @@ public class BomServiceImpl implements BomService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private NoticeService noticeService;
 
     public List<BomDTO> getBoms() {
         List<Bom> bomList = bomRepository.findAll();
