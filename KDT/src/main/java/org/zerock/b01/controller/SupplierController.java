@@ -433,8 +433,14 @@ public class SupplierController {
 
     @PostMapping("/drAgree")
     public String piAgree(@ModelAttribute DeliveryRequestDTO deliveryRequestDTO, RedirectAttributes redirectAttributes,  @RequestParam List<String> drCodes) {
-        deliveryRequestService.drAgree(deliveryRequestDTO, drCodes);
-        redirectAttributes.addFlashAttribute("message", "납품 완료 처리 되었습니다.");
+        try {
+            // 서비스 메서드 호출
+            deliveryRequestService.drAgree(deliveryRequestDTO, drCodes);
+            redirectAttributes.addFlashAttribute("message", "납품 완료 처리 되었습니다.");
+        } catch (RuntimeException e) {
+            // 예외 발생 시 경고 메시지를 전달
+            redirectAttributes.addFlashAttribute("message",  e.getMessage());
+        }
         return "redirect:/supplier/requestDelivery";
     }
 
@@ -518,7 +524,9 @@ public class SupplierController {
         model.addAttribute("responseDTO", responseDTO);
         log.info("SDelivery Request ResponseDTO : " + responseDTO);
 
-        Set<String> mNames = responseDTO.getDtoList().stream()
+        Set<String> mNames = Optional.ofNullable(responseDTO.getDtoList())
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(ReturnByDTO::getMName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());

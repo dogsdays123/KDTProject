@@ -188,10 +188,11 @@
 
     <div style="display: flex; align-items: center;">
 
+        <div class="admin-btn" style="margin-right: 1rem; min-height: 32px;">
         <th:block th:if="${userBy.userJob == '관리자'}">
             <button type="button" id="clearNoticeBtn">알림 삭제</button>
         </th:block>
-
+        </div>
         <!-- 사용자 정보 (마이페이지/로그아웃) -->
         <div class="user-info" style="margin-right: 1rem;">
             <span>[[${userBy.uName}]] | [[${userBy.userJob}]]</span>

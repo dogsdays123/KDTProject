@@ -110,6 +110,15 @@ body {
 .nav-link:hover {
   color: #0d6efd;
 }
+
+.admin-btn{
+  font-size: 1.0rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-right: 20px;
+}
 .user-info {
   font-size: 1.0rem;
   color: #555;
@@ -159,13 +168,14 @@ body {
   position: absolute;
   top: 50px; /* 헤더 높이만큼 아래에 위치 */
   right: 10px;
-  background-color: white;
+  width: 300px;
+  max-height: 400px;
+  background-color: #ffffff;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: none;
-  max-width: 400px;
-  min-width: 150px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  padding: 10px;
   z-index: 1000;
 }
 .alert-dropdown a {
@@ -398,3 +408,36 @@ body {
 .badge.bg-indigo { background-color: #6610f2; color: #fff; }
 .badge.bg-cyan { background-color: #0dcaf0; color: #000; }
 .badge.bg-blue { background-color: #0d6efd; color: #fff; }
+
+.noticeClick {
+  all: unset;
+  display: block;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;  /* 아래 테두리 추가 */
+  transition: background-color 0.2s ease;
+}
+
+.noticeClick:hover {
+  color: #007bff; /* 마우스 오버 시 색상 변경 */
+  text-decoration: underline;
+}
+
+#clearNoticeBtn {
+  background-color: #dc3545;        /* 빨간색 배경 (위험/삭제 의미) */
+  color: white;                     /* 텍스트 흰색 */
+  border: none;                     /* 테두리 제거 */
+  padding: 8px 16px;                /* 내부 여백 */
+  border-radius: 6px;               /* 둥근 모서리 */
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  float: right;                     /* 오른쪽 정렬 (선택사항) */
+  transition: background-color 0.2s ease;
+}
+
+#clearNoticeBtn:hover {
+  background-color: #c82333;        /* hover 시 더 진한 빨강 */
+}

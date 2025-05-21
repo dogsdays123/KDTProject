@@ -92,7 +92,7 @@
                         <tr th:if="${#lists.isEmpty(responseDTO.dtoList)}">
                             <td colspan="10" class="text-center" style="padding: 20px 0;">등록된 출고 정보가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.</td>
                         </tr>
-                        <tr th:each="dto:${responseDTO.dtoList}">
+                        <tr th:each="dto:${responseDTO.dtoList}" style="height: 40px;">
                             <td><input type="checkbox" class="selectPlan"></td>
                             <td th:text="${dto.opCode}"></td>
                             <td th:text="${dto.mCode}"></td>
