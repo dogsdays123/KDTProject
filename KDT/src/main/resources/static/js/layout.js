@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function (event) {
             const nId = event.target.value;
             const thisButton = event.target;
+            const headerAlert = document.getElementById('headerAlert');
 
             fetch('/notice/read', {
                 method: 'POST',
@@ -66,17 +67,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        console.log(`알림 ${nId} 삭제됨`);
-
-                        // 해당 버튼을 화면에서 제거
                         thisButton.remove();
-
-                        // 확인된 알림 수 증가
                         checkedCount++;
 
-                        // 모든 알림을 확인했으면 빨간 점 숨기기
-                        if (checkedCount === totalNotices && dot) {
-                            dot.style.display = 'none';
+                        // 모든 알림 확인 완료
+                        if (checkedCount === totalNotices) {
+                            if (dot) {
+                                dot.style.display = 'none';
+                            }
+
+                            // 알림 없다는 메시지 추가
+                            if (headerAlert) {
+                                headerAlert.innerHTML = "<a><span style='color: gray;'>알림이 없습니다</span></a>";
+                            }
                         }
                     }
                 })
