@@ -66,6 +66,8 @@ public class PageServiceImpl implements PageService {
     private SupplierStockRepository supplierStockRepository;
     @Autowired
     private ProgressInspectionRepository progressInspectionRepository;
+    @Autowired
+    private ReturnByRepository returnByRepository;
 
     @Override
     public PageResponseDTO<PlanListAllDTO> planListWithAll(PageRequestDTO pageRequestDTO){
@@ -506,5 +508,27 @@ public class PageServiceImpl implements PageService {
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
                 .build();
+    }
+
+    @Override
+    public PageResponseDTO<ReturnByDTO> supplierReturnByWithAll(PageRequestDTO pageRequestDTO, Long sId){
+        String [] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        String mName = pageRequestDTO.getMName();
+
+        Pageable pageable = pageRequestDTO.getPageable("regDate");
+
+        Page<ReturnByDTO> result = returnByRepository.supplierReturnByWithAll(types, keyword, mName, sId, pageable);
+
+        return PageResponseDTO.<ReturnByDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<ReturnByDTO> returnByWithAll(PageRequestDTO pageRequestDTO) {
+        return supplierReturnByWithAll(pageRequestDTO, null);
     }
 }

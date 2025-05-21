@@ -134,22 +134,22 @@ function updateFileListUI() {
     formData.append('check', "true");
 
     // AJAX 요청 보내기
-    $.ajax({
-        url: '/supplier/addSStock',
-        method: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-            mCodeChecks = response.mCodes;
-            errorChecks = response.errorCheck;
-            console.log(mCodeChecks);
-            console.log(errorChecks);
-        },
-        error: function (xhr, status, error) {
-            alert("파일 확인에 실패. : " + error);
-        }
-    });
+    // $.ajax({
+    //     url: '/supplier/addSStock',
+    //     method: 'POST',
+    //     data: formData,
+    //     processData: false,
+    //     contentType: false,
+    //     success: function (response) {
+    //         mCodeChecks = response.mCodes;
+    //         errorChecks = response.errorCheck;
+    //         console.log(mCodeChecks);
+    //         console.log(errorChecks);
+    //     },
+    //     error: function (xhr, status, error) {
+    //         alert("파일 확인에 실패. : " + error);
+    //     }
+    // });
     //--------------------------------------
 
     selectedFiles.forEach((file, index) => {
@@ -230,7 +230,7 @@ function loadFileContent(file, index) {
                 const td = document.createElement('td');
                 td.textContent = cell;
 
-                if (colIndex === 4 && mCodeChecks.includes(cell)) {
+                if (colIndex === 6 && mCodeChecks.includes(cell)) {
                     td.style.color = 'red';
                     td.style.fontWeight = 'bold';
                 }
@@ -309,7 +309,7 @@ $('#excelUpload').on('click', function (e) {
 
         },
         error: function (xhr, status, error) {
-            alert("파일 업로드에 실패했습니다. : " + error);
+            alert("중복된 정보를 제외한 새로운 정보 등록이 완료되었습니다.: " + error);
         }
     });
 });

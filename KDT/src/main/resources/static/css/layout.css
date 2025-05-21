@@ -388,3 +388,13 @@ body {
   color: black;            /* 텍스트 색상을 검정색으로 설정 */
   font-weight: bold;       /* 텍스트를 볼드로 설정 */
 }
+
+.badge.bg-purple { background-color: #6f42c1; color: #fff; }
+.badge.bg-orange { background-color: #fd7e14; color: #fff; }
+.badge.bg-pink { background-color: #e83e8c; color: #fff; }
+.badge.bg-teal { background-color: #20c997; color: #fff; }
+.badge.bg-yellow { background-color: #ffc107; color: #212529; }
+.badge.bg-green { background-color: #198754; color: #fff; }
+.badge.bg-indigo { background-color: #6610f2; color: #fff; }
+.badge.bg-cyan { background-color: #0dcaf0; color: #000; }
+.badge.bg-blue { background-color: #0d6efd; color: #fff; }

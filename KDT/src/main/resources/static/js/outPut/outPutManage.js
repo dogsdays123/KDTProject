@@ -22,8 +22,13 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
     const ppCode = firstRow[2].innerText;
     const mCode = firstRow[6].innerText;
     const mName = firstRow[7].innerText;
-    const isAvailable = parseInt(firstRow[9].innerText);
+    const value = parseInt(firstRow[9].innerText);
+    const isAvailable = isNaN(value) ? 0 : value;
 
+    if (isAvailable === 0) {
+        alert('해당 항목은 출고 가능한 수량이 없습니다.');
+        return;
+    }
     const regDateInput = document.getElementById("regDate");
     const currentDate = new Date().toISOString().split('T')[0];
 

@@ -7,7 +7,12 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.store.Cur;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,6 +53,11 @@ public class SupplierController {
     private final OrderByService orderByService;
     private final InputService inputService;
     private final DeliveryRequestService deliveryRequestService;
+    private final ReturnService returnService;
+
+
+    @Value("${org.zerock.upload.awsPath}")
+    private String awsPath;
 
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
@@ -247,7 +257,8 @@ public class SupplierController {
             supplierStockDTO.setSId(sId);
             List<String> mCodes = materialRepository.findMCodeByMName(mNames.get(i));
             if (mCodes.isEmpty()) {
-                throw new IllegalStateException("해당 자재명이 존재하지 않습니다: " + mNames.get(i));
+                redirectAttributes.addFlashAttribute("message", "해당 자재명이 존재하지 않습니다: " + mNames.get(i));
+                return "redirect:sInventoryRegister";
             }
             supplierStockDTO.setMCode(mCodes.get(0)); // 첫 번째 mCode 사용
             supplierStockDTO.setSsNum(ssNums.get(i));
@@ -270,16 +281,17 @@ public class SupplierController {
 
     @PostMapping("/addSStock")
     @ResponseBody
-    public Map<String, Object> SStockRegisterAuto(@RequestParam("check") boolean check, @RequestParam("file") MultipartFile[] files, Model model, RedirectAttributes redirectAttributes) throws IOException {
+    public Map<String, Object> SStockRegisterAuto(
+            @RequestParam("check") boolean check,
+            @RequestParam("file") MultipartFile[] files) throws IOException {
 
         Map<String, Object> response = new HashMap<>();
-        Map<String, String[]> sStockObj = new HashMap<>();
         List<String> allMCodes = new ArrayList<>();
 
         for (MultipartFile file : files) {
             XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
             XSSFSheet worksheet = workbook.getSheetAt(0);
-            Map<String, String[]> temp = registerSStockOnController(worksheet, redirectAttributes);
+            Map<String, String[]> temp = registerSStockOnController(worksheet);
 
             if (check) {
                 if (temp.containsKey("mCodes")) {
@@ -296,7 +308,7 @@ public class SupplierController {
     }
 
 
-    private Map<String, String[]> registerSStockOnController(XSSFSheet worksheet,  RedirectAttributes redirectAttributes) {
+    private Map<String, String[]> registerSStockOnController(XSSFSheet worksheet) {
         List<SupplierStockDTO> supplierStockDTOS = new ArrayList<>();
         List<String> mCodes = new ArrayList<>();
         Map<String, String[]> result = new HashMap<>();
@@ -307,8 +319,7 @@ public class SupplierController {
         try {
             supplierDTO = supplierService.findByUserId(uId);
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("message", "공급업체 회원만 재고 등록이 가능합니다.");
-            return Collections.singletonMap("error", new String[]{"공급업체 회원 아님"});
+            return Collections.singletonMap("errorCheck", new String[]{"공급업체 회원만 재고 등록이 가능합니다."});
         }
 
         Long sId = supplierDTO.getSId();
@@ -320,12 +331,12 @@ public class SupplierController {
             SupplierStockDTO supplierStockDTO = new SupplierStockDTO();
             DataFormatter formatter = new DataFormatter();
 
-            supplierStockDTO.setMCode(formatter.formatCellValue(row.getCell(0)));
+            String mCode = formatter.formatCellValue(row.getCell(0)).trim();
+            supplierStockDTO.setMCode(mCode);
             supplierStockDTO.setMName(formatter.formatCellValue(row.getCell(1)));
             supplierStockDTO.setSsNum(formatter.formatCellValue(row.getCell(3)));
             supplierStockDTO.setSsMinOrderQty(formatter.formatCellValue(row.getCell(4)));
-            supplierStockDTO.setUnitPrice(formatter.formatCellValue(row.getCell(5)));
-            supplierStockDTO.setLeadTime(formatter.formatCellValue(row.getCell(6)));
+            supplierStockDTO.setLeadTime(formatter.formatCellValue(row.getCell(5)));
             supplierStockDTO.setSId(sId);
             supplierStockDTOS.add(supplierStockDTO);
             mCodes.add(supplierStockDTO.getMCode());
@@ -474,5 +485,103 @@ public class SupplierController {
 
         model.addAttribute("responseDTO", responseDTO);
         log.info("SDelivery Request ResponseDTO : " + responseDTO);
+    }
+
+    @GetMapping("/returnManage")
+    public void returnManage(PageRequestDTO pageRequestDTO, Model model,  Authentication auth) {
+        log.info("##SUPPLIER :: REQUEST DELIVERY PAGE GET....##");
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        UserBySecurityDTO principal = (UserBySecurityDTO) auth.getPrincipal();
+        String uId = principal.getUId();
+        String role = principal.getUserJob();
+
+        PageResponseDTO<ReturnByDTO> responseDTO;
+
+        if ("관리자".equals(role)) {
+            responseDTO = pageService.returnByWithAll(pageRequestDTO);
+        } else {
+
+            SupplierDTO supplierDTO = supplierService.findByUserId(uId);
+            Long sId = supplierDTO.getSId();
+            log.info("#### sId: " + sId);
+
+            responseDTO = pageService.supplierReturnByWithAll(pageRequestDTO, sId);
+
+        }
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        model.addAttribute("responseDTO", responseDTO);
+        log.info("SDelivery Request ResponseDTO : " + responseDTO);
+
+        Set<String> mNames = responseDTO.getDtoList().stream()
+                .map(ReturnByDTO::getMName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+//        Set<CurrentStatus> rStates = responseDTO.getDtoList().stream()
+//                .map(ReturnByDTO::getRState)
+//                .filter(Objects::nonNull)
+//                .collect(Collectors.toSet());
+
+        model.addAttribute("mNames", mNames);
+//        model.addAttribute("rStates", rStates);
+
+        model.addAttribute("selectedMName", pageRequestDTO.getMName() != null ? pageRequestDTO.getMName() : "");
+//        model.addAttribute("selectedRState", pageRequestDTO.getRState() != null ? pageRequestDTO.getRState() : "");
+
+    }
+
+    @PostMapping("/Redelivery")
+    public String reDelivery(@ModelAttribute ReturnByDTO returnByDTO,
+                             RedirectAttributes redirectAttributes) {
+
+
+        try {
+            returnService.reDelivery(returnByDTO);
+            redirectAttributes.addFlashAttribute("message", "재납품 처리가 완료되었습니다.");
+        } catch (Exception e) {
+            log.error("재납품 처리 중 오류 발생", e);
+            redirectAttributes.addFlashAttribute("message", "재납품 처리 중 오류가 발생했습니다.");
+        }
+
+        return "redirect:/supplier/returnManage";
+    }
+
+    @GetMapping("/downloadTemplate/{isTemplate}")
+    public ResponseEntity<Resource> download(@PathVariable("isTemplate") boolean isTemplate) {
+        try {
+            // 실제 파일명은 필요에 따라 조건 처리
+            String fileName = "testSStock.xlsx";
+
+            // classpath에서 리소스 로드
+            Resource resource = new ClassPathResource(awsPath + fileName);
+
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/returnRemove")
+    public String returnRemove(@RequestParam List<Long> rIds, RedirectAttributes redirectAttributes) {
+        log.info("psIds: {}", rIds);
+        returnService.removeReturn(rIds);
+        redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+        return "redirect:/supplier/returnManage";
     }
 }

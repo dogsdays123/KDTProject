@@ -97,28 +97,41 @@ document.getElementById('openPurchaseModal').addEventListener('click', function 
 
 document.addEventListener("DOMContentLoaded", function () {
     const states = {
-        ON_HOLD: "대기",
-        APPROVAL: "승인",
-        IN_PROGRESS: "진행 중",
-        UNDER_INSPECTION: "검수 중",
-        RETURNED: "반품",
-        FINISHED: "종료",
-        REJECT: "거절",
-        ARRIVED: "도착",
-        NOT_REMAINING: "재고 없음",
-        DELIVERED: "배달 완료",
-        SUCCESS_INSPECTION: "검수 완료",
-        SUCCESS: "전체 완료",
-        READY_SUCCESS: "준비 완료",
-        DELIVERY_REQUESTED: "납품 요청됨",
-        DELIVERY_DELIVERED: "납품 완료"
+        ON_HOLD: ["대기", "bg-secondary"],
+        HOLD_PROGRESS: ["검수 대기", "bg-light text-dark"],
+        HOLD_DELIVERY: ["납품 대기", "bg-warning text-dark"],
+        APPROVAL: ["승인", "bg-primary"],
+        IN_PROGRESS: ["진행 중", "bg-info text-dark"],
+        UNDER_INSPECTION: ["검수 중", "bg-warning"],
+        RETURNED: ["반품", "bg-danger"],
+        FINISHED: ["종료", "bg-dark"],
+        REJECT: ["거절", "bg-danger"],
+        DELIVERED: ["배달 완료", "bg-success"],
+
+        ARRIVED: ["도착", "bg-indigo"],
+        NOT_REMAINING: ["재고 없음", "bg-danger"],
+
+        SUCCESS_INSPECTION: ["검수 완료", "bg-teal"],
+        READY_SUCCESS: ["준비 완료", "bg-orange"],
+        DELIVERY_REQUESTED: ["납품 요청됨", "bg-yellow text-dark"],
+        DELIVERY_DELIVERED: ["납품 완료", "bg-green"],
+        SUCCESS: ["전체 완료", "bg-success"],
+        DPP_SUCCESS: ["등록 완료", "bg-success"],
+
+        DPP: ["조달", "bg-purple"],
+        ORDER_BY: ["발주", "bg-pink"],
+        DELIVERY_REQUEST: ["납품", "bg-blue"],
+        INPUT: ["입고", "bg-cyan"],
+        INPUT_SUCCESS: ["입고 완료", "bg-success"],
+        OUTPUT: ["출고", "bg-orange"],
+        OUTPUT_SUCCESS: ["출고 완료", "bg-orange"]
     };
 
     // 테이블 내 표시용
     document.querySelectorAll('[data-state]').forEach(function (td) {
-        const stateKey = td.getAttribute('data-state');
-        const text = states[stateKey] || "알 수 없음";
-        td.innerHTML = `<span class="state-${stateKey}">${text}</span>`;
+        const state = td.dataset.state;
+        const [label, badgeClass] = stateMap[state] || ["알 수 없음", "bg-light text-dark"];
+        td.innerHTML = `<span class="badge ${badgeClass}">${label}</span>`;
     });
 });
 

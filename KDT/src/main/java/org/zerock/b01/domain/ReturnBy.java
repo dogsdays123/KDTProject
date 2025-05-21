@@ -6,13 +6,15 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReturnBy extends BaseEntity {
 
     @Id
-    private String rCode;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long rId;
 
     private Long rNum;
 
