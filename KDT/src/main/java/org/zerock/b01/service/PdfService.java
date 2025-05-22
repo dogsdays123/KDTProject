@@ -66,6 +66,8 @@ public class PdfService {
             supplier = t.getSupplier();
         }
 
+        Supplier dgSup = supplierRepository.findSupplierByUID(userByRepository.findAdmin().getUId()).orElseThrow();
+
         try {
             Document document = new Document(PageSize.A4.rotate());
             PdfWriter.getInstance(document, out);
@@ -99,11 +101,11 @@ public class PdfService {
             PdfPTable materialInfoTableHeader1 = new PdfPTable(2);
             materialInfoTableHeader1.setWidthPercentage(100);
 
-            PdfPCell leftCell1 = new PdfPCell(new Phrase("거래일자 : " + "2025-04-15", materialInfoFont));
+            PdfPCell leftCell1 = new PdfPCell(new Phrase("거래일자 : " + today, materialInfoFont));
             leftCell1.setBorder(Rectangle.NO_BORDER);
             leftCell1.setHorizontalAlignment(Element.ALIGN_LEFT); // 왼쪽 정렬
 
-            PdfPCell rightCell1 = new PdfPCell(new Phrase("인수자 : " + "DG전동", materialInfoFont));
+            PdfPCell rightCell1 = new PdfPCell(new Phrase("인수자 : " + dgSup.getSName(), materialInfoFont));
             rightCell1.setBorder(Rectangle.NO_BORDER);
             rightCell1.setHorizontalAlignment(Element.ALIGN_RIGHT); // 오른쪽 정렬
 
@@ -132,7 +134,7 @@ public class PdfService {
             headerCell.setPadding(7f); // 여백도 선택
             supplierInfoTable.addCell(headerCell);
 
-            PdfPCell supplierAddressCell = new PdfPCell(new Phrase("부산광역시 사상구 학감대로 226 롯데프라자 2층", font));
+            PdfPCell supplierAddressCell = new PdfPCell(new Phrase(dgSup.getSAddress() + " / " + dgSup.getSAddressExtra(), font));
             supplierAddressCell.setColspan(3);
             supplierAddressCell.setHorizontalAlignment(Element.ALIGN_CENTER);   // ← 가운데 정렬
             supplierAddressCell.setVerticalAlignment(Element.ALIGN_MIDDLE);     // ← 수직 가운데 정렬
@@ -140,23 +142,23 @@ public class PdfService {
 
             //우리회사 정보
             supplierInfoTable.addCell(createCenteredCell("상호명", font));
-            supplierInfoTable.addCell(createCenteredCell("(주)DG전동", font));
+            supplierInfoTable.addCell(createCenteredCell(dgSup.getSName(), font));
             supplierInfoTable.addCell(createCenteredCell("사업자등록번호", font));
-            supplierInfoTable.addCell(createCenteredCell("247-85-01361", font));
+            supplierInfoTable.addCell(createCenteredCell(dgSup.getSRegNum(), font));
             supplierInfoTable.addCell(createCenteredCell("대표자명", font));
-            supplierInfoTable.addCell(createCenteredCell("최전동", font));
+            supplierInfoTable.addCell(createCenteredCell(dgSup.getSExponent(), font));
             supplierInfoTable.addCell(createCenteredCell("업종", font));
-            supplierInfoTable.addCell(createCenteredCell("전자상거래, 판촉물", font));
+            supplierInfoTable.addCell(createCenteredCell(dgSup.getSBusinessArray() + ", " + dgSup.getSBusinessType(), font));
             supplierInfoTable.addCell(createCenteredCell("사업장주소", font));
             supplierInfoTable.addCell(supplierAddressCell);
             supplierInfoTable.addCell(createCenteredCell("전화", font));
-            supplierInfoTable.addCell(createCenteredCell("1588-8888", font));
+            supplierInfoTable.addCell(createCenteredCell(dgSup.getSPhone(), font));
             supplierInfoTable.addCell(createCenteredCell("팩스(FAX)", font));
-            supplierInfoTable.addCell(createCenteredCell("070-1234-5678", font));
+            supplierInfoTable.addCell(createCenteredCell(dgSup.getSFax(), font));
             supplierInfoTable.addCell(createCenteredCell("직통전화", font));
-            supplierInfoTable.addCell(createCenteredCell("010-1234-5678", font));
+            supplierInfoTable.addCell(createCenteredCell(dgSup.getSPhoneDirect(), font));
             supplierInfoTable.addCell(createCenteredCell("담당직원", font));
-            supplierInfoTable.addCell(createCenteredCell("", font));
+            supplierInfoTable.addCell(createCenteredCell(dgSup.getSManager(), font));
             supplierInfoTable.addCell(createCenteredCell("비고", font));
             supplierInfoTable.addCell(createCenteredCell("", font));
 
@@ -346,6 +348,8 @@ public class PdfService {
         UserBy userBy = userByRepository.findById(request.getPdfs().get(0).getUId()).orElseThrow();
         Supplier sup = supplierRepository.findSupplierBySName(request.getPdfs().get(0).getSName());
         BaseFont baseFont = getKoreanFont();
+        Supplier dgSup = supplierRepository.findSupplierByUID(userByRepository.findAdmin().getUId()).orElseThrow();
+
 
         try {
             Document document = new Document();
@@ -426,34 +430,34 @@ public class PdfService {
             orderHeaderCell.setPadding(7f); // 여백도 선택
             orderInfoTable.addCell(orderHeaderCell);
 
-            PdfPCell addressCell = new PdfPCell(new Phrase("수원시 영통구 영통동 980-3 디지털엠파이어 A동 312호", font));
+            PdfPCell addressCell = new PdfPCell(new Phrase(dgSup.getSAddress() + " / " + dgSup.getSAddressExtra(), font));
             addressCell.setColspan(3);
             addressCell.setHorizontalAlignment(Element.ALIGN_CENTER);   // ← 가운데 정렬
             addressCell.setVerticalAlignment(Element.ALIGN_MIDDLE);     // ← 수직 가운데 정렬
             addressCell.setFixedHeight(20f);                            // ← 필요 시 높이 조정
 
             orderInfoTable.addCell(createCenteredCell("회사명", font));
-            orderInfoTable.addCell(createCenteredCell("DG전동", font));
+            orderInfoTable.addCell(createCenteredCell(dgSup.getSName(), font));
             orderInfoTable.addCell(createCenteredCell("대표자명", font));
-            orderInfoTable.addCell(createCenteredCell("김전동", font));
+            orderInfoTable.addCell(createCenteredCell(dgSup.getSExponent(), font));
 
             orderInfoTable.addCell(createCenteredCell("사업자등록번호", font));
-            orderInfoTable.addCell(createCenteredCell("123-45-67890", font));
+            orderInfoTable.addCell(createCenteredCell(dgSup.getSRegNum(), font));
             orderInfoTable.addCell(createCenteredCell("전화", font));
-            orderInfoTable.addCell(createCenteredCell("031-234-5678", font));
+            orderInfoTable.addCell(createCenteredCell(dgSup.getSPhone(), font));
 
             orderInfoTable.addCell(createCenteredCell("사업자소재지", font));
             orderInfoTable.addCell(addressCell);
 
             orderInfoTable.addCell(createCenteredCell("이메일", font));
-            orderInfoTable.addCell(createCenteredCell("dg98@naver.com", font));
+            orderInfoTable.addCell(createCenteredCell(dgSup.getUserBy().getUEmail(), font));
             orderInfoTable.addCell(createCenteredCell("직통전화", font));
-            orderInfoTable.addCell(createCenteredCell("010-2345-8980", font));
+            orderInfoTable.addCell(createCenteredCell(dgSup.getSPhoneDirect(), font));
 
             orderInfoTable.addCell(createCenteredCell("팩스번호", font));
-            orderInfoTable.addCell(createCenteredCell("02-1234-7781", font));
-            orderInfoTable.addCell(createCenteredCell("발주담당자", font));
-            orderInfoTable.addCell(createCenteredCell("홍발주", font));
+            orderInfoTable.addCell(createCenteredCell(dgSup.getSFax(), font));
+            orderInfoTable.addCell(createCenteredCell("담당자", font));
+            orderInfoTable.addCell(createCenteredCell(dgSup.getSManager(), font));
 
             document.add(orderInfoTable);
             document.add(new Paragraph(" "));
