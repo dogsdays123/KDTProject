@@ -29,5 +29,8 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     Optional<Supplier> findSupplierByUID(String uId);
 
     @Query("select distinct s from Supplier s where s.userBy.uId=:uId")
+    Supplier findSupplierByUidOj(String uId);
+
+    @Query("select distinct s from Supplier s where s.userBy.uId=:uId")
     List<Supplier> findSupplierByUIDList(String uId);
 }

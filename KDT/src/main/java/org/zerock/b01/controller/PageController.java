@@ -23,10 +23,7 @@ import org.zerock.b01.service.OrderByService;
 import org.zerock.b01.service.ProductionPlanService;
 import org.zerock.b01.service.UserByService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Log4j2
 @Controller
@@ -114,9 +111,13 @@ public class PageController {
 
     @GetMapping("/myPage")
     public void myPage(@ModelAttribute("userBy") UserByDTO userBy, Model model) {
-        Supplier supplier = supplierRepository.findSupplierByUID(userBy.getUId())
-                .orElseThrow(() -> new RuntimeException("해당 UID에 해당하는 공급업체가 없습니다."));
-        model.addAttribute("supplier", supplier);
+
+        Supplier supplier = supplierRepository.findSupplierByUidOj(userBy.getUId());
+        if(supplier == null) {
+            model.addAttribute("check", "check");
+        } else {
+            model.addAttribute("supplier", supplier);
+        }
     }
 
     @PostMapping("/myPage")
