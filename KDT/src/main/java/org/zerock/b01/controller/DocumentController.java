@@ -61,11 +61,18 @@ public class DocumentController {
         model.addAttribute("stateList", stateList);
 
         List<Supplier> suppliers = supplierRepository.findSupplierByUIDList(userBy.getUId());
-        if (suppliers.size() != 1) {
-            throw new IllegalStateException("Supplier UID 중복 또는 존재하지 않음");
+
+        if (!suppliers.isEmpty()) {
+            if (suppliers.size() != 1) {
+                throw new IllegalStateException("Supplier UID 중복: 공급업체는 하나만 등록되어야 합니다.");
+            }
+            Supplier supplier = suppliers.get(0);
+            String sName = supplier.getSName();
+            model.addAttribute("sName", sName);
+        } else {
+
+            model.addAttribute("sName", "");
         }
-        String sName = suppliers.get(0).getSName();
-        model.addAttribute("sName", sName);
 
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
@@ -79,7 +86,16 @@ public class DocumentController {
                 dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
             }
         }
-
+        List<OrderByListAllDTO> filteredList = new ArrayList<>();
+        String sName = (String) model.getAttribute("sName");
+        if (responseDTO.getDtoList() != null) {
+            for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
+                if (!"협력회사".equals(userBy.getUserJob()) || sName.equals(dto.getSName())) {
+                    filteredList.add(dto);
+                }
+            }
+        }
+        model.addAttribute("filteredList", filteredList);
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }
@@ -109,13 +125,23 @@ public class DocumentController {
         PageResponseDTO<OrderByListAllDTO> responseDTO =
                 pageService.orderByWithAll(pageRequestDTO, "obd");
 
-
         List<String> sNameList = new ArrayList<>();
         if(responseDTO.getDtoList() != null) {
             for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
                 dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
             }
         }
+
+        List<OrderByListAllDTO> filteredList = new ArrayList<>();
+        String sName = (String) model.getAttribute("sName");
+        if (responseDTO.getDtoList() != null) {
+            for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
+                if (!"협력회사".equals(userBy.getUserJob()) || sName.equals(dto.getSName())) {
+                    filteredList.add(dto);
+                }
+            }
+        }
+        model.addAttribute("filteredList", filteredList);
 
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());

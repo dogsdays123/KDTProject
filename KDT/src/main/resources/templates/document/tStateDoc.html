@@ -98,13 +98,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${responseDTO.dtoList == null || #lists.isEmpty(responseDTO.dtoList)}">
+            <tr th:if="${filteredList == null or #lists.isEmpty(filteredList)}">
               <td colspan="15" class="text-center" style="padding: 20px 0;">
-                등록된 구매 발주서가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
+                등록된 거래 명세서가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
               </td>
             </tr>
-            <tr th:each="dto:${responseDTO.dtoList}">
-              <th:block th:if="${(userBy.userJob != '협력회사') || (sName == dto.getSName())}">
+            <tr th:each="dto : ${filteredList}">
               <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
               <td th:text="${dto.getOCode()}"></td>
               <td th:text="${#temporals.format(dto.getORegDate(), 'yyyy-MM-dd')}"></td>
@@ -118,7 +117,6 @@
               <td class="CheckState"
                   th:data-state="${dto.getOState() != null ? dto.getOState() : 'UNKNOWN'}">
               </td>
-              </th:block>
             </tr>
             </tbody>
           </table>
