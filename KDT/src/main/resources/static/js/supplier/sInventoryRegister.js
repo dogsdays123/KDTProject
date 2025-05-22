@@ -310,6 +310,7 @@ $('#excelUpload').on('click', function (e) {
         },
         error: function (xhr, status, error) {
             alert("중복된 정보를 제외한 새로운 정보 등록이 완료되었습니다.: " + error);
+            window.location.href = "/supplier/sInventoryRegister";
         }
     });
 });

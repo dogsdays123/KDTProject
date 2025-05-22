@@ -1,6 +1,6 @@
 const stateMap = {
     ON_HOLD: ["대기", "bg-secondary"],
-    HOLD_PROGRESS: ["검수 대기", "bg-light text-dark"],
+    HOLD_PROGRESS: ["검수 대기", "bg-secondary"],
     HOLD_DELIVERY: ["납품 대기", "bg-warning text-dark"],
     APPROVAL: ["승인", "bg-primary"],
     IN_PROGRESS: ["진행 중", "bg-info text-dark"],
@@ -28,7 +28,7 @@ const stateMap = {
     INPUT_SUCCESS: ["입고 완료", "bg-success"],
     OUTPUT: ["출고", "bg-orange"],
     OUTPUT_SUCCESS: ["출고 완료", "bg-orange"]
-};
+}
 
 document.querySelectorAll(".CheckState").forEach(td => {
     const state = td.dataset.state;
