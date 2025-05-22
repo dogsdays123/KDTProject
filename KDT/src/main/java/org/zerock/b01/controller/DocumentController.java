@@ -61,7 +61,6 @@ public class DocumentController {
 
         List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
         model.addAttribute("stateList", stateList);
-        log.info("stateList: {}", stateList);
 
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
@@ -90,6 +89,9 @@ public class DocumentController {
 
         List<Material> materialList = materialRepository.findAll();
         model.addAttribute("materialList", materialList);
+
+        List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
+        model.addAttribute("stateList", stateList);
 
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
