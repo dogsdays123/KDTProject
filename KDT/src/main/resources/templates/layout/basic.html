@@ -75,7 +75,9 @@
             <li class="nav-item">
                 <a href="#" class="nav-link" title="문서 관리" onclick="toggleSubmenu('submenu-document')"><i class="bi bi-file-earmark-text"></i>&nbsp;&nbsp;문서 관리&nbsp;&nbsp;<span>▾</span></a>
                 <ul id="submenu-document" class="submenu">
-                    <li><a href="/document/orderDoc" class="nav-link">발주서 목록</a></li>
+
+                    <th:block th:if="${userBy.userJob == '관리자' || userBy.userJob == '생산부서' || userBy.userJob == '구매부서' || userBy.userJob == '자재부서'}">
+                        <li><a href="/document/orderDoc" class="nav-link">발주서 목록</a></li></th:block>
                     <li><a href="/document/tStateDoc" class="nav-link">거래명세서 목록</a></li>
                 </ul>
             </li>
