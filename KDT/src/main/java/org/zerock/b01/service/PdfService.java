@@ -67,7 +67,7 @@ public class PdfService {
         }
 
         try {
-            Document document = new Document(PageSize.A4.rotate()); // A4 가로
+            Document document = new Document(PageSize.A4.rotate());
             PdfWriter.getInstance(document, out);
             document.open();
 

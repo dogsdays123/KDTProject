@@ -98,7 +98,9 @@
                                 </select>
                             </td>
                             <td th:text="${#temporals.format(dto.getModDate(), 'yyyy-MM-dd')}"></td>
-                            <td th:text="${dto.getStatus()}"></td>
+                            <td>
+                                <span class="badge bg-secondary" th:text="${dto.status}"></span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
