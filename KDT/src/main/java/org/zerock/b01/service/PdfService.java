@@ -61,6 +61,11 @@ public class PdfService {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         BaseFont baseFont = getKoreanFont();
 
+        Supplier supplier = new Supplier();
+        for(TransactionItemDTO t : request.getPlans()){
+            supplier = t.getSupplier();
+        }
+
         try {
             Document document = new Document(PageSize.A4.rotate()); // A4 가로
             PdfWriter.getInstance(document, out);
@@ -169,27 +174,27 @@ public class PdfService {
             orderHeaderCell.setPadding(7f); // 여백도 선택
             orderInfoTable.addCell(orderHeaderCell);
 
-            PdfPCell addressCell = new PdfPCell(new Phrase("수원시 영통구 영통동 980-3 디지털엠파이어 A동 312호", font));
+            PdfPCell addressCell = new PdfPCell(new Phrase(supplier.getSAddress() + " / " + supplier.getSAddressExtra(), font));
             addressCell.setColspan(3);
             addressCell.setHorizontalAlignment(Element.ALIGN_CENTER);   // ← 가운데 정렬
             addressCell.setVerticalAlignment(Element.ALIGN_MIDDLE);     // ← 수직 가운데 정렬
             addressCell.setFixedHeight(20f);                            // ← 필요 시 높이 조정
 
             orderInfoTable.addCell(createCenteredCell("회사명", font));
-            orderInfoTable.addCell(createCenteredCell("카인드몰", font));
+            orderInfoTable.addCell(createCenteredCell(supplier.getSName(), font));
             orderInfoTable.addCell(createCenteredCell("대표자명", font));
-            orderInfoTable.addCell(createCenteredCell("김제철", font));
+            orderInfoTable.addCell(createCenteredCell(supplier.getSExponent(), font));
 
             orderInfoTable.addCell(createCenteredCell("사업자등록번호", font));
-            orderInfoTable.addCell(createCenteredCell("123-45-67890", font));
+            orderInfoTable.addCell(createCenteredCell(supplier.getSRegNum(), font));
             orderInfoTable.addCell(createCenteredCell("전화", font));
-            orderInfoTable.addCell(createCenteredCell("031-234-5678", font));
+            orderInfoTable.addCell(createCenteredCell(supplier.getSPhone(), font));
 
             orderInfoTable.addCell(createCenteredCell("사업자소재지", font));
             orderInfoTable.addCell(addressCell);
 
             orderInfoTable.addCell(createCenteredCell("이메일", font));
-            orderInfoTable.addCell(createCenteredCell("dg98@naver.com", font));
+            orderInfoTable.addCell(createCenteredCell(supplier.getUserBy().getUEmail(), font));
             orderInfoTable.addCell(createCenteredCell("직통전화", font));
             orderInfoTable.addCell(createCenteredCell("010-2345-8980", font));
 

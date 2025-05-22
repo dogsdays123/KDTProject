@@ -13,9 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.b01.domain.*;
-import org.zerock.b01.dto.PageRequestDTO;
-import org.zerock.b01.dto.PageResponseDTO;
-import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.allDTO.OrderByListAllDTO;
 import org.zerock.b01.dto.allDTO.OrderByPdfDTO;
 import org.zerock.b01.dto.formDTO.OrderByPdfFormDTO;
@@ -138,50 +136,48 @@ public class DocumentController {
     }
 
     @PostMapping("/pdf/s")
-    public ResponseEntity<byte[]> previewOrderPDF(@RequestBody Map<String, List<String>> pdfs, @RequestParam String type) {
-        List<String> obCodes = pdfs.get("pdfs");
+    public ResponseEntity<byte[]> previewOrderPDF(@RequestBody Map<String, List<String>> plans) {
+        List<String> obCodes = plans.get("plans");
 
         if (obCodes == null || obCodes.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
         //여기를 supplierPDF에 맞게 수정하면 됨~!
-        OrderByPdfFormDTO orderByPdfFormDTO = new OrderByPdfFormDTO();
-        List<OrderByPdfDTO> orderByPdfDTOS = new ArrayList<>();
+        TransactionStatementDTO transactionStatementDTO = new TransactionStatementDTO();
+        List<TransactionItemDTO> transactionItemDTOs = new ArrayList<>();
 
         for (String obCode : obCodes) {
-            OrderByPdfDTO orderByPdfDTO = new OrderByPdfDTO();
+            TransactionItemDTO transactionItemDTO = new TransactionItemDTO();
             OrderBy orderBy = orderByRepository.findByOrderByCode(obCode).orElseThrow();
-            orderByPdfDTO.setDppCode(orderBy.getDeliveryProcurementPlan().getDppCode());
-            orderByPdfDTO.setONum(orderBy.getONum());
-            orderByPdfDTO.setOExpectDate(orderBy.getOExpectDate().toString());
-            orderByPdfDTO.setSName(orderBy.getDeliveryProcurementPlan().getSupplier().getSName());
-            orderByPdfDTO.setOrderAddress(orderBy.getOrderAddress());
-            orderByPdfDTO.setORemarks(orderBy.getORemarks());
-            orderByPdfDTO.setPayDate(orderBy.getPayDate());
-            orderByPdfDTO.setPayMethod(orderBy.getPayMethod());
-            orderByPdfDTO.setPayDocument(orderBy.getPayDocument());
-            orderByPdfDTO.setUId(orderBy.getUserBy().getUId());
-            orderByPdfDTOS.add(orderByPdfDTO);
+            transactionItemDTO.setMaterialName(orderBy.getDeliveryProcurementPlan().getMaterial().getMName());
+            transactionItemDTO.setQuantity(orderBy.getONum());
+            transactionItemDTO.setUnitPrice(orderBy.getDeliveryProcurementPlan().getMaterial().getMUnitPrice());
+            transactionItemDTO.setDueDate(supplierStockRepository.findLeadTimeByETC(orderBy.getDeliveryProcurementPlan().getSupplier().getSName(), orderBy.getDeliveryProcurementPlan().getMaterial().getMName()));
+            transactionItemDTO.setWidth(String.valueOf(orderBy.getDeliveryProcurementPlan().getMaterial().getMWidth()));
+            transactionItemDTO.setDepth(String.valueOf(orderBy.getDeliveryProcurementPlan().getMaterial().getMDepth()));
+            transactionItemDTO.setHeight(String.valueOf(orderBy.getDeliveryProcurementPlan().getMaterial().getMHeight()));
+            transactionItemDTO.setSupplier(orderBy.getDeliveryProcurementPlan().getSupplier());
+            transactionItemDTOs.add(transactionItemDTO);
         }
 
-        orderByPdfFormDTO.setPdfs(orderByPdfDTOS);
+        transactionStatementDTO.setPlans(transactionItemDTOs);
 
-        List<byte[]> pdfList = new ArrayList<>();
+        List<byte[]> planList = new ArrayList<>();
 
-        for (OrderByPdfDTO order : orderByPdfFormDTO.getPdfs()) {
-            OrderByPdfFormDTO orderByPdfFormDTO2 = new OrderByPdfFormDTO();
-            List<OrderByPdfDTO> orderByPdfDTOS2 = new ArrayList<>();
-            orderByPdfDTOS2.add(order);
-            orderByPdfFormDTO2.setPdfs(orderByPdfDTOS2);
-            byte[] pdfBytes = pdfService.createPdf(orderByPdfFormDTO2); // PDF 생성
-            pdfList.add(pdfBytes);
+        for (TransactionItemDTO order : transactionStatementDTO.getPlans()) {
+            TransactionStatementDTO transactionStatementDTO2 = new TransactionStatementDTO();
+            List<TransactionItemDTO> transactionItemDTOS2 = new ArrayList<>();
+            transactionItemDTOS2.add(order);
+            transactionStatementDTO2.setPlans(transactionItemDTOS2);
+            byte[] pdfBytes = pdfService.createSupplierPdf(transactionStatementDTO2); // PDF 생성
+            planList.add(pdfBytes);
         }
 
         // 여러 개의 PDF를 하나로 결합
         byte[] mergedPdf;
         try {
-            mergedPdf = pdfService.mergePdfFiles(pdfList); // mergePdfFiles 메서드 호출
+            mergedPdf = pdfService.mergePdfFiles(planList); // mergePdfFiles 메서드 호출
         } catch (IOException | DocumentException e) {
             // 예외가 발생한 경우 적절한 처리를 하세요
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error merging PDFs".getBytes());
