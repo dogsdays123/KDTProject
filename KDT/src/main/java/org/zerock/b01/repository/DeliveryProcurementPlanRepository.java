@@ -3,6 +3,7 @@ package org.zerock.b01.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.zerock.b01.domain.CurrentStatus;
 import org.zerock.b01.domain.DeliveryProcurementPlan;
 import org.zerock.b01.domain.Material;
 import org.zerock.b01.service.AllSearch;
@@ -19,4 +20,7 @@ public interface DeliveryProcurementPlanRepository extends JpaRepository<Deliver
 
     @Query("select dpp.material.mName from DeliveryProcurementPlan dpp where dpp.dppCode =:dppCode")
     String findMNameByDppCodeOne(@Param("dppCode") String dppCode);
+
+    @Query("SELECT DISTINCT dpp.dppState FROM DeliveryProcurementPlan dpp")
+    List<CurrentStatus> findDppState();
 }

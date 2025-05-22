@@ -18,7 +18,7 @@
                     <span class="tooltip-text">등록된 발주서 목록을 조회하고 관리할 수 있습니다.</span>
                 </div>
             </div>
-            <form >
+            <form th:action="@{/document/orderDoc}" method="get">
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
                         <label class="form-label small">발주 코드</label>
@@ -39,8 +39,8 @@
                         </select>
                     </div>
                     <div class="col-md-1">
-                        <label for="dppState" class="form-label small">상태</label>
-                        <select class="form-select form-select-sm" id="dppState" name="dppState" title="상태">
+                        <label for="oState" class="form-label small">상태</label>
+                        <select class="form-select form-select-sm" id="oState" name="oState" title="상태">
                             <option value="" selected>선택</option>
                             <th:block th:each="state : ${stateList}">
                                 <option class="CheckState" th:value="${state}" th:data-state="${state}" th:text="${state}"></option>

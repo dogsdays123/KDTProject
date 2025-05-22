@@ -20,11 +20,11 @@
                 </div>
 
                 <!-- 검색 필터 -->
-                <form>
+                <form th:action="@{/bom/bomList}" method="get">
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2" style="width: 150px">
                             <label for="pName" class="form-label small">상품명</label>
-                            <select id="pName" class="form-select form-select-sm searchSelect">
+                            <select id="pName" name="pName" class="form-select form-select-sm searchSelect">
                                 <option value="" selected>선택</option>
                                 <th:block th:each="dto : ${productList}">
                                     <option th:value="${dto.getPName()}" th:text="${dto.getPName()}" th:data-code="${dto.getPName()}"></option>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="col-md-2" style="width: 150px">
                             <label for="componentType" class="form-label small">부품 선택</label>
-                            <select id="componentType" class="form-select form-select-sm searchSelect">
+                            <select id="componentType" name="componentType" class="form-select form-select-sm searchSelect">
                                 <option value="" selected>선택</option>
                                 <th:block th:each="mTypes : ${componentTypeList}">
                                     <option th:value="${mTypes}" th:text="${mTypes}" th:data-code="${mTypes}"></option>
@@ -53,8 +53,8 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <label for="mNames" class="form-label small">자재명</label>
-                            <select class="form-select form-select-sm searchSelect" name="mNames" id="mNames" title="자재명">
+                            <label for="mName" class="form-label small">자재명</label>
+                            <select class="form-select form-select-sm searchSelect" name="mName" id="mName" title="자재명">
                                 <option value="" selected>선택</option>
                                 <th:block th:each="mNames : ${mNameList}">
                                     <option th:value="${mNames}" th:text="${mNames}" th:data-code="${mNames}"></option>

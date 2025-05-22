@@ -736,16 +736,8 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         }
 
         if (dppState != null && !dppState.isEmpty() && !"전체".equals(dppState)) {
-            switch (dppState){
-                case "대기": booleanBuilder.and(dpp.dppState.in(CurrentStatus.ON_HOLD));
-                    break;
-                case "진행": booleanBuilder.and(dpp.dppState.in(CurrentStatus.IN_PROGRESS));
-                    break;
-                case "종료": booleanBuilder.and(dpp.dppState.in(CurrentStatus.FINISHED));
-                    break;
-                case "거절": booleanBuilder.and(dpp.dppState.in(CurrentStatus.REJECT));
-                    break;
-            }
+            CurrentStatus status = CurrentStatus.valueOf(dppState);
+            booleanBuilder.and(dpp.dppState.eq(status));
         }
 
 
@@ -839,7 +831,7 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
     }
 
     public Page<OrderByListAllDTO> orderBySearchWithAll
-            (String[] types, String keyword, String label, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, String uId, Pageable pageable){
+            (String[] types, String keyword, String label, String oCode, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, String uId, Pageable pageable){
 
         QOrderBy orderBy = QOrderBy.orderBy;
         JPQLQuery<OrderBy> query = from(orderBy);
@@ -862,6 +854,10 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(keywordBuilder);
         }
 
+        if(oCode != null && !oCode.isEmpty() && !"전체".equals(sName)){
+            booleanBuilder.and(orderBy.oCode.contains(oCode));
+        }
+
         if (sName != null && !sName.isEmpty() && !"전체".equals(sName)) {
             booleanBuilder.and(orderBy.deliveryProcurementPlan.supplier.sName.contains(sName));
         }
@@ -871,7 +867,6 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
             booleanBuilder.and(orderBy.deliveryProcurementPlan.material.mName.contains(mName));
         }
 
-        //없앨 예정
         if (oState != null && !oState.isEmpty() && !"전체".equals(oState)) {
             CurrentStatus status = CurrentStatus.valueOf(oState);
             booleanBuilder.and(orderBy.oState.eq(status));
@@ -994,6 +989,11 @@ public class AllSearchImpl extends QuerydslRepositorySupport implements AllSearc
         if (psDate != null) {
             log.info("Received psDate: " + psDate);
             booleanBuilder.and(progressInspection.psDate.eq(psDate));
+        }
+
+        if(psState != null && !psState.isEmpty() && !"전체".equals(psState)){
+            CurrentStatus status = CurrentStatus.valueOf(psState);
+            booleanBuilder.and(progressInspection.psState.eq(status));
         }
 
 

@@ -39,8 +39,8 @@
             </select>
           </div>
           <div class="col-md-1">
-            <label for="dppState" class="form-label small">상태</label>
-            <select class="form-select form-select-sm" id="dppState" name="dppState" title="상태">
+            <label for="oState" class="form-label small">상태</label>
+            <select class="form-select form-select-sm" id="oState" name="oState" title="상태">
               <option value="" selected>선택</option>
               <th:block th:each="state : ${stateList}">
                 <option class="CheckState" th:value="${state}" th:data-state="${state}" th:text="${state}"></option>

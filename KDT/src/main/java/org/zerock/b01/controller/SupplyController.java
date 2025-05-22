@@ -43,6 +43,7 @@ public class SupplyController {
 
     private final DeliveryRequestService deliveryRequestService;
     private final MaterialRepository materialRepository;
+    private final ProgressInspectionRepository progressInspectionRepository;
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 

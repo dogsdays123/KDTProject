@@ -106,6 +106,9 @@ public class OrderByController {
         List<UserBy> userByList = userByRepository.findAll();
         model.addAttribute("userByList", userByList);
 
+        List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
+        model.addAttribute("stateList", stateList);
+
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
         }

@@ -238,11 +238,12 @@ public class PageServiceImpl implements PageService {
         String mName = pageRequestDTO.getMName();
         String oState = pageRequestDTO.getOState();
         String uId = pageRequestDTO.getUId();
+        String oCode = pageRequestDTO.getObCode();
 
         Pageable pageable = pageRequestDTO.getPageable("uId");
 
         Page<OrderByListAllDTO> result = orderByRepository.orderBySearchWithAll
-                (types, keyword, labels, oRegDate, oExpectDate, sName, mName, oState, uId, pageable);
+                (types, keyword, labels, oCode, oRegDate, oExpectDate, sName, mName, oState, uId, pageable);
 
         return PageResponseDTO.<OrderByListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)

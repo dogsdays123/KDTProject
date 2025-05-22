@@ -21,7 +21,7 @@ public interface AllSearch {
 
     Page<BomDTO> bomSearchWithAll(String[] types, String keyword, String componentType, String mName, String pName, String uId, Pageable pageable);
 
-    Page<OrderByListAllDTO> orderBySearchWithAll(String[] types, String keyword, String label, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, String uId, Pageable pageable);
+    Page<OrderByListAllDTO> orderBySearchWithAll(String[] types, String keyword, String label, String oCode, LocalDate oRegDate, LocalDate oExpectDate, String sName, String mName, String oState, String uId, Pageable pageable);
 
     Page<InventoryStockDTO> inventoryStockSearchWithAll(String[] types, String keyword,
                                                         String pName, String componentType, String mName, String isLocation, LocalDate isRegDate, String uId, Pageable pageable);

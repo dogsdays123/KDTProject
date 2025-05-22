@@ -20,7 +20,7 @@
                 </div>
 
                 <!-- 검색 필터 -->
-                <form>
+                <form th:action="@{/orderBy/orderByList}" method="get">
                     <div class="row g-2 align-items-end">
                         <div class="col-md-2">
                             <label for="orderDate" class="form-label small">발주 일자</label>
@@ -49,26 +49,16 @@
                             <input type="date" class="form-control form-control-sm" id="supplyDate" title="납기일자">
                         </div>
                         <div class="col-md-1">
-                            <label for="payMethod" class="form-label small">결제 방식</label>
-                            <select class="form-select form-select-sm" id="payMethod" title="결제방식">
-                                <option selected>전체</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
-                                <option value="-">-</option>
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="dppState" class="form-label small">상태정해서</label>
-                            <select class="form-select form-select-sm" id="dppState" name="dppState" title="상태">
-                                <option selected>전체</option>
-                                <option value="대기">대기중</option>
-                                <option value="진행">진행</option>
-                                <option value="종료">종료</option>
-                                <option value="거절">거절</option>
+                            <label for="oState" class="form-label small">상태정해서</label>
+                            <select class="form-select form-select-sm" id="oState" name="oState" title="상태">
+                                <option value="" selected>선택</option>
+                                <th:block th:each="state : ${stateList}">
+                                    <option class="CheckState" th:value="${state}" th:data-state="${state}" th:text="${state}"></option>
+                                </th:block>
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
-                            <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                            <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
                             <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화</button>
                         </div>
                     </div>

@@ -98,6 +98,9 @@ public class DeliveryProcurementPlanController {
         List<DeliveryProcurementPlan> dppList = deliveryProcurementPlanRepository.findAll();
         model.addAttribute("dppList", dppList);
 
+        List<CurrentStatus> dppStateList = deliveryProcurementPlanRepository.findDppState();
+        model.addAttribute("dppStateList", dppStateList);
+
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
         }

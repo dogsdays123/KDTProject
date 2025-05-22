@@ -31,7 +31,7 @@
 <!--                        </div>-->
                         <div class="col-md-2">
                             <label class="form-label small">생산 계획 코드</label>
-                            <select class="form-select form-select-sm searchSelect"  id="ppCode">
+                            <select class="form-select form-select-sm searchSelect" id="ppCode" name="ppCode">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="pp : ${ppList}">
                                     <option th:value="${pp.ppCode}" th:text="${pp.ppCode}"></option>
@@ -40,7 +40,7 @@
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small">조달 계획 코드</label>
-                            <select class="form-select form-select-sm searchSelect" id="dppCode">
+                            <select class="form-select form-select-sm searchSelect" id="dppCode" name="dppCode">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="dpp : ${dppList}">
                                     <option th:value="${dpp.dppCode}" th:text="${dpp.dppCode}"></option>
@@ -58,7 +58,7 @@
 
                         <div class="col-md-2">
                             <label for="mName" class="form-label small">자재명</label>
-                            <select class="form-select form-select-sm searchSelect" id="mName">
+                            <select class="form-select form-select-sm searchSelect" id="mName" name="mName">
                                 <option value="" selected>전체</option>
                                 <th:block th:each="m : ${materialList}">
                                     <option th:value="${m.mName}" th:text="${m.mName}"></option>
@@ -67,12 +67,11 @@
                         </div>
                         <div class="col-md-1">
                             <label for="dppState" class="form-label small">상태</label>
-                            <select class="form-select form-select-sm " id="dppState" name="dppState" title="상태">
-                                <option selected>전체</option>
-                                <option value="대기">대기중</option>
-                                <option value="진행">진행</option>
-                                <option value="종료">종료</option>
-                                <option value="거절">거절</option>
+                            <select class="form-select form-select-sm " id="dppState" title="상태" name="dppState">
+                                <option value="" selected>선택</option>
+                                <th:block th:each="dpp : ${dppStateList}">
+                                    <option class="CheckState" th:value="${dpp}" th:data-state="${dpp}" th:text="${dpp}"></option>
+                                </th:block>
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">

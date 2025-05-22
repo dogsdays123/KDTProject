@@ -162,7 +162,7 @@ function loadMName(pName, mType, position) {
 
     switch (position){
         case "out": innerValue = "[name=\"mName\"]"; break;
-        case "in" : innerValue = "#mNames"; break;
+        case "in" : innerValue = "#mName"; break;
     }
 
     if(mType && pName){
@@ -187,10 +187,5 @@ function loadMName(pName, mType, position) {
             console.error('부품 목록을 가져오는 중 오류 발생:', error);
         }
     });
-    } else{
-        $('#mNames').empty();  // 부품 목록 초기화
-        var mNameListHTML = $('#mNameListHTML').html();  // 서버에서 렌더링된 HTML 가져오기
-        $('#mNames').append(mNameListHTML);  // mNameList의 option을 append
-        $('#mNames').trigger('change');  // 변경 이벤트 트리거
     }
 }

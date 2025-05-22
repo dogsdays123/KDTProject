@@ -82,6 +82,7 @@ public class PageRequestDTO {
     private LocalDate oRegDate;
     private LocalDate oExpectDate;
     private String oState;
+    private String obCode;
 
     //입고
     private String ipState;
