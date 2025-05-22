@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,11 +15,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.b01.domain.MemberRole;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.SupplierDTO;
 import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.repository.UserByRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.UserByService;
 
@@ -35,6 +38,7 @@ public class FirstViewController {
     private final UserByService userByService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final UserByRepository userByRepository;
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
@@ -186,12 +190,15 @@ public class FirstViewController {
     @PostMapping("/admin")
     @ResponseBody
     public String generate() throws UserByService.MidExistException {
+        if (userByRepository.findAdmin() != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 생성된 데이터입니다.");
+        }
         testRegister();
         testRegisterUnit();
         return "firstView/login";
     }
 
-    public void testRegister(){
+    public void testRegister() {
         UserBy user = UserBy.builder()
                 .uId("Admin")
                 .uPassword(passwordEncoder.encode("1234"))

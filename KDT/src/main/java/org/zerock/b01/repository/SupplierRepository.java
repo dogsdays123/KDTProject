@@ -25,7 +25,9 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     @Query("select s from Supplier s where s.sStatus = '승인'")
     List<Supplier> findSupWithOutDisAgree();
 
-    @Query("select s from Supplier s where s.userBy.uId=:uId")
+    @Query("select distinct s from Supplier s where s.userBy.uId=:uId")
     Optional<Supplier> findSupplierByUID(String uId);
 
+    @Query("select distinct s from Supplier s where s.userBy.uId=:uId")
+    List<Supplier> findSupplierByUIDList(String uId);
 }

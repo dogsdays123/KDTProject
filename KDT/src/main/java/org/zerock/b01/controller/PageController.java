@@ -14,8 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import org.zerock.b01.domain.ProductionPlan;
+import org.zerock.b01.domain.Supplier;
 import org.zerock.b01.domain.UserBy;
 import org.zerock.b01.dto.UserByDTO;
+import org.zerock.b01.repository.SupplierRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.OrderByService;
 import org.zerock.b01.service.ProductionPlanService;
@@ -36,6 +38,7 @@ public class PageController {
     private final UserByService userByService;
     private final ProductionPlanService productionPlanService;
     private final OrderByService orderByService;
+    private final SupplierRepository supplierRepository;
 
     @GetMapping("/main")
     public RedirectView mainView(Authentication auth, Model model, HttpServletRequest request) throws JsonProcessingException {
@@ -110,14 +113,15 @@ public class PageController {
     }
 
     @GetMapping("/myPage")
-    public void myPage() {
-        log.info ("layout myPage test...");
+    public void myPage(@ModelAttribute("userBy") UserByDTO userBy, Model model) {
+        Supplier supplier = supplierRepository.findSupplierByUID(userBy.getUId())
+                .orElseThrow(() -> new RuntimeException("해당 UID에 해당하는 공급업체가 없습니다."));
+        model.addAttribute("supplier", supplier);
     }
 
     @PostMapping("/myPage")
     public String myPagePost(@ModelAttribute UserByDTO userByDTO, Model model) {
         userByService.changeUser(userByDTO);
-        // POST 처리 후 마이페이지 GET으로 리다이렉트
         return "redirect:myPage";
     }
 

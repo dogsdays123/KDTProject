@@ -60,10 +60,12 @@ public class DocumentController {
         List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
         model.addAttribute("stateList", stateList);
 
-        supplierRepository.findSupplierByUID(userBy.getUId()).ifPresent(supplier -> {
-            String sName = supplier.getSName();
-            model.addAttribute("sName", sName);
-        });
+        List<Supplier> suppliers = supplierRepository.findSupplierByUIDList(userBy.getUId());
+        if (suppliers.size() != 1) {
+            throw new IllegalStateException("Supplier UID 중복 또는 존재하지 않음");
+        }
+        String sName = suppliers.get(0).getSName();
+        model.addAttribute("sName", sName);
 
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10

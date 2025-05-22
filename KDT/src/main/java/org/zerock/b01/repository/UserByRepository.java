@@ -23,4 +23,7 @@ public interface UserByRepository extends JpaRepository<UserBy, String> {
 
     @Query("select u from UserBy u where u.userJob in :outType")
     List<UserBy> findByType(List<String> outType);
+
+    @Query("select u from UserBy u where u.uId = 'admin'")
+    UserBy findAdmin();
 }

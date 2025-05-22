@@ -3,6 +3,11 @@ document.getElementById('modifyModal').addEventListener('click', function () {
     modal.show();
 });
 
+document.getElementById('modifySupplierModal').addEventListener('click', function () {
+    const modal = new bootstrap.Modal(document.getElementById('modifySupplier'));
+    modal.show();
+});
+
 let checkAll = { idCheck: false, emailCheck: false };
 var signupButton = document.getElementById('signupButton');
 
