@@ -142,4 +142,11 @@ public class MaterialServiceImpl implements MaterialService {
         }
     }
 
+    @Override
+    public String findCodeByName(String mName) {
+        Material material = materialRepository.findByMName(mName)
+                .orElseThrow(() -> new IllegalArgumentException("해당 자재명이 존재하지 않습니다: " + mName));
+        return material.getMCode();
+    }
+
 }

@@ -53,14 +53,18 @@ public class SupplierStockServiceImpl implements SupplierStockService {
     @Override
     public void registerSStock(SupplierStockDTO supplierStockDTO){
 
-        boolean exists = supplierStockRepository.existsBySupplier_sIdAndMaterial_mCode(supplierStockDTO.getSId(), supplierStockDTO.getMCode());
+        boolean exists = supplierStockRepository.existsBySupplier_sIdAndMaterial_mCode(
+                supplierStockDTO.getSId(), supplierStockDTO.getMCode()
+        );
         if (exists) {
-            throw new IllegalStateException("이미 등록된 자재입니다.");
+            throw new IllegalStateException("이미 등록된 자재입니다: " + supplierStockDTO.getMCode());
         }
 
         SupplierStock supplierStock = modelMapper.map(supplierStockDTO, SupplierStock.class);
 
-        Material material = materialRepository.findByMaterialCode(supplierStockDTO.getMCode()).orElseThrow(() -> new RuntimeException("Material not found"));
+        Material material = materialRepository.findByMaterialCode(supplierStockDTO.getMCode())
+                .orElseThrow(() -> new IllegalArgumentException("해당 자재가 존재하지 않습니다: " + supplierStockDTO.getMCode()));
+
         supplierStock.setMaterial(material);
 
         supplierStockRepository.save(supplierStock);

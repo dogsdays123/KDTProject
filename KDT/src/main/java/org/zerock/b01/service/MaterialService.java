@@ -17,4 +17,5 @@ public interface MaterialService {
     List<Material> getMaterialByPName(String pCode);
     List<String> getComponentTypesByProductCode(String pCode);
     List<Material> getMaterialByComponentType(String componentType);
+    String findCodeByName(String mName);
 }

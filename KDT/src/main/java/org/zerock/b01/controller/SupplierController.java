@@ -328,18 +328,27 @@ public class SupplierController {
             XSSFRow row = worksheet.getRow(i);
             if (row == null) continue;
 
-            SupplierStockDTO supplierStockDTO = new SupplierStockDTO();
+
             DataFormatter formatter = new DataFormatter();
 
-            String mCode = formatter.formatCellValue(row.getCell(0)).trim();
+            String mName = formatter.formatCellValue(row.getCell(0));
+            if (mName == null || mName.trim().isEmpty()) {
+                System.out.println("엑셀 행 " + i + " : 자재명이 비어있음, 스킵");
+                continue;
+            }
+            mName = mName.trim();
+            String mCode = materialService.findCodeByName(mName);
+
+            SupplierStockDTO supplierStockDTO = new SupplierStockDTO();
             supplierStockDTO.setMCode(mCode);
-            supplierStockDTO.setMName(formatter.formatCellValue(row.getCell(1)));
-            supplierStockDTO.setSsNum(formatter.formatCellValue(row.getCell(3)));
-            supplierStockDTO.setSsMinOrderQty(formatter.formatCellValue(row.getCell(4)));
-            supplierStockDTO.setLeadTime(formatter.formatCellValue(row.getCell(5)));
+            supplierStockDTO.setMName(mName);
+            supplierStockDTO.setSsNum(formatter.formatCellValue(row.getCell(2)));
+            supplierStockDTO.setSsMinOrderQty(formatter.formatCellValue(row.getCell(3)));
+            supplierStockDTO.setLeadTime(formatter.formatCellValue(row.getCell(4)));
             supplierStockDTO.setSId(sId);
+
             supplierStockDTOS.add(supplierStockDTO);
-            mCodes.add(supplierStockDTO.getMCode());
+            mCodes.add(mCode);
         }
 
         for (SupplierStockDTO supplierStockDTO : supplierStockDTOS) {
