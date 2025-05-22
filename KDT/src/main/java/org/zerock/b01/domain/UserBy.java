@@ -38,6 +38,9 @@ public class UserBy extends BaseEntity {
 
     private String status;
 
+    @OneToMany(mappedBy = "userBy", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Supplier> suppliers = new HashSet<>();
+
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.ALL)

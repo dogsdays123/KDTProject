@@ -215,4 +215,8 @@ public class UserByServiceImpl implements UserByService {
 
         mailSender.send(message);
     }
+
+    public void removeUser(UserByDTO userByDTO){
+        userByRepository.delete(userByRepository.findByUId(userByDTO.getUId()));
+    }
 }

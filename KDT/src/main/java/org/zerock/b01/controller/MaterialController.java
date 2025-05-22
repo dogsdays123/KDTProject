@@ -185,7 +185,10 @@ public class MaterialController {
         log.info("중복 부품: {}", totalDuplicateList);
         log.info("등록되지 않은 상품: {}", totalErrorCheckList);
 
-        noticeService.addNotice("m");
+        log.info("체크: {}", check);
+        if(!check.equals("true")) {
+            noticeService.addNotice("m");
+        }
         return response;
     }
 

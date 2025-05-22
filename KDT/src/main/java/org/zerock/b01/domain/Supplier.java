@@ -2,6 +2,7 @@ package org.zerock.b01.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.zerock.b01.dto.SupplierDTO;
 
 import java.util.List;
 
@@ -57,5 +58,18 @@ public class Supplier extends BaseEntity {
 
     public void changeStatus(String status) {
         this.sStatus = status;
+    }
+
+    public void modifySupplier(SupplierDTO supplierDTO){
+        this.sName = supplierDTO.getSName();
+        this.sExponent = supplierDTO.getSExponent();
+        this.sManager = supplierDTO.getSManager();
+        this.sBusinessType = supplierDTO.getSBusinessType();
+        this.sBusinessArray = supplierDTO.getSBusinessArray();
+        this.sPhone = supplierDTO.getSPhone();
+        this.sFax = supplierDTO.getSFax();
+        this.sPhoneDirect = supplierDTO.getSPhoneDirect();
+        this.sAddress = supplierDTO.getSAddress();
+        this.sAddressExtra = supplierDTO.getSAddressExtra();
     }
 }

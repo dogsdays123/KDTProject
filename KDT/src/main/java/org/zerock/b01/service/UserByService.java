@@ -25,4 +25,5 @@ public interface UserByService {
     }
 
     void join(UserByDTO userByDTO, SupplierDTO supplierDTO) throws MidExistException;
+    void removeUser(UserByDTO userByDTO);
 }

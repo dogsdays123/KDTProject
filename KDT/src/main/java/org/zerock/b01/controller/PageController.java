@@ -16,11 +16,13 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.zerock.b01.domain.ProductionPlan;
 import org.zerock.b01.domain.Supplier;
 import org.zerock.b01.domain.UserBy;
+import org.zerock.b01.dto.SupplierDTO;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.repository.SupplierRepository;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.OrderByService;
 import org.zerock.b01.service.ProductionPlanService;
+import org.zerock.b01.service.SupplierService;
 import org.zerock.b01.service.UserByService;
 
 import java.util.*;
@@ -36,6 +38,7 @@ public class PageController {
     private final ProductionPlanService productionPlanService;
     private final OrderByService orderByService;
     private final SupplierRepository supplierRepository;
+    private final SupplierService supplierService;
 
     @GetMapping("/main")
     public RedirectView mainView(Authentication auth, Model model, HttpServletRequest request) throws JsonProcessingException {
@@ -124,6 +127,19 @@ public class PageController {
     public String myPagePost(@ModelAttribute UserByDTO userByDTO, Model model) {
         userByService.changeUser(userByDTO);
         return "redirect:myPage";
+    }
+
+    @PostMapping("/myPageSupplier")
+    public String myPageSupplierPost(@ModelAttribute("userBy") UserByDTO userByDTO, @ModelAttribute SupplierDTO supplierDTO , Model model) {
+        supplierService.modifySupplier(supplierDTO, userByDTO);
+        return "redirect:myPage";
+    }
+
+    @PostMapping("/remove")
+    public String remove(@ModelAttribute("userBy") UserByDTO userByDTO, Model model) {
+        log.info("정보삭제");
+        userByService.removeUser(userByDTO);
+        return "redirect:http://localhost:8080/firstView/login";
     }
 
     @PostMapping("/checkEmail")

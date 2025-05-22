@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     const modifyModal = document.getElementById('modifyModal');
     const modifySupplierModal = document.getElementById('modifySupplierModal');
+    const removeModal = document.getElementById('removeModal');
+    const removeButton = document.getElementById('removeButton');
 
     // modifySupplierModal이 존재하는지 확인한 후에 이벤트 추가
     if (modifySupplierModal) {
@@ -15,6 +17,31 @@ document.addEventListener("DOMContentLoaded", function () {
         modifyModal.addEventListener('click', function () {
             const modal = new bootstrap.Modal(document.getElementById('modify'));
             modal.show();
+        });
+    }
+
+    if(removeModal){
+        removeModal.addEventListener('click', function () {
+            const modal = new bootstrap.Modal(document.getElementById('remove'));
+            modal.show();
+        });
+    }
+
+    if(removeButton){
+        removeButton.addEventListener('click', function () {
+            // AJAX 요청 보내기
+            $.ajax({
+                url: '/mainPage/remove', // Controller의 URL로 수정 (예: '/user/checkId')
+                type: 'POST',
+                success: function() {
+                    alert("회원정보가 삭제되었습니다.");
+                    window.location.replace("/logout");
+                },
+                error: function(xhr, status, error) {
+                    alert("회원정보 삭제 오류.");
+                    window.location.replace("/logout");
+                }
+            });
         });
     }
 });

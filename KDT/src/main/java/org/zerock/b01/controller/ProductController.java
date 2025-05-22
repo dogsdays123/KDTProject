@@ -159,7 +159,9 @@ public class ProductController {
         response.put("pNames", duplicationProducts.get("pNames"));
         log.info("$$$ " + Arrays.toString(duplicationProducts.get("pCodes")));
 
-        noticeService.addNotice("p");
+        if(!check.equals("true")){
+            noticeService.addNotice("p");
+        }
         return response;
     }
 

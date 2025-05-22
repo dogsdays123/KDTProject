@@ -113,22 +113,10 @@ $(document).ready(function () {
         $.ajax({
             url: `/notice/clear`,
             method: 'GET',
-            success: function (mComponentTypes) {
-                if (!Array.isArray(mComponentTypes) || mComponentTypes.length === 0) {
-                    defaultValueInner("mComponentType");
-                    return;  // 이 시점에서 종료해주는 게 좋음
-                }
-                // 부품명 선택 요소 초기화
-                const mComponentTypeSelect = $('#mComponentType');
-                mComponentTypeSelect.empty();  // 기존 옵션 제거
-                mComponentTypeSelect.append('<option value="" selected>선택</option>');
-                mComponentTypes.forEach(type => {
-                    mComponentTypeSelect.append(`<option value="${type}">${type}</option>`);
-                });
-                mComponentTypeSelect.trigger('change');  // select2가 최신 값을 반영하도록 트리거
+            success: function () {
             },
             error: function (error) {
-                console.error('목록을 가져오는 중 오류 발생:', error);
+                console.error('알람삭제:', error);
             }
         });
     });

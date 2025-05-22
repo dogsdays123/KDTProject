@@ -3,13 +3,12 @@ package org.zerock.b01.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RestController;
 import org.zerock.b01.domain.Notice;
 import org.zerock.b01.dto.UserByDTO;
 import org.zerock.b01.security.UserBySecurityDTO;
@@ -19,7 +18,7 @@ import org.zerock.b01.service.UserByService;
 import java.util.List;
 
 @Log4j2
-@RestController
+@Controller
 @ControllerAdvice
 @RequiredArgsConstructor
 public class AllOfDataController {
@@ -29,38 +28,37 @@ public class AllOfDataController {
 
     @ModelAttribute
     public void Profile(UserByDTO userByDTO, Model model, Authentication auth, HttpServletRequest request) {
-        if(auth == null) {
-            log.info("aaaaaa 인증정보 없음");
+        if (auth == null || !(auth.getPrincipal() instanceof UserBySecurityDTO)) {
             model.addAttribute("userBy", null);
-        } else {
-            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) auth;
+            return;
+        }
 
-            // token.getPrincipal()이 MemberSecurityDTO 타입이라면, 이를 MemberSecurityDTO로 캐스팅
-            UserBySecurityDTO principal = (UserBySecurityDTO) token.getPrincipal();
-            String username = principal.getUId(); // MemberSecurityDTO에서 사용자 이름 가져오기
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) auth;
 
-            // 일반 로그인 사용자 정보 가져오기
-            userByDTO = userByService.readOne(username);
-            log.info("##### 일반 로그인 사용자 정보: " + userByDTO);
+        // token.getPrincipal()이 MemberSecurityDTO 타입이라면, 이를 MemberSecurityDTO로 캐스팅
+        UserBySecurityDTO principal = (UserBySecurityDTO) token.getPrincipal();
+        String username = principal.getUId(); // MemberSecurityDTO에서 사용자 이름 가져오기
 
-            if(userByDTO.getStatus() == null){
+        // 일반 로그인 사용자 정보 가져오기
+        userByDTO = userByService.readOne(username);
 
-            }
+        log.info("##### 일반 로그인 사용자 정보: " + userByDTO);
+
+        if(userByDTO != null) {
             List<Notice> notice = noticeService.getNotice(userByDTO.getUId());
-            if(notice.isEmpty()){
+
+            if (notice.isEmpty()) {
                 model.addAttribute("notice", null);
-                log.info("noticeNull!! {}", notice);
             } else {
                 model.addAttribute("notice", notice);
-                log.info("notice!! {}", notice);
             }
-
 
             model.addAttribute("userBy", userByDTO);
             String formattedPhone = formatPhoneNumber(userByDTO.getUPhone());
             model.addAttribute("formattedPhone", formattedPhone);
         }
     }
+
 
     // 전화번호 포맷팅 메서드
     private String formatPhoneNumber(String phoneNumber) {

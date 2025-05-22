@@ -60,6 +60,7 @@ public class SupplierStockServiceImpl implements SupplierStockService {
 
         SupplierStock supplierStock = modelMapper.map(supplierStockDTO, SupplierStock.class);
 
+        log.info("자재확인 {}", supplierStockDTO.getMCode());
         Material material = materialRepository.findByMaterialCode(supplierStockDTO.getMCode()).orElseThrow(() -> new RuntimeException("Material not found"));
         supplierStock.setMaterial(material);
 
