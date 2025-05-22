@@ -60,8 +60,10 @@ public class DocumentController {
         List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
         model.addAttribute("stateList", stateList);
 
-        String sName = supplierRepository.findSupplierByUID(userBy.getUId()).orElseThrow().getSName();
-        model.addAttribute("sName", sName);
+        supplierRepository.findSupplierByUID(userBy.getUId()).ifPresent(supplier -> {
+            String sName = supplier.getSName();
+            model.addAttribute("sName", sName);
+        });
 
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
@@ -94,9 +96,10 @@ public class DocumentController {
         List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
         model.addAttribute("stateList", stateList);
 
-        String sName = supplierRepository.findSupplierByUID(userBy.getUId()).orElseThrow().getSName();
-        model.addAttribute("sName", sName);
-
+        supplierRepository.findSupplierByUID(userBy.getUId()).ifPresent(supplier -> {
+            String sName = supplier.getSName();
+            model.addAttribute("sName", sName);
+        });
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
         }
