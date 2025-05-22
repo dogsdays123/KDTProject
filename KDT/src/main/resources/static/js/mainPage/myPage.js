@@ -1,12 +1,24 @@
-document.getElementById('modifyModal').addEventListener('click', function () {
-    const modal = new bootstrap.Modal(document.getElementById('modify'));
-    modal.show();
+document.addEventListener("DOMContentLoaded", function () {
+    const modifyModal = document.getElementById('modifyModal');
+    const modifySupplierModal = document.getElementById('modifySupplierModal');
+
+    // modifySupplierModal이 존재하는지 확인한 후에 이벤트 추가
+    if (modifySupplierModal) {
+        modifySupplierModal.addEventListener('click', function () {
+            const modal = new bootstrap.Modal(document.getElementById('modifySupplier'));
+            modal.show();
+        });
+    }
+
+    // modifySupplierModal이 존재하는지 확인한 후에 이벤트 추가
+    if (modifyModal) {
+        modifyModal.addEventListener('click', function () {
+            const modal = new bootstrap.Modal(document.getElementById('modify'));
+            modal.show();
+        });
+    }
 });
 
-document.getElementById('modifySupplierModal').addEventListener('click', function () {
-    const modal = new bootstrap.Modal(document.getElementById('modifySupplier'));
-    modal.show();
-});
 
 let checkAll = { idCheck: false, emailCheck: false };
 var signupButton = document.getElementById('signupButton');

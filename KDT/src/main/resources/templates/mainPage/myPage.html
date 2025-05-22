@@ -52,6 +52,7 @@
             </div>
         </div>
 
+        <th:block th:if="${check == null}">
         <div class="container" style="max-width: 1000px; margin-left: 0">
             <div class="d-flex align-items-center mb-3">
                 <h4 class="mb-0 me-2">회사 정보 보기</h4>
@@ -131,6 +132,7 @@
                 <a href="#" class="btn btn-danger">회원 탈퇴</a>
             </div>
         </div>
+        </th:block>
     </div>
 
     <!--  마이페이지 모달창 start -->
@@ -209,6 +211,7 @@
     <!-- 마이페이지 모달창 end -->
 
     <!--  회사 모달창 start -->
+    <th:block th:if="${check == null}">
     <div class="modal fade" id="modifySupplier" tabindex="-1" aria-labelledby="modifySupplierModal"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -223,15 +226,15 @@
                         <div class="row g-3 mb-3">
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 회사명</label>
-                                <input type="text" class="form-control form-control-sm" th:value="${supplier.sName}" readonly>
+                                <input type="text" class="form-control form-control-sm" th:value="${supplier.sName}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 대표자</label>
-                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sExponent}" readonly>
+                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sExponent}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 매니저</label>
-                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sManager}" readonly>
+                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sManager}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label">사업자번호</label>
@@ -239,31 +242,31 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 회사 주소</label>
-                                <input type="text" class="form-control form-control-sm" th:value="${supplier.sAddress}" readonly>
+                                <input type="text" class="form-control form-control-sm" th:value="${supplier.sAddress}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 상세 주소</label>
-                                <input type="text" class="form-control form-control-sm" th:value="${supplier.sAddressExtra}" readonly>
+                                <input type="text" class="form-control form-control-sm" th:value="${supplier.sAddressExtra}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> s_business_array</label>
-                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sBusinessArray}" readonly>
+                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sBusinessArray}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> s_business_type</label>
-                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sBusinessType}" readonly>
+                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sBusinessType}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 팩스번호</label>
-                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sFax}" readonly>
+                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sFax}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 회사 전화번호</label>
-                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sPhone}" readonly>
+                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sPhone}">
                             </div>
                             <div class="col-12">
                                 <label class="form-label"><span class="text-danger">*</span> 담당자 직통번호</label>
-                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sPhoneDirect}" readonly>
+                                <input type="email" class="form-control form-control-sm" th:value="${supplier.sPhoneDirect}">
                             </div>
                         </div>
                     </div>
@@ -275,6 +278,7 @@
             </div>
         </div>
     </div>
+    </th:block>
     <!-- 마이페이지 모달창 end -->
 
     <script src="/js/mainPage/myPage.js" defer></script>
