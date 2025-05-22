@@ -59,6 +59,38 @@ public class DocumentController {
         List<Material> materialList = materialRepository.findAll();
         model.addAttribute("materialList", materialList);
 
+        List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
+        model.addAttribute("stateList", stateList);
+        log.info("stateList: {}", stateList);
+
+        if (pageRequestDTO.getSize() == 0) {
+            pageRequestDTO.setSize(10); // 기본값 10
+        }
+
+        PageResponseDTO<OrderByListAllDTO> responseDTO =
+                pageService.orderByWithAll(pageRequestDTO, "obd");
+
+        if(responseDTO.getDtoList() != null) {
+            for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
+                dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
+            }
+        }
+
+        if (pageRequestDTO.getTypes() != null) {
+            model.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
+        model.addAttribute("responseDTO", responseDTO);
+    }
+
+    @GetMapping("/tStateDoc")
+    public void tStateDocList(PageRequestDTO pageRequestDTO, Model model, @ModelAttribute("userBy") UserByDTO userBy) {
+        List<OrderBy> orderByList = orderByRepository.findAll();
+        model.addAttribute("orderByList", orderByList);
+
+        List<Material> materialList = materialRepository.findAll();
+        model.addAttribute("materialList", materialList);
+
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
         }
@@ -194,33 +226,5 @@ public class DocumentController {
     @ResponseBody
     public String getMNameByDppCode(@PathVariable String obCode) {
         return deliveryProcurementPlanRepository.findMNameByDppCodeOne(orderByRepository.findByOrderByCode(obCode).orElseThrow().getDeliveryProcurementPlan().getDppCode());
-    }
-
-    @GetMapping("/tStateDoc")
-    public void tStateDocList(PageRequestDTO pageRequestDTO, Model model) {
-        List<OrderBy> orderByList = orderByRepository.findAll();
-        model.addAttribute("orderByList", orderByList);
-
-        List<Material> materialList = materialRepository.findAll();
-        model.addAttribute("materialList", materialList);
-
-        if (pageRequestDTO.getSize() == 0) {
-            pageRequestDTO.setSize(10); // 기본값 10
-        }
-
-        PageResponseDTO<OrderByListAllDTO> responseDTO =
-                pageService.orderByWithAll(pageRequestDTO, "obd");
-
-        if(responseDTO.getDtoList() != null) {
-            for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
-                dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
-            }
-        }
-
-        if (pageRequestDTO.getTypes() != null) {
-            model.addAttribute("keyword", pageRequestDTO.getKeyword());
-        }
-
-        model.addAttribute("responseDTO", responseDTO);
     }
 }

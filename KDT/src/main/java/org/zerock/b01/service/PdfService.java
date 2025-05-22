@@ -196,12 +196,12 @@ public class PdfService {
             orderInfoTable.addCell(createCenteredCell("이메일", font));
             orderInfoTable.addCell(createCenteredCell(supplier.getUserBy().getUEmail(), font));
             orderInfoTable.addCell(createCenteredCell("직통전화", font));
-            orderInfoTable.addCell(createCenteredCell("010-2345-8980", font));
+            orderInfoTable.addCell(createCenteredCell(supplier.getSPhoneDirect(), font));
 
             orderInfoTable.addCell(createCenteredCell("팩스번호", font));
-            orderInfoTable.addCell(createCenteredCell("02-1234-7781", font));
+            orderInfoTable.addCell(createCenteredCell(supplier.getSFax(), font));
             orderInfoTable.addCell(createCenteredCell("발주담당자", font));
-            orderInfoTable.addCell(createCenteredCell("홍발주", font));
+            orderInfoTable.addCell(createCenteredCell(supplier.getSManager(), font));
 
             PdfPTable rowTable = new PdfPTable(2);  // 3개의 열을 가진 테이블
             rowTable.setWidthPercentage(100);

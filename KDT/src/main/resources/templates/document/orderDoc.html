@@ -22,7 +22,7 @@
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
                         <label class="form-label small">발주 코드</label>
-                        <select class="form-select form-select-sm searchSelect" id="obCode">
+                        <select class="form-select form-select-sm searchSelect" id="obCode" name="obCode">
                             <option value="" selected>전체</option>
                             <th:block th:each="ob : ${orderByList}">
                                 <option th:value="${ob.getOCode()}" th:text="${ob.getOCode()}"></option>
@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-md-2">
                         <label for="mName" class="form-label small">자재명</label>
-                        <select class="form-select form-select-sm searchSelect" id="mName">
+                        <select class="form-select form-select-sm searchSelect" id="mName" name="mName">
                             <option value="" selected>전체</option>
                             <th:block th:each="m : ${materialList}">
                                 <option th:value="${m.getMName()}" th:text="${m.getMName()}"></option>
@@ -41,11 +41,10 @@
                     <div class="col-md-1">
                         <label for="dppState" class="form-label small">상태</label>
                         <select class="form-select form-select-sm" id="dppState" name="dppState" title="상태">
-                            <option selected>전체</option>
-                            <option value="대기">대기중</option>
-                            <option value="진행">진행</option>
-                            <option value="종료">종료</option>
-                            <option value="거절">거절</option>
+                            <option value="" selected>선택</option>
+                            <th:block th:each="state : ${stateList}">
+                                <option class="CheckState" th:value="${state}" th:data-state="${state}" th:text="${state}"></option>
+                            </th:block>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">

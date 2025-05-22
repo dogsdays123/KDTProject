@@ -18,11 +18,11 @@
           <span class="tooltip-text">등록된 거래명세서 목록을 조회하고 관리할 수 있습니다.</span>
         </div>
       </div>
-      <form >
+      <form th:action="@{/document/tStateDoc}" method="get">
         <div class="row g-2 align-items-end">
           <div class="col-md-2">
             <label class="form-label small">발주 코드</label>
-            <select class="form-select form-select-sm searchSelect" id="obCode">
+            <select class="form-select form-select-sm searchSelect" id="obCode" name="obCode">
               <option value="" selected>전체</option>
               <th:block th:each="ob : ${orderByList}">
                 <option th:value="${ob.getOCode()}" th:text="${ob.getOCode()}"></option>
@@ -31,7 +31,7 @@
           </div>
           <div class="col-md-2">
             <label for="mName" class="form-label small">자재명</label>
-            <select class="form-select form-select-sm searchSelect" id="mName">
+            <select class="form-select form-select-sm searchSelect" id="mName" name="mName">
               <option value="" selected>전체</option>
               <th:block th:each="m : ${materialList}">
                 <option th:value="${m.getMName()}" th:text="${m.getMName()}"></option>
@@ -41,11 +41,10 @@
           <div class="col-md-1">
             <label for="dppState" class="form-label small">상태</label>
             <select class="form-select form-select-sm" id="dppState" name="dppState" title="상태">
-              <option selected>전체</option>
-              <option value="대기">대기중</option>
-              <option value="진행">진행</option>
-              <option value="종료">종료</option>
-              <option value="거절">거절</option>
+              <option value="" selected>선택</option>
+              <th:block th:each="state : ${stateList}">
+                <option class="CheckState" th:value="${state}" th:data-state="${state}" th:text="${state}"></option>
+              </th:block>
             </select>
           </div>
           <div class="col-md-2 d-flex align-items-end gap-2">
@@ -99,12 +98,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${responseDTO.dtoList == null or #lists.isEmpty(responseDTO.dtoList)}">
+            <tr th:if="${responseDTO.dtoList == null || #lists.isEmpty(responseDTO.dtoList)}">
               <td colspan="15" class="text-center" style="padding: 20px 0;">
                 등록된 구매 발주서가 없습니다. 필터 조건을 다시 확인하거나 검색어를 변경하여 재검색해 주세요.
               </td>
             </tr>
             <tr th:each="dto:${responseDTO.dtoList}">
+              <th:block th:if="${(userBy.userJob != '협력업체') || (userBy.uId == dto.getUId())}">
               <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
               <td th:text="${dto.getOCode()}"></td>
               <td th:text="${#temporals.format(dto.getORegDate(), 'yyyy-MM-dd')}"></td>
@@ -118,6 +118,7 @@
               <td class="CheckState"
                   th:data-state="${dto.getOState() != null ? dto.getOState() : 'UNKNOWN'}">
               </td>
+              </th:block>
             </tr>
             </tbody>
           </table>
