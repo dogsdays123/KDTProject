@@ -17,10 +17,7 @@ import org.zerock.b01.dto.*;
 import org.zerock.b01.dto.allDTO.OrderByListAllDTO;
 import org.zerock.b01.dto.allDTO.OrderByPdfDTO;
 import org.zerock.b01.dto.formDTO.OrderByPdfFormDTO;
-import org.zerock.b01.repository.DeliveryProcurementPlanRepository;
-import org.zerock.b01.repository.MaterialRepository;
-import org.zerock.b01.repository.OrderByRepository;
-import org.zerock.b01.repository.SupplierStockRepository;
+import org.zerock.b01.repository.*;
 import org.zerock.b01.security.UserBySecurityDTO;
 import org.zerock.b01.service.PageService;
 import org.zerock.b01.service.PdfService;
@@ -42,6 +39,7 @@ public class DocumentController {
     private final OrderByRepository orderByRepository;
     private final DeliveryProcurementPlanRepository deliveryProcurementPlanRepository;
     private final MaterialRepository materialRepository;
+    private final SupplierRepository supplierRepository;
     @Value("${org.zerock.upload.readyPlanPath}")
     private String readyPath;
 
@@ -51,7 +49,7 @@ public class DocumentController {
     private final PdfService pdfService;
 
     @GetMapping("/orderDoc")
-    public void orderDocList(PageRequestDTO pageRequestDTO, Model model) {
+    public void orderDocList(PageRequestDTO pageRequestDTO, Model model, @ModelAttribute("userBy") UserByDTO userBy) {
 
         List<OrderBy> orderByList = orderByRepository.findAll();
         model.addAttribute("orderByList", orderByList);
@@ -61,6 +59,9 @@ public class DocumentController {
 
         List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
         model.addAttribute("stateList", stateList);
+
+        String sName = supplierRepository.findSupplierByUID(userBy.getUId()).orElseThrow().getSName();
+        model.addAttribute("sName", sName);
 
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
@@ -93,6 +94,9 @@ public class DocumentController {
         List<CurrentStatus> stateList = orderByRepository.findDistinctOrderStates();
         model.addAttribute("stateList", stateList);
 
+        String sName = supplierRepository.findSupplierByUID(userBy.getUId()).orElseThrow().getSName();
+        model.addAttribute("sName", sName);
+
         if (pageRequestDTO.getSize() == 0) {
             pageRequestDTO.setSize(10); // 기본값 10
         }
@@ -100,6 +104,8 @@ public class DocumentController {
         PageResponseDTO<OrderByListAllDTO> responseDTO =
                 pageService.orderByWithAll(pageRequestDTO, "obd");
 
+
+        List<String> sNameList = new ArrayList<>();
         if(responseDTO.getDtoList() != null) {
             for (OrderByListAllDTO dto : responseDTO.getDtoList()) {
                 dto.setLeadTime(supplierStockRepository.findLeadTimeByETC(dto.getSName(), dto.getMCode()));
