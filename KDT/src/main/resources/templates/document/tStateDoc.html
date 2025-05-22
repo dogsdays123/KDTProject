@@ -104,7 +104,7 @@
               </td>
             </tr>
             <tr th:each="dto:${responseDTO.dtoList}">
-              <th:block th:if="${(userBy.userJob != '협력업체') || (userBy.uId == dto.getUId())}">
+              <th:block th:if="${(userBy.userJob != '협력회사') || (userBy.uId == dto.getUId())}">
               <td><input type="checkbox" class="selectPlan" title="해당 행 선택"></td>
               <td th:text="${dto.getOCode()}"></td>
               <td th:text="${#temporals.format(dto.getORegDate(), 'yyyy-MM-dd')}"></td>
