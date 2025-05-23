@@ -265,6 +265,9 @@ $('#excelUpload').on('click', function (e) {
             $('#loadingModal').modal('show');  // 로딩 모달 띄우기
         },
         success: function(response) {
+            setTimeout(() => {
+                $('#loadingModal').modal('hide');
+            }, 500);
             alert("파일 업로드에 성공했습니다. " + response.mg);
             document.getElementById('fileList').innerHTML = '';
             document.getElementById('uploadedFileList').style.display = 'none';

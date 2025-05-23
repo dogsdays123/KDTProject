@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     window.location.replace("/logout");
                 },
                 error: function(xhr, status, error) {
-                    alert("회원정보 삭제 오류.");
+                    alert("연관된 정보가 있습니다.");
                     window.location.replace("/logout");
                 }
             });

@@ -114,6 +114,7 @@ $(document).ready(function () {
             url: `/notice/clear`,
             method: 'GET',
             success: function () {
+                alert("모든 알림이 정상적으로 삭제되었습니다.")
             },
             error: function (error) {
                 console.error('알람삭제:', error);
