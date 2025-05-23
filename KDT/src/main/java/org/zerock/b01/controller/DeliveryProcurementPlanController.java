@@ -71,6 +71,8 @@ public class DeliveryProcurementPlanController {
         PageResponseDTO<PlanListAllDTO> responseDTO =
                 pageService.planListWithAll(pageRequestDTO);
 
+        log.info("디피피 {}", responseDTO.getDtoList());
+
         if (pageRequestDTO.getTypes() != null) {
             model.addAttribute("keyword", pageRequestDTO.getKeyword());
         }

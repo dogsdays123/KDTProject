@@ -18,11 +18,11 @@
                     <span class="tooltip-text">필요한 자재의 조달 계획을 등록하고 관리할 수 있습니다. ※ 조달 계획을 등록하기 위해 먼저 해당하는 생산 계획을 선택해 주세요.</span>
                 </div>
             </div>
-            <form>
+            <form th:action="@{/dpp/dppRegister}" method="get">
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
                         <label for="pName" class="form-label small">상품명</label>
-                        <select class="form-select form-select-sm searchSelect" id="pName">
+                        <select class="form-select form-select-sm searchSelect" id="pName" name="pName">
                             <option value="" selected>선택</option>
                             <th:block th:each="product : ${productList}">
                                 <option th:value="${product.pName}" th:text="${product.pName}"></option>
@@ -31,15 +31,15 @@
                     </div>
                     <div class="col-md-2">
                         <label for="startDate" class="form-label small">생산 시작일</label>
-                        <input type="date" class="form-control form-control-sm" id="startDate">
+                        <input type="date" class="form-control form-control-sm" id="startDate" name="startDate">
                     </div>
                     <div class="col-md-2">
                         <label for="endDate" class="form-label small">생산 종료일</label>
-                        <input type="date" class="form-control form-control-sm" id="endDate">
+                        <input type="date" class="form-control form-control-sm" id="endDate" name="endDate">
                     </div>
                     <div class="col-md-2">
                         <label for="uId" class="form-label small">사원번호</label>
-                        <select class="form-select form-select-sm searchSelect" id="uId">
+                        <select class="form-select form-select-sm searchSelect" id="uId" name="uId">
                             <option value="" selected>선택</option>
                             <th:block th:each="pp : ${userList}">
                                 <option th:value="${pp.getUId()}" th:text="${pp.getUId()}"></option>
@@ -47,7 +47,7 @@
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button type="button" class="btn btn-dark btn-sm w-100">적용</button>
+                        <button type="submit" class="btn btn-dark btn-sm w-100">적용</button>
                         <button type="button" class="clearBtn btn btn-outline-dark btn-sm w-100" title="필터 초기화">초기화
                         </button>
                     </div>

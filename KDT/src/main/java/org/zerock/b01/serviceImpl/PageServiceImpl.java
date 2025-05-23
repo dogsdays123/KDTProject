@@ -80,6 +80,7 @@ public class PageServiceImpl implements PageService {
         String pName = pageRequestDTO.getPName();
         String uName = pageRequestDTO.getUName();
         String ppState = pageRequestDTO.getPpState();
+        String uId = pageRequestDTO.getUId();
         LocalDate ppStart = pageRequestDTO.getPpStart();
         LocalDate ppEnd = pageRequestDTO.getPpEnd();
         LocalDate regDate = pageRequestDTO.getPpRegDate();
@@ -87,7 +88,7 @@ public class PageServiceImpl implements PageService {
         Pageable pageable = pageRequestDTO.getPageable("regDate");
 
         Page<PlanListAllDTO> result = productionPlanRepository
-                .planSearchWithAll(types, keyword, ppCode, pName,
+                .planSearchWithAll(types, keyword, uId, ppCode, pName,
                        ppState, ppStart, ppEnd, pageable);
 
         return PageResponseDTO.<PlanListAllDTO>withAll()
