@@ -60,6 +60,9 @@ public class NoticeServiceImpl implements NoticeService {
             case "pp": message = "새로운 생산 계획이 등록되었습니다.";
                 Collections.addAll(outType, "생산부서", "구매부서", "자재부서");
                 break;
+            case "ppm": message = "수정된 생산 계획이 있습니다.";
+                Collections.addAll(outType, "생산부서", "구매부서", "자재부서");
+                break;
             case "b": message = "새로운 BOM이 등록되었습니다.";
                 Collections.addAll(outType, "생산부서", "구매부서", "자재부서");
                 break;
