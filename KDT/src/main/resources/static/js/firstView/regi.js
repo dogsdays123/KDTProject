@@ -221,17 +221,17 @@ function makeAdmin(){
             $('#makeAdminModal').modal('show');  // 로딩 모달 띄우기
         },
         success: function () {
+            alert("데이터 생성 완료")
             setTimeout(() => {
                 $('#makeAdminModal').modal('hide');
             }, 500); // 0.5초 후에 닫기
-            alert("데이터 생성 완료")
         },
         error: function (error) {
+            alert("이미 생성된 데이터입니다.")
+            console.error('errorMessage :', error);
             setTimeout(() => {
                 $('#makeAdminModal').modal('hide');
             }, 500); // 0.5초 후에 닫기
-            alert("이미 생성된 데이터입니다.")
-            console.error('errorMessage :', error);
         }
     });
 }

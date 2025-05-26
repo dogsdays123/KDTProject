@@ -320,9 +320,6 @@ $('#excelUpload').on('click', function (e) {
             $('#loadingModal').modal('show');  // 로딩 모달 띄우기
         },
         success: function(response) {
-            setTimeout(() => {
-                $('#makeAdminModal').modal('hide');
-            }, 500); // 0.5초 후에 닫기
             errorChecks = response.errorCheck;
             duplicates = response.duplicate;
 
@@ -337,13 +334,15 @@ $('#excelUpload').on('click', function (e) {
             } else {
                 window.location.href = "/bom/bomRegister";
             }
-
+            setTimeout(() => {
+                $('#makeAdminModal').modal('hide');
+            }, 500); // 0.5초 후에 닫기
         },
         error: function(xhr, status, error) {
-            setTimeout(() => {
-                $('#loadingModal').modal('hide');
-            }, 500);
             alert("파일 업로드에 실패했습니다. : " + error);
+            setTimeout(() => {
+                $('#makeAdminModal').modal('hide');
+            }, 500); // 0.5초 후에 닫기
         }
     });
 });
