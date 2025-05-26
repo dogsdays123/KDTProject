@@ -284,9 +284,7 @@ $('#excelUpload').on('click', function (e) {
         },
         error: function(xhr, status, error) {
             alert("파일 업로드에 실패했습니다. : " + error);
-            setTimeout(() => {
-                $('#makeAdminModal').modal('hide');
-            }, 500); // 0.5초 후에 닫기
+            window.location.href = "/product/goodsRegister";
         }
     });
 });

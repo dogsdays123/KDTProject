@@ -229,9 +229,7 @@ function makeAdmin(){
         error: function (error) {
             alert("이미 생성된 데이터입니다.")
             console.error('errorMessage :', error);
-            setTimeout(() => {
-                $('#makeAdminModal').modal('hide');
-            }, 500); // 0.5초 후에 닫기
+            window.location.href = '/firstView/login';
         }
     });
 }

@@ -283,9 +283,7 @@ $('#excelUpload').on('click', function (e) {
         },
         error: function(xhr, status, error) {
             alert("파일 업로드에 실패했습니다. : " + error);
-            setTimeout(() => {
-                $('#loadingModal').modal('hide');
-            }, 500);
+            window.location.href = "/productionPlan/ppRegister";
         }
     });
 });
